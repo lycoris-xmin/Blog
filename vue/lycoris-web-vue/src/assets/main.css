@@ -1,0 +1,128 @@
+@import './base.css';
+@import url(animate.css/animate.min.css);
+
+@font-face {
+  font-family: AlimamaShuHeiTi-Bold;
+  src: url(https://puhuiti.oss-cn-hangzhou.aliyuncs.com/AlimamaShuHeiTi/AlimamaShuHeiTi-Bold/AlimamaShuHeiTi-Bold.eot) format('embedded-opentype'),
+    url(https://puhuiti.oss-cn-hangzhou.aliyuncs.com/AlimamaShuHeiTi/AlimamaShuHeiTi-Bold/AlimamaShuHeiTi-Bold.otf) format('opentype'),
+    url(https://puhuiti.oss-cn-hangzhou.aliyuncs.com/AlimamaShuHeiTi/AlimamaShuHeiTi-Bold/AlimamaShuHeiTi-Bold.ttf) format('TrueType'),
+    url(https://puhuiti.oss-cn-hangzhou.aliyuncs.com/AlimamaShuHeiTi/AlimamaShuHeiTi-Bold/AlimamaShuHeiTi-Bold.woff) format('woff'),
+    url(https://puhuiti.oss-cn-hangzhou.aliyuncs.com/AlimamaShuHeiTi/AlimamaShuHeiTi-Bold/AlimamaShuHeiTi-Bold.woff2) format('woff2');
+  font-display: swap;
+}
+
+/* semantic color variables for this project */
+:root {
+  --color-background: var(--vt-c-white);
+  --color-background-soft: var(--vt-c-white-soft);
+  --color-background-mute: var(--vt-c-white-mute);
+
+  --color-border: var(--vt-c-divider-light-2);
+  --color-border-hover: var(--vt-c-divider-light-1);
+
+  --color-heading: var(--vt-c-text-light-1);
+  --color-text: var(--vt-c-text-light-1);
+
+  --section-gap: 160px;
+}
+
+:root {
+  --color-primary: rgb(0, 123, 224);
+  --color-primary-light: rgb(0 123 224 / 64%);
+  --color-success: rgb(21 195 119);
+  --color-success-light: rgb(21 195 119 / 64%);
+  --color-info: rgb(72 176 247);
+  --color-info-light: rgb(72 176 247 / 64%);
+  --color-warning: rgb(251 178 100);
+  --color-warning-light: rgb(251 178 100 / 64%);
+  --color-danger: rgb(250 129 129);
+  --color-danger-light: rgb(250 129 129 / 64%);
+  --color-secondary: rgb(228 231 234);
+  --color-secondary-light: rgb(228 231 234 / 64%);
+  --color-purple: rgb(146, 109, 222);
+  --color-purple-light: rgb(146 109 222 / 64%);
+  --color-pink: rgb(249 97 151);
+  --color-pink-light: rgb(249 97 151 / 64%);
+  --color-cyan: rgb(119 210 220);
+  --color-cyan-light: rgb(119 210 220 / 64%);
+  --color-yellow: rgb(253 208 77);
+  --color-yellow-light: rgb(253 208 77 / 64%);
+  --color-brown: rgb(141 102 88);
+  --color-brown-light: rgb(141 102 88 / 64%);
+  --color-dark: rgb(81 93 112);
+  --color-dark-light: rgb(81 93 112 / 64%);
+
+  --main-linear-gradient: linear-gradient(130deg, #24c6dc, #5433ff 41.07%, #ff0099 76.05%);
+
+  --main-background-color: var(--color-secondary);
+  --main-background-light-color: #fff;
+
+  --main-text-color: var(--color-dark);
+  --main-text-light-color: var(--color-dark-light);
+
+  --gradient-cover: linear-gradient(
+    90deg,
+    hsla(0, 0%, 98%, 0) 0,
+    hsla(0, 0%, 98%, 0.013) 8.1%,
+    hsla(0, 0%, 98%, 0.049) 15.5%,
+    hsla(0, 0%, 98%, 0.104) 22.5%,
+    hsla(0, 0%, 98%, 0.175) 29%,
+    hsla(0, 0%, 98%, 0.259) 35.3%,
+    hsla(0, 0%, 98%, 0.352) 41.2%,
+    hsla(0, 0%, 98%, 0.45) 47.1%,
+    hsla(0, 0%, 98%, 0.55) 52.9%,
+    hsla(0, 0%, 98%, 0.648) 58.8%,
+    hsla(0, 0%, 98%, 0.741) 64.7%,
+    hsla(0, 0%, 98%, 0.825) 71%,
+    hsla(0, 0%, 98%, 0.896) 77.5%,
+    hsla(0, 0%, 98%, 0.951) 84.5%,
+    hsla(0, 0%, 98%, 0.987) 91.9%,
+    #fff
+  );
+
+  --post-title-color: #000;
+  --post-title-hover-color: var(--color-purple);
+
+  --post-info-color: var(--color-dark-light);
+
+  --main-container-radius: 20px;
+}
+
+html[data-theme='dark'] {
+  --main-background-color: var(--color-dark);
+}
+
+#app {
+  width: 100%;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  transition: color 0.5s, background-color 0.5s;
+  line-height: 1.6;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif, AlimamaShuHeiTi-Bold;
+  font-size: 15px;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.el-message {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.el-message .el-message__content {
+  line-height: 24px;
+}
+
+.el-message .el-icon {
+  margin-top: 5px;
+}

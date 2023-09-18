@@ -1,0 +1,50 @@
+body {
+  font-family: AlimamaFangYuan;
+  letter-spacing: 1.5px;
+
+  img {
+    -webkit-user-drag: none;
+  }
+}
+
+:root {
+  --main-linear-gradient: linear-gradient(130deg, #24c6dc, #5433ff 41.07%, #ff0099 76.05%);
+
+  --main-background-color: var(--color-secondary);
+  --main-background-light-color: #fff;
+
+  --main-text-color: var(--color-dark);
+  --main-text-light-color: var(--color-dark-light);
+
+  --gradient-cover: linear-gradient(
+    90deg,
+    hsla(0, 0%, 98%, 0) 0,
+    hsla(0, 0%, 98%, 0.013) 8.1%,
+    hsla(0, 0%, 98%, 0.049) 15.5%,
+    hsla(0, 0%, 98%, 0.104) 22.5%,
+    hsla(0, 0%, 98%, 0.175) 29%,
+    hsla(0, 0%, 98%, 0.259) 35.3%,
+    hsla(0, 0%, 98%, 0.352) 41.2%,
+    hsla(0, 0%, 98%, 0.45) 47.1%,
+    hsla(0, 0%, 98%, 0.55) 52.9%,
+    hsla(0, 0%, 98%, 0.648) 58.8%,
+    hsla(0, 0%, 98%, 0.741) 64.7%,
+    hsla(0, 0%, 98%, 0.825) 71%,
+    hsla(0, 0%, 98%, 0.896) 77.5%,
+    hsla(0, 0%, 98%, 0.951) 84.5%,
+    hsla(0, 0%, 98%, 0.987) 91.9%,
+    #fff
+  );
+
+  --post-title-color: #000;
+  --post-title-hover-color: var(--color-purple);
+
+  --post-info-color: var(--color-dark-light);
+
+  --main-container-radius: 20px;
+}
+
+html[data-theme='dark'] {
+  //
+  --main-background-color: var(--color-dark);
+}

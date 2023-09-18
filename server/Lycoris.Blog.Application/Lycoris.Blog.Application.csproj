@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Lycoris.AutoMapper.Extensions" Version="6.0.0" />
+    <PackageReference Include="Lycoris.Quartz.Extensions" Version="6.1.1-pre" />
+    <PackageReference Include="Lycoris.RabbitMQ.Extensions" Version="6.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Lycoris.Blog.Core\Lycoris.Blog.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="AppService\Configurations\Dtos\" />
+    <Folder Include="RqbbitMq\Consumers\" />
+  </ItemGroup>
+
+</Project>

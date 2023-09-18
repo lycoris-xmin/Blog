@@ -1,0 +1,23 @@
+{
+  "web": {
+    "name": "程序猿的小破站",
+    "domain": "http://127.0.0.1:5173",
+    "icp": "闽ICP备20015305号",
+    "ssoReferer": "127.0.0.1:5173"
+  },
+  "api": {
+    "server": "http://localhost:8019/api",
+    "timeout": 15000,
+    "signalR": {
+      "level": "info"
+    }
+  },
+  "cryptoKey": "as-Crypto-js",
+  "dashboardUrlPrefix": "/little/brokenstation",
+  "build": {
+    "esm": [
+      "https://cdn.jsdelivr.net/npm/cherry-markdown@0.8.19/+esm",
+      "https://cdn.bootcdn.net/ajax/libs/echarts/5.4.2/echarts.esm.min.js"
+    ]
+  }
+}

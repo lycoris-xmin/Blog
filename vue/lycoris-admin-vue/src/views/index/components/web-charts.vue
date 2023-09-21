@@ -56,6 +56,10 @@ onMounted(async () => {
 
   let list = await getStatistics();
 
+  if (!list || list.length == 0) {
+    return;
+  }
+
   charts.xAxis = list.map(x => {
     return x.day;
   });
@@ -96,6 +100,8 @@ const getStatistics = async () => {
     }
 
     return list;
+  } catch (error) {
+    //
   } finally {
     model.chartLoading = false;
   }

@@ -49,7 +49,7 @@ $router.beforeEach(async to => {
       document.title = `管理后台_${web.name}`;
     }
 
-    if (stores.screenLock.checkLossOfActivity()) {
+    if (stores.authorize.token && stores.screenLock.checkLossOfActivity()) {
       return { name: 'screen-lock', query: { path: to.path } };
     }
   } else {

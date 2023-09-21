@@ -10,6 +10,8 @@ const reject = (data, statusCode = 200) => {
   });
 };
 
+let routeToTime = void 0;
+
 const toLoginPage = (
   call = () => {
     toast.error('登录过期,请重新登录', {
@@ -19,7 +21,11 @@ const toLoginPage = (
 ) => {
   if (location.pathname != `${dashboardUrlPrefix}/login`) {
     call();
-    setTimeout(() => {
+
+    if (!routeToTime) {
+      clearTimeout(routeToTime);
+    }
+    routeToTime = setTimeout(() => {
       router.push({
         name: 'login'
       });
@@ -80,6 +86,7 @@ const success = (resp, service) => {
 
     if (!isRefreshing) {
       isRefreshing = true;
+      console.log(resp.config);
       return refreshToken(service)
         .then(res => {
           if (res.data.resCode != 0) {

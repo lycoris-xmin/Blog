@@ -88,23 +88,31 @@ const screenLock = {
 };
 
 onMounted(async () => {
-  await ownerInit();
+  try {
+    if (!stores.owner.isValid) {
+      let res = await getUserBrief();
 
-  checkLossOfActivityTo();
+      if (res && res.resCode == 0) {
+        stores.owner.setData(res.data);
+      }
+    }
 
-  screenLock.timer = setInterval(checkLossOfActivityTo, 10000);
+    checkLossOfActivityTo();
 
-  await getWebPath();
+    screenLock.timer = setInterval(checkLossOfActivityTo, 10000);
 
-  await signalR.setupSignalR('/lycoris/hub/dashboard');
+    await getWebPath();
 
-  subscribeAuthroization();
-  subscribeRefreshToken();
+    await signalR.setupSignalR('/lycoris/hub/dashboard');
 
-  // 鼠标移动
-  screenLock.body?.addEventListener('mousemove', handleEvent);
-  // 鼠标滚动事件
-  screenLock.body?.addEventListener('mousewheel', handleEvent);
+    subscribeAuthroization();
+    subscribeRefreshToken();
+
+    // 鼠标移动
+    screenLock.body?.addEventListener('mousemove', handleEvent);
+    // 鼠标滚动事件
+    screenLock.body?.addEventListener('mousewheel', handleEvent);
+  } catch (error) {}
 });
 
 onUnmounted(async () => {
@@ -115,18 +123,6 @@ onUnmounted(async () => {
 
   await signalR.stop();
 });
-
-const ownerInit = async () => {
-  try {
-    if (!stores.owner.isValid) {
-      let res = await getUserBrief();
-
-      if (res && res.resCode == 0) {
-        stores.owner.setData(res.data);
-      }
-    }
-  } catch (error) {}
-};
 
 const getWebPath = async () => {
   let res = await getWebSettings();

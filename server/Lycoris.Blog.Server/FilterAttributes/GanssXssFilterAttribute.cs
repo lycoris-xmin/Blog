@@ -1,6 +1,6 @@
 ﻿using Ganss.Xss;
 using Lycoris.Base.Extensions;
-using Lycoris.Base.Logging;
+using Lycoris.Blog.Core.Logging;
 using Lycoris.Blog.Server.Shared;
 using Microsoft.AspNetCore.Mvc.Filters;
 

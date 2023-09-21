@@ -1,5 +1,5 @@
-﻿using Lycoris.Base.Logging;
-using Lycoris.Blog.Application.Shared.Dtos;
+﻿using Lycoris.Blog.Application.Shared.Dtos;
+using Lycoris.Blog.Core.Logging;
 using Lycoris.Blog.Core.Repositories;
 using Lycoris.Blog.Model.Contexts;
 

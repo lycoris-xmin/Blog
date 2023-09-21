@@ -22,6 +22,11 @@ namespace Lycoris.Blog.Application
 
         public override void SerivceRegister(IServiceCollection services)
         {
+            var minio = new MinioClient();
+            services.AddSingleton(minio);
+
+            services.AddMemoryCache();
+
             // 任务调度
             QuartzSchedulerBuilder(services);
 
@@ -31,11 +36,6 @@ namespace Lycoris.Blog.Application
 
         private static void QuartzSchedulerBuilder(IServiceCollection services)
         {
-            var minio = new MinioClient();
-            services.AddSingleton(minio);
-
-            services.AddMemoryCache();
-
             services.AddQuartzSchedulerCenter(opt =>
             {
                 opt.AddJob<ScheduleQueueJob>();

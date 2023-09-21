@@ -2,9 +2,9 @@
 using Lycoris.AutoMapper.Extensions;
 using Lycoris.Base.Extensions;
 using Lycoris.Base.Helper;
-using Lycoris.Base.Logging;
 using Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Dtos;
 using Lycoris.Blog.Core.EntityFrameworkCore;
+using Lycoris.Blog.Core.Logging;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
 using Lycoris.Blog.Model.Global.Output;
 using Quartz;

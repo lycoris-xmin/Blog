@@ -1,7 +1,7 @@
 ﻿using Lycoris.Autofac.Extensions;
 using Lycoris.Base.Extensions;
 using Lycoris.Base.Http;
-using Lycoris.Base.Logging;
+using Lycoris.Blog.Core.Logging;
 using Lycoris.Blog.Core.Repositories;
 using Lycoris.Blog.Core.Showdoc.Dtos;
 using Lycoris.Blog.EntityFrameworkCore.Constants;

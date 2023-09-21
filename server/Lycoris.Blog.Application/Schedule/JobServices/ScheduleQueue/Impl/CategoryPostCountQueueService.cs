@@ -1,7 +1,7 @@
 ﻿using Lycoris.Autofac.Extensions;
 using Lycoris.Base.Extensions;
-using Lycoris.Base.Logging;
 using Lycoris.Blog.Core.EntityFrameworkCore;
+using Lycoris.Blog.Core.Logging;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
 using Microsoft.EntityFrameworkCore;
 using Quartz;

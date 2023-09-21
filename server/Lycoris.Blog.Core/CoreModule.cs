@@ -1,7 +1,5 @@
 ﻿using Lycoris.Autofac.Extensions;
-using Lycoris.Base.Logging;
 using Lycoris.Blog.Common;
-using Lycoris.Blog.Core.Logging;
 using Lycoris.CSRedisCore.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,8 +9,6 @@ namespace Lycoris.Blog.Core
     {
         public override void SerivceRegister(IServiceCollection services)
         {
-            services.AddLycorisLoggerFactory<LycorisLoggerFactory>();
-
             // 注册内存缓存
 
             if (AppSettings.Redis.Use)

@@ -1,10 +1,9 @@
 ﻿using Lycoris.Base.Extensions;
-using Lycoris.Base.Logging;
 using Lycoris.Blog.Model.Cnstants;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
-namespace Lycoris.Blog.Core.Logging
+namespace Lycoris.Blog.Core.Logging.Impl
 {
     public class LycorisLogger : ILycorisLogger
     {

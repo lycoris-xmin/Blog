@@ -1,5 +1,5 @@
 ﻿using Lycoris.Base.Extensions;
-using Lycoris.Base.Logging;
+using Lycoris.Blog.Core.Logging;
 using Lycoris.Blog.Model.Cnstants;
 using Lycoris.Blog.Model.Exceptions;
 using Lycoris.Blog.Model.Global.Output;

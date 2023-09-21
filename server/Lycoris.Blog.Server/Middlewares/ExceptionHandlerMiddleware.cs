@@ -1,9 +1,9 @@
 ﻿using Lycoris.Base.Extensions;
-using Lycoris.Base.Logging;
 using Lycoris.Blog.Application.Cached.ScheduleQueueCache;
 using Lycoris.Blog.Application.Cached.ScheduleQueueCache.Dtos;
 using Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Dtos;
 using Lycoris.Blog.Common;
+using Lycoris.Blog.Core.Logging;
 using Lycoris.Blog.Model.Cnstants;
 using Lycoris.Blog.Model.Global.Output;
 using Lycoris.Blog.Server.Application.Constants;

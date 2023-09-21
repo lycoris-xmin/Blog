@@ -1,6 +1,7 @@
 ﻿using Lycoris.Base.Extensions;
-using Lycoris.Base.Logging;
-using Lycoris.RabbitMQ.Extensions.Impl;
+using Lycoris.Blog.Core.Logging;
+using Lycoris.RabbitMQ.Extensions;
+using Lycoris.RabbitMQ.Extensions.DataModel;
 using System.Diagnostics;
 
 namespace Lycoris.Blog.Application.RqbbitMq.Impl

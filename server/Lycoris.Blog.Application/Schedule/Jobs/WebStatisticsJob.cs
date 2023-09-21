@@ -1,7 +1,7 @@
-﻿using Lycoris.Base.Logging;
-using Lycoris.Blog.Application.AppService.Configurations;
+﻿using Lycoris.Blog.Application.AppService.Configurations;
 using Lycoris.Blog.Application.Schedule.Shared;
 using Lycoris.Blog.Core.EntityFrameworkCore;
+using Lycoris.Blog.Core.Logging;
 using Lycoris.Blog.EntityFrameworkCore.Constants;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
 using Lycoris.Blog.Model.Configurations;
@@ -43,7 +43,7 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        protected override async Task DoWorkAsync(IJobExecutionContext context)
+        protected override async Task HandlerWorkAsync(IJobExecutionContext context)
         {
             var value = await _configuration.GetConfigurationAsync<WebStatisticsConfiguration>(AppConfig.WebStatistics) ?? new WebStatisticsConfiguration();
             if (!value.LastTime.HasValue || value.LastTime == DateTime.MinValue)

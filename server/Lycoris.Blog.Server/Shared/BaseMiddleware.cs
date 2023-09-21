@@ -1,5 +1,5 @@
-﻿using Lycoris.Base.Logging;
-using Lycoris.Blog.Common;
+﻿using Lycoris.Blog.Common;
+using Lycoris.Blog.Core.Logging;
 
 namespace Lycoris.Blog.Server.Shared
 {

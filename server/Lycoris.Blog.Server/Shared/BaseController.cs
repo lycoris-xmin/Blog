@@ -1,5 +1,6 @@
 ﻿using Lycoris.Base.Extensions;
-using Lycoris.Base.Logging;
+using Lycoris.Blog.Common.Extensions;
+using Lycoris.Blog.Core.Logging;
 using Lycoris.Blog.Model.Cnstants;
 using Lycoris.Blog.Model.Contexts;
 using Lycoris.Blog.Model.Global.Output;

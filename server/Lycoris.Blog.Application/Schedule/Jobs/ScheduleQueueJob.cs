@@ -1,9 +1,9 @@
 ﻿using Lycoris.Autofac.Extensions;
 using Lycoris.Base.Extensions;
-using Lycoris.Base.Logging;
 using Lycoris.Blog.Application.Cached.ScheduleQueueCache;
 using Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue;
 using Lycoris.Blog.Application.Schedule.Shared;
+using Lycoris.Blog.Core.Logging;
 using Lycoris.Quartz.Extensions.Job;
 using Quartz;
 
@@ -27,7 +27,7 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        protected override async Task DoWorkAsync(IJobExecutionContext context)
+        protected override async Task HandlerWorkAsync(IJobExecutionContext context)
         {
             var cache = await _queueCacheService.DequeueAsync();
             if (cache == null || cache.Data.IsNullOrEmpty())

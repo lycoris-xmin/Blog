@@ -1,5 +1,5 @@
-﻿using Lycoris.Base.Logging;
-using Lycoris.Blog.Application.Schedule.Shared;
+﻿using Lycoris.Blog.Application.Schedule.Shared;
+using Lycoris.Blog.Core.Logging;
 using Lycoris.Blog.Core.Showdoc;
 using Lycoris.Quartz.Extensions.Job;
 using Quartz;
@@ -17,7 +17,7 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
             _showdoc = showdoc;
         }
 
-        protected override Task DoWorkAsync(IJobExecutionContext context)
+        protected override Task HandlerWorkAsync(IJobExecutionContext context)
         {
             return Task.CompletedTask;
         }

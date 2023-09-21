@@ -1,10 +1,10 @@
 ﻿using Lycoris.AutoMapper.Extensions;
 using Lycoris.Base.Extensions;
-using Lycoris.Base.Logging;
 using Lycoris.Blog.Application.Schedule.Shared;
 using Lycoris.Blog.Application.SignalR.Dashboard;
 using Lycoris.Blog.Application.SignalR.Dashboard.Dtos;
 using Lycoris.Blog.Core.EntityFrameworkCore;
+using Lycoris.Blog.Core.Logging;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
 using Lycoris.Blog.Model.Contexts;
 using Lycoris.Quartz.Extensions.Job;
@@ -33,7 +33,7 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
         /// 
         /// </summary>
         /// <param name="factory"></param>
-        /// <param name="serverMonitorContext"></param>
+        /// <param name="monitorContext"></param>
         /// <param name="hubContext"></param>
         /// <param name="serverMonitor"></param>
         public ServerMonitorJob(ILycorisLoggerFactory factory,
@@ -56,7 +56,7 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        protected override async Task DoWorkAsync(IJobExecutionContext context)
+        protected override async Task HandlerWorkAsync(IJobExecutionContext context)
         {
             // 服务器性能监控
             var serverMonitor = await ServerMonitorHandlerAsync();

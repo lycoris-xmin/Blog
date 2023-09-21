@@ -42,8 +42,7 @@ namespace Lycoris.Blog.Application
                 opt.AddJob<DBRegularCleaningJob>();
                 opt.AddJob<WebStatisticsJob>();
                 opt.AddJob<ServerMonitorJob>();
-
-                opt.StopAutoRunJob();
+                opt.DisabledRunHostedJob();
             });
         }
 

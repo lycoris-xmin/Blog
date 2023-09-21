@@ -41,9 +41,8 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="context"></param>
         /// <returns></returns>
-        protected override async Task HandlerWorkAsync(IJobExecutionContext context)
+        protected override async Task HandlerWorkAsync()
         {
             var value = await _configuration.GetConfigurationAsync<WebStatisticsConfiguration>(AppConfig.WebStatistics) ?? new WebStatisticsConfiguration();
             if (!value.LastTime.HasValue || value.LastTime == DateTime.MinValue)

@@ -36,10 +36,8 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="context"></param>
         /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        protected override async Task HandlerWorkAsync(IJobExecutionContext context)
+        protected override async Task HandlerWorkAsync()
         {
             var checkTime = DateTime.Now.AddMonths(-6).Date;
 

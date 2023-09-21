@@ -17,7 +17,11 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
             _showdoc = showdoc;
         }
 
-        protected override Task HandlerWorkAsync(IJobExecutionContext context)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        protected override Task HandlerWorkAsync()
         {
             return Task.CompletedTask;
         }

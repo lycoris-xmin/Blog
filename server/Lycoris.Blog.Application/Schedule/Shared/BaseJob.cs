@@ -1,6 +1,5 @@
 ﻿using Lycoris.Blog.Core.Logging;
 using Lycoris.Quartz.Extensions.Job;
-using Quartz;
 
 namespace Lycoris.Blog.Application.Schedule.Shared
 {
@@ -14,12 +13,12 @@ namespace Lycoris.Blog.Application.Schedule.Shared
         }
 
 
-        protected override Task DoWorkAsync(IJobExecutionContext context)
+        protected override Task DoWorkAsync()
         {
             _logger.JobWorkRegister(JobTraceId, JobName);
-            return DoWorkAsync(context);
+            return DoWorkAsync();
         }
 
-        protected abstract Task HandlerWorkAsync(IJobExecutionContext context);
+        protected abstract Task HandlerWorkAsync();
     }
 }

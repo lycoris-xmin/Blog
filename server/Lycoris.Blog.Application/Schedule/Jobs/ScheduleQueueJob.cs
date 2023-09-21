@@ -25,9 +25,8 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="context"></param>
         /// <returns></returns>
-        protected override async Task HandlerWorkAsync(IJobExecutionContext context)
+        protected override async Task HandlerWorkAsync()
         {
             var cache = await _queueCacheService.DequeueAsync();
             if (cache == null || cache.Data.IsNullOrEmpty())
@@ -36,7 +35,7 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
             var sechduleJob = _multipleService.TryGetService<IScheduleQueueService>(cache.Type.ToString());
             if (sechduleJob != null)
             {
-                sechduleJob.JobContext = context;
+                sechduleJob.JobContext = this.Context;
                 await sechduleJob.JobDoWorkAsync(cache!.Data, cache.Time);
             }
         }

@@ -54,9 +54,8 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="context"></param>
         /// <returns></returns>
-        protected override async Task HandlerWorkAsync(IJobExecutionContext context)
+        protected override async Task HandlerWorkAsync()
         {
             // 服务器性能监控
             var serverMonitor = await ServerMonitorHandlerAsync();

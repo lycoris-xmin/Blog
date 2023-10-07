@@ -78,6 +78,9 @@ watch(
 );
 
 onBeforeMount(() => {
+  if (!props.chat || !props.chat.id) {
+    return;
+  }
   stores.chatMessage._initRoomMessages(props.chat.id);
 });
 

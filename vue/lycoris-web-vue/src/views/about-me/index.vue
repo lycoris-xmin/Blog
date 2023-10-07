@@ -4,7 +4,7 @@
       <img src="/icon/logo/logo-lycoirs.png" @click="toHome" />
     </div>
 
-    <page-home :index="model.index" :height="model.height" :description="model.info.description" :owner="stores.owner"></page-home>
+    <page-home :index="model.index" :height="model.height" :description="model.info.description || ''" :owner="stores.owner"></page-home>
 
     <page-owner :index="model.index" :height="model.height" :data="model.info" :owner="stores.owner"></page-owner>
 
@@ -72,8 +72,8 @@ onMounted(async () => {
 
     let res = await getAboutMe();
     if (res && res.resCode == 0) {
-      model.info = res.data.info;
-      model.skill = res.data.skill;
+      model.info = res.data.info || {};
+      model.skill = res.data.skill || {};
       model.project = res.data.project || [];
     }
   } finally {
@@ -253,4 +253,3 @@ const pageWheel = e => {
   }
 }
 </style>
-../../api/home../../api/home

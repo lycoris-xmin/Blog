@@ -128,6 +128,10 @@ watch(
       return;
     }
 
+    if (!value) {
+      return;
+    }
+
     if (editorRef.value) {
       if (model.html) {
         editorInput[oldvalue] = model.html;

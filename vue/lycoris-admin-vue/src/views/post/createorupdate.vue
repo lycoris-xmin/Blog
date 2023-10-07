@@ -179,37 +179,37 @@ const categoryEnums = async () => {
 onMounted(async () => {
   try {
     await categoryEnums();
-
     if (route.query?.id) {
-      let res = await getPostInfo(route.query.id);
+      try {
+        let res = await getPostInfo(route.query.id);
 
-      form.id = res.data.id;
-      form.title = res.data.title;
-      form.type = res.data.type;
-      form.category = res.data.category || '';
-      form.comment = res.data.comment;
-      form.tags = res.data.tags || [];
-      form.icon = res.data.icon || '';
-      form.markdown = '';
-      form.isPublish = res.data.isPublish || false;
+        form.id = res.data.id;
+        form.title = res.data.title;
+        form.type = res.data.type;
+        form.category = res.data.category || '';
+        form.comment = res.data.comment;
+        form.tags = res.data.tags || [];
+        form.icon = res.data.icon || '';
+        form.markdown = '';
+        form.isPublish = res.data.isPublish || false;
 
-      markdown.value.init(res.data.markdown);
+        markdown.value.init(res.data.markdown);
 
-      postInfo = { ...form };
+        postInfo = { ...form };
+      } catch (error) {
+        swal
+          .error('获取博客文章数据失败')
+          .then(() => {
+            toPostPage();
+          })
+          .catch(() => {
+            toPostPage();
+          });
+      }
     } else {
       markdown.value.init();
     }
-  } catch (error) {
-    console.error(error);
-    swal
-      .error('获取博客文章数据失败')
-      .then(() => {
-        toPostPage();
-      })
-      .catch(() => {
-        toPostPage();
-      });
-  }
+  } catch {}
 });
 
 const categoryChange = val => {

@@ -29,7 +29,7 @@
       </transition-list>
       <div class="chat-room">
         <chat-message ref="chatMessageRef" :chat="model.active" @init="chatMessageInit" @read="messageRead"></chat-message>
-        <chat-edit-bar ref="chatEditBarRef" :room-id="model.active.id" @submit-message="content => hanldeSubmitMessage(content)"></chat-edit-bar>
+        <chat-edit-bar ref="chatEditBarRef" :room-id="model.active?.id" @submit-message="content => hanldeSubmitMessage(content)"></chat-edit-bar>
       </div>
     </div>
   </el-dialog>

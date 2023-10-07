@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import secret from '../../utils/secret';
 
 const key = 'l-c-val';
-const timeOutValue = 1 * 60 * 1000;
+const timeOutValue = 30 * 60 * 1000;
 
 const encryptString = data => {
   return secret.encrypt(JSON.stringify(data));

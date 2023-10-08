@@ -17,7 +17,7 @@
 
     <search-modal ref="searchModalRef"></search-modal>
     <login-modal v-if="!stores.user.state" ref="loginModalRef" :owner="stores.owner" @refresh-user-brief="userBriefInit"></login-modal>
-    <chat-modal v-if="stores.user.state" ref="chatModalRef"></chat-modal>
+    <!-- <chat-modal v-if="stores.user.state" ref="chatModalRef"></chat-modal> -->
     <transition-fade>
       <loading-line :loading="model.loading" v-if="model.loading" style="height: 100vh; width: 100vw; position: fixed"></loading-line>
     </transition-fade>
@@ -31,7 +31,7 @@ import layoutNav from './components/layout-nav.vue';
 import layoutFooter from './components/layout-footer.vue';
 import searchModal from './modal/search-modal.vue';
 import loginModal from './modal/login-modal.vue';
-import chatModal from './modal/chat/index.vue';
+// import chatModal from './modal/chat/index.vue';
 import loadingLine from '../../components/loadings/loading-line.vue';
 import { keepAliveComponents } from '../../router';
 import SignalRHelper from '../../utils/signalR';

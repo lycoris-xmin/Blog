@@ -1,8 +1,10 @@
 ﻿using Lycoris.Autofac.Extensions;
 using Lycoris.Base.Extensions;
+using Lycoris.Blog.Application.Shared.Dtos;
 using Lycoris.Blog.Application.Shared.Impl;
 using Lycoris.Blog.Core.EntityFrameworkCore;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
+using Lycoris.Blog.Model.Configurations;
 using Lycoris.Blog.Model.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
@@ -52,6 +54,19 @@ namespace Lycoris.Blog.Application.AppService.Configurations.Impl
         /// <param name="value"></param>
         /// <returns></returns>
         public Task SaveConfigurationAsync<T>(string configId, T value) where T : class => UpdateAsync(configId, value?.ToJson() ?? "");
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public List<EnumsDto<int>> GetSaveChannelEnum()
+        {
+            return Enum.GetValues<FileSaveChannelEnum>().Select(x => new EnumsDto<int>
+            {
+                Value = (int)x,
+                Name = x.GetEnumDescription<FileSaveChannelEnum>()
+            }).ToList();
+        }
 
         /// <summary>
         /// 

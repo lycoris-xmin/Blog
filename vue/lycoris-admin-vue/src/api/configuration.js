@@ -30,11 +30,11 @@ export const saveEmailSettings = ({ emailAddress, emailUser, stmpServer, stmpPor
   return request.post(`${controller}/email`, { emailAddress, emailUser, stmpServer, stmpPort, emailPassword, emailSignature, useSSL });
 };
 
-export const getMinioSettings = () => {
+export const getfileUploadSettings = () => {
   return request.get(`${controller}/fileUpload`);
 };
 
-export const saveMinioSettings = ({ saveChannel, minio, oss, cos, obs, kodo }) => {
+export const saveFileUploadSettings = ({ saveChannel, minio, oss, cos, obs, kodo }) => {
   let data = {
     saveChannel: saveChannel
   };
@@ -64,6 +64,10 @@ export const saveMinioSettings = ({ saveChannel, minio, oss, cos, obs, kodo }) =
   }
 
   return request.post(`${controller}/fileUpload`, data);
+};
+
+export const getFileSaveChannelEnum = () => {
+  return request.get(`${controller}/fileUpload/channel`);
 };
 
 export const getSeoSettings = () => {

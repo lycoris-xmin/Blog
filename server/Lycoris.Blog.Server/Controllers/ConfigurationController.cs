@@ -9,6 +9,7 @@ using Lycoris.Blog.Model.Global.Output;
 using Lycoris.Blog.Server.Application.Constants;
 using Lycoris.Blog.Server.FilterAttributes;
 using Lycoris.Blog.Server.Models.Configurations;
+using Lycoris.Blog.Server.Models.Shared;
 using Lycoris.Blog.Server.Shared;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -212,6 +213,18 @@ namespace Lycoris.Blog.Server.Controllers
         {
             await _configuration.SaveConfigurationAsync(AppConfig.FileUpload, input.ToMap<FileUploadConfiguration>());
             return Success();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("FileUpload/Channel")]
+        [Produces("application/json")]
+        public Task<ListOutput<EnumsViewModel<int>>> SaveFileChannelEnum()
+        {
+            var dto = _configuration.GetSaveChannelEnum();
+            return Task.FromResult(Success(dto.ToMapList<EnumsViewModel<int>>()));
         }
 
         /// <summary>

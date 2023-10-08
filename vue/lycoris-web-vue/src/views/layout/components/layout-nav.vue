@@ -47,10 +47,10 @@
               <el-dropdown-menu class="user-options">
                 <a v-if="props.isAdmin && adminPath" :href="adminPath" target="_blank"><el-dropdown-item>管理后台</el-dropdown-item></a>
                 <el-dropdown-item><router-link :to="{ name: 'user' }">个人中心</router-link></el-dropdown-item>
-                <el-dropdown-item @click="userMessage">
+                <!-- <el-dropdown-item @click="userMessage">
                   <span v-if="stores.chat.totalUnreadMessage == 0">消息中心</span>
                   <el-badge :value="stores.chat.totalUnreadMessage" v-else> 消息中心 </el-badge>
-                </el-dropdown-item>
+                </el-dropdown-item> -->
                 <el-dropdown-item @click="userLogout">退出登录</el-dropdown-item>
               </el-dropdown-menu>
             </template>
@@ -124,9 +124,9 @@ const userLogout = async () => {
   }
 };
 
-const userMessage = () => {
-  emit('userMessage');
-};
+// const userMessage = () => {
+//   emit('userMessage');
+// };
 </script>
 
 <style lang="scss" scoped>

@@ -79,5 +79,12 @@ namespace Lycoris.Blog.Application.AppService.Authentication
         /// <param name="input"></param>
         /// <returns></returns>
         Task ChangePasswordAsync(ChangePasswordDto input);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="password"></param>
+        /// <returns></returns>
+        Task ScreenUnLockAsync(string password);
     }
 }

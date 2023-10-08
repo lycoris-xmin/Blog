@@ -357,5 +357,18 @@ namespace Lycoris.Blog.Application.AppService.Authentication.Impl
 
             await _user.UpdateFieIdsAsync(data, x => x.Password);
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="password"></param>
+        /// <returns></returns>
+        public async Task ScreenUnLockAsync(string password)
+        {
+            var user = await _user.GetAsync(this.CurrentUser.Id) ?? throw new HttpStatusException(HttpStatusCode.Unauthorized, $"can not find user by user id:{this.CurrentUser.Id}");
+
+            if (user.Password != SqlPasswrodConverter.Encrypt(password))
+                throw new FriendlyException("密码错误");
+        }
     }
 }

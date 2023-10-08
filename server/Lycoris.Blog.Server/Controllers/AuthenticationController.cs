@@ -246,6 +246,19 @@ namespace Lycoris.Blog.Server.Controllers
             var dto = await _authentication.RefreshTokenAsync(input.RefreshToken!, true);
             return Success(new RefreshTokenViewModel(dto.Token));
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpPost("Dashboard/Screen/UnLock")]
+        [Consumes("application/json"), Produces("application/json")]
+        public async Task<BaseOutput> UnLock([FromBody] UnLockInput input)
+        {
+            await _authentication.ScreenUnLockAsync(input.Password!);
+            return Success();
+        }
         #endregion
     }
 }

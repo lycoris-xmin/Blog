@@ -4,7 +4,6 @@ using Lycoris.Blog.Core.CloudStorage.Minio.DataModel;
 using Lycoris.Blog.Core.EntityFrameworkCore;
 using Lycoris.Blog.EntityFrameworkCore.Constants;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
-using Lycoris.Blog.EntityFrameworkCore.Tables.Enums;
 using Lycoris.Blog.Model.Configurations;
 using Lycoris.Blog.Model.Exceptions;
 using Microsoft.EntityFrameworkCore;
@@ -98,9 +97,9 @@ namespace Lycoris.Blog.Core.CloudStorage.Minio.Impl
             {
                 throw new FriendlyException("上传文件失败,请检查Minio配置");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw new FriendlyException("上传文件失败");
+                throw new FriendlyException("上传文件失败", ex.Message);
             }
         }
 
@@ -127,9 +126,9 @@ namespace Lycoris.Blog.Core.CloudStorage.Minio.Impl
             {
                 throw new FriendlyException("删除文件失败,请检查Minio配置");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw new FriendlyException("删除文件失败");
+                throw new FriendlyException("删除文件失败", ex.Message);
             }
         }
 
@@ -157,9 +156,9 @@ namespace Lycoris.Blog.Core.CloudStorage.Minio.Impl
             {
                 throw new FriendlyException("生成访问地址失败,请检查Minio配置");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw new FriendlyException("生成访问地址失败");
+                throw new FriendlyException("生成访问地址失败", ex.Message);
             }
         }
 
@@ -176,7 +175,7 @@ namespace Lycoris.Blog.Core.CloudStorage.Minio.Impl
 
             var config = data.Value!.ToObject<FileUploadConfiguration>();
 
-            if (config == null || (FileSaveChannelEnum)config.SaveChannel != FileSaveChannelEnum.Minio || config.Minio.MinioEndpoint.IsNullOrEmpty())
+            if (config == null || config.SaveChannel != FileSaveChannelEnum.Minio || config.Minio.MinioEndpoint.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(config));
 
             return config.Minio;

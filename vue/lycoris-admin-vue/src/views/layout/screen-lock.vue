@@ -9,7 +9,7 @@
       </div>
       <p class="nickname">{{ stores.owner.nickName }}</p>
       <div class="form-group">
-        <el-input size="large" type="password" placeholder="请输入密码解锁"></el-input>
+        <el-input v-model="model.password" size="large" type="password" placeholder="请输入密码解锁"></el-input>
       </div>
       <div class="lock-btn">
         <el-button type="primary" @click="unlock">解锁</el-button>
@@ -23,13 +23,15 @@ import { onMounted, reactive } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import skyArea from '../../components/sky-area-bg/index.vue';
 import { stores } from '../../stores';
+import { screenUnLock } from '../../api/authentication';
 import { getUserBrief } from '../../api/user';
 
 const route = useRoute();
 const router = useRouter();
 
 const model = reactive({
-  path: ''
+  path: '',
+  password: ''
 });
 
 onMounted(async () => {
@@ -41,9 +43,16 @@ onMounted(async () => {
   setInterval(ownerInit, 60000);
 });
 
-const unlock = () => {
-  stores.screenLock.setActive();
-  router.push({ path: model.path });
+const unlock = async () => {
+  try {
+    if (model.password) {
+      let res = await screenUnLock(model.password);
+      if (res != null && res.resCode == 0) {
+        stores.screenLock.setActive();
+        router.push({ path: model.path });
+      }
+    }
+  } catch (error) {}
 };
 
 const ownerInit = async () => {

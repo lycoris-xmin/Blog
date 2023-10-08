@@ -1,6 +1,6 @@
 ﻿using Lycoris.Blog.EntityFrameworkCore.Common.Attributes;
 using Lycoris.Blog.EntityFrameworkCore.Shared;
-using Lycoris.Blog.EntityFrameworkCore.Tables.Enums;
+using Lycoris.Blog.Model.Configurations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Lycoris.Blog.EntityFrameworkCore.Tables

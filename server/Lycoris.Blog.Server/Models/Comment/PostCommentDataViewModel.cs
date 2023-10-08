@@ -1,4 +1,6 @@
-﻿namespace Lycoris.Blog.Server.Models.Comment
+﻿using Lycoris.Blog.Server.Models.Shared;
+
+namespace Lycoris.Blog.Server.Models.Comment
 {
     /// <summary>
     /// 
@@ -13,7 +15,7 @@
         /// <summary>
         /// 
         /// </summary>
-        public BlogCommentUserInfoViewModel? User { get; set; }
+        public UserInfoViewModel? User { get; set; }
 
         /// <summary>
         /// 
@@ -49,26 +51,5 @@
         /// 
         /// </summary>
         public bool IsOwner { get; set; }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class BlogCommentUserInfoViewModel
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        public string? Id { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public string? NickName { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public string? Avatar { get; set; }
     }
 }

@@ -100,6 +100,7 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
                     ConfigName = "文件上传设置",
                     Value = new FileUploadConfiguration()
                     {
+                        SaveChannel = FileSaveChannelEnum.Minio,
                         Minio = new MinioConfiguration()
                         {
                             Endpoint = "http://119.23.78.111:8005",

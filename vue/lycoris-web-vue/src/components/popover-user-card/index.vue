@@ -99,7 +99,7 @@ const props = defineProps({
   },
   showAction: {
     type: Boolean,
-    default: true
+    default: false
   }
 });
 

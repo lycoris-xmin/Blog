@@ -17,7 +17,7 @@ const props = defineProps({
 .transitiongroupfade-move,
 .transitiongroupfade-enter-active,
 .transitiongroupfade-leave-active {
-  transition: all 0.5s ease-in-out;
+  transition: all 0.3s ease-in-out;
 }
 
 .transitiongroupfade-enter-from,

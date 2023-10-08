@@ -1,4 +1,5 @@
 ﻿using Lycoris.Blog.Application.Shared;
+using Lycoris.Blog.Application.Shared.Dtos;
 
 namespace Lycoris.Blog.Application.AppService.Configurations
 {
@@ -34,5 +35,11 @@ namespace Lycoris.Blog.Application.AppService.Configurations
         /// <param name="value"></param>
         /// <returns></returns>
         Task SaveConfigurationAsync<T>(string configId, T value) where T : class;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        List<EnumsDto<int>> GetSaveChannelEnum();
     }
 }

@@ -39,3 +39,9 @@ export const refreshToken = async refreshToken => {
 export const ChangePassword = ({ oldPassword, password }) => {
   return request.post(`${controller}/changepassword`, { oldPassword, password });
 };
+
+export const screenUnLock = password => {
+  return request.post(`${controller}/dashboard/screen/unLock`, {
+    password
+  });
+};

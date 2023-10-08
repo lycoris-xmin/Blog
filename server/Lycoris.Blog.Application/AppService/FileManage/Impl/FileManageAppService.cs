@@ -4,7 +4,6 @@ using Lycoris.Blog.Core.CloudStorage.Minio;
 using Lycoris.Blog.Core.EntityFrameworkCore;
 using Lycoris.Blog.EntityFrameworkCore.Constants;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
-using Lycoris.Blog.EntityFrameworkCore.Tables.Enums;
 using Lycoris.Blog.Model.Configurations;
 
 namespace Lycoris.Blog.Application.AppService.FileManage.Impl

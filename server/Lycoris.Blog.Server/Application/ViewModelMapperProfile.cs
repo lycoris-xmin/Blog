@@ -152,7 +152,7 @@ namespace Lycoris.Blog.Server.Application
 
             CreateMap<PostPreviousAndNextDto, PostPreviousAndNextViewModel>();
 
-            CreateMap<UserInfoDto, BlogCommentUserInfoViewModel>();
+            CreateMap<UserInfoDto, UserInfoViewModel>();
 
             CreateMap<PostCommentQueryListInput, PostCommentQueryListFilter>();
 
@@ -222,6 +222,8 @@ namespace Lycoris.Blog.Server.Application
             CreateMap<SiteNavigationDomainDataDto, SiteNavigationDomainDataViewModel>();
 
             CreateMap<SiteNavigationDataDto, SiteNavigationDataViewModel>();
+
+            CreateMap<SaveMinioSettings, MinioConfiguration>();
         }
 
         /// <summary>

@@ -21,7 +21,7 @@ namespace Lycoris.Blog.Model.Configurations
         /// <summary>
         /// 
         /// </summary>
-        public GitHutRespConfiguration Github { get; set; } = new GitHutRespConfiguration();
+        public GithubConfiguration Github { get; set; } = new GithubConfiguration();
     }
 
     /// <summary>
@@ -64,7 +64,7 @@ namespace Lycoris.Blog.Model.Configurations
     /// <summary>
     /// 
     /// </summary>
-    public class GitHutRespConfiguration
+    public class GithubConfiguration
     {
         /// <summary>
         /// 令牌
@@ -85,6 +85,16 @@ namespace Lycoris.Blog.Model.Configurations
         /// CND加速
         /// </summary>
         public string CDN { get; set; } = "https://cdn.jsdelivr.net/gh";
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string CommitterName { get; set; } = string.Empty;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string CommitterEmail { get; set; } = string.Empty;
     }
 
     /// <summary>

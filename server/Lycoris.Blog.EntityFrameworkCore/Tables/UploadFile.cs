@@ -32,6 +32,11 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
         public FileSaveChannelEnum SaveChannel { get; set; }
 
         /// <summary>
+        /// Github文件签名
+        /// </summary>
+        public string GithubSha { get; set; } = string.Empty;
+
+        /// <summary>
         /// 是否有在使用
         /// </summary>
         [TableColumn(Required = true, DefaultValue = false)]

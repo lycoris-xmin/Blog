@@ -1,9 +1,9 @@
-﻿using Lycoris.Base.Extensions;
-using Lycoris.Blog.Common;
+﻿using Lycoris.Blog.Common;
 using Lycoris.Blog.EntityFrameworkCore.Common.Attributes;
 using Lycoris.Blog.EntityFrameworkCore.Shared;
+using Lycoris.Common.Extensions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
 using System.Xml.XPath;
@@ -33,6 +33,8 @@ namespace Lycoris.Blog.EntityFrameworkCore.Common.Impl
             var xmlDoc = new XPathDocument(Path.Combine(AppContext.BaseDirectory, $"{assembly.GetName().Name}.xml"));
             var navigator = xmlDoc.CreateNavigator();
 
+
+
             // 添加表
             foreach (var item in tables)
             {
@@ -47,7 +49,6 @@ namespace Lycoris.Blog.EntityFrameworkCore.Common.Impl
                 var props = item!.GetProperties()
                                  .Where(x => x.PropertyType.IsPublic)
                                  .Where(x => !x.PropertyType.IsAbstract)
-                                 .Where(x => !x.PropertyType.IsGenericType)
                                  .Where(x => x.GetCustomAttribute<NotMappedAttribute>(false) == null)
                                  .ToList();
 
@@ -78,22 +79,21 @@ namespace Lycoris.Blog.EntityFrameworkCore.Common.Impl
 
                 // 种子数据
                 var instance = Activator.CreateInstance(item) as IMySqlBaseEntity;
-                var data = instance!.InitialData();
+                var data = instance!.SeedData();
                 if (data.HasValue())
                     _builder.HasData(data);
             }
         }
 
-
         /// <summary>
-        /// 
+        /// 表列处理
         /// </summary>
         /// <param name="propertyBuilder"></param>
         /// <param name="p"></param>
         /// <param name="column"></param>
         /// <param name="className"></param>
         /// <param name="navigator"></param>
-        private static void TableColumnAutoBuilder(this Microsoft.EntityFrameworkCore.Metadata.Builders.PropertyBuilder propertyBuilder, PropertyInfo? p, TableColumnAttribute column, string? className, XPathNavigator navigator)
+        private static void TableColumnAutoBuilder(this PropertyBuilder propertyBuilder, PropertyInfo? p, TableColumnAttribute column, string? className, XPathNavigator navigator)
         {
             if (p == null)
                 return;
@@ -101,7 +101,7 @@ namespace Lycoris.Blog.EntityFrameworkCore.Common.Impl
             // 主键自增
             if (column.IsIdentity)
             {
-                if ((p.PropertyType == typeof(int) || p.PropertyType == typeof(long)))
+                if (p.PropertyType == typeof(int) || p.PropertyType == typeof(long))
                     propertyBuilder.ValueGeneratedOnAdd();
             }
             else if (column.IsRowVersion)
@@ -145,12 +145,7 @@ namespace Lycoris.Blog.EntityFrameworkCore.Common.Impl
                 }
 
                 if (column.JsonMap)
-                {
-                    propertyBuilder.HasConversion(new ValueConverter<object?, string>(x => x.ToJson(), v => Newtonsoft.Json.JsonConvert.DeserializeObject(v, p.PropertyType)));
-
-                    if (AppSettings.Sql.Version.StartsWith("8"))
-                        propertyBuilder.HasColumnType("json");
-                }
+                    propertyBuilder.HasColumnType("json");
                 else if (column.SqlPassword)
                     propertyBuilder.HasConversion<SqlPasswrodConverter>();
                 else if (column.Sensitive)
@@ -161,8 +156,25 @@ namespace Lycoris.Blog.EntityFrameworkCore.Common.Impl
             var memberName = $"P:{className}.{p.Name}";
             var summaryNode = navigator.SelectSingleNode($"/doc/members/member[@name='{memberName}']/summary");
             var comment = summaryNode?.InnerXml.Trim();
-            if (!comment.IsNullOrEmpty())
-                propertyBuilder.HasComment(comment);
+            comment ??= "";
+
+            if (p.PropertyType.IsEnum)
+            {
+                var fields = p.PropertyType.GetFields(BindingFlags.Public | BindingFlags.Static);
+
+                comment += "：";
+
+                foreach (var item in fields)
+                {
+                    var value = item.GetValue(null);
+                    summaryNode = navigator.SelectSingleNode($"/doc/members/member[@name='F:{p.PropertyType.FullName}.{value}']/summary");
+                    comment += $"{(int)value!}-{summaryNode?.InnerXml.Trim() ?? ""},";
+                }
+
+                comment = comment.TrimEnd(',');
+            }
+
+            propertyBuilder.HasComment(comment);
         }
     }
 }

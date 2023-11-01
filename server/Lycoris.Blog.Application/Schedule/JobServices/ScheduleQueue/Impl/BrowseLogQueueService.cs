@@ -1,11 +1,11 @@
 ﻿using Lycoris.Autofac.Extensions;
-using Lycoris.Base.Extensions;
-using Lycoris.Blog.Application.Cached.ScheduleQueueCache;
-using Lycoris.Blog.Application.Cached.ScheduleQueueCache.Dtos;
-using Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Dtos;
-using Lycoris.Blog.Core.EntityFrameworkCore;
+using Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Models;
+using Lycoris.Blog.Cache.ScheduleQueue;
+using Lycoris.Blog.Cache.ScheduleQueue.Models;
 using Lycoris.Blog.Core.Logging;
+using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
+using Lycoris.Common.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Quartz;
 using System.Text.RegularExpressions;
@@ -47,7 +47,7 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
         /// <returns></returns>
         public async Task JobDoWorkAsync(string? data, DateTime? time)
         {
-            var dto = data?.ToObject<BrowseLogQueueDto>();
+            var dto = data?.ToObject<BrowseLogQueueModel>();
             if (dto == null)
                 return;
 
@@ -69,7 +69,7 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        private async Task CalcPostStatisticsAsync(BrowseLogQueueDto data)
+        private async Task CalcPostStatisticsAsync(BrowseLogQueueModel data)
         {
             try
             {
@@ -80,7 +80,7 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
                 if (!postId.HasValue || postId.Value <= 0)
                     return;
 
-                await _scheduleQueue.EnqueueAsync(ScheduleTypeEnum.PostStatistics, new PostStaticQueueDto(postId!.Value, PostStaticTypeEnum.Browse));
+                _scheduleQueue.Enqueue(ScheduleTypeEnum.PostStatistics, new PostStaticQueueModel(postId!.Value, PostStaticTypeEnum.Browse));
             }
             catch (Exception ex)
             {

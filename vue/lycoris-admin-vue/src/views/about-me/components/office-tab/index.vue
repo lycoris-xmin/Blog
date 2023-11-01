@@ -34,7 +34,7 @@
 <script setup>
 import { reactive, onMounted } from 'vue';
 import officeList from './office-list.vue';
-import { getAboutMe, saveAboutMe } from '../../../../api/configuration';
+import { getAboutMe, saveAboutMe } from '../../../../api/website-about';
 import swal from '../../../../utils/swal';
 import toast from '../../../../utils/toast';
 

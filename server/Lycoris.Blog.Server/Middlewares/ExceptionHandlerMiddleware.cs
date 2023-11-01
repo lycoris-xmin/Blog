@@ -1,13 +1,13 @@
-﻿using Lycoris.Base.Extensions;
-using Lycoris.Blog.Application.Cached.ScheduleQueueCache;
-using Lycoris.Blog.Application.Cached.ScheduleQueueCache.Dtos;
-using Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Dtos;
+﻿using Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Models;
+using Lycoris.Blog.Cache.ScheduleQueue;
+using Lycoris.Blog.Cache.ScheduleQueue.Models;
 using Lycoris.Blog.Common;
 using Lycoris.Blog.Core.Logging;
 using Lycoris.Blog.Model.Cnstants;
 using Lycoris.Blog.Model.Global.Output;
 using Lycoris.Blog.Server.Application.Constants;
 using Lycoris.Blog.Server.Shared;
+using Lycoris.Common.Extensions;
 
 namespace Lycoris.Blog.Server.Middlewares
 {
@@ -48,7 +48,7 @@ namespace Lycoris.Blog.Server.Middlewares
             if (!CheckAllowMethod(context))
             {
                 context.Response.StatusCode = 415;
-                await RequestLogAsync(context, "request method invalid", startTime, ipAddress);
+                RequestLog(context, "request method invalid", startTime, ipAddress);
                 _logger.Error($"invalid request - {(context.Request.Path.HasValue ? context.Request.Path.Value : "/")} - request method invalid", traceId);
                 return;
             }
@@ -56,7 +56,7 @@ namespace Lycoris.Blog.Server.Middlewares
             if (!CheckAllowRoute(context))
             {
                 context.Response.StatusCode = 400;
-                await RequestLogAsync(context, "request path invalid", startTime, ipAddress);
+                RequestLog(context, "request path invalid", startTime, ipAddress);
                 _logger.Error($"invalid request - {(context.Request.Path.HasValue ? context.Request.Path.Value : "/")} - request path invalid", traceId);
                 return;
             }
@@ -64,7 +64,7 @@ namespace Lycoris.Blog.Server.Middlewares
             if (!CheckRequestOrign(context))
             {
                 context.Response.StatusCode = 400;
-                await RequestLogAsync(context, "request orign invalid", startTime, ipAddress);
+                RequestLog(context, "request orign invalid", startTime, ipAddress);
                 _logger.Error($"invalid request - {(context.Request.Path.HasValue ? context.Request.Path.Value : "/")} - request orign invalid", traceId);
                 return;
             }
@@ -82,7 +82,7 @@ namespace Lycoris.Blog.Server.Middlewares
             }
             catch (Exception ex)
             {
-                await RequestLogAsync(context, "", startTime, ipAddress, ex);
+                RequestLog(context, "", startTime, ipAddress, ex);
                 await HandleWebApiExceptionAsync(context, ex, traceId, startTime);
             }
         }
@@ -215,9 +215,9 @@ namespace Lycoris.Blog.Server.Middlewares
         /// <param name="ipAddress"></param>
         /// <param name="ex"></param>
         /// <returns></returns>
-        private async Task RequestLogAsync(HttpContext context, string response, DateTime startTime, string ipAddress, Exception? ex = null)
+        private void RequestLog(HttpContext context, string response, DateTime startTime, string ipAddress, Exception? ex = null)
         {
-            await _scheduleQueue.EnqueueAsync(ScheduleTypeEnum.RequestLog, new RequestLogQueueDto()
+            _scheduleQueue.Enqueue(ScheduleTypeEnum.RequestLog, new RequestLogQueueModel()
             {
                 Method = context.Request.Method.ToUpper(),
                 Route = context.Request.Path,

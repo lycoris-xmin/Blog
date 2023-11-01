@@ -31,7 +31,7 @@
 <script setup>
 import { reactive, onMounted } from 'vue';
 import liList from './li-list/index.vue';
-import { getAboutMe, saveAboutMe } from '../../../api/configuration';
+import { getAboutMe, saveAboutMe } from '../../../api/website-about';
 import swal from '../../../utils/swal';
 import toast from '../../../utils/toast';
 

@@ -1,5 +1,4 @@
-﻿using Lycoris.Base.Extensions;
-using Lycoris.Blog.EntityFrameworkCore.Common;
+﻿using Lycoris.Blog.EntityFrameworkCore.Common;
 using Lycoris.Blog.EntityFrameworkCore.Common.Impl;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;

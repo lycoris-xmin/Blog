@@ -1,11 +1,7 @@
 using Lycoris.Autofac.Extensions;
 using Lycoris.AutoMapper.Extensions;
-using Lycoris.Base.ConfigurationManager;
-using Lycoris.Base.Extensions;
 using Lycoris.Blog.Application;
-using Lycoris.Blog.Application.SignalR.Chats;
-using Lycoris.Blog.Application.SignalR.Dashboard;
-using Lycoris.Blog.Application.SignalR.Home;
+using Lycoris.Blog.Application.SignalR.Hubs;
 using Lycoris.Blog.Common;
 using Lycoris.Blog.Core;
 using Lycoris.Blog.EntityFrameworkCore;
@@ -16,6 +12,8 @@ using Lycoris.Blog.Server.Application.Constants;
 using Lycoris.Blog.Server.Application.Swaggers;
 using Lycoris.Blog.Server.FilterAttributes;
 using Lycoris.Blog.Server.Middlewares;
+using Lycoris.Common.ConfigurationManager;
+using Lycoris.Common.Extensions;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
@@ -68,7 +66,7 @@ builder.UseAutofacExtensions(builder =>
     // Ä£¿é×¢²á
     builder.AddLycorisRegisterModule<CommonModule>();
     // Ä£¿é×¢²á
-    builder.AddLycorisRegisterModule<DataBaseModule>();
+    builder.AddLycorisRegisterModule<EntityFrameworkCoreModule>();
     // Ä£¿é×¢²á
     builder.AddLycorisRegisterModule<CoreModule>();
     // Ä£¿é×¢²á

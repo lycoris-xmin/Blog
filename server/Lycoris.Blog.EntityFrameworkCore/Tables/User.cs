@@ -40,7 +40,7 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
         public string Avatar { get; set; } = "";
 
         /// <summary>
-        /// 用户状态 0-未审核，1-已审核，100-帐号注销
+        /// 用户状态
         /// </summary>
         [TableColumn(Required = true, DefaultValue = UserStatusEnum.Defalut)]
         public UserStatusEnum Status { get; set; }
@@ -72,7 +72,7 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
         /// 种子数据
         /// </summary>
         /// <returns></returns>
-        public override List<object> InitialData()
+        public override List<object> SeedData()
         {
             return new List<object>()
             {

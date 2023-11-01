@@ -1,4 +1,7 @@
-﻿namespace Lycoris.Blog.EntityFrameworkCore.Constants
+﻿using Lycoris.Blog.EntityFrameworkCore.Common.Attributes;
+using Lycoris.Blog.Model.Configurations;
+
+namespace Lycoris.Blog.EntityFrameworkCore.Constants
 {
     /// <summary>
     /// 
@@ -8,66 +11,43 @@
         /// <summary>
         /// 网站设置
         /// </summary>
+        [Configuration("网站设置", typeof(WebSettingsConfiguration))]
         public const string WebSettings = "App.WebSettings";
 
         /// <summary>
         /// 博客设置
         /// </summary>
+        [Configuration("博客设置", typeof(PostSettingConfiguration))]
         public const string PostSettings = "App.PostSettings";
 
         /// <summary>
-        /// 邮件服务
+        /// 邮件服务设置
         /// </summary>
+        [Configuration("邮件服务设置", typeof(EmailSettingsConfiguration))]
         public const string EmailSettings = "App.EmailSettings";
 
         /// <summary>
         /// SEO设置
         /// </summary>
+        [Configuration("SEO设置", typeof(SeoSettingsConfiguration))]
         public const string SeoSettings = "App.SeoSettings";
 
         /// <summary>
-        /// 云存储设置
+        /// 文件上传设置
         /// </summary>
+        [Configuration("SEO设置", typeof(FileUploadConfiguration))]
         public const string FileUpload = "App.FileUpload";
 
         /// <summary>
-        /// 调度任务设置
+        /// 
         /// </summary>
-        public const string QuartzJobSettings = "App.QuartzJob";
+        [Configuration("网站数据统计", typeof(WebStatisticsConfiguration))]
+        public const string WebStatistics = "App.WebStatistics";
 
         /// <summary>
         /// 其他设置
         /// </summary>
+        [Configuration("其他设置", typeof(OtherSettingsConfiguration))]
         public const string OtherSettings = "App.OtherSettings";
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public const string AboutWeb = "App.AboutWeb";
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public const string AboutMeInfo = "App.AboutMe.Info";
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public const string AboutMeSkill = "App.AboutMe.Skill";
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public const string AboutMeProject = "App.AboutMe.Project";
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public const string AboutMeOffice = "App.AboutMe.Office";
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public const string WebStatistics = "App.WebStatistics";
     }
 }

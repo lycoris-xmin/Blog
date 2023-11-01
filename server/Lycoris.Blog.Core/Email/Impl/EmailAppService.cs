@@ -1,12 +1,12 @@
 ﻿using HtmlAgilityPack;
 using Lycoris.Autofac.Extensions;
-using Lycoris.Base.Extensions;
 using Lycoris.Blog.Common;
 using Lycoris.Blog.Core.Email.DataModel;
-using Lycoris.Blog.Core.Repositories;
 using Lycoris.Blog.EntityFrameworkCore.Constants;
+using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.Model.Configurations;
 using Lycoris.Blog.Model.Exceptions;
+using Lycoris.Common.Extensions;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
@@ -290,9 +290,9 @@ namespace Lycoris.Blog.Core.Email.Impl
 
             // Smtp服务器
             if (option.UseSSL)
-                await client.ConnectAsync(option.STMPServer, option.STMPPort!.Value, SecureSocketOptions.StartTls);
+                await client.ConnectAsync(option.STMPServer, option.STMPPort, SecureSocketOptions.StartTls);
             else
-                await client.ConnectAsync(option.STMPServer, option.STMPPort!.Value);
+                await client.ConnectAsync(option.STMPServer, option.STMPPort);
 
             // 登录,发送
             // 特别说明,对于服务器端的中文相应,Exception中有编码问题,显示乱码了

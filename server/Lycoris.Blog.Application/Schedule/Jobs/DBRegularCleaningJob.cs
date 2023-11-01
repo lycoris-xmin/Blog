@@ -1,6 +1,6 @@
 ﻿using Lycoris.Blog.Application.Schedule.Shared;
-using Lycoris.Blog.Core.EntityFrameworkCore;
 using Lycoris.Blog.Core.Logging;
+using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
 using Lycoris.Quartz.Extensions.Job;
 using Quartz;

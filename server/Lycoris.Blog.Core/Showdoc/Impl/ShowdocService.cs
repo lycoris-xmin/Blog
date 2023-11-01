@@ -1,18 +1,18 @@
 ﻿using Lycoris.Autofac.Extensions;
-using Lycoris.Base.Extensions;
-using Lycoris.Base.Http;
 using Lycoris.Blog.Core.Logging;
-using Lycoris.Blog.Core.Repositories;
 using Lycoris.Blog.Core.Showdoc.Dtos;
 using Lycoris.Blog.EntityFrameworkCore.Constants;
+using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.Model.Configurations;
+using Lycoris.Common.Extensions;
+using Lycoris.Common.Http;
 
 namespace Lycoris.Blog.Core.Showdoc.Impl
 {
     [AutofacRegister(ServiceLifeTime.Scoped, PropertiesAutowired = true)]
     public class ShowdocService : IShowdocService
     {
-        private ILycorisLogger _logger;
+        private readonly ILycorisLogger _logger;
         private readonly IConfigurationRepository _configuration;
 
         public ShowdocService(ILycorisLoggerFactory factory, IConfigurationRepository configuration)

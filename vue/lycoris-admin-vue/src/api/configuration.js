@@ -78,27 +78,6 @@ export const saveSeoSettings = data => {
   return request.post(`${controller}/seo`, data);
 };
 
-export const getAboutWeb = () => {
-  return request.get(`${controller}/aboutweb`);
-};
-
-export const saveAboutWeb = value => {
-  return request.post(`${controller}/aboutweb`, {
-    value
-  });
-};
-
-export const getAboutMe = type => {
-  return request.get(`${controller}/aboutme/${type}`);
-};
-
-export const saveAboutMe = (type, value) => {
-  return request.post(`${controller}/aboutme`, {
-    type: type,
-    config: JSON.stringify(value)
-  });
-};
-
 export const uploadFile = (configName, file) => {
   let data = {
     configName: configName,

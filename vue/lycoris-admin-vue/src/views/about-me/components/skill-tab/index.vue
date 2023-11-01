@@ -16,7 +16,7 @@
 <script setup>
 import { onMounted, reactive } from 'vue';
 import skillPanel from './skill-panel.vue';
-import { getAboutMe, saveAboutMe } from '../../../../api/configuration';
+import { getAboutMe, saveAboutMe } from '../../../../api/website-about';
 
 const skill = reactive({
   web: [],

@@ -1,5 +1,5 @@
-﻿using Lycoris.Base.Extensions;
-using Lycoris.Blog.Model.Configurations;
+﻿using Lycoris.Blog.Model.Configurations;
+using Lycoris.Common.Extensions;
 using Minio;
 
 namespace Lycoris.Blog.Core.CloudStorage.Minio.DataModel

@@ -1,6 +1,6 @@
-﻿using Lycoris.Base.Helper;
-using Lycoris.Blog.EntityFrameworkCore.Common.Attributes;
+﻿using Lycoris.Blog.EntityFrameworkCore.Common.Attributes;
 using Lycoris.Blog.EntityFrameworkCore.Shared;
+using Lycoris.Common.Helper;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Lycoris.Blog.EntityFrameworkCore.Tables

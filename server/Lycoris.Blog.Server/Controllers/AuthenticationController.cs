@@ -1,10 +1,9 @@
 ﻿using Lycoris.AutoMapper.Extensions;
-using Lycoris.Base.Helper;
-using Lycoris.Blog.Application.AppService.Authentication;
-using Lycoris.Blog.Application.AppService.Authentication.Dtos;
-using Lycoris.Blog.Application.Cached.AuthenticationCache;
-using Lycoris.Blog.Application.Cached.EmailCache;
-using Lycoris.Blog.Application.Cached.EmailCache.Dtos;
+using Lycoris.Blog.Application.AppServices.Authentication;
+using Lycoris.Blog.Application.AppServices.Authentication.Dtos;
+using Lycoris.Blog.Cache.Authentication;
+using Lycoris.Blog.Cache.Email;
+using Lycoris.Blog.Cache.Email.Models;
 using Lycoris.Blog.Core.Email;
 using Lycoris.Blog.Core.Email.DataModel;
 using Lycoris.Blog.Model.Exceptions;
@@ -14,6 +13,7 @@ using Lycoris.Blog.Server.Application.Swaggers;
 using Lycoris.Blog.Server.FilterAttributes;
 using Lycoris.Blog.Server.Models.Authentication;
 using Lycoris.Blog.Server.Shared;
+using Lycoris.Common.Helper;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -58,7 +58,7 @@ namespace Lycoris.Blog.Server.Controllers
             var oathCode = RandomHelper.GetRandomLetterStringLower(32);
 
             // 缓存记录
-            await _cache.SetLoginOathCodeAsync(input.Email!, oathCode, dto);
+            _cache.SetLoginOathCode(input.Email!, oathCode, dto);
 
             return Success(new LoginValidateViewModel(oathCode, dto.GoogleAuthentication));
         }
@@ -73,11 +73,11 @@ namespace Lycoris.Blog.Server.Controllers
         [ExcludeSwaggerHeader, Consumes("application/json"), Produces("application/json")]
         public async Task<DataOutput<LoginViewModel>> Login([FromBody] LoginInput input)
         {
-            var cache = await _cache.GetLoginOathCodeAsync(input.Email!) ?? throw new HttpStatusException(HttpStatusCode.BadRequest, "oathcode is expired");
+            var cache = _cache.GetLoginOathCode(input.Email!) ?? throw new HttpStatusException(HttpStatusCode.BadRequest, "oathcode is expired");
             if (cache.OathCode != input.OathCode)
                 throw new HttpStatusException(HttpStatusCode.BadRequest, "");
 
-            var dto = await _authentication.LoginAsync(cache.Value!, input.Remember ?? false, false);
+            var dto = await _authentication.LoginAsync(cache.Value!.ToMap<LoginValidateDto>(), input.Remember ?? false, false);
 
             return Success(dto.ToMap<LoginViewModel>());
         }
@@ -118,7 +118,7 @@ namespace Lycoris.Blog.Server.Controllers
         [Consumes("application/json"), Produces("application/json")]
         public async Task<DataOutput<RegisterCaptchaViewModel>> RegisterCaptcha([FromBody] RegisterCaptchaInputInput input)
         {
-            var cache = await _emailCache.Value.GetEmailCaptchaAsync(input.Email!, EmailTypeEnum.Register);
+            var cache = _emailCache.Value.GetEmailCaptcha(input.Email!, EmailTypeEnum.Register);
             if (cache != null && cache.CaptchaExpiredTime!.Value > DateTime.Now)
             {
                 var times = (int)Math.Ceiling((cache.CaptchaExpiredTime!.Value - DateTime.Now).TotalSeconds);
@@ -146,7 +146,7 @@ namespace Lycoris.Blog.Server.Controllers
             await _email.Value.SendEmailCaptchaAsync(data);
 
             // 验证码时间
-            await _emailCache.Value.SetEmailCaptchaAsync(input.Email!, EmailTypeEnum.Register, new EmailCaptchaCacheDto(data.Code, data.ExpireTime!.Value));
+            _emailCache.Value.SetEmailCaptcha(input.Email!, EmailTypeEnum.Register, new EmailCaptchaCacheModel(data.Code, data.ExpireTime!.Value));
 
             return Success(new RegisterCaptchaViewModel());
         }
@@ -163,7 +163,7 @@ namespace Lycoris.Blog.Server.Controllers
             if (input.Captcha!.Length != 6)
                 throw new FriendlyException("验证码错误");
 
-            var cache = await _emailCache.Value.GetEmailCaptchaAsync(input.Email!, EmailTypeEnum.Register);
+            var cache = _emailCache.Value.GetEmailCaptcha(input.Email!, EmailTypeEnum.Register);
             if (cache == null)
                 throw new FriendlyException("验证码已过期");
             else if (cache.Code != input.Captcha)
@@ -212,11 +212,11 @@ namespace Lycoris.Blog.Server.Controllers
         [ExcludeSwaggerHeader, Consumes("application/json"), Produces("application/json")]
         public async Task<DataOutput<LoginViewModel>> DashboardLogin([FromBody] LoginInput input)
         {
-            var cache = await _cache.GetLoginOathCodeAsync(input.Email!) ?? throw new HttpStatusException(HttpStatusCode.BadRequest, "oathcode is expired");
+            var cache = _cache.GetLoginOathCode(input.Email!) ?? throw new HttpStatusException(HttpStatusCode.BadRequest, "oathcode is expired");
             if (cache.OathCode != input.OathCode)
                 throw new HttpStatusException(HttpStatusCode.BadRequest, "");
 
-            var dto = await _authentication.LoginAsync(cache.Value!, input.Remember ?? false, true);
+            var dto = await _authentication.LoginAsync(cache.Value!.ToMap<LoginValidateDto>(), input.Remember ?? false, true);
 
             return Success(dto.ToMap<LoginViewModel>());
         }
@@ -253,6 +253,7 @@ namespace Lycoris.Blog.Server.Controllers
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpPost("Dashboard/Screen/UnLock")]
+        [AppAuthentication]
         [Consumes("application/json"), Produces("application/json")]
         public async Task<BaseOutput> UnLock([FromBody] UnLockInput input)
         {

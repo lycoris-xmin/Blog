@@ -1,21 +1,19 @@
 ﻿using AutoMapper;
-using Lycoris.Base.Extensions;
-using Lycoris.Base.Helper;
-using Lycoris.Blog.Application.AppService.Authentication.Dtos;
-using Lycoris.Blog.Application.AppService.BrowseLogs.Dtos;
-using Lycoris.Blog.Application.AppService.Categorys.Dtos;
-using Lycoris.Blog.Application.AppService.Chat.Dtos;
-using Lycoris.Blog.Application.AppService.Comment.Dtos;
-using Lycoris.Blog.Application.AppService.Dashboard.Dtos;
-using Lycoris.Blog.Application.AppService.FriendLinks.Dtos;
-using Lycoris.Blog.Application.AppService.Home.Dtos;
-using Lycoris.Blog.Application.AppService.LeaveMessages.Dtos;
-using Lycoris.Blog.Application.AppService.Posts.Dtos;
-using Lycoris.Blog.Application.AppService.RequestLogs.Dtos;
-using Lycoris.Blog.Application.AppService.SiteNavigations.Dtos;
-using Lycoris.Blog.Application.AppService.Talks.Dtos;
+using Lycoris.Blog.Application.AppServices.Authentication.Dtos;
+using Lycoris.Blog.Application.AppServices.BrowseLogs.Dtos;
+using Lycoris.Blog.Application.AppServices.Categorys.Dtos;
+using Lycoris.Blog.Application.AppServices.Chat.Dtos;
+using Lycoris.Blog.Application.AppServices.Comment.Dtos;
+using Lycoris.Blog.Application.AppServices.Dashboard.Dtos;
+using Lycoris.Blog.Application.AppServices.FriendLinks.Dtos;
+using Lycoris.Blog.Application.AppServices.Home.Dtos;
+using Lycoris.Blog.Application.AppServices.LeaveMessages.Dtos;
+using Lycoris.Blog.Application.AppServices.Posts.Dtos;
+using Lycoris.Blog.Application.AppServices.RequestLogs.Dtos;
+using Lycoris.Blog.Application.AppServices.SiteNavigations.Dtos;
+using Lycoris.Blog.Application.AppServices.Talks.Dtos;
 using Lycoris.Blog.Application.Shared.Dtos;
-using Lycoris.Blog.Application.SignalR.Chats.Dtos;
+using Lycoris.Blog.Application.SignalR.Models;
 using Lycoris.Blog.Model.Configurations;
 using Lycoris.Blog.Model.Global.Output;
 using Lycoris.Blog.Server.Models.Authentication;
@@ -33,6 +31,8 @@ using Lycoris.Blog.Server.Models.RequestLogs;
 using Lycoris.Blog.Server.Models.Shared;
 using Lycoris.Blog.Server.Models.SiteNavigations;
 using Lycoris.Blog.Server.Models.Talks;
+using Lycoris.Common.Extensions;
+using Lycoris.Common.Helper;
 using System.Text;
 
 namespace Lycoris.Blog.Server.Application
@@ -62,7 +62,6 @@ namespace Lycoris.Blog.Server.Application
             CreateMap<UserBriefDto, UserBriefViewModel>();
 
             CreateMap<StatisticsDto, ServerStatisticsViewModel>();
-
 
             CreateMap<PostQueryListInput, PostQueryFilter>().ForMember(x => x.IsPublish, opt => opt.MapFrom(src => IntChangeBool(src.IsPublish)));
 
@@ -124,7 +123,6 @@ namespace Lycoris.Blog.Server.Application
             CreateMap<PostCommentListInput, PostCommentListFilter>();
 
             CreateMap<PostCommentDataDto, PostCommentDataViewModel>().ForMember(x => x.CreateTime, opt => opt.MapFrom(src => ChangeTimeToChinese(src.CreateTime)));
-
 
             CreateMap<PublishCommentInput, CreatePostCommentDto>();
 
@@ -193,7 +191,7 @@ namespace Lycoris.Blog.Server.Application
 
             CreateMap<ChatMessageDataDto, ChatMessageDataViewModel>();
 
-            CreateMap<ChatMessageDataDto, ChatMessageSignalRDto>();
+            CreateMap<ChatMessageDataDto, ChatMessageSignalRModel>();
 
             CreateMap<FriendLinkDataDto, FriendLinkDataViewModel>();
 

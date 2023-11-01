@@ -1,9 +1,9 @@
 ﻿using Castle.Core.Internal;
 using Castle.DynamicProxy;
 using Lycoris.Autofac.Extensions;
-using Lycoris.Blog.Core.EntityFrameworkCore;
 using Lycoris.Blog.Core.Interceptors.Base;
 using Lycoris.Blog.Core.Logging;
+using Lycoris.Blog.EntityFrameworkCore.Common;
 
 namespace Lycoris.Blog.Core.Interceptors.Transactional
 {

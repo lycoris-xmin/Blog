@@ -1,12 +1,12 @@
 ﻿using Lycoris.Autofac.Extensions;
 using Lycoris.AutoMapper.Extensions;
-using Lycoris.Base.Extensions;
-using Lycoris.Base.Helper;
-using Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Dtos;
-using Lycoris.Blog.Core.EntityFrameworkCore;
+using Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Models;
 using Lycoris.Blog.Core.Logging;
+using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
 using Lycoris.Blog.Model.Global.Output;
+using Lycoris.Common.Extensions;
+using Lycoris.Common.Helper;
 using Quartz;
 
 namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
@@ -33,7 +33,7 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
         /// <returns></returns>
         public async Task JobDoWorkAsync(string? data, DateTime? time)
         {
-            var dto = data.ToObject<RequestLogQueueDto>();
+            var dto = data.ToObject<RequestLogQueueModel>();
             if (dto == null)
                 return;
 

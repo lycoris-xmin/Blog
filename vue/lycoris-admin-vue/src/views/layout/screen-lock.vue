@@ -19,28 +19,59 @@
 </template>
 
 <script setup name="screen-lock">
-import { onMounted, reactive } from 'vue';
+import { onMounted, onUnmounted, reactive } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import skyArea from '../../components/sky-area-bg/index.vue';
 import { stores } from '../../stores';
-import { screenUnLock } from '../../api/authentication';
+import { screenUnLock, refreshToken } from '../../api/authentication';
 import { getUserBrief } from '../../api/user';
+import { pageRoutes } from '../../router/routes';
+import MessageChannel from '../../utils/message-channel';
 
 const route = useRoute();
 const router = useRouter();
 
+const channelType = 'screen-lock';
+// 创建MessageChannel实例并发送消息
+const channel = new MessageChannel(channelType);
+
 const model = reactive({
   path: '',
-  password: ''
+  password: '',
+  display: true
 });
 
 onMounted(async () => {
   //
-  model.path = route.query.path;
+  model.path = route.query?.path || pageRoutes[0].children.filter(x => x.name === 'dashboard')[0].path;
+
+  channel.sendMessage(0);
+
+  await tokenCheck();
 
   await ownerInit();
 
-  setInterval(ownerInit, 60000);
+  setInterval(tokenCheck, 60000);
+
+  channel.onMessage(data => {
+    // 0-其他窗口占用
+    // 1-窗口关闭
+    // 2-解锁成功
+    if (data === 0) {
+      model.display = false;
+      //
+    } else if (data === 1) {
+      //
+      model.display = true;
+    } else if (data === 2) {
+      router.push({ path: model.path });
+    }
+  });
+});
+
+onUnmounted(() => {
+  channel.sendMessage(1);
+  channel.close();
 });
 
 const unlock = async () => {
@@ -49,6 +80,9 @@ const unlock = async () => {
       let res = await screenUnLock(model.password);
       if (res != null && res.resCode == 0) {
         stores.screenLock.setActive();
+
+        // 通知其他窗口跳转
+        channel.sendMessage(2);
         router.push({ path: model.path });
       }
     }
@@ -62,6 +96,22 @@ const ownerInit = async () => {
     if (res && res.resCode == 0) {
       stores.owner.setData(res.data);
     }
+  }
+};
+
+const tokenCheck = async () => {
+  console.log('检查令牌');
+  if (document.visibilityState === 'visible' && model.display) {
+    // 当前页面为展示窗口
+    // 验证令牌有效期
+    let res = await refreshToken(stores.authorize.refreshToken);
+    if (res && res.resCode == 0) {
+      stores.authorize.setUserLoginState(res.data);
+    }
+
+    console.log('检查令牌执行');
+  } else {
+    console.log('检查令牌不执行');
   }
 };
 </script>

@@ -1,7 +1,7 @@
 ﻿using Lycoris.Autofac.Extensions;
-using Lycoris.Base.Extensions;
-using Lycoris.Base.Helper;
 using Lycoris.Blog.Model.Configurations;
+using Lycoris.Common.Extensions;
+using Lycoris.Common.Helper;
 using Minio;
 
 namespace Lycoris.Blog.Core.CloudStorage.Minio.Impl
@@ -24,7 +24,7 @@ namespace Lycoris.Blog.Core.CloudStorage.Minio.Impl
             {
                 _orign = orign;
                 _client = new MinioClient();
-                _client.WithEndpoint(configuration!.MinioEndpoint).WithCredentials(configuration!.AccessKey, configuration!.SecretKey).WithSSL(configuration!.SSL ?? false).Build();
+                _client.WithEndpoint(configuration!.MinioEndpoint).WithCredentials(configuration!.AccessKey, configuration!.SecretKey).WithSSL(configuration!.SSL).Build();
             }
 
             return _client;

@@ -1,6 +1,6 @@
 ﻿using Lycoris.AutoMapper.Extensions;
-using Lycoris.Blog.Application.AppService.Home;
-using Lycoris.Blog.Application.AppService.Home.Dtos;
+using Lycoris.Blog.Application.AppServices.Home;
+using Lycoris.Blog.Application.AppServices.Home.Dtos;
 using Lycoris.Blog.EntityFrameworkCore.Constants;
 using Lycoris.Blog.Model.Configurations;
 using Lycoris.Blog.Model.Global.Output;
@@ -58,11 +58,11 @@ namespace Lycoris.Blog.Server.Controllers
         {
             var res = new AboutMeViewModel();
 
-            var info = await _home.GetAboutMeAsync<AboutMeInfoConfiguration>(AppConfig.AboutMeInfo);
+            var info = await _home.GetAboutMeAsync<AboutMeInfoConfiguration>(AppAbout.AboutMeInfo);
             if (info != null)
                 res.Info = info.ToMap<AboutMeInfoViewModel>();
 
-            res.Skill = await _home.GetAboutMeAsync<AboutMeSkillConfiguration>(AppConfig.AboutMeSkill);
+            res.Skill = await _home.GetAboutMeAsync<AboutMeSkillConfiguration>(AppAbout.AboutMeSkill);
 
             return Success(res);
         }

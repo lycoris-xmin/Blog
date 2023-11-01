@@ -1,6 +1,6 @@
 ﻿using Lycoris.AutoMapper.Extensions;
-using Lycoris.Blog.Application.AppService.Categorys;
-using Lycoris.Blog.Application.AppService.Categorys.Dtos;
+using Lycoris.Blog.Application.AppServices.Categorys;
+using Lycoris.Blog.Application.AppServices.Categorys.Dtos;
 using Lycoris.Blog.Model.Exceptions;
 using Lycoris.Blog.Model.Global.Input;
 using Lycoris.Blog.Model.Global.Output;

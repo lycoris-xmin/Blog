@@ -1,19 +1,22 @@
 ﻿using AutoMapper;
-using Lycoris.Base.Extensions;
-using Lycoris.Blog.Application.AppService.Authentication.Dtos;
-using Lycoris.Blog.Application.AppService.Categorys.Dtos;
-using Lycoris.Blog.Application.AppService.FriendLinks.Dtos;
-using Lycoris.Blog.Application.AppService.Home.Dtos;
-using Lycoris.Blog.Application.AppService.Posts.Dtos;
-using Lycoris.Blog.Application.AppService.RequestLogs.Dtos;
-using Lycoris.Blog.Application.AppService.SiteNavigations.Dtos;
-using Lycoris.Blog.Application.AppService.Talks.Dtos;
-using Lycoris.Blog.Application.Cached.AuthenticationCache.Dtos;
-using Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Dtos;
-using Lycoris.Blog.Application.SignalR.Dashboard.Dtos;
-using Lycoris.Blog.Application.SignalR.Shared.Dtos;
+using Lycoris.Blog.Application.AppServices.Authentication.Dtos;
+using Lycoris.Blog.Application.AppServices.Categorys.Dtos;
+using Lycoris.Blog.Application.AppServices.Chat.Dtos;
+using Lycoris.Blog.Application.AppServices.FriendLinks.Dtos;
+using Lycoris.Blog.Application.AppServices.Home.Dtos;
+using Lycoris.Blog.Application.AppServices.LoginFailedRecords.Dtos;
+using Lycoris.Blog.Application.AppServices.Posts.Dtos;
+using Lycoris.Blog.Application.AppServices.RequestLogs.Dtos;
+using Lycoris.Blog.Application.AppServices.SiteNavigations.Dtos;
+using Lycoris.Blog.Application.AppServices.Talks.Dtos;
+using Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Models;
+using Lycoris.Blog.Application.SignalR.Models;
+using Lycoris.Blog.Application.SignalR.Shared.Models;
+using Lycoris.Blog.Cache.Authentication.Models;
+using Lycoris.Blog.Cache.LoginFailedRecord.Models;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
 using Lycoris.Blog.Model.Contexts;
+using Lycoris.Common.Extensions;
 
 namespace Lycoris.Blog.Application
 {
@@ -27,7 +30,7 @@ namespace Lycoris.Blog.Application
 
             CreateMap<LoginValidateDto, LoginDto>();
 
-            CreateMap<LoginDto, LoginUserCacheDto>();
+            CreateMap<LoginDto, LoginUserCacheModel>();
 
             CreateMap<Post, PostInfoDto>()
               .ForMember(x => x.Tags, opt => opt.MapFrom(src => src.Tags.ToObject<List<string>>() ?? new List<string>()));
@@ -40,7 +43,7 @@ namespace Lycoris.Blog.Application
                 .ForMember(x => x.CategoryName, opt => opt.Ignore())
                 .ForMember(x => x.PublishTime, opt => opt.MapFrom(src => src.UpdateTime));
 
-            CreateMap<RequestLogQueueDto, RequestLog>()
+            CreateMap<RequestLogQueueModel, RequestLog>()
                   .ForMember(x => x.Id, opt => opt.Ignore())
                   .ForMember(x => x.IP, opt => opt.Ignore())
                   .ForMember(x => x.IPAddress, opt => opt.Ignore());
@@ -48,10 +51,6 @@ namespace Lycoris.Blog.Application
             CreateMap<Talk, MasterTalkDataDto>();
 
             CreateMap<RequestLog, RequestLogInfoDto>();
-
-            CreateMap<SignalRConnection, SignalRConnectionDto>();
-
-            CreateMap<SignalRConnectionDto, SignalRConnection>().ForMember(x => x.Online, opt => opt.MapFrom(src => src.Online ?? false));
 
             CreateMap<FriendLinkApplyDto, FriendLink>()
                 .ForMember(x => x.Status, opt => opt.MapFrom(src => false))
@@ -61,7 +60,19 @@ namespace Lycoris.Blog.Application
 
             CreateMap<User, WebOwnerDto>();
 
-            CreateMap<RequestMonitorContext, RequestMonitorDto>();
+            CreateMap<LoginFailedRecordDto, LoginFailedRecordCacheModel>();
+
+            CreateMap<SignalRConnection, SignalRConnectionModel>();
+
+            CreateMap<SignalRConnectionModel, SignalRConnection>().ForMember(x => x.Online, opt => opt.MapFrom(src => src.Online ?? false));
+
+            CreateMap<ChatMessageDataDto, ChatMessageSignalRModel>();
+
+            CreateMap<RequestMonitorContext, RequestMonitorModel>();
+
+            //CreateMap<LoginValidateCacheModel, LoginValidateDto>();
+
+
         }
 
         /// <summary>

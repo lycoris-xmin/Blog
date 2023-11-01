@@ -11,6 +11,20 @@
           <div style="min-height: 300px">
             <transition-list :tag="div">
               <div v-if="model.saveChannel == 10">
+                <el-form-item label="Github仓库地址">
+                  <el-input v-model="github.repositoryUrl"></el-input>
+                </el-form-item>
+                <el-form-item label="存储位置">
+                  <el-input v-model="github.repositoryPath"></el-input>
+                </el-form-item>
+                <el-form-item label="AccessToken">
+                  <el-input v-model="github.accessToken"></el-input>
+                </el-form-item>
+                <el-form-item label="CND加速">
+                  <el-input v-model="github.cdn"></el-input>
+                </el-form-item>
+              </div>
+              <div v-else-if="model.saveChannel == 20">
                 <el-form-item label="服务地址">
                   <el-input v-model="minio.endpoint"></el-input>
                 </el-form-item>
@@ -30,19 +44,19 @@
                   <el-input v-model="minio.defaultBucket"></el-input>
                 </el-form-item>
               </div>
-              <div v-else-if="model.saveChannel == 20">
+              <div v-else-if="model.saveChannel == 30">
                 <p>阿里云存储</p>
                 <p>暂未开发</p>
               </div>
-              <div v-else-if="model.saveChannel == 30">
+              <div v-else-if="model.saveChannel == 40">
                 <p>腾讯云存储</p>
                 <p>暂未开发</p>
               </div>
-              <div v-else-if="model.saveChannel == 40">
+              <div v-else-if="model.saveChannel == 50">
                 <p>华为云存储</p>
                 <p>暂未开发</p>
               </div>
-              <div v-else-if="model.saveChannel == 50">
+              <div v-else-if="model.saveChannel == 60">
                 <p>七牛云存储</p>
                 <p>暂未开发</p>
               </div>
@@ -68,6 +82,13 @@ const model = reactive({
   saveChannel: '',
   loading: false,
   saveChannelEnum: []
+});
+
+const github = reactive({
+  accessToken: '',
+  repositoryUrl: '',
+  repositoryPath: '',
+  cdn: ''
 });
 
 const minio = reactive({
@@ -114,6 +135,7 @@ const getSettings = async () => {
     let res = await getfileUploadSettings();
     if (res && res.resCode == 0) {
       monioSetting(res.data?.minio || {});
+      githubSeting(res.data?.github || {});
     }
   } finally {
     emit('tabComplete', props.value);
@@ -126,6 +148,13 @@ const monioSetting = setting => {
   minio.secretKey = setting?.secretKey || '';
   minio.ssl = setting?.ssl == null ? false : setting.ssl;
   minio.defaultBucket = setting?.defaultBucket || '';
+};
+
+const githubSeting = setting => {
+  github.accessToken = setting?.accessToken || '';
+  github.repositoryUrl = setting?.repositoryUrl || '';
+  github.repositoryPath = setting?.repositoryPath || '';
+  github.cdn = setting?.cdn || '';
 };
 
 const submit = async () => {

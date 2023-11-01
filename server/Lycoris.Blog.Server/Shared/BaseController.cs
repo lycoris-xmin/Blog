@@ -1,9 +1,9 @@
-﻿using Lycoris.Base.Extensions;
-using Lycoris.Blog.Common.Extensions;
+﻿using Lycoris.Blog.Common.Extensions;
 using Lycoris.Blog.Core.Logging;
 using Lycoris.Blog.Model.Cnstants;
 using Lycoris.Blog.Model.Contexts;
 using Lycoris.Blog.Model.Global.Output;
+using Lycoris.Common.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Lycoris.Blog.Server.Shared

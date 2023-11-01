@@ -43,26 +43,26 @@ namespace Lycoris.Blog.Application.Schedule.Shared
         /// 
         /// </summary>
         /// <param name="message"></param>
-        internal void Info(string message) => this._logger?.Info(ChangeMessage(message), this.JobTraceId!);
+        internal void Info(string message) => _logger?.Info(ChangeMessage(message), JobTraceId!);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="message"></param>
-        internal void Warn(string message, Exception? exception = null) => this._logger?.Warn(ChangeMessage(message), exception, this.JobTraceId!);
+        internal void Warn(string message, Exception? exception = null) => _logger?.Warn(ChangeMessage(message), exception, JobTraceId!);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="message"></param>
         /// <param name="exception"></param>
-        internal void Error(string message, Exception? exception = null) => this._logger?.Error(ChangeMessage(message), exception, this.JobTraceId!);
+        internal void Error(string message, Exception? exception = null) => _logger?.Error(ChangeMessage(message), exception, JobTraceId!);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="message"></param>
         /// <returns></returns>
-        private string ChangeMessage(string message) => $"{this.JobName} - {message}";
+        private string ChangeMessage(string message) => $"{JobName} - {message}";
     }
 }

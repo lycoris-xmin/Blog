@@ -1,18 +1,18 @@
 ﻿using Lycoris.AutoMapper.Extensions;
-using Lycoris.Base.Extensions;
 using Lycoris.Blog.Application.Schedule.Shared;
-using Lycoris.Blog.Application.SignalR.Dashboard;
-using Lycoris.Blog.Application.SignalR.Dashboard.Dtos;
-using Lycoris.Blog.Core.EntityFrameworkCore;
+using Lycoris.Blog.Application.SignalR.Hubs;
+using Lycoris.Blog.Application.SignalR.Models;
 using Lycoris.Blog.Core.Logging;
+using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
 using Lycoris.Blog.Model.Contexts;
+using Lycoris.Common.Extensions;
+using Lycoris.Common.Helper;
 using Lycoris.Quartz.Extensions.Job;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Quartz;
 using System.Linq.Expressions;
-using WaterCloud.Code;
 
 namespace Lycoris.Blog.Application.Schedule.Jobs
 {
@@ -75,7 +75,7 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
         /// 
         /// </summary>
         /// <returns></returns>
-        private async Task<List<ServerMonitorDto>> ServerMonitorHandlerAsync()
+        private async Task<List<ServerMonitorModel>> ServerMonitorHandlerAsync()
         {
             var info = ComputerHelper.GetComputerInfo();
             _monitorContext.Server.TotalRAM = info.TotalRAM;
@@ -131,7 +131,7 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
             else
                 _monitorContext.Server.MnitorCount++;
 
-            return _monitorContext.Server.List.Select(x => new ServerMonitorDto()
+            return _monitorContext.Server.List.Select(x => new ServerMonitorModel()
             {
                 MonitorTime = x.MonitorTime,
                 CPURate = x.CPURate.ToString("0.00"),
@@ -143,13 +143,13 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
         /// 
         /// </summary>
         /// <returns></returns>
-        private async Task<List<RequestMonitorDto>?> RequestMonitorHandlerAsync()
+        private async Task<List<RequestMonitorModel>?> RequestMonitorHandlerAsync()
         {
             var time = DateTime.Now;
             time = time.AddMinutes(-(time.Minute % 5));
 
             if (_monitorContext.Request.HasValue() && _monitorContext.Request.Max(x => x.MonitorTime).AddMinutes(5) >= time)
-                return _monitorContext.Request.ToMapList<RequestMonitorDto>();
+                return _monitorContext.Request.ToMapList<RequestMonitorModel>();
 
             var data = new RequestMonitorContext() { MonitorTime = time };
 
@@ -179,7 +179,7 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
             if (_monitorContext.Request.Count > 10)
                 _monitorContext.Request.RemoveAt(0);
 
-            return _monitorContext.Request.ToMapList<RequestMonitorDto>();
+            return _monitorContext.Request.ToMapList<RequestMonitorModel>();
         }
     }
 }

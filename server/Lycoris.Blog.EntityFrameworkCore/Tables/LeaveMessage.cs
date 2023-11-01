@@ -61,7 +61,7 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
         public int ReplyCount { get; set; } = 0;
 
         /// <summary>
-        /// 留言数据状态: 0-正常, 1-违规, 2-用户删除
+        /// 留言数据状态
         /// </summary>
         [TableColumn(DefaultValue = LeaveMessageStatusEnum.Default)]
         public LeaveMessageStatusEnum Status { get; set; }

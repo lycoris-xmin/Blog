@@ -1,6 +1,6 @@
 ﻿using Lycoris.AutoMapper.Extensions;
-using Lycoris.Blog.Application.AppService.SiteNavigations;
-using Lycoris.Blog.Application.AppService.SiteNavigations.Dtos;
+using Lycoris.Blog.Application.AppServices.SiteNavigations;
+using Lycoris.Blog.Application.AppServices.SiteNavigations.Dtos;
 using Lycoris.Blog.Model.Global.Output;
 using Lycoris.Blog.Server.Application.Constants;
 using Lycoris.Blog.Server.Application.Swaggers;

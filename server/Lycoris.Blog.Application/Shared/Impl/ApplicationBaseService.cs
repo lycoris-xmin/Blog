@@ -1,6 +1,6 @@
 ﻿using Lycoris.Blog.Application.Shared.Dtos;
 using Lycoris.Blog.Core.Logging;
-using Lycoris.Blog.Core.Repositories;
+using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.Model.Contexts;
 
 namespace Lycoris.Blog.Application.Shared.Impl

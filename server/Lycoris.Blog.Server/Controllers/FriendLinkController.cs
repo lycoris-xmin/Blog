@@ -1,7 +1,6 @@
 ﻿using Lycoris.AutoMapper.Extensions;
-using Lycoris.Base.Extensions;
-using Lycoris.Blog.Application.AppService.FriendLinks;
-using Lycoris.Blog.Application.AppService.FriendLinks.Dtos;
+using Lycoris.Blog.Application.AppServices.FriendLinks;
+using Lycoris.Blog.Application.AppServices.FriendLinks.Dtos;
 using Lycoris.Blog.Model.Exceptions;
 using Lycoris.Blog.Model.Global.Input;
 using Lycoris.Blog.Model.Global.Output;
@@ -11,6 +10,7 @@ using Lycoris.Blog.Server.FilterAttributes;
 using Lycoris.Blog.Server.Models.FriendLinks;
 using Lycoris.Blog.Server.Models.Shared;
 using Lycoris.Blog.Server.Shared;
+using Lycoris.Common.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 

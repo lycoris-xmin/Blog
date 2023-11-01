@@ -1,6 +1,6 @@
 ﻿using Lycoris.AutoMapper.Extensions;
-using Lycoris.Blog.Application.AppService.Chat;
-using Lycoris.Blog.Application.AppService.Chat.Dtos;
+using Lycoris.Blog.Application.AppServices.Chat;
+using Lycoris.Blog.Application.AppServices.Chat.Dtos;
 using Lycoris.Blog.Model.Global.Input;
 using Lycoris.Blog.Model.Global.Output;
 using Lycoris.Blog.Server.Application.Constants;

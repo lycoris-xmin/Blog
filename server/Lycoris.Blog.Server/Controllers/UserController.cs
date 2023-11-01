@@ -1,5 +1,5 @@
 ﻿using Lycoris.AutoMapper.Extensions;
-using Lycoris.Blog.Application.AppService.Users;
+using Lycoris.Blog.Application.AppServices.Users;
 using Lycoris.Blog.Application.Shared.Dtos;
 using Lycoris.Blog.Model.Exceptions;
 using Lycoris.Blog.Model.Global.Output;

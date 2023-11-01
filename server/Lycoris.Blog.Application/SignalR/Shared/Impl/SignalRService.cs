@@ -1,12 +1,12 @@
 ﻿using Lycoris.Autofac.Extensions;
 using Lycoris.AutoMapper.Extensions;
-using Lycoris.Base.Extensions;
-using Lycoris.Blog.Application.AppService.LoginTokens;
-using Lycoris.Blog.Application.Cached.SignalRCache;
-using Lycoris.Blog.Application.SignalR.Shared.Dtos;
-using Lycoris.Blog.Core.EntityFrameworkCore;
+using Lycoris.Blog.Application.AppServices.LoginTokens;
+using Lycoris.Blog.Application.SignalR.Shared.Models;
+using Lycoris.Blog.Cache.SignalR;
+using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
 using Lycoris.Blog.Model.Exceptions;
+using Lycoris.Common.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 
@@ -54,17 +54,17 @@ namespace Lycoris.Blog.Application.SignalR.Shared.Impl
         /// </summary>
         /// <param name="connectionId"></param>
         /// <returns></returns>
-        public async Task<SignalRConnectionDto?> GetSignalRConnectionAsync(string connectionId)
+        public async Task<SignalRConnectionModel?> GetSignalRConnectionAsync(string connectionId)
         {
-            var cache = await _cache.Value.GetSignalRConnectionAsync(connectionId);
+            var cache = _cache.Value.GetSignalRConnection(connectionId);
             if (cache == null)
             {
                 var data = await _signalRConnection.GetAsync(x => x.ConnectionId == connectionId);
 
                 if (data != null)
                 {
-                    cache = data.ToMap<SignalRConnectionDto>();
-                    await _cache.Value.SetSignalRConnectionAsync(connectionId, cache, TimeSpan.FromMinutes(10));
+                    cache = data.ToMap<SignalRConnectionModel>();
+                    _cache.Value.SetSignalRConnection(connectionId, cache, TimeSpan.FromMinutes(10));
                 }
             }
 
@@ -88,15 +88,15 @@ namespace Lycoris.Blog.Application.SignalR.Shared.Impl
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public async Task<SignalRConnectionDto?> GetSignalRConnectionAsync(long userId)
+        public async Task<SignalRConnectionModel?> GetSignalRConnectionAsync(long userId)
         {
             var data = await _signalRConnection.GetAll().Where(x => x.UserId == userId).Where(x => x.DisconnectedTime.HasValue == false && x.Online == true).OrderByDescending(x => x.ConnectedTime).FirstOrDefaultAsync();
             if (data == null)
                 return null;
 
-            var cache = data.ToMap<SignalRConnectionDto>();
+            var cache = data.ToMap<SignalRConnectionModel>();
 
-            await _cache.Value.SetSignalRConnectionAsync(data.ConnectionId, cache, TimeSpan.FromMinutes(10));
+            _cache.Value.SetSignalRConnection(data.ConnectionId, cache, TimeSpan.FromMinutes(10));
 
             return cache;
         }
@@ -104,9 +104,9 @@ namespace Lycoris.Blog.Application.SignalR.Shared.Impl
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="data"></param>
+        /// <param name="input"></param>
         /// <returns></returns>
-        public async Task<SignalRConnectionDto> AddOrUpdateSignalRConnectionAsync(SignalRConnectionDto input)
+        public async Task<SignalRConnectionModel> AddOrUpdateSignalRConnectionAsync(SignalRConnectionModel input)
         {
             if (input.Id > 0)
             {
@@ -122,7 +122,7 @@ namespace Lycoris.Blog.Application.SignalR.Shared.Impl
                 input.Id = await _signalRConnection.CreateAndGetIdAsync(input.ToMap<SignalRConnection>());
 
             // 加入缓存
-            await _cache.Value.SetSignalRConnectionAsync(input.ConnectionId, input, TimeSpan.FromMinutes(10));
+            _cache.Value.SetSignalRConnection(input.ConnectionId, input, TimeSpan.FromMinutes(10));
 
             return input;
         }

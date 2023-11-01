@@ -1,7 +1,7 @@
-﻿using Lycoris.Blog.Application.AppService.Chat.Dtos;
+﻿using Lycoris.Blog.Application.AppServices.Chat.Dtos;
 using Lycoris.Blog.Application.Shared;
-using Lycoris.Blog.Application.SignalR.Chats.Dtos;
-using Lycoris.Blog.Application.SignalR.Shared.Dtos;
+using Lycoris.Blog.Application.SignalR.Models;
+using Lycoris.Blog.Application.SignalR.Shared.Models;
 
 namespace Lycoris.Blog.Application.SignalR.Chats
 {
@@ -20,7 +20,7 @@ namespace Lycoris.Blog.Application.SignalR.Chats
         /// <param name="connection"></param>
         /// <param name="chatUserId"></param>
         /// <returns></returns>
-        Task<ChatRoomDto> CreateChatRoomAsync(SignalRConnectionDto connection, long chatUserId);
+        Task<ChatRoomDto> CreateChatRoomAsync(SignalRConnectionModel connection, long chatUserId);
 
         /// <summary>
         /// 
@@ -35,6 +35,6 @@ namespace Lycoris.Blog.Application.SignalR.Chats
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        Task<ChatMessageDataDto> CreateChatMessageAsync(CreateChatMessageDto input);
+        Task<ChatMessageDataDto> CreateChatMessageAsync(CreateChatMessageModel input);
     }
 }

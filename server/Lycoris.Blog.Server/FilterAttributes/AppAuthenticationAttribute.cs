@@ -1,9 +1,9 @@
-﻿using Lycoris.Base.Extensions;
-using Lycoris.Blog.Application.AppService.Authentication;
+﻿using Lycoris.Blog.Application.AppServices.Authentication;
 using Lycoris.Blog.Common.Extensions;
 using Lycoris.Blog.Model.Contexts;
 using Lycoris.Blog.Model.Exceptions;
 using Lycoris.Blog.Server.Shared;
+using Lycoris.Common.Extensions;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Net;
 
@@ -37,9 +37,7 @@ namespace Lycoris.Blog.Server.FilterAttributes
 
             var _authentication = context.GetService<IAuthenticationAppService>();
 
-            var data = await _authentication.GetLoginUserAsync(request.Token, true);
-            if (data == null)
-                throw new HttpStatusException(HttpStatusCode.Unauthorized, "can not find authentication token in request context");
+            var data = await _authentication.GetLoginUserAsync(request.Token, true) ?? throw new HttpStatusException(HttpStatusCode.Unauthorized, "can not find authentication token in request context");
 
             request.User = new RequestUserContext()
             {

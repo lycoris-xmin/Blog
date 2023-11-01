@@ -1,11 +1,11 @@
-﻿using Lycoris.Base.Extensions;
-using Lycoris.Blog.Application.Cached.ScheduleQueueCache;
-using Lycoris.Blog.Application.Cached.ScheduleQueueCache.Dtos;
-using Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Dtos;
+﻿using Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Models;
+using Lycoris.Blog.Cache.ScheduleQueue;
+using Lycoris.Blog.Cache.ScheduleQueue.Models;
 using Lycoris.Blog.Core.Logging;
 using Lycoris.Blog.Model.Cnstants;
 using Lycoris.Blog.Model.Contexts;
 using Lycoris.Blog.Server.Shared;
+using Lycoris.Common.Extensions;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Net.Http.Headers;
 using System.Text;
@@ -283,7 +283,7 @@ namespace Lycoris.Blog.Server.Middlewares
         /// <param name="request"></param>
         /// <param name="requestIp"></param>
         /// <returns></returns>
-        private async Task ResponseOnCompletedAsync(string httpMethod, DateTime requestTime, Dictionary<string, string> responseHeaders, string? response, int statusCode, string path, string request, string requestIp)
+        private Task ResponseOnCompletedAsync(string httpMethod, DateTime requestTime, Dictionary<string, string> responseHeaders, string? response, int statusCode, string path, string request, string requestIp)
         {
             var log = new StringBuilder();
             var temp = responseHeaders.Select(x => $"{x.Key}: {x.Value}").ToArray();
@@ -308,7 +308,7 @@ namespace Lycoris.Blog.Server.Middlewares
             log.AppendFormat("{0}ms", elapsedMilliseconds.ToString("0.000"));
             _logger.Info(log.ToString());
 
-            await RequestLogAsync(new RequestLogQueueDto()
+            RequestLog(new RequestLogQueueModel()
             {
                 Method = httpMethod.ToUpper(),
                 Route = path,
@@ -319,13 +319,15 @@ namespace Lycoris.Blog.Server.Middlewares
                 IP = requestIp,
                 CreateTime = requestTime
             });
+
+            return Task.CompletedTask;
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="data"></param>
-        private async Task RequestLogAsync(RequestLogQueueDto data)
+        private void RequestLog(RequestLogQueueModel data)
         {
             if (_routeMap.LogFilter == RequestLogFilterEnum.OnlyWeb && !_routeMap.WebRoute.Any(x => x.Equals(data.Route, StringComparison.CurrentCultureIgnoreCase)))
                 return;
@@ -333,7 +335,7 @@ namespace Lycoris.Blog.Server.Middlewares
             if (_routeMap.LogFilter == RequestLogFilterEnum.OnlyDashboard && !_routeMap.DashboardRoute.Any(x => x.Equals(data.Route, StringComparison.CurrentCultureIgnoreCase)))
                 return;
 
-            await _scheduleQueue.EnqueueAsync(ScheduleTypeEnum.RequestLog, data);
+            _scheduleQueue.Enqueue(ScheduleTypeEnum.RequestLog, data);
         }
     }
 }

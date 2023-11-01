@@ -1,5 +1,5 @@
-﻿using Lycoris.Base.Extensions;
-using Lycoris.Blog.Common.Extensions;
+﻿using Lycoris.Blog.Common.Extensions;
+using Lycoris.Common.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;

@@ -1,6 +1,6 @@
 ﻿using Lycoris.AutoMapper.Extensions;
-using Lycoris.Blog.Application.AppService.LeaveMessages;
-using Lycoris.Blog.Application.AppService.LeaveMessages.Dtos;
+using Lycoris.Blog.Application.AppServices.LeaveMessages;
+using Lycoris.Blog.Application.AppServices.LeaveMessages.Dtos;
 using Lycoris.Blog.Model.Global.Input;
 using Lycoris.Blog.Model.Global.Output;
 using Lycoris.Blog.Server.Application.Constants;

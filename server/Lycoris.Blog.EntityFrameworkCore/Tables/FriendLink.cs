@@ -40,7 +40,7 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
         public string Description { get; set; } = "";
 
         /// <summary>
-        /// 审核状态: 0-未审核, 1-通过, 2-拒绝
+        /// 审核状态
         /// </summary>
         [TableColumn(ColumnType = MySqlType.TINYINT, DefaultValue = FriendLinkStatusEnum.Default)]
         public FriendLinkStatusEnum Status { get; set; }

@@ -1,4 +1,4 @@
-﻿using Lycoris.Blog.Application.SignalR.Shared.Dtos;
+﻿using Lycoris.Blog.Application.SignalR.Shared.Models;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
 
 namespace Lycoris.Blog.Application.SignalR.Shared
@@ -17,14 +17,14 @@ namespace Lycoris.Blog.Application.SignalR.Shared
         /// </summary>
         /// <param name="connectionId"></param>
         /// <returns></returns>
-        Task<SignalRConnectionDto?> GetSignalRConnectionAsync(string connectionId);
+        Task<SignalRConnectionModel?> GetSignalRConnectionAsync(string connectionId);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        Task<SignalRConnectionDto?> GetSignalRConnectionAsync(long userId);
+        Task<SignalRConnectionModel?> GetSignalRConnectionAsync(long userId);
 
         /// <summary>
         /// 
@@ -39,7 +39,7 @@ namespace Lycoris.Blog.Application.SignalR.Shared
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        Task<SignalRConnectionDto> AddOrUpdateSignalRConnectionAsync(SignalRConnectionDto data);
+        Task<SignalRConnectionModel> AddOrUpdateSignalRConnectionAsync(SignalRConnectionModel data);
 
         /// <summary>
         /// 

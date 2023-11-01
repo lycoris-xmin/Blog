@@ -1,5 +1,5 @@
-﻿using Lycoris.Base.Extensions;
-using Lycoris.Blog.Model.Cnstants;
+﻿using Lycoris.Blog.Model.Cnstants;
+using Lycoris.Common.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 

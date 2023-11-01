@@ -21,10 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Lycoris.Blog.Application\Lycoris.Blog.Application.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="AppData\EmailTemplate\EmailAuthorize.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -40,6 +36,14 @@
     <None Update="AppData\sensitive_words.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="AppData\logs\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Lycoris.Blog.Application\Lycoris.Blog.Application.csproj" />
   </ItemGroup>
 
 </Project>

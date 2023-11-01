@@ -8,12 +8,12 @@
         /// <summary>
         /// 
         /// </summary>
-        public string? ShowDocHost { get; set; }
+        public string ShowDocHost { get; set; } = string.Empty;
 
         /// <summary>
         /// 
         /// </summary>
-        public SystemJobSettingsConfiguration? SystemJobSettings { get; set; }
+        public SystemJobSettingsConfiguration SystemJobSettings { get; set; } = new SystemJobSettingsConfiguration();
     }
 
     /// <summary>

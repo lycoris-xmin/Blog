@@ -1,4 +1,4 @@
-﻿using Lycoris.Base.Extensions;
+﻿using Lycoris.Common.Extensions;
 using Newtonsoft.Json;
 
 namespace Lycoris.Blog.Model.Configurations
@@ -11,42 +11,42 @@ namespace Lycoris.Blog.Model.Configurations
         /// <summary>
         /// 发件邮箱地址
         /// </summary>
-        public string? EmailAddress { get; set; }
+        public string EmailAddress { get; set; } = string.Empty;
 
         /// <summary>
         /// 发件人名称
         /// </summary>
-        public string? EmailUser { get; set; }
+        public string EmailUser { get; set; } = string.Empty;
 
         /// <summary>
         /// STMP服务器
         /// </summary>
-        public string? STMPServer { get; set; }
+        public string STMPServer { get; set; } = string.Empty;
 
         /// <summary>
         /// SMTP端口
         /// </summary>
-        public int? STMPPort { get; set; }
+        public int STMPPort { get; set; } = 0;
 
         /// <summary>
         /// 发件邮箱密码
         /// </summary>
-        public string? EmailPassword { get; set; }
+        public string EmailPassword { get; set; } = string.Empty;
 
         /// <summary>
         /// 邮件服务商署名
         /// </summary>
-        public string? EmailSignature { get; set; }
+        public string EmailSignature { get; set; } = string.Empty;
 
         /// <summary>
         /// 
         /// </summary>
-        public bool UseSSL { get; set; }
+        public bool UseSSL { get; set; } = true;
 
         /// <summary>
         /// 
         /// </summary>
         [JsonIgnore]
-        public bool ConfigurationIsValid => !this.EmailAddress.IsNullOrEmpty() && !this.STMPServer.IsNullOrEmpty() && this.STMPPort.HasValue && !this.EmailPassword.IsNullOrEmpty();
+        public bool IsValid => !this.EmailAddress.IsNullOrEmpty() && !this.STMPServer.IsNullOrEmpty() && this.STMPPort > 0 && !this.EmailPassword.IsNullOrEmpty();
     }
 }

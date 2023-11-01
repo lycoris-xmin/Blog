@@ -1,5 +1,5 @@
 ﻿using Lycoris.AutoMapper.Extensions;
-using Lycoris.Blog.Application.AppService.Dashboard;
+using Lycoris.Blog.Application.AppServices.Dashboard;
 using Lycoris.Blog.Model.Contexts;
 using Lycoris.Blog.Model.Global.Output;
 using Lycoris.Blog.Server.Application.Constants;

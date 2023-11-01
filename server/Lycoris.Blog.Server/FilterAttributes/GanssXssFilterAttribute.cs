@@ -1,7 +1,7 @@
 ﻿using Ganss.Xss;
-using Lycoris.Base.Extensions;
 using Lycoris.Blog.Core.Logging;
 using Lycoris.Blog.Server.Shared;
+using Lycoris.Common.Extensions;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Lycoris.Blog.Server.FilterAttributes

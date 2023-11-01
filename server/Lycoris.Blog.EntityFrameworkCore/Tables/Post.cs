@@ -40,7 +40,7 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
         public string Icon { get; set; } = string.Empty;
 
         /// <summary>
-        /// 文章类型：0-原创，1-转载
+        /// 文章类型
         /// </summary>
         [TableColumn(ColumnType = MySqlType.TINYINT, DefaultValue = PostTypeEnum.Original)]
         public PostTypeEnum Type { get; set; }

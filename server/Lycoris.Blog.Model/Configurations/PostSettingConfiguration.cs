@@ -8,12 +8,12 @@
         /// <summary>
         /// 
         /// </summary>
-        public bool AutoSave { get; set; }
+        public bool AutoSave { get; set; } = false;
 
         /// <summary>
         /// 
         /// </summary>
-        public int Second { get; set; }
+        public int Second { get; set; } = 30;
 
         /// <summary>
         /// 

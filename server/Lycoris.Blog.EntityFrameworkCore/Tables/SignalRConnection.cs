@@ -47,6 +47,7 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
         /// <summary>
         /// 离线时间
         /// </summary>
+        [TableColumn(Required = false)]
         public DateTime? DisconnectedTime { get; set; }
     }
 }

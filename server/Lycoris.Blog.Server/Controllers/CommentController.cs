@@ -1,13 +1,13 @@
 ﻿using Lycoris.AutoMapper.Extensions;
-using Lycoris.Base.Extensions;
-using Lycoris.Blog.Application.AppService.Comment;
-using Lycoris.Blog.Application.AppService.Comment.Dtos;
+using Lycoris.Blog.Application.AppServices.Comment;
+using Lycoris.Blog.Application.AppServices.Comment.Dtos;
 using Lycoris.Blog.Model.Global.Output;
 using Lycoris.Blog.Server.Application.Constants;
 using Lycoris.Blog.Server.Application.Swaggers;
 using Lycoris.Blog.Server.FilterAttributes;
 using Lycoris.Blog.Server.Models.Comment;
 using Lycoris.Blog.Server.Shared;
+using Lycoris.Common.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Lycoris.Blog.Server.Controllers

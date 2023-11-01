@@ -1,6 +1,6 @@
 ﻿using Castle.Core.Internal;
-using Lycoris.Base.Extensions;
 using Lycoris.Blog.Model.Configurations;
+using Lycoris.Common.Extensions;
 using Microsoft.AspNetCore.Http;
 using Minio;
 

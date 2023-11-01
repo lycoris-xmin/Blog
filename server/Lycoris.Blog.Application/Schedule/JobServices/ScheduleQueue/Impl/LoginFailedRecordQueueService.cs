@@ -1,8 +1,8 @@
 ﻿using Lycoris.Autofac.Extensions;
-using Lycoris.Base.Extensions;
-using Lycoris.Blog.Application.AppService.LoginFailedRecords;
-using Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Dtos;
+using Lycoris.Blog.Application.AppServices.LoginFailedRecords;
+using Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Models;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
+using Lycoris.Common.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Quartz;
 
@@ -28,7 +28,7 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
         /// <returns></returns>
         public async Task JobDoWorkAsync(string? data, DateTime? time)
         {
-            var dto = data?.ToObject<LoginFailedRecordQueueDto>();
+            var dto = data?.ToObject<LoginFailedRecordQueueModel>();
             if (dto == null)
                 return;
 

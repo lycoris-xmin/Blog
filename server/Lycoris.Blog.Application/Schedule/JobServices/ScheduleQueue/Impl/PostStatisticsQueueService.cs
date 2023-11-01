@@ -1,8 +1,8 @@
 ﻿using Lycoris.Autofac.Extensions;
-using Lycoris.Base.Extensions;
-using Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Dtos;
-using Lycoris.Blog.Core.EntityFrameworkCore;
+using Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Models;
+using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
+using Lycoris.Common.Extensions;
 using Quartz;
 
 namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
@@ -28,7 +28,7 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
 
         public async Task JobDoWorkAsync(string? data, DateTime? time)
         {
-            var dto = data?.ToObject<PostStaticQueueDto>();
+            var dto = data?.ToObject<PostStaticQueueModel>();
             if (dto == null)
                 return;
 

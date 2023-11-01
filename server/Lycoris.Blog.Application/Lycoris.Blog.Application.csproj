@@ -9,16 +9,14 @@
   <ItemGroup>
     <PackageReference Include="Lycoris.AutoMapper.Extensions" Version="6.0.0" />
     <PackageReference Include="Lycoris.Quartz.Extensions" Version="6.1.5" />
-    <PackageReference Include="Lycoris.RabbitMQ.Extensions" Version="6.0.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="AppServices\Configurations\Dtos\" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Lycoris.Blog.Core\Lycoris.Blog.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="AppService\Configurations\Dtos\" />
-    <Folder Include="RqbbitMq\Consumers\" />
   </ItemGroup>
 
 </Project>

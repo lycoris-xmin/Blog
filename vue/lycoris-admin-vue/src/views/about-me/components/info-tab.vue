@@ -110,7 +110,7 @@
 
 <script setup>
 import { ref, reactive, nextTick, onMounted } from 'vue';
-import { getAboutMe, saveAboutMe } from '../../../api/configuration';
+import { getAboutMe, saveAboutMe } from '../../../api/website-about';
 import toast from '../../../utils/toast';
 
 const props = defineProps({

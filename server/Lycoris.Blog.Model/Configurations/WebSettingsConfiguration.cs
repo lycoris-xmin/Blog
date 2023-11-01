@@ -23,6 +23,6 @@
         /// <summary>
         /// 
         /// </summary>
-        public DateTime? BuildTime { get; set; }
+        public DateTime BuildTime { get; set; } = new DateTime(2000, 1, 1);
     }
 }

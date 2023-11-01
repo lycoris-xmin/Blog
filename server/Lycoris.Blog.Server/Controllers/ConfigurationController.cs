@@ -1,18 +1,16 @@
 ﻿using Lycoris.AutoMapper.Extensions;
-using Lycoris.Base.Extensions;
-using Lycoris.Blog.Application.AppService.Configurations;
+using Lycoris.Blog.Application.AppServices.Configurations;
 using Lycoris.Blog.Core.CloudStorage.Minio;
 using Lycoris.Blog.EntityFrameworkCore.Constants;
 using Lycoris.Blog.Model.Configurations;
-using Lycoris.Blog.Model.Exceptions;
 using Lycoris.Blog.Model.Global.Output;
 using Lycoris.Blog.Server.Application.Constants;
 using Lycoris.Blog.Server.FilterAttributes;
 using Lycoris.Blog.Server.Models.Configurations;
 using Lycoris.Blog.Server.Models.Shared;
 using Lycoris.Blog.Server.Shared;
+using Lycoris.Common.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
 
 namespace Lycoris.Blog.Server.Controllers
 {
@@ -221,109 +219,10 @@ namespace Lycoris.Blog.Server.Controllers
         /// <returns></returns>
         [HttpGet("FileUpload/Channel")]
         [Produces("application/json")]
-        public Task<ListOutput<EnumsViewModel<int>>> SaveFileChannelEnum()
+        public Task<ListOutput<EnumsViewModel<int>>> FileSaveChannelEnum()
         {
-            var dto = _configuration.GetSaveChannelEnum();
+            var dto = _configuration.GetFileSaveChannelEnum();
             return Task.FromResult(Success(dto.ToMapList<EnumsViewModel<int>>()));
-        }
-
-        /// <summary>
-        /// 获取关于本站文章
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet("AboutWeb")]
-        [Produces("application/json")]
-        public async Task<DataOutput<string>> About()
-        {
-            var dto = await _configuration.GetConfigurationAsync(AppConfig.AboutWeb);
-            return Success(dto);
-        }
-
-        /// <summary>
-        /// 保存关于本站信息
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost("AboutWeb")]
-        [GanssXssSettings("Value")]
-        [Consumes("application/json"), Produces("application/json")]
-        public async Task<BaseOutput> SaveAbout([FromBody] SaveAboutWebInput input)
-        {
-            await _configuration.SaveConfigurationAsync(AppConfig.AboutWeb, input.Value!);
-            return Success();
-        }
-
-        /// <summary>
-        /// 获取关于我相关信息
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet("AboutMe/{type}")]
-        [Produces("application/json")]
-        public async Task<DataOutput<string>> AboutMe(string? type)
-        {
-            if (type.IsNullOrEmpty())
-                throw new HttpStatusException(HttpStatusCode.NotFound);
-
-            type = type!.ToLower();
-
-            if (!new string[] { "info", "skill", "project", "office" }.Contains(type))
-                throw new HttpStatusException(HttpStatusCode.NotFound);
-
-            string? value;
-            if (type == "info")
-                value = await _configuration.GetConfigurationAsync(AppConfig.AboutMeInfo);
-            else if (type == "skill")
-                value = await _configuration.GetConfigurationAsync(AppConfig.AboutMeSkill);
-            else if (type == "project")
-                value = await _configuration.GetConfigurationAsync(AppConfig.AboutMeProject);
-            else
-                value = await _configuration.GetConfigurationAsync(AppConfig.AboutMeOffice);
-
-            return Success(value ?? "");
-        }
-
-        /// <summary>
-        /// 保存关于我相关信息
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        [HttpPost("AboutMe")]
-        [Consumes("application/json"), Produces("application/json")]
-        public async Task<BaseOutput> SaveAboutMe([FromBody] SaveAboutMeInput input)
-        {
-            input.Type = input.Type!.ToLower();
-
-            if (!new string[] { "info", "skill", "project", "office" }.Contains(input.Type))
-                throw new HttpStatusException(HttpStatusCode.NotFound, "");
-
-            if (input.Type == "info")
-            {
-                var value = input.Config!.ToObject<AboutMeInfoConfiguration>() ?? new AboutMeInfoConfiguration();
-
-                value.Description = value.Description?.Where(x => !x.IsNullOrEmpty()).ToList() ?? new List<string>();
-                value.Code = value.Code?.Where(x => !x.IsNullOrEmpty()).Distinct().ToList() ?? new List<string>();
-                value.Hobby = value.Hobby?.Where(x => !x.IsNullOrEmpty()).Distinct().ToList() ?? new List<string>();
-                value.Introduction = value.Introduction?.Where(x => !x.IsNullOrEmpty()).ToList() ?? new List<string>();
-
-                await _configuration.SaveConfigurationAsync(AppConfig.AboutMeInfo, value);
-            }
-            else if (input.Type == "skill")
-            {
-                var value = input.Config!.ToObject<AboutMeSkillConfiguration>() ?? new AboutMeSkillConfiguration();
-                value.Description = value.Description?.Where(x => !x.IsNullOrEmpty()).ToList() ?? new List<string>();
-                await _configuration.SaveConfigurationAsync(AppConfig.AboutMeSkill, value);
-            }
-            else if (input.Type == "project")
-            {
-                var value = input.Config!.ToObject<List<AboutMeProjectConfiguration>>();
-                await _configuration.SaveConfigurationAsync(AppConfig.AboutMeProject, value!);
-            }
-            else
-            {
-                var value = input.Config!.ToObject<List<AboutMeOfficeConfiguration>>();
-                await _configuration.SaveConfigurationAsync(AppConfig.AboutMeOffice, value!);
-            }
-
-            return Success();
         }
 
         /// <summary>
@@ -345,14 +244,14 @@ namespace Lycoris.Blog.Server.Controllers
                     x.WithFormFile(input.File!);
                 });
             }
-            else if (input.ConfigName == AppConfig.AboutWeb)
-            {
-                fileUrl = await _minio.Value.UploadFileAsync(x =>
-                {
-                    x.WithBucketPath($"/about");
-                    x.WithFormFile(input.File!);
-                });
-            }
+            //else if (input.ConfigName == AppConfig.AboutWeb)
+            //{
+            //    fileUrl = await _minio.Value.UploadFileAsync(x =>
+            //    {
+            //        x.WithBucketPath($"/about");
+            //        x.WithFormFile(input.File!);
+            //    });
+            //}
 
             return Success(fileUrl);
         }

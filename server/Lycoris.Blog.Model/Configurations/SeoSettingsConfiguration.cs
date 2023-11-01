@@ -24,16 +24,16 @@
         /// <summary>
         /// 
         /// </summary>
-        public string? Host { get; set; }
+        public string Host { get; set; } = string.Empty;
 
         /// <summary>
         /// 
         /// </summary>
-        public string? Site { get; set; }
+        public string Site { get; set; } = string.Empty;
 
         /// <summary>
         /// 
         /// </summary>
-        public string? Token { get; set; }
+        public string Token { get; set; } = string.Empty;
     }
 }

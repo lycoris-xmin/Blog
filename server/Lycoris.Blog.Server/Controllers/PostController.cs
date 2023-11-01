@@ -1,7 +1,6 @@
 ﻿using Lycoris.AutoMapper.Extensions;
-using Lycoris.Base.Extensions;
-using Lycoris.Blog.Application.AppService.Posts;
-using Lycoris.Blog.Application.AppService.Posts.Dtos;
+using Lycoris.Blog.Application.AppServices.Posts;
+using Lycoris.Blog.Application.AppServices.Posts.Dtos;
 using Lycoris.Blog.Model.Exceptions;
 using Lycoris.Blog.Model.Global.Output;
 using Lycoris.Blog.Server.Application.Constants;
@@ -10,6 +9,7 @@ using Lycoris.Blog.Server.FilterAttributes;
 using Lycoris.Blog.Server.Models.Posts;
 using Lycoris.Blog.Server.Models.Shared;
 using Lycoris.Blog.Server.Shared;
+using Lycoris.Common.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 

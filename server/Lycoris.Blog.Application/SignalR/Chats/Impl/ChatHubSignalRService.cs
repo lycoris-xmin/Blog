@@ -1,11 +1,11 @@
 ﻿using Lycoris.Autofac.Extensions;
-using Lycoris.Blog.Application.AppService.Chat.Dtos;
+using Lycoris.Blog.Application.AppServices.Chat.Dtos;
 using Lycoris.Blog.Application.Shared.Dtos;
 using Lycoris.Blog.Application.Shared.Impl;
-using Lycoris.Blog.Application.SignalR.Chats.Dtos;
-using Lycoris.Blog.Application.SignalR.Shared.Dtos;
-using Lycoris.Blog.Core.EntityFrameworkCore;
+using Lycoris.Blog.Application.SignalR.Models;
+using Lycoris.Blog.Application.SignalR.Shared.Models;
 using Lycoris.Blog.EntityFrameworkCore.Constants;
+using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
 using Microsoft.EntityFrameworkCore;
 
@@ -50,7 +50,7 @@ namespace Lycoris.Blog.Application.SignalR.Chats.Impl
         /// <param name="connection"></param>
         /// <param name="chatUserId"></param>
         /// <returns></returns>
-        public async Task<ChatRoomDto> CreateChatRoomAsync(SignalRConnectionDto connection, long chatUserId)
+        public async Task<ChatRoomDto> CreateChatRoomAsync(SignalRConnectionModel connection, long chatUserId)
         {
             ChatRoom? room = null;
 
@@ -99,7 +99,7 @@ namespace Lycoris.Blog.Application.SignalR.Chats.Impl
         /// 
         /// </summary>
         /// <returns></returns>
-        public async Task<ChatMessageDataDto> CreateChatMessageAsync(CreateChatMessageDto input)
+        public async Task<ChatMessageDataDto> CreateChatMessageAsync(CreateChatMessageModel input)
         {
             var data = await _chatMessage.Value.CreateAsync(new ChatMessage()
             {

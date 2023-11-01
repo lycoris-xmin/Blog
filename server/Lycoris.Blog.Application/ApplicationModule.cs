@@ -1,12 +1,8 @@
 ﻿using Lycoris.Autofac.Extensions;
 using Lycoris.Autofac.Extensions.Impl;
-using Lycoris.Blog.Application.RqbbitMq.Constants;
 using Lycoris.Blog.Application.Schedule.Jobs;
-using Lycoris.Blog.Common;
 using Lycoris.Blog.Core.Interceptors.Transactional;
 using Lycoris.Quartz.Extensions;
-using Lycoris.RabbitMQ.Extensions;
-using Lycoris.RabbitMQ.Extensions.Options;
 using Microsoft.Extensions.DependencyInjection;
 using Minio;
 
@@ -25,17 +21,7 @@ namespace Lycoris.Blog.Application
             var minio = new MinioClient();
             services.AddSingleton(minio);
 
-            services.AddMemoryCache();
-
             // 任务调度
-            QuartzSchedulerBuilder(services);
-
-            // MQ
-            RabbitMQBuilder(services);
-        }
-
-        private static void QuartzSchedulerBuilder(IServiceCollection services)
-        {
             services.AddQuartzSchedulerCenter(opt =>
             {
                 opt.AddJob<ScheduleQueueJob>();
@@ -43,64 +29,6 @@ namespace Lycoris.Blog.Application
                 opt.AddJob<WebStatisticsJob>();
                 opt.AddJob<ServerMonitorJob>();
                 opt.DisabledRunHostedJob();
-            });
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="services"></param>
-        private static void RabbitMQBuilder(IServiceCollection services)
-        {
-            if (!AppSettings.RabbitMq.Use)
-                return;
-
-            services.AddRabbitMQExtensions(builder =>
-            {
-                const string defaultMqOptions = "DefaultRabbitMQOption";
-
-                // 基础配置注册
-                builder.AddRabbitMQOption(defaultMqOptions, opt =>
-                {
-                    opt.Hosts = new string[] { AppSettings.RabbitMq.Host };
-                    opt.Port = AppSettings.RabbitMq.Port;
-                    opt.UserName = AppSettings.RabbitMq.UserName;
-                    opt.Password = AppSettings.RabbitMq.Password;
-                    opt.VirtualHost = AppSettings.RabbitMq.VirtualHost;
-                    opt.AutoDelete = true;
-                });
-
-                // 生产者注册
-                builder.AddRabbitProducer(RabbitMQProducer.Demo, opt =>
-                {
-                    opt.UseRabbitOption(defaultMqOptions);
-                    opt.InitializeCount = 5;
-                    opt.Exchange = RabbitMQExchange.Demo;
-                    opt.Type = RabbitExchangeType.Direct;
-                    opt.RouteQueues = new RouteQueue[]
-                    {
-                        new RouteQueue()
-                        {
-                            Route = RabbitMQRoute.Demo,
-                            Queue = RabbitMQQueue.Demo
-                        }
-                    };
-                });
-
-                //// 消费者注册
-                //builder.AddRabbitConsumer(opt =>
-                //{
-                //    opt.UseRabbitOption(defaultMqOptions);
-                //    opt.Type = RabbitExchangeType.Direct;
-                //    opt.RouteQueues = new RouteQueue[]
-                //    {
-                //        new RouteQueue()
-                //        {
-                //            Route = RabbitMQRoute.Demo,
-                //            Queue = RabbitMQQueue.Demo
-                //        }
-                //    };
-                //}).AddListener<DemoConsumer>(RabbitMQExchange.Demo, RabbitMQQueue.Demo);
             });
         }
     }

@@ -1,5 +1,5 @@
-﻿using Lycoris.Base.Extensions;
-using Lycoris.Blog.Server.Application.Constants;
+﻿using Lycoris.Blog.Server.Application.Constants;
+using Lycoris.Common.Extensions;
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 

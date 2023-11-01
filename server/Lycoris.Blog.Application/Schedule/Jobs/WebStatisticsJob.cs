@@ -1,8 +1,8 @@
-﻿using Lycoris.Blog.Application.AppService.Configurations;
+﻿using Lycoris.Blog.Application.AppServices.Configurations;
 using Lycoris.Blog.Application.Schedule.Shared;
-using Lycoris.Blog.Core.EntityFrameworkCore;
 using Lycoris.Blog.Core.Logging;
 using Lycoris.Blog.EntityFrameworkCore.Constants;
+using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
 using Lycoris.Blog.Model.Configurations;
 using Lycoris.Quartz.Extensions.Job;

@@ -1,4 +1,4 @@
-﻿using Lycoris.Base.Extensions;
+﻿using Lycoris.Common.Extensions;
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 

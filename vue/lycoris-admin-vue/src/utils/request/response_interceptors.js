@@ -140,7 +140,15 @@ const error = err => {
     }
 
     if (err.response.status == 400 || err.response.status == 401 || err.response.status == 403) {
-      toLoginPage();
+      if (err.response.status == 400) {
+        toLoginPage(
+          toast.error('服务异常，系统将退出登录', {
+            max: 1
+          })
+        );
+      } else {
+        toLoginPage();
+      }
       return reject(
         {
           err: err,

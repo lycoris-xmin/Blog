@@ -1,6 +1,7 @@
 ﻿using Lycoris.Blog.Core.Logging;
 using Lycoris.Blog.EntityFrameworkCore.Constants;
 using Lycoris.Blog.EntityFrameworkCore.Repositories;
+using Lycoris.Blog.Model.Cnstants;
 using Lycoris.Blog.Model.Configurations;
 using Lycoris.Blog.Server.Shared;
 using Lycoris.Common.Extensions;
@@ -36,6 +37,16 @@ namespace Lycoris.Blog.Server.Middlewares
             {
                 await _next.Invoke(context);
                 return;
+            }
+
+            if (context.Request.Cookies.ContainsKey(HttpCookies.LocalStaticsFile))
+            {
+                var value = context.Request.Cookies[HttpCookies.LocalStaticsFile]!.ToString();
+                if (!value.IsNullOrEmpty() && value == "1")
+                {
+                    await _next.Invoke(context);
+                    return;
+                }
             }
 
             var config = await GetConfigurationAsync();

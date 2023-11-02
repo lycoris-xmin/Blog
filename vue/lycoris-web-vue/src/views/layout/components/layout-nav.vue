@@ -28,7 +28,16 @@
         </ul>
       </div>
       <div class="right flex-start-center">
-        <div class="search">
+        <div class="nav-icon">
+          <el-tooltip effect="dark" content="静态文件服务器切换" placement="top">
+            <el-button link>
+              <el-icon class="static-source" :size="24" @click="changeStaticSource">
+                <component :is="'sort'"></component>
+              </el-icon>
+            </el-button>
+          </el-tooltip>
+        </div>
+        <div class="nav-icon">
           <el-icon :size="24" @click="searchPost">
             <component :is="'search'"></component>
           </el-icon>
@@ -127,6 +136,27 @@ const userLogout = async () => {
 // const userMessage = () => {
 //   emit('userMessage');
 // };
+
+const changeStaticSource = () => {
+  const storageKey = 'static-local';
+  let value = localStorage.getItem(storageKey);
+
+  if (value == 'cdn') {
+    document.cookie = 'x-local=1;';
+    toast.success('切换至本地仓库');
+    localStorage.setItem(storageKey, 'local');
+  } else {
+    let exp = new Date();
+    exp.setTime(exp.getTime() - 1);
+    document.cookie = `x-local=0;expires=${exp.toGMTString()}`;
+    toast.success('切换至远端仓库');
+    localStorage.setItem(storageKey, 'cdn');
+  }
+
+  setTimeout(() => {
+    location.reload();
+  }, 1000);
+};
 </script>
 
 <style lang="scss" scoped>
@@ -208,7 +238,7 @@ $menu-height: 100px;
     .right {
       position: relative;
 
-      .search {
+      .nav-icon {
         padding: 0 20px;
         display: flex;
         align-items: center;
@@ -222,6 +252,12 @@ $menu-height: 100px;
 
         i:hover {
           transform: scale(1.2);
+        }
+
+        .static-source {
+          > svg {
+            transform: rotate(90deg);
+          }
         }
       }
 

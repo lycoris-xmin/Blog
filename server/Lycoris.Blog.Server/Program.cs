@@ -228,7 +228,7 @@ app.UseMiddleware<ExceptionHandlerMiddleware>();
 // 日志记录中间件
 app.UseMiddleware<HttpLoggingMiddleware>();
 
-// 
+// 静态文件处理
 app.UseMiddleware<StaticsFileRedirectMiddleware>();
 
 // 

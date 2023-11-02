@@ -81,8 +81,8 @@
               </div>
             </el-form>
             <div class="btn-group flex-center-center">
-              <el-button type="primary" @click="draftPost" plain>保存为草稿</el-button>
-              <el-button type="success" @click="publishPost" plain>文章发布</el-button>
+              <el-button type="primary" @click="submitSave(false)" plain>保存为草稿</el-button>
+              <el-button type="success" @click="submitSave(true)" plain>文章发布</el-button>
               <el-button type="info" @click="toPostPage" plain>返回</el-button>
             </div>
           </div>
@@ -206,6 +206,7 @@ onMounted(async () => {
           });
       }
     } else {
+      postInfo = { ...form };
       markdown.value.init();
     }
   } catch {}
@@ -276,29 +277,11 @@ const handleTagClose = tag => {
   form.tags.splice(form.tags.indexOf(tag), 1);
 };
 
-const getformData = isPublish => {
-  let data = {
-    ...form
-  };
-
-  //
-  if (data.title == '') {
-    toast.warn('文章标题不能为空');
-    return void 0;
-  }
-
-  //
-  data.category = data.category || 0;
-  data.markdown = markdown.value.getMarkdown();
-  if (!data.info) {
-    data.info = markdown.value.getInfoText(200);
-  }
-  data.isPublish = isPublish;
-
-  return data;
-};
-
 const checkPostChange = data => {
+  if (Object.keys(postInfo).length == 0) {
+    return data;
+  }
+
   for (let old in postInfo) {
     for (let item in data) {
       if (postInfo[old] != data[item]) {
@@ -310,37 +293,35 @@ const checkPostChange = data => {
   return void 0;
 };
 
-const draftPost = async (redirect = true) => {
-  let data = getformData(false);
-  if (data) {
-    data = checkPostChange(data);
-    if (!data) {
-      toast.success('保存成功');
-      if (redirect) {
-        setTimeout(() => {
-          toPostPage();
-        }, 500);
-      }
-    }
+const submitSave = async (publish, redirect = true) => {
+  let data = {
+    ...form
+  };
 
-    let res = await savePost(data);
-    if (res && res.resCode == 0) {
-      toast.success('保存成功');
-      if (redirect) {
-        setTimeout(() => {
-          toPostPage();
-        }, 500);
-      }
-    }
+  //
+  if (data.title == '') {
+    toast.warn('文章标题不能为空');
+    return;
   }
-};
 
-const publishPost = async (redirect = true) => {
-  let data = getformData(true);
+  if (!data.info) {
+    data.info = markdown.value.getInfoText(200);
+  }
+
+  if (!data.info) {
+    toast.warn('文章简介不能为空');
+    return;
+  }
+
+  //
+  data.category = data.category || 0;
+  data.markdown = markdown.value.getMarkdown();
+  data.isPublish = publish;
+
   if (data) {
     data = checkPostChange(data);
     if (!data) {
-      toast.success('发布成功');
+      toast.success(publish ? '发布成功' : '保存成功');
       if (redirect) {
         setTimeout(() => {
           toPostPage();
@@ -350,22 +331,20 @@ const publishPost = async (redirect = true) => {
 
     let res = await savePost(data);
     if (res && res.resCode == 0) {
-      toast.success('发布成功');
+      toast.success(publish ? '发布成功' : '保存成功');
       if (redirect) {
         setTimeout(() => {
           toPostPage();
         }, 500);
+      } else {
+        postInfo = data;
       }
     }
   }
 };
 
 const handleKeyDownSave = async () => {
-  if (form.isPublish) {
-    await publishPost(false);
-  } else {
-    await draftPost(false);
-  }
+  await submitSave(form.isPublish, false);
 };
 </script>
 

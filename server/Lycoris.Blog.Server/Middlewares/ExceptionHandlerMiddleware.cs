@@ -209,19 +209,13 @@ namespace Lycoris.Blog.Server.Middlewares
         /// <returns></returns>
         private static bool CheckRequestOrign(HttpContext context)
         {
-            string orign = "", referer = "";
+            string orign = "";
 
             if (context.Request.Headers.ContainsKey(HttpHeaders.Origin))
                 orign = context.Request.Headers[HttpHeaders.Origin].ToString();
 
-            if (context.Request.Headers.ContainsKey(HttpHeaders.Referer))
-                referer = context.Request.Headers[HttpHeaders.Referer].ToString();
-
             if (!orign.IsNullOrEmpty() && AppSettings.Application.Cors.Origins.HasValue() && !AppSettings.Application.Cors.Origins.Contains(orign))
                 return false;
-
-            context.Items.AddOrUpdate(HttpItems.Origin, orign);
-            context.Items.AddOrUpdate(HttpItems.Referer, referer);
 
             return true;
         }

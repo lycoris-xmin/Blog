@@ -137,25 +137,23 @@ const userLogout = async () => {
 //   emit('userMessage');
 // };
 
-const changeStaticSource = () => {
+const changeStaticSource = async () => {
   const storageKey = 'static-local';
   let value = localStorage.getItem(storageKey);
 
   if (value == 'cdn') {
     document.cookie = 'x-local=1;';
-    toast.success('切换至本地仓库');
     localStorage.setItem(storageKey, 'local');
+    await swal.success('本地仓库带宽较小，加载比较缓慢，请耐心等待', '切换至本地仓库');
   } else {
     let exp = new Date();
     exp.setTime(exp.getTime() - 1);
     document.cookie = `x-local=0;expires=${exp.toGMTString()}`;
-    toast.success('切换至远端仓库');
     localStorage.setItem(storageKey, 'cdn');
+    await swal.success('如果静态文件加载不出来，可切换至本地仓库', '切换至远端仓库');
   }
 
-  setTimeout(() => {
-    location.reload();
-  }, 1000);
+  location.reload();
 };
 </script>
 

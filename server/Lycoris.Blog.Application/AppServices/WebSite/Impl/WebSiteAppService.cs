@@ -1,26 +1,32 @@
 ﻿using Lycoris.Autofac.Extensions;
+using Lycoris.Blog.Application.AppServices.FileManage;
 using Lycoris.Blog.Application.Shared.Impl;
 using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
 using Lycoris.Blog.Model.Exceptions;
 using Lycoris.Common.Extensions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
-namespace Lycoris.Blog.Application.AppServices.WebSiteAbouts.Impl
+namespace Lycoris.Blog.Application.AppServices.WebSite.Impl
 {
     /// <summary>
     /// 
     /// </summary>
     [AutofacRegister(ServiceLifeTime.Scoped, PropertiesAutowired = true)]
-    public class WebSiteAboutAppService : ApplicationBaseService, IWebSiteAboutAppService
+    public class WebSiteAppService : ApplicationBaseService, IWebSiteAppService
     {
-        private readonly IRepository<WebSiteAbout, string> _repository;
+        private readonly IRepository<WebSiteAbout, string> _webSiteAbout;
         private readonly Lazy<IWebSiteAboutRepository> _webAboutRepository;
+        private readonly Lazy<IFileManageAppService> _fileManage;
 
-        public WebSiteAboutAppService(IRepository<WebSiteAbout, string> repository, Lazy<IWebSiteAboutRepository> webAboutRepository)
+        public WebSiteAppService(IRepository<WebSiteAbout, string> webSiteAbout,
+                                 Lazy<IWebSiteAboutRepository> webAboutRepository,
+                                 Lazy<IFileManageAppService> fileManage)
         {
-            _repository = repository;
+            _webSiteAbout = webSiteAbout;
             _webAboutRepository = webAboutRepository;
+            _fileManage = fileManage;
         }
 
         /// <summary>
@@ -28,7 +34,7 @@ namespace Lycoris.Blog.Application.AppServices.WebSiteAbouts.Impl
         /// </summary>
         /// <param name="configId"></param>
         /// <returns></returns>
-        public Task<string?> GetAboutAsync(string configId) => _repository.GetAll().Where(x => x.Id == configId).Select(x => x.Value).SingleOrDefaultAsync();
+        public Task<string?> GetAboutAsync(string configId) => _webSiteAbout.GetAll().Where(x => x.Id == configId).Select(x => x.Value).SingleOrDefaultAsync();
 
         /// <summary>
         /// 
@@ -61,13 +67,24 @@ namespace Lycoris.Blog.Application.AppServices.WebSiteAbouts.Impl
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="file"></param>
+        /// <param name="remotePath"></param>
+        /// <returns></returns>
+        public async Task<string> UploadFileAsync(IFormFile file, string remotePath)
+        {
+            return await _fileManage.Value.UploadFileAsync(file, remotePath);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="configId"></param>
         /// <param name="value"></param>
         /// <returns></returns>
         /// <exception cref="FriendlyException"></exception>
         private async Task UpdateAsync(string configId, string value)
         {
-            var data = await _repository.GetAsync(configId) ?? throw new FriendlyException("");
+            var data = await _webSiteAbout.GetAsync(configId) ?? throw new FriendlyException("");
 
             if (data.Value != value)
             {
@@ -75,7 +92,7 @@ namespace Lycoris.Blog.Application.AppServices.WebSiteAbouts.Impl
                 _webAboutRepository.Value.RemoveAboutCacheAsync(data.Id);
 
                 data.Value = value;
-                await _repository.UpdateFieIdsAsync(data, x => x.Value);
+                await _webSiteAbout.UpdateFieIdsAsync(data, x => x.Value);
             }
         }
     }

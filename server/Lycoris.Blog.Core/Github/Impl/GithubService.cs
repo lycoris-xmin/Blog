@@ -1,20 +1,18 @@
 ﻿using Lycoris.Autofac.Extensions;
-using Lycoris.Blog.Core.Github.Models;
 using Lycoris.Blog.EntityFrameworkCore.Constants;
 using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.Model.Configurations;
 using Lycoris.Blog.Model.Exceptions;
 using Lycoris.Common.Extensions;
-using Lycoris.Common.Http;
 using Microsoft.AspNetCore.Http;
+using Octokit;
+using Octokit.Internal;
 
 namespace Lycoris.Blog.Core.Github.Impl
 {
     [AutofacRegister(ServiceLifeTime.Scoped)]
     public class GithubService : IGithubService
     {
-        const string Url = "https://api.github.com";
-
         private readonly IConfigurationRepository _configuration;
 
         public GithubService(IConfigurationRepository configuration)
@@ -29,7 +27,7 @@ namespace Lycoris.Blog.Core.Github.Impl
         /// <param name="remotePath"></param>
         /// <returns></returns>
         /// <exception cref="FriendlyException"></exception>
-        public async Task UploadFileAsync(string localPath, string remotePath)
+        public async Task<(string url, string? sha)> UploadFileAsync(string localPath, string remotePath)
         {
             var content = GetFileToBase64(localPath);
 
@@ -38,7 +36,15 @@ namespace Lycoris.Blog.Core.Github.Impl
 
             var config = await GetConfigurationAsync();
 
-            await PutRequestAsync(config, content, remotePath);
+            var (owner, repo) = config.AnalyzeRepository();
+
+            var client = CreateGitHubClient(config);
+
+            var res = await client.Repository.Content.CreateFile(owner, repo, remotePath.TrimStart('/'), new CreateFileRequest("upload file", content, false));
+
+            var url = config.ChangeJsDelivrCDNUrl(owner, repo, res.Content!.Path);
+
+            return (url, res.Content!.Sha);
         }
 
         /// <summary>
@@ -48,7 +54,7 @@ namespace Lycoris.Blog.Core.Github.Impl
         /// <param name="remotePath"></param>
         /// <returns></returns>
         /// <exception cref="FriendlyException"></exception>
-        public async Task UploadFileAsync(IFormFile file, string remotePath)
+        public async Task<(string url, string? sha)> UploadFileAsync(IFormFile file, string remotePath)
         {
             var content = GetFileToBase64(file);
 
@@ -57,7 +63,32 @@ namespace Lycoris.Blog.Core.Github.Impl
 
             var config = await GetConfigurationAsync();
 
-            await PutRequestAsync(config, content, remotePath);
+            var (owner, repo) = config.AnalyzeRepository();
+
+            var client = CreateGitHubClient(config);
+
+            var res = await client.Repository.Content.CreateFile(owner, repo, remotePath.TrimStart('/'), new CreateFileRequest("upload file", content, false));
+
+            var url = config.ChangeJsDelivrCDNUrl(owner, repo, res.Content!.Path);
+
+            return (url, res.Content!.Sha);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sha"></param>
+        /// <param name="remotePath"></param>
+        /// <returns></returns>
+        public async Task RemoveFileAsync(string sha, string remotePath)
+        {
+            var config = await GetConfigurationAsync();
+
+            var (owner, repo) = config.AnalyzeRepository();
+
+            var client = CreateGitHubClient(config);
+
+            await client.Repository.Content.DeleteFile(owner, repo, remotePath, new DeleteFileRequest("delete file", sha));
         }
 
         /// <summary>
@@ -86,10 +117,10 @@ namespace Lycoris.Blog.Core.Github.Impl
         /// <returns></returns>
         private static string GetFileToBase64(string filePath)
         {
-            if (File.Exists(filePath))
-                return "";
+            if (!File.Exists(filePath))
+                throw new FriendlyException("上传失败", $"can not find file with path:{filePath}");
 
-            using var fs = new FileStream(filePath, FileMode.Open);
+            using var fs = new FileStream(filePath, System.IO.FileMode.Open);
             var bytes = new byte[fs.Length];
             fs.Read(bytes, 0, bytes.Length);
             return Convert.ToBase64String(bytes);
@@ -111,50 +142,12 @@ namespace Lycoris.Blog.Core.Github.Impl
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="content"></param>
-        /// <param name="remotePath"></param>
+        /// <param name="config"></param>
         /// <returns></returns>
-        private static async Task PutRequestAsync(GithubConfiguration config, string content, string? remotePath)
+        private static GitHubClient CreateGitHubClient(GithubConfiguration config)
         {
-            var (owner, repo) = AnalyzeRepository(config.RepositoryUrl);
-
-            remotePath ??= config.RepositoryPath;
-
-            var request = new HttpUtils($"{Url}/repos/{owner}/{repo}/contents/{remotePath}");
-
-            var body = $"'{{\"message\":\"upload file\",\"committer\":{{\"name\":\"{config.CommitterName}\",\"email\":\"{config.CommitterEmail}\"}},\"content\":\"{content}\"}}'";
-
-            request.AddJsonBody(body);
-            request.AddRequestHeader("Accept", "application/vnd.github+json");
-            request.AddRequestHeader("Authorization", $"Bearer {config.AccessToken}");
-            request.AddRequestHeader("X-GitHub-Api-Version", DateTime.Now.ToString("yyyy-MM-dd"));
-
-            var res = await request.HttpPutAsync();
-
-            if (!res.Success)
-                throw new FriendlyException("");
-
-            if (res.Content.IsNullOrEmpty())
-                throw new FriendlyException("");
-
-            var data = res.Content.ToObject<GithubPutFileResponse>();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="repoUrl"></param>
-        /// <returns></returns>
-        private static (string owner, string repo) AnalyzeRepository(string repoUrl)
-        {
-            var url = repoUrl.Replace("https://github.com/", "");
-
-            var paths = url.Split('/');
-
-            if (paths.Length != 2)
-                throw new FriendlyException("");
-
-            return (paths[0], paths[1]);
+            var credentials = new InMemoryCredentialStore(new Credentials(config.AccessToken));
+            return new GitHubClient(new ProductHeaderValue(config.CommitterName), credentials);
         }
     }
 }

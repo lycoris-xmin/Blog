@@ -1,6 +1,6 @@
 <template>
   <div style="padding-top: 18px">
-    <el-form label-position="left" :model="model" label-width="100">
+    <el-form label-position="left" :model="model" label-width="120">
       <el-row :gutter="24">
         <el-col :span="6">
           <el-form-item label="保存位置">
@@ -11,20 +11,35 @@
           <div style="min-height: 300px">
             <transition-list :tag="div">
               <div v-if="model.saveChannel == 10">
-                <el-form-item label="Github仓库地址">
-                  <el-input v-model="github.repositoryUrl"></el-input>
+                <el-form-item label="本地备份">
+                  <el-select v-model="model.localBackup">
+                    <el-option :key="false" :label="'不启用'" :value="false" />
+                    <el-option :key="true" :label="'启用'" :value="true" />
+                  </el-select>
                 </el-form-item>
-                <el-form-item label="存储位置">
-                  <el-input v-model="github.repositoryPath"></el-input>
+                <el-form-item label="Github仓库">
+                  <el-input v-model="github.repositoryUrl"></el-input>
                 </el-form-item>
                 <el-form-item label="AccessToken">
                   <el-input v-model="github.accessToken"></el-input>
                 </el-form-item>
-                <el-form-item label="CND加速">
+                <el-form-item label="上传者名称">
+                  <el-input v-model="github.committerName"></el-input>
+                </el-form-item>
+                <el-form-item label="上传者邮箱">
+                  <el-input v-model="github.committerEmail"></el-input>
+                </el-form-item>
+                <el-form-item label="JsDelivrCDN">
                   <el-input v-model="github.cdn"></el-input>
                 </el-form-item>
               </div>
               <div v-else-if="model.saveChannel == 20">
+                <el-form-item label="本地备份">
+                  <el-select v-model="model.localBackup">
+                    <el-option :key="0" :label="'不启用'" :value="false" />
+                    <el-option :key="1" :label="'启用'" :value="true" />
+                  </el-select>
+                </el-form-item>
                 <el-form-item label="服务地址">
                   <el-input v-model="minio.endpoint"></el-input>
                 </el-form-item>
@@ -45,18 +60,42 @@
                 </el-form-item>
               </div>
               <div v-else-if="model.saveChannel == 30">
+                <el-form-item label="本地备份">
+                  <el-select v-model="model.localBackup">
+                    <el-option :key="0" :label="'不启用'" :value="false" />
+                    <el-option :key="1" :label="'启用'" :value="true" />
+                  </el-select>
+                </el-form-item>
                 <p>阿里云存储</p>
                 <p>暂未开发</p>
               </div>
               <div v-else-if="model.saveChannel == 40">
+                <el-form-item label="本地备份">
+                  <el-select v-model="model.localBackup">
+                    <el-option :key="0" :label="'不启用'" :value="false" />
+                    <el-option :key="1" :label="'启用'" :value="true" />
+                  </el-select>
+                </el-form-item>
                 <p>腾讯云存储</p>
                 <p>暂未开发</p>
               </div>
               <div v-else-if="model.saveChannel == 50">
+                <el-form-item label="本地备份">
+                  <el-select v-model="model.localBackup">
+                    <el-option :key="0" :label="'不启用'" :value="false" />
+                    <el-option :key="1" :label="'启用'" :value="true" />
+                  </el-select>
+                </el-form-item>
                 <p>华为云存储</p>
                 <p>暂未开发</p>
               </div>
               <div v-else-if="model.saveChannel == 60">
+                <el-form-item label="本地备份">
+                  <el-select v-model="model.localBackup">
+                    <el-option :key="0" :label="'不启用'" :value="false" />
+                    <el-option :key="1" :label="'启用'" :value="true" />
+                  </el-select>
+                </el-form-item>
                 <p>七牛云存储</p>
                 <p>暂未开发</p>
               </div>
@@ -79,15 +118,17 @@ import { getFileSaveChannelEnum, getfileUploadSettings, saveFileUploadSettings }
 import toast from '../../../utils/toast';
 
 const model = reactive({
-  saveChannel: '',
+  saveChannel: 0,
   loading: false,
-  saveChannelEnum: []
+  saveChannelEnum: [],
+  localBackup: true
 });
 
 const github = reactive({
   accessToken: '',
   repositoryUrl: '',
-  repositoryPath: '',
+  committerName: '',
+  committerEmail: '',
   cdn: ''
 });
 
@@ -134,6 +175,9 @@ const getSettings = async () => {
   try {
     let res = await getfileUploadSettings();
     if (res && res.resCode == 0) {
+      model.saveChannel = res.data.saveChannel;
+      model.localBackup = res.data.localBackup;
+
       monioSetting(res.data?.minio || {});
       githubSeting(res.data?.github || {});
     }
@@ -153,7 +197,8 @@ const monioSetting = setting => {
 const githubSeting = setting => {
   github.accessToken = setting?.accessToken || '';
   github.repositoryUrl = setting?.repositoryUrl || '';
-  github.repositoryPath = setting?.repositoryPath || '';
+  github.committerName = setting?.committerName || '';
+  github.committerEmail = setting?.committerEmail || '';
   github.cdn = setting?.cdn || '';
 };
 
@@ -165,14 +210,16 @@ const submit = async () => {
     };
 
     if (data.saveChannel === 10) {
-      data.minio = { ...minio };
+      data.github = { ...github };
     } else if (data.saveChannel === 20) {
-      data.oss = { ...oss };
+      data.minio = { ...minio };
     } else if (data.saveChannel === 30) {
-      data.cos = { ...cos };
+      data.oss = { ...oss };
     } else if (data.saveChannel === 40) {
-      data.obs = { ...obs };
+      data.cos = { ...cos };
     } else if (data.saveChannel === 50) {
+      data.obs = { ...obs };
+    } else if (data.saveChannel === 60) {
       data.kodo = { ...kodo };
     }
 

@@ -1,7 +1,7 @@
 ﻿using Lycoris.Autofac.Extensions;
 using Lycoris.Blog.Application.AppServices.LoginFailedRecords.Dtos;
-using Lycoris.Blog.Cache.LoginFailedRecord;
-using Lycoris.Blog.Cache.LoginFailedRecord.Models;
+using Lycoris.Blog.Application.Cached.LoginFailedRecord;
+using Lycoris.Blog.Application.Cached.LoginFailedRecord.Models;
 using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
 

@@ -48,7 +48,8 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
             if (!value.LastTime.HasValue || value.LastTime == DateTime.MinValue)
             {
                 value.LastTime = await _requestLog.GetAll().OrderBy(x => x.CreateTime).Select(x => x.CreateTime).FirstOrDefaultAsync();
-                value.LastTime ??= DateTime.Now;
+                if (!value.LastTime.HasValue || value.LastTime == DateTime.MinValue)
+                    value.LastTime = DateTime.Now;
                 value.LastTime = value.LastTime.Value.Date;
             }
 

@@ -52,7 +52,7 @@ namespace Lycoris.Blog.Server.FilterAttributes
                 var arg = context.ActionArguments[p.Name];
 
                 if (p.ParameterType.Equals(typeof(string)) && arg != null)
-                    context.ActionArguments[p.Name] = sanitizer.Sanitize((string)arg);
+                    context.ActionArguments[p.Name] = sanitizer.Sanitize(((string)arg).Trim());
                 else if (p.ParameterType.IsClass)
                     ArgumentsFilter(sanitizer, p.ParameterType, arg);
             }

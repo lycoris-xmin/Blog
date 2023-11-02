@@ -1,6 +1,6 @@
 ﻿using Lycoris.Blog.Application.SignalR.Shared.Models;
 
-namespace Lycoris.Blog.Cache.SignalR
+namespace Lycoris.Blog.Application.Cached.SignalR
 {
     public interface ISignalRCacheService
     {

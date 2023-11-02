@@ -1,11 +1,11 @@
 ﻿using Lycoris.Autofac.Extensions;
 using Lycoris.AutoMapper.Extensions;
+using Lycoris.Blog.Application.AppServices.FileManage;
 using Lycoris.Blog.Application.AppServices.Posts.Dtos;
+using Lycoris.Blog.Application.Cached.ScheduleQueue;
+using Lycoris.Blog.Application.Cached.ScheduleQueue.Models;
 using Lycoris.Blog.Application.Shared.Dtos;
 using Lycoris.Blog.Application.Shared.Impl;
-using Lycoris.Blog.Cache.ScheduleQueue;
-using Lycoris.Blog.Cache.ScheduleQueue.Models;
-using Lycoris.Blog.Core.CloudStorage.Minio;
 using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
 using Lycoris.Blog.Model.Exceptions;
@@ -24,24 +24,19 @@ namespace Lycoris.Blog.Application.AppServices.Posts.Impl
         private readonly IRepository<Post, long> _post;
         private readonly IRepository<Category, int> _category;
         private readonly Lazy<IRepository<PostStatistics, long>> _statistics;
-        private readonly Lazy<IMinioService> _minio;
+        private readonly Lazy<IFileManageAppService> _fileManage;
         private readonly Lazy<IScheduleQueueCacheService> _scheduleQueue;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="post"></param>
-        /// <param name="category"></param>
         public PostAppService(IRepository<Post, long> post,
                               IRepository<Category, int> category,
                               Lazy<IRepository<PostStatistics, long>> statistics,
-                              Lazy<IMinioService> minio,
+                              Lazy<IFileManageAppService> fileManage,
                               Lazy<IScheduleQueueCacheService> scheduleQueue)
         {
             _post = post;
             _category = category;
             _statistics = statistics;
-            _minio = minio;
+            _fileManage = fileManage;
             _scheduleQueue = scheduleQueue;
         }
 
@@ -257,11 +252,7 @@ namespace Lycoris.Blog.Application.AppServices.Posts.Impl
         /// <returns></returns>
         public async Task<string> MarkdownUploadAsync(IFormFile file)
         {
-            return await _minio.Value.UploadFileAsync(x =>
-            {
-                x.WithBucketPath("/post");
-                x.WithFormFile(file);
-            });
+            return await _fileManage.Value.UploadFileAsync(file, "/post/markdown");
         }
 
         /// <summary>
@@ -279,11 +270,7 @@ namespace Lycoris.Blog.Application.AppServices.Posts.Impl
 
             if (input.File != null)
             {
-                input.Icon = await _minio.Value.UploadFileAsync(x =>
-                {
-                    x.WithBucketPath("/post");
-                    x.WithFormFile(input.File!);
-                });
+                input.Icon = await _fileManage.Value.UploadFileAsync(input.File, "/post/icon");
             }
             else if (input.Icon.IsNullOrEmpty() && data.Category != input.Category && input.Category > 0)
                 input.Icon = await _category.GetSelectAsync(input.Category!.Value, x => x.Icon);

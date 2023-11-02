@@ -10,9 +10,10 @@ import $loading from '../../utils/loading';
 
 const container = ref('cherry-markdown-container');
 
+const loadingText = ref('markdown 插件初始化...');
 const loading = new $loading({
   target: `#${container.value}`,
-  text: 'markdown 插件初始化...'
+  text: loadingText
 });
 
 const props = defineProps({
@@ -101,9 +102,15 @@ const cherry = {
       float: false
     },
     fileUpload: (file, callback) => {
-      emit('fileUpload', file, url => {
-        callback(url);
-      });
+      showLoading('文件上传中,请稍候...');
+      try {
+        emit('fileUpload', file, url => {
+          callback(url);
+          hideLoading();
+        });
+      } catch (error) {
+        hideLoading();
+      }
     },
     callback: {}
   }
@@ -254,6 +261,18 @@ const handleKeyDown = event => {
   }
 };
 
+const showLoading = text => {
+  if (text) {
+    loadingText.value = text;
+  }
+  loading.show();
+};
+
+const hideLoading = () => {
+  loading.hide();
+  loadingText.value = 'markdown 插件初始化...';
+};
+
 defineExpose({
   init,
   setMarkdown,
@@ -263,12 +282,8 @@ defineExpose({
   getTopic,
   exportPage,
   changModel,
-  showLoading: () => {
-    loading.show();
-  },
-  hideLoading: () => {
-    loading.hide();
-  }
+  showLoading,
+  hideLoading
 });
 </script>
 
@@ -293,9 +308,14 @@ defineExpose({
     .cherry-previewer {
       background-color: #fff;
       border-left: 0;
+      padding-right: 25px;
 
       img {
         cursor: pointer;
+      }
+
+      p:has(> img) {
+        overflow: hidden;
       }
 
       ul.cherry-list__default {

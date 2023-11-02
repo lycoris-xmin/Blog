@@ -1,6 +1,6 @@
-﻿using Lycoris.Blog.Cache.ScheduleQueue.Models;
+﻿using Lycoris.Blog.Application.Cached.ScheduleQueue.Models;
 
-namespace Lycoris.Blog.Cache.ScheduleQueue
+namespace Lycoris.Blog.Application.Cached.ScheduleQueue
 {
     public interface IScheduleQueueCacheService
     {

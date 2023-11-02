@@ -1,9 +1,9 @@
 ﻿using Lycoris.Autofac.Extensions;
 using Lycoris.Blog.Application.AppServices.Authentication.Dtos;
-using Lycoris.Blog.Cache.Authentication.Models;
+using Lycoris.Blog.Application.Cached.Authentication.Models;
 using Lycoris.Blog.Common.Cache;
 
-namespace Lycoris.Blog.Cache.Authentication.Impl
+namespace Lycoris.Blog.Application.Cached.Authentication.Impl
 {
     /// <summary>
     /// 

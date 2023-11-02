@@ -1,10 +1,10 @@
 ﻿using Lycoris.Autofac.Extensions;
 using Lycoris.Blog.Application.AppServices.Comment.Dtos;
+using Lycoris.Blog.Application.Cached.ScheduleQueue;
+using Lycoris.Blog.Application.Cached.ScheduleQueue.Models;
 using Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Models;
 using Lycoris.Blog.Application.Shared.Dtos;
 using Lycoris.Blog.Application.Shared.Impl;
-using Lycoris.Blog.Cache.ScheduleQueue;
-using Lycoris.Blog.Cache.ScheduleQueue.Models;
 using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
 using Lycoris.Blog.Model.Exceptions;

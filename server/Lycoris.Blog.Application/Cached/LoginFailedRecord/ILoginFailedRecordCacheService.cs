@@ -1,6 +1,6 @@
-﻿using Lycoris.Blog.Cache.LoginFailedRecord.Models;
+﻿using Lycoris.Blog.Application.Cached.LoginFailedRecord.Models;
 
-namespace Lycoris.Blog.Cache.LoginFailedRecord
+namespace Lycoris.Blog.Application.Cached.LoginFailedRecord
 {
     public interface ILoginFailedRecordCacheService
     {

@@ -1,6 +1,6 @@
-﻿using Lycoris.Blog.Cache.Email.Models;
+﻿using Lycoris.Blog.Application.Cached.Email.Models;
 
-namespace Lycoris.Blog.Cache.Email
+namespace Lycoris.Blog.Application.Cached.Email
 {
     public interface IEmailCacheService
     {

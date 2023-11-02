@@ -4,7 +4,7 @@ using Lycoris.Common.Extensions;
 using Microsoft.AspNetCore.Http;
 using Minio;
 
-namespace Lycoris.Blog.Core.CloudStorage.Minio.DataModel
+namespace Lycoris.Blog.Core.Minio.DataModel
 {
     public class UploadFileArgsDataModel
     {

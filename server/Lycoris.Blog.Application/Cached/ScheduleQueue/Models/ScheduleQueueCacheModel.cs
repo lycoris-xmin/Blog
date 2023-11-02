@@ -1,4 +1,4 @@
-﻿namespace Lycoris.Blog.Cache.ScheduleQueue.Models
+﻿namespace Lycoris.Blog.Application.Cached.ScheduleQueue.Models
 {
     public class ScheduleQueueCacheModel
     {

@@ -1,4 +1,4 @@
-﻿namespace Lycoris.Blog.Cache.Authentication.Models
+﻿namespace Lycoris.Blog.Application.Cached.Authentication.Models
 {
     public class LoginUserCacheModel
     {

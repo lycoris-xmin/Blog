@@ -1,7 +1,7 @@
 ﻿using Lycoris.Autofac.Extensions;
+using Lycoris.Blog.Application.AppServices.FileManage;
 using Lycoris.Blog.Application.Shared.Dtos;
 using Lycoris.Blog.Application.Shared.Impl;
-using Lycoris.Blog.Core.CloudStorage.Minio;
 using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
 using Lycoris.Blog.Model.Exceptions;
@@ -19,16 +19,16 @@ namespace Lycoris.Blog.Application.AppServices.Users.Impl
     {
         private readonly IRepository<User, long> _user;
         private readonly IRepository<UserLink, long> _userLink;
-        private readonly Lazy<IMinioService> _minio;
+        private readonly Lazy<IFileManageAppService> _fileManage;
 
         /// <summary>
         /// 
         /// </summary>
-        public UserAppService(IRepository<User, long> user, IRepository<UserLink, long> userLink, Lazy<IMinioService> minio)
+        public UserAppService(IRepository<User, long> user, IRepository<UserLink, long> userLink, Lazy<IFileManageAppService> fileManage)
         {
             _user = user;
             _userLink = userLink;
-            _minio = minio;
+            _fileManage = fileManage;
         }
 
         /// <summary>
@@ -81,13 +81,7 @@ namespace Lycoris.Blog.Application.AppServices.Users.Impl
             // 用户
             var user = await _user.GetAsync(CurrentUser.Id) ?? throw new FriendlyException("");
             if (file != null)
-            {
-                input.Avatar = await _minio.Value.UploadFileAsync(x =>
-                {
-                    x.WithBucketPath("/avatar");
-                    x.WithFormFile(file!);
-                });
-            }
+                input.Avatar = await _fileManage.Value.UploadFileAsync(file, "/avatar");
 
             var userFieIds = new List<Expression<Func<User, object>>>();
             user.UpdatePorpertyIf(!input.NickName.IsNullOrEmpty() && input.NickName != user!.NickName, x =>
@@ -135,13 +129,5 @@ namespace Lycoris.Blog.Application.AppServices.Users.Impl
             else
                 await _userLink.UpdateFieIdsAsync(userLink, userLinkFieIds);
         }
-
-        #region MyRegion
-
-        #endregion
-
-        #region MyRegion
-
-        #endregion
     }
 }

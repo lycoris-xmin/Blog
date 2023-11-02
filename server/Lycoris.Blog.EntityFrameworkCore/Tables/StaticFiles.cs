@@ -9,9 +9,11 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
     /// <summary>
     /// 上传文件
     /// </summary>
-    [Table("UploadFile")]
-    [TableIndex(new[] { "SaveChannel", "Use" })]
-    public class UploadFile : MySqlBaseEntity<long>
+    [Table("StaticFiles")]
+    [TableIndex("SaveChannel")]
+    [TableIndex("PathUrl")]
+    [TableIndex("Use")]
+    public class StaticFiles : MySqlBaseEntity<long>
     {
         /// <summary>
         /// 文件访问路径
@@ -32,15 +34,28 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
         public FileSaveChannelEnum SaveChannel { get; set; }
 
         /// <summary>
-        /// Github文件签名
+        /// 相对路径
         /// </summary>
-        public string GithubSha { get; set; } = string.Empty;
+        [TableColumn(Required = false)]
+        public string PathUrl { get; set; } = string.Empty;
+
+        /// <summary>
+        /// 远端访问地址
+        /// </summary>
+        [TableColumn(Required = false)]
+        public string RemoteUrl { get; set; } = string.Empty;
+
+        /// <summary>
+        /// 文件Sha签名
+        /// </summary>
+        [TableColumn(StringLength = 100)]
+        public string FileSha { get; set; } = string.Empty;
 
         /// <summary>
         /// 是否有在使用
         /// </summary>
-        [TableColumn(Required = true, DefaultValue = false)]
-        public bool Use { get; set; }
+        [TableColumn(Required = true, DefaultValue = true)]
+        public bool Use { get; set; } = true;
 
         /// <summary>
         /// 上传时间

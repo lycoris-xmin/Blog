@@ -13,9 +13,9 @@ namespace Lycoris.Blog.Application.AppServices.Configurations.Impl
     [AutofacRegister(ServiceLifeTime.Scoped, PropertiesAutowired = true)]
     public class ConfigurationAppService : ApplicationBaseService, IConfigurationAppService
     {
-        private readonly IRepository<Configuration, int> _configuration;
+        private readonly IRepository<Configuration, string> _configuration;
 
-        public ConfigurationAppService(IRepository<Configuration, int> configuration)
+        public ConfigurationAppService(IRepository<Configuration, string> configuration)
         {
             _configuration = configuration;
         }
@@ -25,7 +25,7 @@ namespace Lycoris.Blog.Application.AppServices.Configurations.Impl
         /// </summary>
         /// <param name="configId"></param>
         /// <returns></returns>
-        public Task<string?> GetConfigurationAsync(string configId) => _configuration.GetAll().Where(x => x.ConfigId == configId).Select(x => x.Value).SingleOrDefaultAsync();
+        public Task<string?> GetConfigurationAsync(string configId) => _configuration.GetAll().Where(x => x.Id == configId).Select(x => x.Value).SingleOrDefaultAsync();
 
         /// <summary>
         /// 
@@ -77,12 +77,12 @@ namespace Lycoris.Blog.Application.AppServices.Configurations.Impl
         /// <exception cref="FriendlyException"></exception>
         private async Task UpdateAsync(string configId, string value)
         {
-            var data = await _configuration.GetAsync(x => x.ConfigId == configId) ?? throw new FriendlyException("");
+            var data = await _configuration.GetAsync(x => x.Id == configId) ?? throw new FriendlyException("");
 
             if (data.Value != value)
             {
                 // 移除缓存
-                ApplicationConfiguration.Value.RemoveConfigurationCacheAsync(data.ConfigId);
+                ApplicationConfiguration.Value.RemoveConfigurationCacheAsync(data.Id);
 
                 data.Value = value;
                 await _configuration.UpdateFieIdsAsync(data, x => x.Value);

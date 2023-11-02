@@ -4,7 +4,7 @@ using Lycoris.Common.Extensions;
 using Lycoris.Common.Helper;
 using Minio;
 
-namespace Lycoris.Blog.Core.CloudStorage.Minio.Impl
+namespace Lycoris.Blog.Core.Minio.Impl
 {
     [AutofacRegister(ServiceLifeTime.Singleton)]
     public class MinioFactory : IMinioFactory

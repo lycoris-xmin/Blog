@@ -87,7 +87,7 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
                     GoogleAuthentication = false,
                     ShowOnlineStatus = true,
                     Status = UserStatusEnum.Audited,
-                    CreateTime  = DateTime.Now
+                    CreateTime  = new DateTime(2020,1,1)
                 }
             };
         }

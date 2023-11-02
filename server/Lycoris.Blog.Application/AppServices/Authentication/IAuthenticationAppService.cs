@@ -1,6 +1,6 @@
 ﻿using Lycoris.Blog.Application.AppServices.Authentication.Dtos;
+using Lycoris.Blog.Application.Cached.Authentication.Models;
 using Lycoris.Blog.Application.Shared;
-using Lycoris.Blog.Cache.Authentication.Models;
 using Lycoris.Blog.Core.Interceptors.Transactional;
 
 namespace Lycoris.Blog.Application.AppServices.Authentication

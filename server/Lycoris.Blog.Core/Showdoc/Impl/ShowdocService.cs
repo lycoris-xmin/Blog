@@ -1,6 +1,6 @@
 ﻿using Lycoris.Autofac.Extensions;
 using Lycoris.Blog.Core.Logging;
-using Lycoris.Blog.Core.Showdoc.Dtos;
+using Lycoris.Blog.Core.Showdoc.Models;
 using Lycoris.Blog.EntityFrameworkCore.Constants;
 using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.Model.Configurations;

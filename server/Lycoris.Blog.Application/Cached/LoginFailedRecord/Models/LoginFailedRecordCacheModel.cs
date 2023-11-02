@@ -1,4 +1,4 @@
-﻿namespace Lycoris.Blog.Cache.LoginFailedRecord.Models
+﻿namespace Lycoris.Blog.Application.Cached.LoginFailedRecord.Models
 {
     public class LoginFailedRecordCacheModel
     {

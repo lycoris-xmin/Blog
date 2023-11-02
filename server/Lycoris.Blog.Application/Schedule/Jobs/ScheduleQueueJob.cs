@@ -1,7 +1,7 @@
 ﻿using Lycoris.Autofac.Extensions;
+using Lycoris.Blog.Application.Cached.ScheduleQueue;
 using Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue;
 using Lycoris.Blog.Application.Schedule.Shared;
-using Lycoris.Blog.Cache.ScheduleQueue;
 using Lycoris.Blog.Core.Logging;
 using Lycoris.Common.Extensions;
 using Lycoris.Quartz.Extensions.Job;

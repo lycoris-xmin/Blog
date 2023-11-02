@@ -1,9 +1,9 @@
 ﻿using Lycoris.Autofac.Extensions;
-using Lycoris.Blog.Cache.ScheduleQueue.Models;
+using Lycoris.Blog.Application.Cached.ScheduleQueue.Models;
 using Lycoris.Common.Extensions;
 using System.Collections.Concurrent;
 
-namespace Lycoris.Blog.Cache.ScheduleQueue.Impl
+namespace Lycoris.Blog.Application.Cached.ScheduleQueue.Impl
 {
     [AutofacRegister(ServiceLifeTime.Singleton)]
     public class ScheduleQueueCacheService : IScheduleQueueCacheService

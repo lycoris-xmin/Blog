@@ -1,4 +1,4 @@
-﻿namespace Lycoris.Blog.Core.Showdoc.Dtos
+﻿namespace Lycoris.Blog.Core.Showdoc.Models
 {
     public enum ShowdocMarkdownTemplateEnum
     {

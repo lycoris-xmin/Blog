@@ -2,7 +2,7 @@
 using Lycoris.Blog.Application.SignalR.Shared.Models;
 using Lycoris.Blog.Common.Cache;
 
-namespace Lycoris.Blog.Cache.SignalR.Impl
+namespace Lycoris.Blog.Application.Cached.SignalR.Impl
 {
     [AutofacRegister(ServiceLifeTime.Singleton)]
     public class SignalRCacheService : ISignalRCacheService

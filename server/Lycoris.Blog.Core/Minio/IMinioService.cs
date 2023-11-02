@@ -1,6 +1,6 @@
-﻿using Lycoris.Blog.Core.CloudStorage.Minio.DataModel;
+﻿using Lycoris.Blog.Core.Minio.DataModel;
 
-namespace Lycoris.Blog.Core.CloudStorage.Minio
+namespace Lycoris.Blog.Core.Minio
 {
     public interface IMinioService
     {

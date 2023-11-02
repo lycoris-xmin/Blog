@@ -10,7 +10,7 @@
 import { ref, onMounted } from 'vue';
 import PageLayout from '../layout/page-layout.vue';
 import singleMarkdownPage from '../../components/single-markdown-page/index.vue';
-import { getAboutWeb, saveAboutWeb, uploadFile } from '../../api/configuration';
+import { getAboutWeb, saveAboutWeb, uploadFile } from '../../api/website-about';
 import toast from '../../utils/toast';
 
 const markdown = ref();
@@ -37,14 +37,14 @@ const fileUpload = async (file, callback) => {
     return;
   }
 
-  let res = await uploadFile('App.AboutWeb', file);
+  let res = await uploadFile('about/web', file);
   if (res && res.resCode == 0) {
     callback(res.data);
   }
 };
 
 const save = async value => {
-  markdown.value.showLoading();
+  markdown.value.showLoading('数据保存中,请稍候...');
   try {
     let res = await saveAboutWeb(value);
     if (res && res.resCode == 0) {

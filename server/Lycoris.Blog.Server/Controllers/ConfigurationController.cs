@@ -1,6 +1,6 @@
 ﻿using Lycoris.AutoMapper.Extensions;
 using Lycoris.Blog.Application.AppServices.Configurations;
-using Lycoris.Blog.Core.CloudStorage.Minio;
+using Lycoris.Blog.Application.AppServices.FileManage;
 using Lycoris.Blog.EntityFrameworkCore.Constants;
 using Lycoris.Blog.Model.Configurations;
 using Lycoris.Blog.Model.Global.Output;
@@ -21,17 +21,17 @@ namespace Lycoris.Blog.Server.Controllers
     public class ConfigurationController : BaseController
     {
         private readonly IConfigurationAppService _configuration;
-        private readonly Lazy<IMinioService> _minio;
+        private readonly Lazy<IFileManageAppService> _fileManage;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="configuration"></param>
-        /// <param name="minio"></param>
-        public ConfigurationController(IConfigurationAppService configuration, Lazy<IMinioService> minio)
+        /// <param name="fileManage"></param>
+        public ConfigurationController(IConfigurationAppService configuration, Lazy<IFileManageAppService> fileManage)
         {
             _configuration = configuration;
-            _minio = minio;
+            _fileManage = fileManage;
         }
 
         /// <summary>
@@ -232,26 +232,12 @@ namespace Lycoris.Blog.Server.Controllers
         /// <returns></returns>
         [HttpPost("Upload")]
         [Consumes("multipart/form-data"), Produces("application/json")]
-        public async Task<DataOutput<string>> UploadAsync([FromForm] ConfigurationUploadInput input)
+        public async Task<DataOutput<string>> Upload([FromForm] ConfigurationUploadInput input)
         {
             var fileUrl = "";
 
             if (input.ConfigName == AppConfig.PostSettings)
-            {
-                fileUrl = await _minio.Value.UploadFileAsync(x =>
-                {
-                    x.WithBucketPath("/post");
-                    x.WithFormFile(input.File!);
-                });
-            }
-            //else if (input.ConfigName == AppConfig.AboutWeb)
-            //{
-            //    fileUrl = await _minio.Value.UploadFileAsync(x =>
-            //    {
-            //        x.WithBucketPath($"/about");
-            //        x.WithFormFile(input.File!);
-            //    });
-            //}
+                fileUrl = await _fileManage.Value.UploadFileAsync(input.File!, "/post");
 
             return Success(fileUrl);
         }

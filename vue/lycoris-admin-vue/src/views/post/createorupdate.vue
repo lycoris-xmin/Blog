@@ -132,7 +132,7 @@ const form = reactive({
   file: void 0
 });
 
-const fileUpload = (file, callback) => {
+const fileUpload = async (file, callback) => {
   if (file === undefined || file === null) {
     return;
   }
@@ -142,11 +142,10 @@ const fileUpload = (file, callback) => {
     return;
   }
 
-  uploadMarkdownPicture(file).then(res => {
-    if (res.resCode == 0) {
-      callback(res.data);
-    }
-  });
+  let res = await uploadMarkdownPicture(file);
+  if (res.resCode == 0) {
+    callback(res.data);
+  }
 };
 
 const markdownEvents = ref({

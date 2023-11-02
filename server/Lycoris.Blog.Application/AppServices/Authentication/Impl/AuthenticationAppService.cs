@@ -2,9 +2,9 @@
 using Lycoris.AutoMapper.Extensions;
 using Lycoris.Blog.Application.AppServices.Authentication.Dtos;
 using Lycoris.Blog.Application.AppServices.LoginTokens;
+using Lycoris.Blog.Application.Cached.Authentication;
+using Lycoris.Blog.Application.Cached.Authentication.Models;
 using Lycoris.Blog.Application.Shared.Impl;
-using Lycoris.Blog.Cache.Authentication;
-using Lycoris.Blog.Cache.Authentication.Models;
 using Lycoris.Blog.EntityFrameworkCore.Common.Impl;
 using Lycoris.Blog.EntityFrameworkCore.Constants;
 using Lycoris.Blog.EntityFrameworkCore.Repositories;

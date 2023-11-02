@@ -1,6 +1,6 @@
-﻿using Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Models;
-using Lycoris.Blog.Cache.ScheduleQueue;
-using Lycoris.Blog.Cache.ScheduleQueue.Models;
+﻿using Lycoris.Blog.Application.Cached.ScheduleQueue;
+using Lycoris.Blog.Application.Cached.ScheduleQueue.Models;
+using Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Models;
 using Lycoris.Blog.Common;
 using Lycoris.Blog.Core.Logging;
 using Lycoris.Blog.Model.Cnstants;
@@ -45,35 +45,26 @@ namespace Lycoris.Blog.Server.Middlewares
             var ipAddress = GetRequestIpAddress(context);
             context.Items.AddOrUpdate(HttpItems.RequestIP, ipAddress);
 
-            if (!CheckAllowMethod(context))
+            if (IsStaticFileReuqest(context))
             {
-                context.Response.StatusCode = 415;
-                RequestLog(context, "request method invalid", startTime, ipAddress);
-                _logger.Error($"invalid request - {(context.Request.Path.HasValue ? context.Request.Path.Value : "/")} - request method invalid", traceId);
-                return;
-            }
+                var referer = context.Request.Headers.ContainsKey(HttpHeaders.Referer) ? context.Request.Headers[HttpHeaders.Referer].ToString() : "";
 
-            if (!CheckAllowRoute(context))
-            {
-                context.Response.StatusCode = 400;
-                RequestLog(context, "request path invalid", startTime, ipAddress);
-                _logger.Error($"invalid request - {(context.Request.Path.HasValue ? context.Request.Path.Value : "/")} - request path invalid", traceId);
-                return;
+                // 处理防盗链
+                if (referer.IsNullOrEmpty() || !AppSettings.Application.Cors.Origins.Any(x => referer.Contains(x)))
+                {
+                    context.Response.StatusCode = 404;
+                    _logger.Error($"static file request path '{context.Request.Path.Value}' referer:{referer} is not match origins:{string.Join(",", AppSettings.Application.Cors.Origins)}");
+                    return;
+                }
             }
-
-            if (!CheckRequestOrign(context))
-            {
-                context.Response.StatusCode = 400;
-                RequestLog(context, "request orign invalid", startTime, ipAddress);
-                _logger.Error($"invalid request - {(context.Request.Path.HasValue ? context.Request.Path.Value : "/")} - request orign invalid", traceId);
+            else if (!ApiRequestVerification(context, startTime, ipAddress, traceId))
                 return;
-            }
-
-            context.Items.AddOrUpdate(HttpItems.TraceId, traceId);
-            context.Items.AddOrUpdate(HttpItems.RequestTime, DateTime.Now);
 
             try
             {
+                context.Items.AddOrUpdate(HttpItems.TraceId, traceId);
+                context.Items.AddOrUpdate(HttpItems.RequestTime, DateTime.Now);
+
                 var userAgent = context.Request.Headers.ContainsKey(HttpHeaders.UserAgent) ? context.Request.Headers[HttpHeaders.UserAgent].ToString() : "";
                 context.Items.AddOrUpdate(HttpItems.UserAgent, userAgent);
 
@@ -127,6 +118,35 @@ namespace Lycoris.Blog.Server.Middlewares
                 _logger.Error("", ex);
                 return "";
             }
+        }
+
+        private bool ApiRequestVerification(HttpContext context, DateTime startTime, string ipAddress, string traceId)
+        {
+            if (!CheckAllowMethod(context))
+            {
+                context.Response.StatusCode = 415;
+                RequestLog(context, "request method invalid", startTime, ipAddress);
+                _logger.Error($"invalid request - {(context.Request.Path.HasValue ? context.Request.Path.Value : "/")} - request method invalid", traceId);
+                return false;
+            }
+
+            if (!CheckAllowRoute(context))
+            {
+                context.Response.StatusCode = 400;
+                RequestLog(context, "request path invalid", startTime, ipAddress);
+                _logger.Error($"invalid request - {(context.Request.Path.HasValue ? context.Request.Path.Value : "/")} - request path invalid", traceId);
+                return false;
+            }
+
+            if (!CheckRequestOrign(context))
+            {
+                context.Response.StatusCode = 400;
+                RequestLog(context, "request orign invalid", startTime, ipAddress);
+                _logger.Error($"invalid request - {(context.Request.Path.HasValue ? context.Request.Path.Value : "/")} - request orign invalid", traceId);
+                return false;
+            }
+
+            return true;
         }
 
         /// <summary>

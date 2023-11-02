@@ -1,4 +1,4 @@
-﻿namespace Lycoris.Blog.Cache.Email.Models
+﻿namespace Lycoris.Blog.Application.Cached.Email.Models
 {
     /// <summary>
     /// 

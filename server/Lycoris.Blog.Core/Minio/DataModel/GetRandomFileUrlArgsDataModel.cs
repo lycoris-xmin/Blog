@@ -2,7 +2,7 @@
 using Lycoris.Common.Extensions;
 using Minio;
 
-namespace Lycoris.Blog.Core.CloudStorage.Minio.DataModel
+namespace Lycoris.Blog.Core.Minio.DataModel
 {
     public class GetRandomFileUrlArgsDataModel
     {

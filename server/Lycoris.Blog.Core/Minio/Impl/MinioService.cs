@@ -1,5 +1,5 @@
 ﻿using Lycoris.Autofac.Extensions;
-using Lycoris.Blog.Core.CloudStorage.Minio.DataModel;
+using Lycoris.Blog.Core.Minio.DataModel;
 using Lycoris.Blog.EntityFrameworkCore.Constants;
 using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
@@ -10,15 +10,15 @@ using Microsoft.EntityFrameworkCore;
 using Minio;
 using Minio.Exceptions;
 
-namespace Lycoris.Blog.Core.CloudStorage.Minio.Impl
+namespace Lycoris.Blog.Core.Minio.Impl
 {
     [AutofacRegister(ServiceLifeTime.Scoped, PropertiesAutowired = true)]
     public class MinioService : IMinioService
     {
         private readonly IMinioFactory _factory;
-        private readonly IRepository<Configuration, int> _congiguration;
+        private readonly IRepository<Configuration, string> _congiguration;
 
-        public MinioService(IMinioFactory factory, IRepository<Configuration, int> congiguration)
+        public MinioService(IMinioFactory factory, IRepository<Configuration, string> congiguration)
         {
             _factory = factory;
             _congiguration = congiguration;
@@ -168,7 +168,7 @@ namespace Lycoris.Blog.Core.CloudStorage.Minio.Impl
         /// <returns></returns>
         private async Task<MinioConfiguration> GetMinioConfigurationAsync()
         {
-            var data = await _congiguration.GetAll().Where(x => x.ConfigId == AppConfig.FileUpload).SingleOrDefaultAsync();
+            var data = await _congiguration.GetAll().Where(x => x.Id == AppConfig.FileUpload).SingleOrDefaultAsync();
 
             if (data == null || data.Value.IsNullOrEmpty())
                 throw new ArgumentNullException($"can not find setting with '{AppConfig.FileUpload}'");

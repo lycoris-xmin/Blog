@@ -1,6 +1,6 @@
 ﻿using Lycoris.Blog.Application.AppServices.Authentication.Dtos;
 
-namespace Lycoris.Blog.Cache.Authentication.Models
+namespace Lycoris.Blog.Application.Cached.Authentication.Models
 {
     public class LoginOathCodeCacheModel
     {

@@ -1,8 +1,8 @@
 ﻿using Lycoris.Autofac.Extensions;
-using Lycoris.Blog.Cache.LoginFailedRecord.Models;
+using Lycoris.Blog.Application.Cached.LoginFailedRecord.Models;
 using Lycoris.Blog.Common.Cache;
 
-namespace Lycoris.Blog.Cache.LoginFailedRecord.Impl
+namespace Lycoris.Blog.Application.Cached.LoginFailedRecord.Impl
 {
     [AutofacRegister(ServiceLifeTime.Singleton)]
     public class LoginFailedRecordCacheService : ILoginFailedRecordCacheService

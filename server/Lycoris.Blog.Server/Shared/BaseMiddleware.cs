@@ -16,11 +16,6 @@ namespace Lycoris.Blog.Server.Shared
         /// <summary>
         /// 
         /// </summary>
-        protected bool IgnoreStaticFileReuqest { get; set; } = true;
-
-        /// <summary>
-        /// 
-        /// </summary>
         protected readonly RequestDelegate _next;
 
         /// <summary>
@@ -47,12 +42,6 @@ namespace Lycoris.Blog.Server.Shared
         public async Task Invoke(HttpContext context)
         {
             if (IgnoreOpptionsReuqest && IsOpptionsReuqest(context))
-            {
-                await _next.Invoke(context);
-                return;
-            }
-
-            if (IgnoreStaticFileReuqest && IsStaticFileReuqest(context))
             {
                 await _next.Invoke(context);
                 return;
@@ -87,6 +76,6 @@ namespace Lycoris.Blog.Server.Shared
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        protected static bool IsStaticFileReuqest(HttpContext context) => context.Request.Path.HasValue && AppSettings.Path.StaticFilePath.Any(x => context.Request.Path.Value.StartsWith(x));
+        protected static bool IsStaticFileReuqest(HttpContext context) => context.Request.Path.HasValue && AppSettings.StaticFileExtension.Any(x => context.Request.Path.Value.EndsWith(x));
     }
 }

@@ -30,6 +30,11 @@ namespace Lycoris.Blog.Common
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        public static List<string> StaticFileExtension { get => new() { ".css", ".js", ".jpg", ".jpeg", ".gif", ".bmp", ".png", ".ico" }; }
+
+        /// <summary>
         /// 程序文件路径
         /// </summary>
         public class Path
@@ -70,7 +75,7 @@ namespace Lycoris.Blog.Common
             /// <summary>
             /// AppData文件
             /// </summary>
-            private static string AppData { get => $"{RootPath}/AppData"; }
+            public static string AppData { get => $"{RootPath}/AppData"; }
 
             /// <summary>
             /// 
@@ -90,11 +95,6 @@ namespace Lycoris.Blog.Common
                     return $"{AppData}/appsettings.Development.json";
                 }
             }
-
-            /// <summary>
-            /// 
-            /// </summary>
-            public static List<string> StaticFilePath { get => new() { "/css", "/fonts", "/global", "/icon", "/images", "/js", "/summernote", "/sweetalert", "/viewsource", "/favicon.ico" }; }
 
             public class EmailTemplate
             {
@@ -155,6 +155,26 @@ namespace Lycoris.Blog.Common
                 set
                 {
                     _HttpPort = value;
+                }
+            }
+            #endregion
+
+            #region 域名
+            private static string? _Domain = null;
+
+            /// <summary>
+            /// 允许记录日志的最小等级
+            /// </summary>
+            public static string Domain
+            {
+                get
+                {
+                    if (_Domain != null)
+                        return _Domain;
+
+                    _Domain = SettingManager.TryGetConfig("Application:Domain");
+                    _Domain ??= "http://127.0.0.1";
+                    return _Domain;
                 }
             }
             #endregion
@@ -473,7 +493,6 @@ namespace Lycoris.Blog.Common
                         var value = SettingManager.TryGetConfig("Sql:SeedData:Password");
                         if (value.IsNullOrEmpty())
                             throw new ArgumentNullException("Sql:SeedData:Password");
-
                         return value;
                     }
                 }

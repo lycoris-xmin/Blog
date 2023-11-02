@@ -1,8 +1,8 @@
 ﻿using Lycoris.Autofac.Extensions;
-using Lycoris.Blog.Cache.Email.Models;
+using Lycoris.Blog.Application.Cached.Email.Models;
 using Lycoris.Blog.Common.Cache;
 
-namespace Lycoris.Blog.Cache.Email.Impl
+namespace Lycoris.Blog.Application.Cached.Email.Impl
 {
     /// <summary>
     /// 

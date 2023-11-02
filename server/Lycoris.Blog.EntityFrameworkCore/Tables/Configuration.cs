@@ -13,16 +13,9 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
     /// 网站配置表
     /// </summary>
     [Table("Configuration")]
-    [TableIndex("ConfigId", true)]
     [TableIndex("ConfigName")]
-    public class Configuration : MySqlBaseEntity<int>
+    public class Configuration : MySqlBaseEntity<string>
     {
-        /// <summary>
-        /// 配置标识
-        /// </summary>
-        [TableColumn(StringLength = 100)]
-        public string ConfigId { get; set; } = string.Empty;
-
         /// <summary>
         /// 配置名称
         /// </summary>
@@ -34,6 +27,11 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
         /// </summary>
         [TableColumn(Sensitive = true)]
         public string Value { get; set; } = "";
+
+        /// <summary>
+        /// 侧首
+        /// </summary>
+        public string Test { get; set; } = "";
 
         /// <summary>
         /// 配置保存格式
@@ -54,7 +52,6 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
         /// <returns></returns>
         private static List<object> GetConfiguration(FieldInfo[]? fieids)
         {
-            var id = 1;
             var list = new List<object>();
 
             if (fieids != null && fieids.Length > 0)
@@ -67,8 +64,7 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
 
                     list.Add(new Configuration()
                     {
-                        Id = id++,
-                        ConfigId = (string?)fieid.GetRawConstantValue() ?? "",
+                        Id = (string?)fieid.GetRawConstantValue() ?? "",
                         ConfigName = attr.Description,
                         ValueType = attr.ValueType,
                         Value = attr.DefaultObject != null ? Activator.CreateInstance(attr.DefaultObject).ToJson(new JsonSerializerSettings()

@@ -11,7 +11,7 @@ namespace Lycoris.Blog.EntityFrameworkCore.Repositories.Impl
     [AutofacRegister(ServiceLifeTime.Scoped)]
     public class ConfigurationRepository : IConfigurationRepository
     {
-        private readonly IRepository<Configuration, int> _repository;
+        private readonly IRepository<Configuration, string> _repository;
         private readonly IMemoryCacheManager _memoryCache;
 
         /// <summary>
@@ -19,7 +19,7 @@ namespace Lycoris.Blog.EntityFrameworkCore.Repositories.Impl
         /// </summary>
         /// <param name="repository"></param>
         /// <param name="memoryCache"></param>
-        public ConfigurationRepository(IRepository<Configuration, int> repository, IMemoryCacheManager memoryCache)
+        public ConfigurationRepository(IRepository<Configuration, string> repository, IMemoryCacheManager memoryCache)
         {
             _repository = repository;
             _memoryCache = memoryCache;
@@ -30,7 +30,7 @@ namespace Lycoris.Blog.EntityFrameworkCore.Repositories.Impl
         /// </summary>
         /// <param name="configId"></param>
         /// <returns></returns>
-        public Task<Configuration?> GetDataAsync(string configId) => _repository.GetAsync(x => x.ConfigId == configId);
+        public Task<Configuration?> GetDataAsync(string configId) => _repository.GetAsync(x => x.Id == configId);
 
         /// <summary>
         /// 
@@ -43,7 +43,7 @@ namespace Lycoris.Blog.EntityFrameworkCore.Repositories.Impl
             if (!cache.IsNullOrEmpty())
                 return cache!;
 
-            cache = await _repository.GetSelectAsync(x => x.ConfigId == configId, x => x.Value) ?? "";
+            cache = await _repository.GetSelectAsync(x => x.Id == configId, x => x.Value) ?? "";
 
             if (!cache.IsNullOrEmpty())
                 SetCache(configId, cache);
@@ -63,7 +63,7 @@ namespace Lycoris.Blog.EntityFrameworkCore.Repositories.Impl
             if (!cache.IsNullOrEmpty())
                 return cache!.ToObject<T>();
 
-            cache = await _repository.GetSelectAsync(x => x.ConfigId == configId, x => x.Value) ?? "";
+            cache = await _repository.GetSelectAsync(x => x.Id == configId, x => x.Value) ?? "";
 
             if (!cache.IsNullOrEmpty())
                 SetCache(configId, cache);

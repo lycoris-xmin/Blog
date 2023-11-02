@@ -1,6 +1,6 @@
-﻿using Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Models;
-using Lycoris.Blog.Cache.ScheduleQueue;
-using Lycoris.Blog.Cache.ScheduleQueue.Models;
+﻿using Lycoris.Blog.Application.Cached.ScheduleQueue;
+using Lycoris.Blog.Application.Cached.ScheduleQueue.Models;
+using Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Models;
 using Lycoris.Blog.Core.Logging;
 using Lycoris.Blog.Model.Cnstants;
 using Lycoris.Blog.Model.Contexts;
@@ -58,6 +58,13 @@ namespace Lycoris.Blog.Server.Middlewares
 
             var requestHeaders = GetHttpReqeustHeadersMap(context);
 
+            if (IsStaticFileReuqest(context))
+            {
+                _logger.Info($"{httpMethod} -> {context.Request.Path.Value} - {requestIp}");
+                await _next(context);
+                return;
+            }
+
             // 头部信息记录
             if (requestHeaders.Any())
                 _logger.Info($"{httpMethod} -> request headers:[{string.Join(", ", requestHeaders.Select(x => $"{x.Key}:{x.Value}"))}]", traceId);
@@ -77,7 +84,6 @@ namespace Lycoris.Blog.Server.Middlewares
             var requestTime = context.Items.GetValue<DateTime>(HttpItems.RequestTime);
             var response = context.Items.GetValue(HttpItems.ResponseBody);
             var statusCode = context.Response.StatusCode;
-
 
             context.Response.OnCompleted(() => ResponseOnCompletedAsync(httpMethod, requestTime, responseHeaders, response, statusCode, path, body ?? "", requestIp));
 

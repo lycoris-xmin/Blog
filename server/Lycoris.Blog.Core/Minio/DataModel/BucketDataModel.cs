@@ -1,4 +1,4 @@
-﻿namespace Lycoris.Blog.Core.CloudStorage.Minio.DataModel
+﻿namespace Lycoris.Blog.Core.Minio.DataModel
 {
     public class BucketDataModel
     {

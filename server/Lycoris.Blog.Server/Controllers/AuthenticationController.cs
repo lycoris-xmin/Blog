@@ -1,9 +1,9 @@
 ﻿using Lycoris.AutoMapper.Extensions;
 using Lycoris.Blog.Application.AppServices.Authentication;
 using Lycoris.Blog.Application.AppServices.Authentication.Dtos;
-using Lycoris.Blog.Cache.Authentication;
-using Lycoris.Blog.Cache.Email;
-using Lycoris.Blog.Cache.Email.Models;
+using Lycoris.Blog.Application.Cached.Authentication;
+using Lycoris.Blog.Application.Cached.Email;
+using Lycoris.Blog.Application.Cached.Email.Models;
 using Lycoris.Blog.Core.Email;
 using Lycoris.Blog.Core.Email.DataModel;
 using Lycoris.Blog.Model.Exceptions;

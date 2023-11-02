@@ -1,8 +1,8 @@
 ﻿using Lycoris.Autofac.Extensions;
 using Lycoris.AutoMapper.Extensions;
 using Lycoris.Blog.Application.AppServices.LoginTokens;
+using Lycoris.Blog.Application.Cached.SignalR;
 using Lycoris.Blog.Application.SignalR.Shared.Models;
-using Lycoris.Blog.Cache.SignalR;
 using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
 using Lycoris.Blog.Model.Exceptions;

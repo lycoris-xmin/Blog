@@ -1,7 +1,7 @@
 ﻿using Lycoris.Blog.Application.AppServices.Authentication.Dtos;
-using Lycoris.Blog.Cache.Authentication.Models;
+using Lycoris.Blog.Application.Cached.Authentication.Models;
 
-namespace Lycoris.Blog.Cache.Authentication
+namespace Lycoris.Blog.Application.Cached.Authentication
 {
     public interface IAuthenticationCacheService
     {

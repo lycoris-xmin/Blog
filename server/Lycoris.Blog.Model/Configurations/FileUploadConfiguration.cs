@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Lycoris.Blog.Model.Exceptions;
+using Newtonsoft.Json;
 using System.ComponentModel;
 
 namespace Lycoris.Blog.Model.Configurations
@@ -12,6 +13,11 @@ namespace Lycoris.Blog.Model.Configurations
         /// 
         /// </summary>
         public FileSaveChannelEnum SaveChannel { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool LocalBackup { get; set; } = true;
 
         /// <summary>
         /// 
@@ -77,14 +83,9 @@ namespace Lycoris.Blog.Model.Configurations
         public string RepositoryUrl { get; set; } = string.Empty;
 
         /// <summary>
-        /// 存储路径
-        /// </summary>
-        public string RepositoryPath { get; set; } = string.Empty;
-
-        /// <summary>
         /// CND加速
         /// </summary>
-        public string CDN { get; set; } = "https://cdn.jsdelivr.net/gh";
+        public string CDN { get; set; } = "https://cdn.jsdelivr.net";
 
         /// <summary>
         /// 
@@ -95,6 +96,32 @@ namespace Lycoris.Blog.Model.Configurations
         /// 
         /// </summary>
         public string CommitterEmail { get; set; } = string.Empty;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="FriendlyException"></exception>
+        public (string owner, string repo) AnalyzeRepository()
+        {
+            var url = this.RepositoryUrl.Replace("https://github.com/", "");
+
+            var paths = url.Split('/');
+
+            if (paths.Length != 2)
+                throw new FriendlyException("");
+
+            return (paths[0], paths[1].Split('.').FirstOrDefault()!);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="owner"></param>
+        /// <param name="repo"></param>
+        /// <param name="remotePath"></param>
+        /// <returns></returns>
+        public string ChangeJsDelivrCDNUrl(string owner, string repo, string? remotePath) => $"{this.CDN}/gh/{owner}/{repo}/{remotePath?.TrimStart('/') ?? ""}";
     }
 
     /// <summary>

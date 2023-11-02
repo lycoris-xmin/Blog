@@ -1,11 +1,11 @@
-﻿using Lycoris.Blog.Application.AppServices.WebSiteAbouts;
+﻿using Lycoris.Blog.Application.AppServices.WebSite;
 using Lycoris.Blog.EntityFrameworkCore.Constants;
 using Lycoris.Blog.Model.Configurations;
 using Lycoris.Blog.Model.Exceptions;
 using Lycoris.Blog.Model.Global.Output;
 using Lycoris.Blog.Server.Application.Constants;
 using Lycoris.Blog.Server.FilterAttributes;
-using Lycoris.Blog.Server.Models.Configurations;
+using Lycoris.Blog.Server.Models.WebSite;
 using Lycoris.Blog.Server.Shared;
 using Lycoris.Common.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -16,16 +16,16 @@ namespace Lycoris.Blog.Server.Controllers
     /// <summary>
     /// 
     /// </summary>
-    [Route($"{HostConstant.RoutePrefix}/WebSite/About"), AppAuthentication]
-    public class WebSiteAboutController : BaseController
+    [Route($"{HostConstant.RoutePrefix}/WebSite"), AppAuthentication]
+    public class WebSiteController : BaseController
     {
-        private readonly IWebSiteAboutAppService _webSiteAbout;
+        private readonly IWebSiteAppService _webSiteAbout;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="webSiteAbout"></param>
-        public WebSiteAboutController(IWebSiteAboutAppService webSiteAbout)
+        public WebSiteController(IWebSiteAppService webSiteAbout)
         {
             _webSiteAbout = webSiteAbout;
         }
@@ -34,7 +34,7 @@ namespace Lycoris.Blog.Server.Controllers
         /// 获取关于本站文章
         /// </summary>
         /// <returns></returns>
-        [HttpGet("Web")]
+        [HttpGet("About/Web")]
         [Produces("application/json")]
         public async Task<DataOutput<string>> WebAbout()
         {
@@ -46,7 +46,7 @@ namespace Lycoris.Blog.Server.Controllers
         /// 保存关于本站信息
         /// </summary>
         /// <returns></returns>
-        [HttpPost("Web")]
+        [HttpPost("About/Web")]
         [GanssXssSettings("Value")]
         [Consumes("application/json"), Produces("application/json")]
         public async Task<BaseOutput> SaveAbout([FromBody] SaveAboutWebInput input)
@@ -59,7 +59,7 @@ namespace Lycoris.Blog.Server.Controllers
         /// 获取关于我相关信息
         /// </summary>
         /// <returns></returns>
-        [HttpGet("Me/{type}")]
+        [HttpGet("About/Me/{type}")]
         [Produces("application/json")]
         public async Task<DataOutput<string>> AboutMe(string? type)
         {
@@ -89,7 +89,7 @@ namespace Lycoris.Blog.Server.Controllers
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        [HttpPost("Me")]
+        [HttpPost("About/Me")]
         [Consumes("application/json"), Produces("application/json")]
         public async Task<BaseOutput> SaveAboutMe([FromBody] SaveAboutMeInput input)
         {
@@ -127,6 +127,22 @@ namespace Lycoris.Blog.Server.Controllers
             }
 
             return Success();
+        }
+
+        /// <summary>
+        /// 文件上传
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpPost("About/Upload")]
+        [Consumes("multipart/form-data"), Produces("application/json")]
+        public async Task<DataOutput<string>> Upload([FromForm] WebSiteFileUploadInput input)
+        {
+            var fileUrl = "";
+
+            fileUrl = await _webSiteAbout.UploadFileAsync(input.File!, input.Path!);
+
+            return Success(fileUrl);
         }
     }
 }

@@ -1,8 +1,9 @@
 ﻿using Lycoris.Blog.Application.Shared;
+using Microsoft.AspNetCore.Http;
 
-namespace Lycoris.Blog.Application.AppServices.WebSiteAbouts
+namespace Lycoris.Blog.Application.AppServices.WebSite
 {
-    public interface IWebSiteAboutAppService : IApplicationBaseService
+    public interface IWebSiteAppService : IApplicationBaseService
     {
         /// <summary>
         /// 
@@ -34,5 +35,13 @@ namespace Lycoris.Blog.Application.AppServices.WebSiteAbouts
         /// <param name="value"></param>
         /// <returns></returns>
         Task SaveAboutAsync<T>(string configId, T value) where T : class;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="remotePath"></param>
+        /// <returns></returns>
+        Task<string> UploadFileAsync(IFormFile file, string remotePath);
     }
 }

@@ -139,7 +139,7 @@ const error = err => {
       );
     }
 
-    if (err.response.status == 401 || err.response.status == 403) {
+    if (err.response.status == 400 || err.response.status == 401 || err.response.status == 403) {
       toLoginPage();
       return reject(
         {
@@ -151,9 +151,6 @@ const error = err => {
     }
 
     switch (err.response.status) {
-      case 400:
-        err.message = '系统繁忙，请稍候再试';
-        break;
       case 404:
         err.message = '请求错误,未找到该资源';
         break;

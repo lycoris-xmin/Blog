@@ -123,7 +123,14 @@ const serverMonitorLineInit = () => {
       },
       show: true,
       min: 0,
-      max: 100
+      max: function (value) {
+        if (isNaN(value.max)) {
+          return 100;
+        }
+
+        return Math.ceil(value.max + 10);
+      },
+      minInterval: 0.01
     },
     series: charts.serverMonitor.legendData.map(x => {
       return {
@@ -184,7 +191,26 @@ const requestMonitorLineInit = () => {
     xAxis: {
       data: []
     },
-    yAxis: {},
+    yAxis: {
+      minInterval: 1,
+      min: 0,
+      max: function (value) {
+        if (isNaN(value.max)) {
+          return 100;
+        }
+        if (value.max < 5) {
+          return 5;
+        } else if (value.max < 10) {
+          return 10;
+        } else if (value.max < 50) {
+          return value.max + 5;
+        } else if (value.max < 100) {
+          return value.max + 10;
+        } else {
+          return value.max + 100;
+        }
+      }
+    },
     series: charts.requestMonitor.legendData.map(x => {
       return {
         name: x,
@@ -294,16 +320,6 @@ const refreshRequestMonitor = list => {
       }
     ]
   };
-
-  if (list.filter(x => x.request > 0 || x.pv > 0 || x.uv > 0).length == 0) {
-    option.yAxis = {
-      min: 0,
-      max: 5,
-      axisLabel: {
-        interval: 1
-      }
-    };
-  }
 
   charts.requestMonitor.instance.setOption(option);
 };

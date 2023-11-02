@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Lycoris.Blog.Server.Models.Configurations
+namespace Lycoris.Blog.Server.Models.WebSite
 {
     /// <summary>
     /// 

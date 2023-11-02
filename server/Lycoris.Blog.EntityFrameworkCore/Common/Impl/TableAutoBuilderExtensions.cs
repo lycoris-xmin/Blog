@@ -33,8 +33,6 @@ namespace Lycoris.Blog.EntityFrameworkCore.Common.Impl
             var xmlDoc = new XPathDocument(Path.Combine(AppContext.BaseDirectory, $"{assembly.GetName().Name}.xml"));
             var navigator = xmlDoc.CreateNavigator();
 
-
-
             // 添加表
             foreach (var item in tables)
             {

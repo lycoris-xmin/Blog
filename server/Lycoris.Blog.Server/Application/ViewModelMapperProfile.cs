@@ -220,8 +220,6 @@ namespace Lycoris.Blog.Server.Application
             CreateMap<SiteNavigationDomainDataDto, SiteNavigationDomainDataViewModel>();
 
             CreateMap<SiteNavigationDataDto, SiteNavigationDataViewModel>();
-
-            CreateMap<SaveMinioSettings, MinioConfiguration>();
         }
 
         /// <summary>

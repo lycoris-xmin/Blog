@@ -1,9 +1,9 @@
 ﻿using Lycoris.Autofac.Extensions;
 using Lycoris.AutoMapper.Extensions;
 using Lycoris.Blog.Application.AppServices.Categorys.Dtos;
+using Lycoris.Blog.Application.AppServices.FileManage;
 using Lycoris.Blog.Application.Shared.Dtos;
 using Lycoris.Blog.Application.Shared.Impl;
-using Lycoris.Blog.Core.CloudStorage.Minio;
 using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
 using Lycoris.Blog.Model.Exceptions;
@@ -17,12 +17,12 @@ namespace Lycoris.Blog.Application.AppServices.Categorys.Impl
     public class CategoryAppService : ApplicationBaseService, ICategoryAppService
     {
         private readonly IRepository<Category, int> _category;
-        private readonly IMinioService _minio;
+        private readonly IFileManageAppService _fileManage;
 
-        public CategoryAppService(IRepository<Category, int> category, IMinioService minio)
+        public CategoryAppService(IRepository<Category, int> category, IFileManageAppService fileManage)
         {
             _category = category;
-            _minio = minio;
+            _fileManage = fileManage;
         }
 
         /// <summary>
@@ -66,13 +66,7 @@ namespace Lycoris.Blog.Application.AppServices.Categorys.Impl
                 throw new FriendlyException("分类名称重复");
 
             if (input.File != null)
-            {
-                input.Icon = await _minio.UploadFileAsync(x =>
-                {
-                    x.WithBucketPath("/category");
-                    x.WithFormFile(input.File!);
-                });
-            }
+                input.Icon = await _fileManage.UploadFileAsync(input.File!, "/category");
 
             var data = input.ToMap<Category>();
 
@@ -96,13 +90,8 @@ namespace Lycoris.Blog.Application.AppServices.Categorys.Impl
 
             if (input.File != null)
             {
-                input.Icon = await _minio.UploadFileAsync(x =>
-                {
-                    x.WithBucketPath("/category");
-                    x.WithFormFile(input.File!);
-                });
-
                 oldIcon = data.Icon;
+                input.Icon = await _fileManage.UploadFileAsync(input.File!, "/category");
             }
 
             input.Keyword = string.Join(",", input.Keyword?.Split(',')?.Distinct().ToArray() ?? Array.Empty<string>());
@@ -127,7 +116,10 @@ namespace Lycoris.Blog.Application.AppServices.Categorys.Impl
                 await _category.UpdateFieIdsAsync(data, fieIds);
 
             if (oldIcon.IsNullOrEmpty())
-                await _minio.RemoveFileAsync(x => x.WithFileUrl(oldIcon));
+            {
+                // 删除文件
+                await _fileManage.SetFileDeleteAsync(oldIcon);
+            }
 
             return data.ToMap<CategoryDataDto>();
         }
@@ -146,6 +138,7 @@ namespace Lycoris.Blog.Application.AppServices.Categorys.Impl
             if (!data.Icon.IsNullOrEmpty())
             {
                 // 移除minio里的文件
+                await _fileManage.SetFileDeleteAsync(data.Icon);
             }
 
             await _category.DeleteAsync(id);

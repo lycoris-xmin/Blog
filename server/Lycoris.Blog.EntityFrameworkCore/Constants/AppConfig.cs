@@ -35,7 +35,7 @@ namespace Lycoris.Blog.EntityFrameworkCore.Constants
         /// <summary>
         /// 文件上传设置
         /// </summary>
-        [Configuration("SEO设置", typeof(FileUploadConfiguration))]
+        [Configuration("文件上传设置", typeof(FileUploadConfiguration))]
         public const string FileUpload = "App.FileUpload";
 
         /// <summary>

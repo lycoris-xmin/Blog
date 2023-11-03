@@ -20,11 +20,11 @@ namespace Lycoris.Blog.Application.AppServices.FileManage.Impl
     [AutofacRegister(ServiceLifeTime.Scoped, PropertiesAutowired = true)]
     public class FileManageAppService : ApplicationBaseService, IFileManageAppService
     {
-        private readonly IRepository<StaticFiles, long> _repository;
+        private readonly IRepository<StaticFile, long> _repository;
         private readonly Lazy<IGithubService> _github;
         private readonly Lazy<IMinioService> _minio;
 
-        public FileManageAppService(IRepository<StaticFiles, long> repository, Lazy<IGithubService> github, Lazy<IMinioService> minio)
+        public FileManageAppService(IRepository<StaticFile, long> repository, Lazy<IGithubService> github, Lazy<IMinioService> minio)
         {
             _repository = repository;
             _github = github;
@@ -45,7 +45,7 @@ namespace Lycoris.Blog.Application.AppServices.FileManage.Impl
             {
                 var fileName = $"{Guid.NewGuid():N}{Path.GetExtension(file.FileName)}";
 
-                var data = new StaticFiles()
+                var data = new StaticFile()
                 {
                     Path = $"/{path.TrimStart('/').TrimEnd('/')}",
                     FileName = fileName,
@@ -123,7 +123,7 @@ namespace Lycoris.Blog.Application.AppServices.FileManage.Impl
         /// <param name="file"></param>
         /// <param name="data"></param>
         /// <returns></returns>
-        private async Task<StaticFiles> GitHubUploadFileAsync(IFormFile file, StaticFiles data)
+        private async Task<StaticFile> GitHubUploadFileAsync(IFormFile file, StaticFile data)
         {
             data.SaveChannel = FileSaveChannelEnum.Github;
 
@@ -141,7 +141,7 @@ namespace Lycoris.Blog.Application.AppServices.FileManage.Impl
         /// <param name="file"></param>
         /// <param name="data"></param>
         /// <returns></returns>
-        private async Task<StaticFiles> MinioUploadFileAsync(IFormFile file, StaticFiles data)
+        private async Task<StaticFile> MinioUploadFileAsync(IFormFile file, StaticFile data)
         {
             data.SaveChannel = FileSaveChannelEnum.Minio;
 

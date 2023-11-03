@@ -77,6 +77,22 @@ namespace Lycoris.Blog.Core.Github.Impl
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="remotePath"></param>
+        /// <returns></returns>
+        public async Task<byte[]?> GetFileAsync(string remotePath)
+        {
+            var config = await GetConfigurationAsync();
+
+            var (owner, repo) = config.AnalyzeRepository();
+
+            var client = CreateGitHubClient(config);
+
+            return await client.Repository.Content.GetRawContent(owner, repo, remotePath.TrimStart('/'));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="sha"></param>
         /// <param name="remotePath"></param>
         /// <returns></returns>
@@ -88,7 +104,7 @@ namespace Lycoris.Blog.Core.Github.Impl
 
             var client = CreateGitHubClient(config);
 
-            await client.Repository.Content.DeleteFile(owner, repo, remotePath, new DeleteFileRequest("delete file", sha));
+            await client.Repository.Content.DeleteFile(owner, repo, remotePath.TrimStart('/'), new DeleteFileRequest("delete file", sha));
         }
 
         /// <summary>

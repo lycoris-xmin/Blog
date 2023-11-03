@@ -25,9 +25,10 @@ namespace Lycoris.Blog.Application
             services.AddQuartzSchedulerCenter(opt =>
             {
                 opt.AddJob<ScheduleQueueJob>();
-                opt.AddJob<DBRegularCleaningJob>();
+                opt.AddJob<DBRegularCleanerJob>();
                 opt.AddJob<WebStatisticsJob>();
                 opt.AddJob<ServerMonitorJob>();
+                opt.AddJob<StaticFileCleanerJob>();
                 opt.DisabledRunHostedJob();
             });
         }

@@ -22,5 +22,20 @@ namespace Lycoris.Blog.Core.Github
         /// <returns></returns>
         /// <exception cref="FriendlyException"></exception>
         Task<(string url, string? sha)> UploadFileAsync(IFormFile file, string remotePath);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="remotePath"></param>
+        /// <returns></returns>
+        Task<byte[]?> GetFileAsync(string remotePath);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sha"></param>
+        /// <param name="remotePath"></param>
+        /// <returns></returns>
+        Task RemoveFileAsync(string sha, string remotePath);
     }
 }

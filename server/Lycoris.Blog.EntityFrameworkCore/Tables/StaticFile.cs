@@ -9,11 +9,12 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
     /// <summary>
     /// 上传文件
     /// </summary>
-    [Table("StaticFiles")]
+    [Table("StaticFile")]
     [TableIndex("SaveChannel")]
     [TableIndex("PathUrl")]
     [TableIndex("Use")]
-    public class StaticFiles : MySqlBaseEntity<long>
+    [TableIndex("CreateTime")]
+    public class StaticFile : MySqlBaseEntity<long>
     {
         /// <summary>
         /// 文件访问路径

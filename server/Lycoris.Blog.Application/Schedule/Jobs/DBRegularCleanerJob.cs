@@ -9,7 +9,7 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
 {
     [DisallowConcurrentExecution]
     [QuartzJob("数据库垃圾数据定时清理", Trigger = QuartzTriggerEnum.CRON, Cron = "0 0 1 * * ?")]
-    public class DBRegularCleaningJob : BaseJob
+    public class DBRegularCleanerJob : BaseJob
     {
         private readonly IRepository<RequestLog, long> _requestLog;
         private readonly IRepository<BrowseLog, long> _browseLog;
@@ -21,11 +21,11 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
         /// </summary>
         /// <param name="requestLog"></param>
         /// <param name="browseLog"></param>
-        public DBRegularCleaningJob(ILycorisLoggerFactory factory,
+        public DBRegularCleanerJob(ILycorisLoggerFactory factory,
                                     IRepository<RequestLog, long> requestLog,
                                     IRepository<BrowseLog, long> browseLog,
                                     IRepository<PostComment, long> postComment,
-                                    IRepository<LeaveMessage, int> leaveMessage) : base(factory.CreateLogger<DBRegularCleaningJob>())
+                                    IRepository<LeaveMessage, int> leaveMessage) : base(factory.CreateLogger<DBRegularCleanerJob>())
         {
             _requestLog = requestLog;
             _browseLog = browseLog;

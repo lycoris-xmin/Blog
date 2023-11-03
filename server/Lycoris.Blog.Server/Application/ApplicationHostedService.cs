@@ -41,14 +41,14 @@ namespace Lycoris.Blog.Server.Application
         /// <returns></returns>
         public async Task StartAsync(CancellationToken cancellationToken)
         {
+            RequestRouteMapInit();
+
             _serverMonitor.BeginRunTime = DateTime.Now;
 
             using var scope = _serviceProvider.CreateScope();
 
             // 数据库迁移，预热
             await EntityFrameworkCoreWarmUpAsync(scope.ServiceProvider);
-
-            RequestRouteMapInit();
 
             await SensitiveWordStoreInitAsync();
 

@@ -59,7 +59,7 @@ namespace Lycoris.Blog.EntityFrameworkCore.Common.Impl
                     if (column.IsPrimary)
                         _builder.HasKey(p.Name);
 
-                    _builder.Property(p.Name).TableColumnAutoBuilder(p, column, item.FullName, navigator);
+                    _builder.Property(p.Name).TableColumnAutoBuilder(p, column, item.FullName, navigator, assembly);
                 }
 
                 // 表索引
@@ -91,7 +91,8 @@ namespace Lycoris.Blog.EntityFrameworkCore.Common.Impl
         /// <param name="column"></param>
         /// <param name="className"></param>
         /// <param name="navigator"></param>
-        private static void TableColumnAutoBuilder(this PropertyBuilder propertyBuilder, PropertyInfo? p, TableColumnAttribute column, string? className, XPathNavigator navigator)
+        /// <param name="assembly"></param>
+        private static void TableColumnAutoBuilder(this PropertyBuilder propertyBuilder, PropertyInfo? p, TableColumnAttribute column, string? className, XPathNavigator navigator, Assembly assembly)
         {
             if (p == null)
                 return;
@@ -150,9 +151,10 @@ namespace Lycoris.Blog.EntityFrameworkCore.Common.Impl
                     propertyBuilder.HasConversion<SqlSensitiveConverter>();
             }
 
-            // 注释
+            // 注释（列注释）
             var memberName = $"P:{className}.{p.Name}";
             var summaryNode = navigator.SelectSingleNode($"/doc/members/member[@name='{memberName}']/summary");
+
             var comment = summaryNode?.InnerXml.Trim();
             comment ??= "";
 
@@ -162,10 +164,15 @@ namespace Lycoris.Blog.EntityFrameworkCore.Common.Impl
 
                 comment += "：";
 
+                var _navigator = assembly != p.PropertyType.Assembly ? GetOtherAssemblySummary(p.PropertyType) : navigator;
+
                 foreach (var item in fields)
                 {
+                    // 列枚举注释
+                    // 由于枚举值存放位置可能不在当前程序集，所以如果当前程序集没有找到列
                     var value = item.GetValue(null);
-                    summaryNode = navigator.SelectSingleNode($"/doc/members/member[@name='F:{p.PropertyType.FullName}.{value}']/summary");
+                    summaryNode = _navigator.SelectSingleNode($"/doc/members/member[@name='F:{p.PropertyType.FullName}.{value}']/summary");
+
                     comment += $"{(int)value!}-{summaryNode?.InnerXml.Trim() ?? ""},";
                 }
 
@@ -173,6 +180,17 @@ namespace Lycoris.Blog.EntityFrameworkCore.Common.Impl
             }
 
             propertyBuilder.HasComment(comment);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="propertyType"></param>
+        /// <returns></returns>
+        private static XPathNavigator GetOtherAssemblySummary(Type propertyType)
+        {
+            var xmlDoc = new XPathDocument(Path.Combine(AppContext.BaseDirectory, $"{propertyType.Assembly.GetName().Name}.xml"));
+            return xmlDoc.CreateNavigator();
         }
     }
 }

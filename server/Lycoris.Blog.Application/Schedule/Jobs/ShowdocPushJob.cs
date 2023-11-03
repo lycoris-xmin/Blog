@@ -1,7 +1,7 @@
 ﻿using Lycoris.Blog.Application.Schedule.Shared;
 using Lycoris.Blog.Core.Logging;
 using Lycoris.Blog.Core.Showdoc;
-using Lycoris.Quartz.Extensions.Job;
+using Lycoris.Quartz.Extensions;
 using Quartz;
 
 namespace Lycoris.Blog.Application.Schedule.Jobs

@@ -22,15 +22,12 @@ namespace Lycoris.Blog.Application
             services.AddSingleton(minio);
 
             // 任务调度
-            services.AddQuartzSchedulerCenter(opt =>
-            {
-                opt.AddJob<ScheduleQueueJob>();
-                opt.AddJob<DBRegularCleanerJob>();
-                opt.AddJob<WebStatisticsJob>();
-                opt.AddJob<ServerMonitorJob>();
-                opt.AddJob<StaticFileCleanerJob>();
-                opt.DisabledRunHostedJob();
-            });
+            services.AddQuartzSchedulerCenter()
+                    .AddQuartzSchedulerJob<ScheduleQueueJob>()
+                    .AddQuartzSchedulerJob<DBRegularCleanerJob>()
+                    .AddQuartzSchedulerJob<WebStatisticsJob>()
+                    .AddQuartzSchedulerJob<ServerMonitorJob>()
+                    .AddQuartzSchedulerJob<StaticFileCleanerJob>();
         }
     }
 }

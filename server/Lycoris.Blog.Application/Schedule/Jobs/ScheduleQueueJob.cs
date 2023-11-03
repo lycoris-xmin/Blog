@@ -4,7 +4,7 @@ using Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue;
 using Lycoris.Blog.Application.Schedule.Shared;
 using Lycoris.Blog.Core.Logging;
 using Lycoris.Common.Extensions;
-using Lycoris.Quartz.Extensions.Job;
+using Lycoris.Quartz.Extensions;
 using Quartz;
 
 namespace Lycoris.Blog.Application.Schedule.Jobs

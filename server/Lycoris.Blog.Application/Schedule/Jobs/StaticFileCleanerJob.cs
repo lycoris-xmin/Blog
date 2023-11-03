@@ -7,7 +7,7 @@ using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
 using Lycoris.Blog.Model.Configurations;
 using Lycoris.Common.Extensions;
-using Lycoris.Quartz.Extensions.Job;
+using Lycoris.Quartz.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Octokit;
 using Quartz;

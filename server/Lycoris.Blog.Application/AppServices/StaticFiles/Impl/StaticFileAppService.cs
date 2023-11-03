@@ -6,7 +6,6 @@ using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
 using Lycoris.Blog.Model.Exceptions;
 using Lycoris.Common.Extensions;
-using Lycoris.Quartz.Extensions.Services.Impl;
 using Microsoft.EntityFrameworkCore;
 
 namespace Lycoris.Blog.Application.AppServices.StaticFiles.Impl
@@ -83,9 +82,7 @@ namespace Lycoris.Blog.Application.AppServices.StaticFiles.Impl
         /// <returns></returns>
         public async Task SyncFileToRemoteRepositoryAsync(long id)
         {
-            var center = new QuartzSchedulerCenter();
 
-            center.AddJobAsync();
         }
     }
 }

@@ -5,7 +5,7 @@ using Lycoris.Blog.Server.FilterAttributes;
 using Lycoris.Blog.Server.Shared;
 using Lycoris.Common.Extensions;
 using Lycoris.Common.Utils.SensitiveWord;
-using Lycoris.Quartz.Extensions.Services;
+using Lycoris.Quartz.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using System.Reflection;
@@ -52,7 +52,7 @@ namespace Lycoris.Blog.Server.Application
 
             await SensitiveWordStoreInitAsync();
 
-            await _scheduler.ManualRunHostedJobsAsync();
+            await _scheduler.ManualRunNonStandbyJobsAsync();
         }
 
         /// <summary>

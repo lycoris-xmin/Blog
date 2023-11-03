@@ -8,7 +8,7 @@ using Lycoris.Blog.EntityFrameworkCore.Tables;
 using Lycoris.Blog.Model.Contexts;
 using Lycoris.Common.Extensions;
 using Lycoris.Common.Helper;
-using Lycoris.Quartz.Extensions.Job;
+using Lycoris.Quartz.Extensions;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Quartz;

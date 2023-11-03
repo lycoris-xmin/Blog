@@ -2,7 +2,7 @@
 using Lycoris.Blog.Core.Logging;
 using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
-using Lycoris.Quartz.Extensions.Job;
+using Lycoris.Quartz.Extensions;
 using Quartz;
 
 namespace Lycoris.Blog.Application.Schedule.Jobs

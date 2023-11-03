@@ -70,3 +70,4 @@ msbuild.wrn
 /server/.vs
 /server/Lycoris.Blog.EntityFrameworkCore/Migrations
 /server/Lycoris.Blog.Server/AppData/appsettings.Localhost.json
+/server/Lycoris.Blog.Server/wwwroot

@@ -3,7 +3,6 @@ using Lycoris.Blog.Application.AppServices.SiteNavigations;
 using Lycoris.Blog.Application.AppServices.SiteNavigations.Dtos;
 using Lycoris.Blog.Model.Global.Output;
 using Lycoris.Blog.Server.Application.Constants;
-using Lycoris.Blog.Server.Application.Swaggers;
 using Lycoris.Blog.Server.FilterAttributes;
 using Lycoris.Blog.Server.Models.Shared;
 using Lycoris.Blog.Server.Models.SiteNavigations;
@@ -35,7 +34,7 @@ namespace Lycoris.Blog.Server.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("List")]
-        [ExcludeSwaggerHeader, Produces("application/json")]
+        [ Produces("application/json")]
         public async Task<ListOutput<SiteNavigationDataViewModel>> SiteNavigationList()
         {
             var dto = await _siteNavigation.GetSiteNavigationListAsync();

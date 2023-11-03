@@ -5,7 +5,6 @@ using Lycoris.Blog.Model.Exceptions;
 using Lycoris.Blog.Model.Global.Input;
 using Lycoris.Blog.Model.Global.Output;
 using Lycoris.Blog.Server.Application.Constants;
-using Lycoris.Blog.Server.Application.Swaggers;
 using Lycoris.Blog.Server.FilterAttributes;
 using Lycoris.Blog.Server.Models.Categorys;
 using Lycoris.Blog.Server.Models.Shared;
@@ -38,7 +37,7 @@ namespace Lycoris.Blog.Server.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("Header")]
-        [ExcludeSwaggerHeader, Produces("application/json")]
+        [Produces("application/json")]
         public async Task<ListOutput<CategoryHeaderDataViewModel>> CategoryHeaderList()
         {
             var dto = await _category.GetHomeCategoryListAsync();

@@ -4,7 +4,6 @@ using Lycoris.Blog.Application.AppServices.Posts.Dtos;
 using Lycoris.Blog.Model.Exceptions;
 using Lycoris.Blog.Model.Global.Output;
 using Lycoris.Blog.Server.Application.Constants;
-using Lycoris.Blog.Server.Application.Swaggers;
 using Lycoris.Blog.Server.FilterAttributes;
 using Lycoris.Blog.Server.Models.Posts;
 using Lycoris.Blog.Server.Models.Shared;
@@ -39,7 +38,7 @@ namespace Lycoris.Blog.Server.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("Recommend/List")]
-        [ExcludeSwaggerHeader, Produces("application/json")]
+        [Produces("application/json")]
         public async Task<ListOutput<PostRecommendDataViewModel>> PostRecommendList()
         {
             var dto = await _post.GetPostRecommendListAsync();
@@ -52,7 +51,7 @@ namespace Lycoris.Blog.Server.Controllers
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpGet("List")]
-        [ExcludeSwaggerHeader, Produces("application/json")]
+        [Produces("application/json")]
         public async Task<PageOutput<PostDataViewModel>> PostList([FromQuery] PostListInput input)
         {
             var filter = input.ToMap<PostFilter>();
@@ -66,7 +65,7 @@ namespace Lycoris.Blog.Server.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("Detail")]
-        [ExcludeSwaggerHeader, Produces("application/json")]
+        [Produces("application/json")]
         public async Task<DataOutput<PostDetailViewModel>> PostDetail([FromQuery] long? id)
         {
             if (!id.HasValue || id.Value <= 0)
@@ -81,7 +80,7 @@ namespace Lycoris.Blog.Server.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("PreviousAndNext")]
-        [ExcludeSwaggerHeader, Produces("application/json")]
+        [Produces("application/json")]
         public async Task<DataOutput<PostPreviousAndNextViewModel>> BlogPreviousAndNext([FromQuery] long? id)
         {
             if (!id.HasValue || id.Value <= 0)
@@ -97,7 +96,7 @@ namespace Lycoris.Blog.Server.Controllers
         /// <param name="keyword"></param>
         /// <returns></returns>
         [HttpGet("Search")]
-        [ExcludeSwaggerHeader, Produces("application/json")]
+        [Produces("application/json")]
         public async Task<ListOutput<SearchPostDataViewModel>> Search([FromQuery] string? keyword)
         {
             if (keyword.IsNullOrEmpty())

@@ -1,7 +1,8 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using Lycoris.Blog.Server.FilterAttributes;
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Lycoris.Blog.Server.Application.Swaggers
+namespace Lycoris.Blog.Server.Application
 {
     /// <summary>
     /// 
@@ -15,12 +16,10 @@ namespace Lycoris.Blog.Server.Application.Swaggers
         /// <param name="context"></param>
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
-            var excludeApiKey = context.MethodInfo.DeclaringType?.GetCustomAttributes(true).Union(context.MethodInfo.GetCustomAttributes(true)).OfType<ExcludeSwaggerHeaderAttribute>().Any() ?? false;
-            if (excludeApiKey)
-            {
-                operation.Security = new List<OpenApiSecurityRequirement>();
-            }
-            else
+            var attrs = context.MethodInfo.DeclaringType?.GetCustomAttributes(true).Union(context.MethodInfo.GetCustomAttributes(true));
+            var includeApiKey = (attrs?.OfType<AppAuthenticationAttribute>().Any() ?? false) || (attrs?.OfType<WebAuthenticationAttribute>().Any() ?? false);
+
+            if (includeApiKey)
             {
                 operation.Security = new List<OpenApiSecurityRequirement>()
                 {
@@ -39,6 +38,10 @@ namespace Lycoris.Blog.Server.Application.Swaggers
                             }
                         }
                 };
+            }
+            else
+            {
+                operation.Security = new List<OpenApiSecurityRequirement>();
             }
         }
     }

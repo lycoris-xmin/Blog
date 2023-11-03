@@ -9,7 +9,6 @@ using Lycoris.Blog.Model;
 using Lycoris.Blog.Model.Cnstants;
 using Lycoris.Blog.Server.Application;
 using Lycoris.Blog.Server.Application.Constants;
-using Lycoris.Blog.Server.Application.Swaggers;
 using Lycoris.Blog.Server.FilterAttributes;
 using Lycoris.Blog.Server.Middlewares;
 using Lycoris.Common.ConfigurationManager;

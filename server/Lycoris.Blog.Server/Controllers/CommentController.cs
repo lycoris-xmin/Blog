@@ -3,7 +3,6 @@ using Lycoris.Blog.Application.AppServices.Comment;
 using Lycoris.Blog.Application.AppServices.Comment.Dtos;
 using Lycoris.Blog.Model.Global.Output;
 using Lycoris.Blog.Server.Application.Constants;
-using Lycoris.Blog.Server.Application.Swaggers;
 using Lycoris.Blog.Server.FilterAttributes;
 using Lycoris.Blog.Server.Models.Comment;
 using Lycoris.Blog.Server.Shared;
@@ -36,7 +35,7 @@ namespace Lycoris.Blog.Server.Controllers
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpGet("List")]
-        [ExcludeSwaggerHeader, Produces("application/json")]
+        [ Produces("application/json")]
         public async Task<PageOutput<PostCommentDataViewModel>> CommentList([FromQuery] PostCommentListInput input)
         {
             var dto = await _comment.GetCommentListAsync(input.ToMap<PostCommentListFilter>());

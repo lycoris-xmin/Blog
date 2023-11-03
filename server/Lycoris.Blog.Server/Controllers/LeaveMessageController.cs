@@ -4,7 +4,6 @@ using Lycoris.Blog.Application.AppServices.LeaveMessages.Dtos;
 using Lycoris.Blog.Model.Global.Input;
 using Lycoris.Blog.Model.Global.Output;
 using Lycoris.Blog.Server.Application.Constants;
-using Lycoris.Blog.Server.Application.Swaggers;
 using Lycoris.Blog.Server.FilterAttributes;
 using Lycoris.Blog.Server.Models.LeaveMessages;
 using Lycoris.Blog.Server.Models.Shared;
@@ -37,7 +36,7 @@ namespace Lycoris.Blog.Server.Controllers
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpGet("List")]
-        [ExcludeSwaggerHeader, Produces("application/json")]
+        [ Produces("application/json")]
         public async Task<PageOutput<LeaveMessageDataViewModel>> LeaveMessageList([FromQuery] PageInput input)
         {
             var dto = await _message.GetWebMessageListAsync(input.PageIndex!.Value, input.PageSize!.Value);
@@ -50,7 +49,7 @@ namespace Lycoris.Blog.Server.Controllers
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpGet("Reply/List")]
-        [ExcludeSwaggerHeader, Produces("application/json")]
+        [ Produces("application/json")]
         public async Task<ListOutput<LeaveMessageReplyDataViewModel>> LeaveMessageReplyList([FromQuery] LeaveMessageReplyListInput input)
         {
             var dto = await _message.GetWebMessageReplyListAsync(input.ToMap<WebMessageReplyListFilter>());

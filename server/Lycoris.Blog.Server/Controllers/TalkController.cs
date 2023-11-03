@@ -4,7 +4,6 @@ using Lycoris.Blog.Model.Exceptions;
 using Lycoris.Blog.Model.Global.Input;
 using Lycoris.Blog.Model.Global.Output;
 using Lycoris.Blog.Server.Application.Constants;
-using Lycoris.Blog.Server.Application.Swaggers;
 using Lycoris.Blog.Server.FilterAttributes;
 using Lycoris.Blog.Server.Models.Talks;
 using Lycoris.Blog.Server.Shared;
@@ -36,7 +35,7 @@ namespace Lycoris.Blog.Server.Controllers
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpGet("List")]
-        [ExcludeSwaggerHeader, Produces("application/json")]
+        [ Produces("application/json")]
         public async Task<PageOutput<TalkDataViewModel>> TalkList([FromQuery] PageInput input)
         {
             var dto = await _talk.GetTalkListAsync(input.PageIndex!.Value, input.PageSize!.Value);

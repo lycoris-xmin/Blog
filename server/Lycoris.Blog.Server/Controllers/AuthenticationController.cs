@@ -9,7 +9,6 @@ using Lycoris.Blog.Core.Email.DataModel;
 using Lycoris.Blog.Model.Exceptions;
 using Lycoris.Blog.Model.Global.Output;
 using Lycoris.Blog.Server.Application.Constants;
-using Lycoris.Blog.Server.Application.Swaggers;
 using Lycoris.Blog.Server.FilterAttributes;
 using Lycoris.Blog.Server.Models.Authentication;
 using Lycoris.Blog.Server.Shared;
@@ -51,7 +50,7 @@ namespace Lycoris.Blog.Server.Controllers
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpPost("Login/Validate")]
-        [ExcludeSwaggerHeader, Consumes("application/json"), Produces("application/json")]
+        [Consumes("application/json"), Produces("application/json")]
         public async Task<DataOutput<LoginValidateViewModel>> LoginValidate([FromBody] LoginValidateInput input)
         {
             var dto = await _authentication.LoginValidateAsync(input.Email!, input.Password!);
@@ -70,7 +69,7 @@ namespace Lycoris.Blog.Server.Controllers
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpPost("Login")]
-        [ExcludeSwaggerHeader, Consumes("application/json"), Produces("application/json")]
+        [Consumes("application/json"), Produces("application/json")]
         public async Task<DataOutput<LoginViewModel>> Login([FromBody] LoginInput input)
         {
             var cache = _cache.GetLoginOathCode(input.Email!) ?? throw new HttpStatusException(HttpStatusCode.BadRequest, "oathcode is expired");
@@ -209,7 +208,7 @@ namespace Lycoris.Blog.Server.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("Dashboard/Login")]
-        [ExcludeSwaggerHeader, Consumes("application/json"), Produces("application/json")]
+        [Consumes("application/json"), Produces("application/json")]
         public async Task<DataOutput<LoginViewModel>> DashboardLogin([FromBody] LoginInput input)
         {
             var cache = _cache.GetLoginOathCode(input.Email!) ?? throw new HttpStatusException(HttpStatusCode.BadRequest, "oathcode is expired");
@@ -248,7 +247,7 @@ namespace Lycoris.Blog.Server.Controllers
         }
 
         /// <summary>
-        /// 
+        /// 锁屏解锁
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>

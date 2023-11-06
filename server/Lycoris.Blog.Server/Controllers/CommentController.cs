@@ -35,7 +35,7 @@ namespace Lycoris.Blog.Server.Controllers
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpGet("List")]
-        [ Produces("application/json")]
+        [Produces("application/json")]
         public async Task<PageOutput<PostCommentDataViewModel>> CommentList([FromQuery] PostCommentListInput input)
         {
             var dto = await _comment.GetCommentListAsync(input.ToMap<PostCommentListFilter>());

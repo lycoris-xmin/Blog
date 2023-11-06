@@ -151,3 +151,19 @@ export const uuid = () => {
   var uuid = s.join('');
   return uuid.replaceAll('-', '');
 };
+
+export const lockScroll = () => {
+  let widthBar = 17,
+    root = document.documentElement;
+  if (typeof window.innerWidth == 'number') {
+    widthBar = window.innerWidth - root.clientWidth;
+  }
+  root.style.overflow = 'hidden';
+  root.style.borderRight = widthBar + 'px solid transparent';
+};
+
+export const unlockScroll = () => {
+  let root = document.documentElement;
+  root.style.overflow = '';
+  root.style.borderRight = '';
+};

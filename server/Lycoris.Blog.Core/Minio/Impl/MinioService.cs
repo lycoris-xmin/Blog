@@ -168,12 +168,12 @@ namespace Lycoris.Blog.Core.Minio.Impl
         /// <returns></returns>
         private async Task<MinioConfiguration> GetMinioConfigurationAsync()
         {
-            var data = await _congiguration.GetAll().Where(x => x.Id == AppConfig.FileUpload).SingleOrDefaultAsync();
+            var data = await _congiguration.GetAll().Where(x => x.Id == AppConfig.StaticFile).SingleOrDefaultAsync();
 
             if (data == null || data.Value.IsNullOrEmpty())
-                throw new ArgumentNullException($"can not find setting with '{AppConfig.FileUpload}'");
+                throw new ArgumentNullException($"can not find setting with '{AppConfig.StaticFile}'");
 
-            var config = data.Value!.ToObject<FileUploadConfiguration>();
+            var config = data.Value!.ToObject<StaticFileConfiguration>();
 
             if (config == null || config.SaveChannel != FileSaveChannelEnum.Minio || config.Minio.MinioEndpoint.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(config));

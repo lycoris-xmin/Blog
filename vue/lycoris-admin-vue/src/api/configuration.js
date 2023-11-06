@@ -30,12 +30,12 @@ export const saveEmailSettings = ({ emailAddress, emailUser, stmpServer, stmpPor
   return request.post(`${controller}/email`, { emailAddress, emailUser, stmpServer, stmpPort, emailPassword, emailSignature, useSSL });
 };
 
-export const getfileUploadSettings = () => {
-  return request.get(`${controller}/fileUpload`);
+export const getStaticFileSettings = () => {
+  return request.get(`${controller}/staticFile`);
 };
 
-export const saveFileUploadSettings = data => {
-  return request.post(`${controller}/fileUpload`, data);
+export const saveStaticFileSettings = data => {
+  return request.post(`${controller}/staticFile`, data);
 };
 
 export const getFileSaveChannelEnum = () => {

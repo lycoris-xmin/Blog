@@ -128,9 +128,10 @@ const serverMonitorLineInit = () => {
           return 100;
         }
 
-        return Math.ceil(value.max + 10);
+        return Math.ceil(value.max / 10.0) * 10;
       },
-      minInterval: 0.01
+      minInterval: 1,
+      maxInterval: 5
     },
     series: charts.serverMonitor.legendData.map(x => {
       return {

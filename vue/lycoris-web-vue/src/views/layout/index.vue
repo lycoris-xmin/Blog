@@ -41,6 +41,7 @@ import { getUserBrief } from '../../api/user';
 import { getWebOwner, pageBrowse } from '../../api/home';
 import meta from '../../utils/meta';
 import { useRoute } from 'vue-router';
+import { staticSourceInit } from '../../utils/staticfile';
 
 const route = useRoute();
 const searchModalRef = ref();
@@ -76,6 +77,8 @@ watch(
 
 onBeforeMount(async () => {
   meta.setTitle();
+
+  staticSourceInit();
 });
 
 onMounted(() => {

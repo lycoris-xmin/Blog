@@ -32,15 +32,12 @@ export default defineStore('authorize', {
      * @param {Object} authorize
      */
     setUserLoginState: function (authorize) {
-      this.token = authorize.token || '';
-      this.refreshToken = authorize.refreshToken || '';
+      this.data.token = authorize.token || '';
+      localStorage.setItem(tokenKey, encryptString(this.data.token));
 
-      if (this.token) {
-        localStorage.setItem(tokenKey, encryptString(this.token));
-      }
-
-      if (this.refreshToken) {
-        localStorage.setItem(refreshTokenKey, encryptString(this.refreshToken));
+      if (authorize.refreshToken) {
+        this.data.refreshToken = authorize.refreshToken;
+        localStorage.setItem(refreshTokenKey, encryptString(this.data.refreshToken));
       }
     },
     /**

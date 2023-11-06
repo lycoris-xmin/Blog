@@ -209,7 +209,9 @@ onMounted(async () => {
       postInfo = { ...form };
       markdown.value.init();
     }
-  } catch {}
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 const categoryChange = val => {

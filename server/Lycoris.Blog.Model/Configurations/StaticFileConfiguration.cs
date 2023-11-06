@@ -7,7 +7,7 @@ namespace Lycoris.Blog.Model.Configurations
     /// <summary>
     /// 
     /// </summary>
-    public class FileUploadConfiguration
+    public class StaticFileConfiguration
     {
         /// <summary>
         /// 
@@ -18,6 +18,11 @@ namespace Lycoris.Blog.Model.Configurations
         /// 
         /// </summary>
         public bool LocalBackup { get; set; } = true;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public LoadFileSrcEnum LoadFileSrc { get; set; } = LoadFileSrcEnum.Local;
 
         /// <summary>
         /// 
@@ -65,6 +70,13 @@ namespace Lycoris.Blog.Model.Configurations
         /// 
         /// </summary>
         public string DefaultBucket { get; set; } = string.Empty;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="remotePath"></param>
+        /// <returns></returns>
+        public string ChangeMonioFileUrl(string? remotePath) => $"{this.Endpoint}/{this.DefaultBucket}/{remotePath}";
     }
 
     /// <summary>
@@ -117,6 +129,17 @@ namespace Lycoris.Blog.Model.Configurations
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="remotePath"></param>
+        /// <returns></returns>
+        public string ChangeJsDelivrCDNUrl(string? remotePath)
+        {
+            var (owner, repo) = this.AnalyzeRepository();
+            return ChangeJsDelivrCDNUrl(owner, repo, remotePath);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="owner"></param>
         /// <param name="repo"></param>
         /// <param name="remotePath"></param>
@@ -164,5 +187,20 @@ namespace Lycoris.Blog.Model.Configurations
         /// </summary>
         [Description("七牛云存储")]
         Kodo = 60
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public enum LoadFileSrcEnum
+    {
+        /// <summary>
+        /// 本地
+        /// </summary>
+        Local = 0,
+        /// <summary>
+        /// 远端
+        /// </summary>
+        Remote = 1
     }
 }

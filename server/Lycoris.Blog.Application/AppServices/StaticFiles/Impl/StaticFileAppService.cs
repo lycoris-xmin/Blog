@@ -1,11 +1,12 @@
 ﻿using Lycoris.Autofac.Extensions;
 using Lycoris.Blog.Application.AppServices.StaticFiles.Dtos;
+using Lycoris.Blog.Application.Schedule.Jobs;
 using Lycoris.Blog.Application.Shared.Dtos;
 using Lycoris.Blog.Application.Shared.Impl;
 using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
-using Lycoris.Blog.Model.Exceptions;
 using Lycoris.Common.Extensions;
+using Lycoris.Quartz.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Lycoris.Blog.Application.AppServices.StaticFiles.Impl
@@ -17,10 +18,12 @@ namespace Lycoris.Blog.Application.AppServices.StaticFiles.Impl
     public class StaticFileAppService : ApplicationBaseService, IStaticFileAppService
     {
         private readonly IRepository<StaticFile, long> _repository;
+        private readonly Lazy<IQuartzSchedulerCenter> _schedulerCenter;
 
-        public StaticFileAppService(IRepository<StaticFile, long> repository)
+        public StaticFileAppService(IRepository<StaticFile, long> repository, Lazy<IQuartzSchedulerCenter> schedulerCenter)
         {
             _repository = repository;
+            _schedulerCenter = schedulerCenter;
         }
 
         /// <summary>
@@ -63,17 +66,8 @@ namespace Lycoris.Blog.Application.AppServices.StaticFiles.Impl
         /// 
         /// </summary>
         /// <param name="id"></param>
-        /// <param name="use"></param>
         /// <returns></returns>
-        public async Task SetFileUseStateAsync(long id, bool use)
-        {
-            var data = await _repository.GetAsync(id) ?? throw new FriendlyException("");
-            if (data.Use != use)
-            {
-                data.Use = use;
-                await _repository.UpdateFieIdsAsync(data, x => x.Use);
-            }
-        }
+        public Task CheckFileUseStateAsync(long id) => _schedulerCenter.Value.AddOnceJobAsync<CheckFileUseStateJob>(id.ToString());
 
         /// <summary>
         /// 

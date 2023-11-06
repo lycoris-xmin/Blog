@@ -113,7 +113,7 @@ namespace Lycoris.Blog.Core.Github.Impl
         /// <returns></returns>
         private async Task<GithubConfiguration> GetConfigurationAsync()
         {
-            var config = await _configuration.GetConfigurationAsync<FileUploadConfiguration>(AppConfig.FileUpload) ?? throw new FriendlyException("");
+            var config = await _configuration.GetConfigurationAsync<StaticFileConfiguration>(AppConfig.StaticFile) ?? throw new FriendlyException("");
 
             if (config.Github == null)
                 throw new FriendlyException("");

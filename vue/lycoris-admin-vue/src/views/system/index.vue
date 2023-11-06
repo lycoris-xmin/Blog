@@ -5,7 +5,7 @@
         <web-settings v-if="item.value == 'webSettings'" :value="0" @tab-complete="complete"></web-settings>
         <post-settings v-if="item.value == 'postSettings'" :value="1" @tab-complete="complete"></post-settings>
         <email-settings v-if="item.value == 'emailSettings'" :value="2" @tab-complete="complete"></email-settings>
-        <file-upload-settings v-if="item.value == 'fileUploadSettings'" :value="3" @tab-complete="complete"></file-upload-settings>
+        <staticfile-settings v-if="item.value == 'fileUploadSettings'" :value="3" @tab-complete="complete"></staticfile-settings>
         <seo-settings v-if="item.value == 'seoSettings'" :value="4" @tab-complete="complete"></seo-settings>
         <other-settings v-if="item.value == 'otherSettings'" :value="5" @tab-complete="complete"></other-settings>
         <systemInfo v-if="item.value == 'systemInfo'" :value="6" @tab-complete="complete"></systemInfo>
@@ -20,7 +20,7 @@ import PageLayout from '../layout/page-layout.vue';
 import webSettings from './components/web-settings.vue';
 import postSettings from './components/post-settings.vue';
 import emailSettings from './components/email-settings.vue';
-import fileUploadSettings from './components/file-upload-settings.vue';
+import staticfileSettings from './components/staticfile-settings.vue';
 import seoSettings from './components/seo-settings.vue';
 import otherSettings from './components/other-settings.vue';
 import systemInfo from './components/system-info.vue';
@@ -44,7 +44,7 @@ const model = reactive({
       loading: true
     },
     {
-      title: '文件上传设置',
+      title: '静态文件设置',
       value: 'fileUploadSettings',
       loading: true
     },

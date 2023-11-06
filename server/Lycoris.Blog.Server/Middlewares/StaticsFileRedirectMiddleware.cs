@@ -50,7 +50,7 @@ namespace Lycoris.Blog.Server.Middlewares
             }
 
             var config = await GetConfigurationAsync();
-            if (config == null || config.SaveChannel == FileSaveChannelEnum.Local)
+            if (config == null || config.SaveChannel == FileSaveChannelEnum.Local || config.LoadFileSrc == LoadFileSrcEnum.Local)
             {
                 await _next.Invoke(context);
                 return;
@@ -59,10 +59,7 @@ namespace Lycoris.Blog.Server.Middlewares
             var redirectUrl = "";
 
             if (config.SaveChannel == FileSaveChannelEnum.Github)
-            {
-                var (owner, repo) = config.Github.AnalyzeRepository();
-                redirectUrl = config.Github.ChangeJsDelivrCDNUrl(owner, repo, context.Request.Path.Value);
-            }
+                redirectUrl = config.Github.ChangeJsDelivrCDNUrl(context.Request.Path.Value);
 
             if (redirectUrl.IsNullOrEmpty())
             {
@@ -78,11 +75,11 @@ namespace Lycoris.Blog.Server.Middlewares
         /// 
         /// </summary>
         /// <returns></returns>
-        private async Task<FileUploadConfiguration?> GetConfigurationAsync()
+        private async Task<StaticFileConfiguration?> GetConfigurationAsync()
         {
             using var scope = _serviceProvider.CreateScope();
             var repository = scope.ServiceProvider.GetRequiredService<IConfigurationRepository>();
-            return await repository.GetConfigurationAsync<FileUploadConfiguration>(AppConfig.FileUpload);
+            return await repository.GetConfigurationAsync<StaticFileConfiguration>(AppConfig.StaticFile);
         }
     }
 }

@@ -52,6 +52,7 @@ namespace Lycoris.Blog.Server.Application
 
             await SensitiveWordStoreInitAsync();
 
+            await _scheduler.StartScheduleAsync();
             await _scheduler.ManualRunNonStandbyJobsAsync();
         }
 

@@ -6,13 +6,25 @@ namespace Lycoris.Blog.Server.Models.Configurations
     /// <summary>
     /// 
     /// </summary>
-    public class SaveFileUploadSettingsInput
+    public class SaveStaticFileSettingsInput
     {
         /// <summary>
         /// 
         /// </summary>
         [Required]
         public int? SaveChannel { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Required]
+        public bool? LocalBackup { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Required]
+        public int? LoadFileSrc { get; set; }
 
         /// <summary>
         /// 

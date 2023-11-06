@@ -121,7 +121,26 @@ const browseStatisticsLineInit = () => {
     xAxis: {
       data: []
     },
-    yAxis: {},
+    yAxis: {
+      minInterval: 1,
+      min: 0,
+      max: function (value) {
+        if (isNaN(value.max)) {
+          return 100;
+        }
+        if (value.max < 5) {
+          return 5;
+        } else if (value.max < 10) {
+          return 10;
+        } else if (value.max < 50) {
+          return value.max + 5;
+        } else if (value.max < 100) {
+          return value.max + 10;
+        } else {
+          return value.max + 100;
+        }
+      }
+    },
     series: charts.browseStatistics.legendData.map((x, index) => {
       return {
         name: x,
@@ -177,7 +196,26 @@ const apiStatisticsLineInit = () => {
     xAxis: {
       data: []
     },
-    yAxis: {},
+    yAxis: {
+      minInterval: 1,
+      min: 0,
+      max: function (value) {
+        if (isNaN(value.max)) {
+          return 100;
+        }
+        if (value.max < 5) {
+          return 5;
+        } else if (value.max < 10) {
+          return 10;
+        } else if (value.max < 50) {
+          return value.max + 5;
+        } else if (value.max < 100) {
+          return value.max + 10;
+        } else {
+          return value.max + 100;
+        }
+      }
+    },
     series: charts.apiStatistics.legendData.map((x, index) => {
       return {
         name: x,

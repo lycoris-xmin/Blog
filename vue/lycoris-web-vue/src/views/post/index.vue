@@ -66,6 +66,8 @@
         </div>
       </div>
     </transition>
+
+    <img-preview ref="imgPreviewRef"></img-preview>
   </div>
 </template>
 
@@ -73,11 +75,13 @@
 import { onMounted, reactive, ref, defineAsyncComponent } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import markdownContainer from '../../components/markdown-editor/index.vue';
+
 const copyright = defineAsyncComponent(() => import('./components/copyright.vue'));
 const pagination = defineAsyncComponent(() => import('./components/pagination.vue'));
 const comment = defineAsyncComponent(() => import('./components/comment.vue'));
 const author = defineAsyncComponent(() => import('./components/author.vue'));
 const topic = defineAsyncComponent(() => import('./components/topic.vue'));
+const imgPreview = defineAsyncComponent(() => import('./components/img-preview.vue'));
 
 import { stores } from '../../stores';
 import { getPostDetail } from '../../api/post.js';
@@ -92,6 +96,7 @@ const { toClipboard } = useClipboard();
 
 const postRef = ref();
 const markdown = ref();
+const imgPreviewRef = ref();
 
 const post = reactive({
   title: '',
@@ -132,6 +137,11 @@ onMounted(async () => {
 
       markdown.value.init(res.data.markdown);
       post.topics = markdown.value.getTopic();
+
+      markdown.value.setImgPreview(function () {
+        console.log(this.src);
+        imgPreviewRef.value.show(this.src);
+      });
     }
   } finally {
     emit('loading', false);

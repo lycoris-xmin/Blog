@@ -56,10 +56,10 @@ export default defineStore('authorize', {
      */
     setUserLoginState: function (authorize) {
       this.data.token = authorize.token || '';
-      this.data.refreshToken = authorize.refreshToken || '';
+      localStorage.setItem(tokenKey, encryptString(this.data.token));
 
-      if (this.data.token && this.data.refreshToken) {
-        localStorage.setItem(tokenKey, encryptString(this.data.token));
+      if (authorize.refreshToken) {
+        this.data.refreshToken = authorize.refreshToken;
         localStorage.setItem(refreshTokenKey, encryptString(this.data.refreshToken));
       }
     },

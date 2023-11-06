@@ -33,10 +33,10 @@ namespace Lycoris.Blog.EntityFrameworkCore.Constants
         public const string SeoSettings = "App.SeoSettings";
 
         /// <summary>
-        /// 文件上传设置
+        /// 静态文件设置
         /// </summary>
-        [Configuration("文件上传设置", typeof(FileUploadConfiguration))]
-        public const string FileUpload = "App.FileUpload";
+        [Configuration("静态文件设置", typeof(StaticFileConfiguration))]
+        public const string StaticFile = "App.StaticFile";
 
         /// <summary>
         /// 

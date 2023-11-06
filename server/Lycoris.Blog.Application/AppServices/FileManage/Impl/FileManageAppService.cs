@@ -158,7 +158,7 @@ namespace Lycoris.Blog.Application.AppServices.FileManage.Impl
         /// 
         /// </summary>
         /// <returns></returns>
-        private async Task<FileUploadConfiguration> GetConfigurationAsync()
-            => await this.ApplicationConfiguration.Value.GetConfigurationAsync<FileUploadConfiguration>(AppConfig.FileUpload) ?? throw new FriendlyException("");
+        private async Task<StaticFileConfiguration> GetConfigurationAsync()
+            => await this.ApplicationConfiguration.Value.GetConfigurationAsync<StaticFileConfiguration>(AppConfig.StaticFile) ?? throw new FriendlyException("");
     }
 }

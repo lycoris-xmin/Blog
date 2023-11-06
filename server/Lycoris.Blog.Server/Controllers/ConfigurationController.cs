@@ -3,6 +3,7 @@ using Lycoris.Blog.Application.AppServices.Configurations;
 using Lycoris.Blog.Application.AppServices.FileManage;
 using Lycoris.Blog.EntityFrameworkCore.Constants;
 using Lycoris.Blog.Model.Configurations;
+using Lycoris.Blog.Model.Exceptions;
 using Lycoris.Blog.Model.Global.Output;
 using Lycoris.Blog.Server.Application.Constants;
 using Lycoris.Blog.Server.FilterAttributes;
@@ -193,11 +194,11 @@ namespace Lycoris.Blog.Server.Controllers
         /// 获取文件存储服务设置
         /// </summary>
         /// <returns></returns>
-        [HttpGet("FileUpload")]
+        [HttpGet("StaticFile")]
         [Produces("application/json")]
-        public async Task<DataOutput<FileUploadConfiguration>> FileUploadSettings()
+        public async Task<DataOutput<StaticFileConfiguration>> StaticFileSettings()
         {
-            var dto = await _configuration.GetConfigurationAsync<FileUploadConfiguration>(AppConfig.FileUpload);
+            var dto = await _configuration.GetConfigurationAsync<StaticFileConfiguration>(AppConfig.StaticFile);
             return Success(dto);
         }
 
@@ -205,11 +206,12 @@ namespace Lycoris.Blog.Server.Controllers
         /// 保存文件存储服务设置
         /// </summary>
         /// <returns></returns>
-        [HttpPost("FileUpload")]
+        [HttpPost("StaticFile")]
         [Consumes("application/json"), Produces("application/json")]
-        public async Task<BaseOutput> SaveFileUploadSettings([FromBody] SaveFileUploadSettingsInput input)
+        public async Task<BaseOutput> SaveStaticFileSettings([FromBody] SaveStaticFileSettingsInput input)
         {
-            await _configuration.SaveConfigurationAsync(AppConfig.FileUpload, input.ToMap<FileUploadConfiguration>());
+            var config = CheckStaticFileSettings(input);
+            await _configuration.SaveConfigurationAsync(AppConfig.StaticFile, config);
             return Success();
         }
 
@@ -240,6 +242,52 @@ namespace Lycoris.Blog.Server.Controllers
                 fileUrl = await _fileManage.Value.UploadFileAsync(input.File!, "/post");
 
             return Success(fileUrl);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        /// <exception cref="HttpStatusException"></exception>
+        private static StaticFileConfiguration CheckStaticFileSettings(SaveStaticFileSettingsInput input)
+        {
+            try
+            {
+                var channel = (FileSaveChannelEnum)input.SaveChannel!.Value;
+
+                switch (channel)
+                {
+                    case Model.Configurations.FileSaveChannelEnum.Github:
+                        if (input.Github == null)
+                            throw new HttpStatusException(System.Net.HttpStatusCode.BadRequest, $"github configuration can not convert to null");
+                        break;
+                    case Model.Configurations.FileSaveChannelEnum.Minio:
+                        if (input.Minio == null)
+                            throw new HttpStatusException(System.Net.HttpStatusCode.BadRequest, $"monio configuration can not convert to null");
+                        break;
+                    case Model.Configurations.FileSaveChannelEnum.OSS:
+                        break;
+                    case Model.Configurations.FileSaveChannelEnum.COS:
+                        break;
+                    case Model.Configurations.FileSaveChannelEnum.OBS:
+                        break;
+                    case Model.Configurations.FileSaveChannelEnum.Kodo:
+                        break;
+                    default:
+                        break;
+                }
+
+                return input.ToMap<StaticFileConfiguration>();
+            }
+            catch (HttpStatusException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new HttpStatusException(System.Net.HttpStatusCode.BadRequest, $"{nameof(input.SaveChannel)}:{input.SaveChannel} check failed:{ex.Message}");
+            }
         }
     }
 }

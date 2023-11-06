@@ -2,23 +2,29 @@
   <div style="padding-top: 18px">
     <el-form label-position="left" :model="model" label-width="120">
       <el-row :gutter="24">
-        <el-col :span="6">
+        <el-col :span="8">
           <el-form-item label="保存位置">
             <el-select v-model="model.saveChannel" placeholder="please select your zone">
               <el-option v-for="item in model.saveChannelEnum" :key="item.value" :label="item.name" :value="item.value" />
             </el-select>
           </el-form-item>
-          <div style="min-height: 300px">
+          <el-form-item label="本地备份" v-if="model.saveChannel != 0">
+            <el-select v-model="model.localBackup" @change="localBackupChange">
+              <el-option :key="false" :label="'不启用'" :value="false" />
+              <el-option :key="true" :label="'启用'" :value="true" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="加载方式" v-if="model.saveChannel != 0">
+            <el-select v-model="model.loadFileSrc" :disabled="model.loadFileSrcState">
+              <el-option :key="0" :label="'本地仓库'" :value="0" />
+              <el-option :key="1" :label="'远端仓库'" :value="1" />
+            </el-select>
+          </el-form-item>
+          <div>
             <transition-list :tag="div">
               <div v-if="model.saveChannel == 10">
-                <el-form-item label="本地备份">
-                  <el-select v-model="model.localBackup">
-                    <el-option :key="false" :label="'不启用'" :value="false" />
-                    <el-option :key="true" :label="'启用'" :value="true" />
-                  </el-select>
-                </el-form-item>
                 <el-form-item label="Github仓库">
-                  <el-input v-model="github.repositoryUrl"></el-input>
+                  <el-input v-model="github.repositoryUrl" placeholder="https://github.com/user/repository.git"></el-input>
                 </el-form-item>
                 <el-form-item label="AccessToken">
                   <el-input v-model="github.accessToken"></el-input>
@@ -34,14 +40,8 @@
                 </el-form-item>
               </div>
               <div v-else-if="model.saveChannel == 20">
-                <el-form-item label="本地备份">
-                  <el-select v-model="model.localBackup">
-                    <el-option :key="0" :label="'不启用'" :value="false" />
-                    <el-option :key="1" :label="'启用'" :value="true" />
-                  </el-select>
-                </el-form-item>
                 <el-form-item label="服务地址">
-                  <el-input v-model="minio.endpoint"></el-input>
+                  <el-input v-model="minio.endpoint" placeholder="http(s)://host:port"></el-input>
                 </el-form-item>
                 <el-form-item label="AccessKey">
                   <el-input v-model="minio.accessKey"></el-input>
@@ -55,47 +55,23 @@
                     <el-option :value="true" label="启用"></el-option>
                   </el-select>
                 </el-form-item>
-                <el-form-item label="默认存储桶">
+                <el-form-item label="存储桶">
                   <el-input v-model="minio.defaultBucket"></el-input>
                 </el-form-item>
               </div>
               <div v-else-if="model.saveChannel == 30">
-                <el-form-item label="本地备份">
-                  <el-select v-model="model.localBackup">
-                    <el-option :key="0" :label="'不启用'" :value="false" />
-                    <el-option :key="1" :label="'启用'" :value="true" />
-                  </el-select>
-                </el-form-item>
                 <p>阿里云存储</p>
                 <p>暂未开发</p>
               </div>
               <div v-else-if="model.saveChannel == 40">
-                <el-form-item label="本地备份">
-                  <el-select v-model="model.localBackup">
-                    <el-option :key="0" :label="'不启用'" :value="false" />
-                    <el-option :key="1" :label="'启用'" :value="true" />
-                  </el-select>
-                </el-form-item>
                 <p>腾讯云存储</p>
                 <p>暂未开发</p>
               </div>
               <div v-else-if="model.saveChannel == 50">
-                <el-form-item label="本地备份">
-                  <el-select v-model="model.localBackup">
-                    <el-option :key="0" :label="'不启用'" :value="false" />
-                    <el-option :key="1" :label="'启用'" :value="true" />
-                  </el-select>
-                </el-form-item>
                 <p>华为云存储</p>
                 <p>暂未开发</p>
               </div>
               <div v-else-if="model.saveChannel == 60">
-                <el-form-item label="本地备份">
-                  <el-select v-model="model.localBackup">
-                    <el-option :key="0" :label="'不启用'" :value="false" />
-                    <el-option :key="1" :label="'启用'" :value="true" />
-                  </el-select>
-                </el-form-item>
                 <p>七牛云存储</p>
                 <p>暂未开发</p>
               </div>
@@ -114,14 +90,16 @@
 <script setup>
 import { reactive, onMounted } from 'vue';
 import transitionList from '../../../components/transitions/list-transition.vue';
-import { getFileSaveChannelEnum, getfileUploadSettings, saveFileUploadSettings } from '../../../api/configuration';
+import { getFileSaveChannelEnum, getStaticFileSettings, saveStaticFileSettings } from '../../../api/configuration';
 import toast from '../../../utils/toast';
 
 const model = reactive({
   saveChannel: 0,
   loading: false,
   saveChannelEnum: [],
-  localBackup: true
+  localBackup: true,
+  loadFileSrc: 0,
+  loadFileSrcState: false
 });
 
 const github = reactive({
@@ -173,10 +151,16 @@ const getEnum = async () => {
 
 const getSettings = async () => {
   try {
-    let res = await getfileUploadSettings();
+    let res = await getStaticFileSettings();
     if (res && res.resCode == 0) {
       model.saveChannel = res.data.saveChannel;
       model.localBackup = res.data.localBackup;
+      model.loadFileSrc = res.data.loadFileSrc;
+
+      if (model.localBackup == false) {
+        model.loadFileSrc = 1;
+        model.loadFileSrcState = true;
+      }
 
       monioSetting(res.data?.minio || {});
       githubSeting(res.data?.github || {});
@@ -202,11 +186,24 @@ const githubSeting = setting => {
   github.cdn = setting?.cdn || '';
 };
 
+const localBackupChange = value => {
+  //
+  if (value == false) {
+    //
+    model.loadFileSrc = 1;
+    model.loadFileSrcState = true;
+  } else {
+    model.loadFileSrcState = false;
+  }
+};
+
 const submit = async () => {
   model.loading = true;
   try {
     let data = {
-      saveChannel: model.saveChannel
+      saveChannel: model.saveChannel,
+      localBackup: model.localBackup,
+      loadFileSrc: model.loadFileSrc
     };
 
     if (data.saveChannel === 10) {
@@ -223,7 +220,7 @@ const submit = async () => {
       data.kodo = { ...kodo };
     }
 
-    let res = await saveFileUploadSettings(data);
+    let res = await saveStaticFileSettings(data);
     if (res && res.resCode == 0) {
       toast.success('保存成功');
     }

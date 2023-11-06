@@ -17,8 +17,7 @@ namespace Lycoris.Blog.Application.AppServices.StaticFiles
         /// 
         /// </summary>
         /// <param name="id"></param>
-        /// <param name="use"></param>
         /// <returns></returns>
-        Task SetFileUseStateAsync(long id, bool use);
+        Task CheckFileUseStateAsync(long id);
     }
 }

@@ -35,7 +35,7 @@ namespace Lycoris.Blog.Server.Controllers
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpGet("List")]
-        [ Produces("application/json")]
+        [Produces("application/json")]
         public async Task<PageOutput<TalkDataViewModel>> TalkList([FromQuery] PageInput input)
         {
             var dto = await _talk.GetTalkListAsync(input.PageIndex!.Value, input.PageSize!.Value);

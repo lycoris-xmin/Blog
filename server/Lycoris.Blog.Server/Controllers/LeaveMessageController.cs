@@ -36,7 +36,7 @@ namespace Lycoris.Blog.Server.Controllers
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpGet("List")]
-        [ Produces("application/json")]
+        [Produces("application/json")]
         public async Task<PageOutput<LeaveMessageDataViewModel>> LeaveMessageList([FromQuery] PageInput input)
         {
             var dto = await _message.GetWebMessageListAsync(input.PageIndex!.Value, input.PageSize!.Value);
@@ -49,7 +49,7 @@ namespace Lycoris.Blog.Server.Controllers
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpGet("Reply/List")]
-        [ Produces("application/json")]
+        [Produces("application/json")]
         public async Task<ListOutput<LeaveMessageReplyDataViewModel>> LeaveMessageReplyList([FromQuery] LeaveMessageReplyListInput input)
         {
             var dto = await _message.GetWebMessageReplyListAsync(input.ToMap<WebMessageReplyListFilter>());

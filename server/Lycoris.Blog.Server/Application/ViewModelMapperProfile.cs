@@ -11,6 +11,7 @@ using Lycoris.Blog.Application.AppServices.LeaveMessages.Dtos;
 using Lycoris.Blog.Application.AppServices.Posts.Dtos;
 using Lycoris.Blog.Application.AppServices.RequestLogs.Dtos;
 using Lycoris.Blog.Application.AppServices.SiteNavigations.Dtos;
+using Lycoris.Blog.Application.AppServices.StaticFiles.Dtos;
 using Lycoris.Blog.Application.AppServices.Talks.Dtos;
 using Lycoris.Blog.Application.Shared.Dtos;
 using Lycoris.Blog.Application.SignalR.Models;
@@ -30,6 +31,7 @@ using Lycoris.Blog.Server.Models.Posts;
 using Lycoris.Blog.Server.Models.RequestLogs;
 using Lycoris.Blog.Server.Models.Shared;
 using Lycoris.Blog.Server.Models.SiteNavigations;
+using Lycoris.Blog.Server.Models.StaticFiles;
 using Lycoris.Blog.Server.Models.Talks;
 using Lycoris.Common.Extensions;
 using Lycoris.Common.Helper;
@@ -110,7 +112,7 @@ namespace Lycoris.Blog.Server.Application
 
             CreateMap<HomeCategoryDataDto, CategoryHeaderDataViewModel>();
 
-            CreateMap<SaveFileUploadSettingsInput, FileUploadConfiguration>();
+            CreateMap<SaveStaticFileSettingsInput, StaticFileConfiguration>();
 
             CreateMap<PostRecommendDataDto, PostRecommendDataViewModel>();
 
@@ -220,6 +222,10 @@ namespace Lycoris.Blog.Server.Application
             CreateMap<SiteNavigationDomainDataDto, SiteNavigationDomainDataViewModel>();
 
             CreateMap<SiteNavigationDataDto, SiteNavigationDataViewModel>();
+
+            CreateMap<StaticFileListInput, StaticFileListFilter>();
+
+            CreateMap<StaticFileDataDto, StaticFileDataViewModel>();
         }
 
         /// <summary>

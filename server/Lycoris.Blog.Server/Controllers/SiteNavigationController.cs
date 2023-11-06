@@ -34,7 +34,7 @@ namespace Lycoris.Blog.Server.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("List")]
-        [ Produces("application/json")]
+        [Produces("application/json")]
         public async Task<ListOutput<SiteNavigationDataViewModel>> SiteNavigationList()
         {
             var dto = await _siteNavigation.GetSiteNavigationListAsync();

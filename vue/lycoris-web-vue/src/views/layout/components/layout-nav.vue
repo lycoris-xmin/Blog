@@ -80,6 +80,7 @@ import swal from '../../../utils/swal';
 import secret from '../../../utils/secret';
 import toast from '../../../utils/toast';
 import { web } from '../../../config.json';
+import { getStaticSource, setStaticSource } from '../../../utils/staticfile';
 
 const adminPath = ref('');
 
@@ -138,19 +139,14 @@ const userLogout = async () => {
 // };
 
 const changeStaticSource = async () => {
-  const storageKey = 'static-local';
-  let value = localStorage.getItem(storageKey);
+  let value = getStaticSource();
 
   if (value == 'cdn') {
-    document.cookie = 'x-local=1;';
-    localStorage.setItem(storageKey, 'local');
-    await swal.success('本地仓库带宽较小，加载比较缓慢，请耐心等待', '切换至本地仓库');
+    setStaticSource('local');
+    await swal.success('CDN可能存在失效，部分文件可能无法加载，可切换至本地仓库', '切换至本地仓库');
   } else {
-    let exp = new Date();
-    exp.setTime(exp.getTime() - 1);
-    document.cookie = `x-local=0;expires=${exp.toGMTString()}`;
-    localStorage.setItem(storageKey, 'cdn');
-    await swal.success('如果静态文件加载不出来，可切换至本地仓库', '切换至远端仓库');
+    setStaticSource('cdn');
+    await swal.success('本地仓库带宽较小，加载比较缓慢，可切换远端仓库提高加载速度', '切换至远端仓库');
   }
 
   location.reload();

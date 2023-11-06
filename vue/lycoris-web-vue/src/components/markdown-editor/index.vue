@@ -254,6 +254,34 @@ const handleKeyDown = event => {
   }
 };
 
+const setImgPreview = callback => {
+  const imgs = document.querySelector('div.cherry-previewer').querySelectorAll('img');
+  if (imgs.length > 0) {
+    imgs.forEach(el => {
+      el.parentNode.style.display = 'flex';
+      el.parentNode.style['justify-content'] = 'center';
+      el.parentNode.style['align-items'] = 'center';
+
+      el.addEventListener('click', function () {
+        callback.call(this);
+      });
+
+      el.addEventListener('error', function () {
+        this.src = '/images/404.png';
+        this.style.width = '300px';
+      });
+    });
+  }
+};
+
+const showLoading = () => {
+  loading.show();
+};
+
+const hideLoading = () => {
+  loading.hide();
+};
+
 defineExpose({
   init,
   setMarkdown,
@@ -263,12 +291,9 @@ defineExpose({
   getTopic,
   exportPage,
   changModel,
-  showLoading: () => {
-    loading.show();
-  },
-  hideLoading: () => {
-    loading.hide();
-  }
+  setImgPreview,
+  showLoading,
+  hideLoading
 });
 </script>
 
@@ -296,6 +321,7 @@ defineExpose({
 
       img {
         cursor: pointer;
+        border-radius: 5px;
       }
 
       ul.cherry-list__default {

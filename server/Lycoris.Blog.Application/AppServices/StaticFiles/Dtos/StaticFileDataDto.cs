@@ -8,13 +8,15 @@ namespace Lycoris.Blog.Application.AppServices.StaticFiles.Dtos
 
         public string FileName { get; set; } = string.Empty;
 
-        public FileSaveChannelEnum SaveChannel { get; set; }
+        public FileUploadChannelEnum UploadChannel { get; set; }
 
         public string PathUrl { get; set; } = string.Empty;
 
         public string RemoteUrl { get; set; } = string.Empty;
 
         public string FileSha { get; set; } = string.Empty;
+
+        public bool LocalBack { get; set; }
 
         public bool Use { get; set; }
 

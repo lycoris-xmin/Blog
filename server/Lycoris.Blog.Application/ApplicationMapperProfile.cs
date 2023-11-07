@@ -40,6 +40,7 @@ namespace Lycoris.Blog.Application
             CreateMap<Category, CategoryDataDto>();
 
             CreateMap<Post, PostDetailDto>()
+                .ForMember(x => x.Browse, opt => opt.MapFrom(src => src.Statistics == null ? 0 : src.Statistics.Browse))
                 .ForMember(x => x.CategoryName, opt => opt.Ignore())
                 .ForMember(x => x.PublishTime, opt => opt.MapFrom(src => src.UpdateTime));
 
@@ -69,10 +70,6 @@ namespace Lycoris.Blog.Application
             CreateMap<ChatMessageDataDto, ChatMessageSignalRModel>();
 
             CreateMap<RequestMonitorContext, RequestMonitorModel>();
-
-            //CreateMap<LoginValidateCacheModel, LoginValidateDto>();
-
-
         }
 
         /// <summary>

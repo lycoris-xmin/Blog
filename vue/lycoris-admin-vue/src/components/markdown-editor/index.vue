@@ -270,7 +270,9 @@ const showLoading = text => {
 
 const hideLoading = () => {
   loading.hide();
-  loadingText.value = 'markdown 插件初始化...';
+  setTimeout(() => {
+    loadingText.value = 'markdown 插件初始化...';
+  }, 500);
 };
 
 defineExpose({

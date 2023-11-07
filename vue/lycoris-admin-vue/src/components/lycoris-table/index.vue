@@ -39,7 +39,7 @@
       </el-table-column>
     </el-table>
     <div class="table-pagination">
-      <div class="table-total">共 {{ props.count }} 条记录</div>
+      <div class="table-total">{{ props.list.length }}条记录 / 共 {{ props.count }} 条记录</div>
       <el-pagination
         background
         :hide-on-single-page="props.hideOnSinglePage"

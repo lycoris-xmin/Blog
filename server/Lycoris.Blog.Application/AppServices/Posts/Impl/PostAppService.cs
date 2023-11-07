@@ -23,19 +23,16 @@ namespace Lycoris.Blog.Application.AppServices.Posts.Impl
     {
         private readonly IRepository<Post, long> _post;
         private readonly IRepository<Category, int> _category;
-        private readonly Lazy<IRepository<PostStatistics, long>> _statistics;
         private readonly Lazy<IFileManageAppService> _fileManage;
         private readonly Lazy<IScheduleQueueCacheService> _scheduleQueue;
 
         public PostAppService(IRepository<Post, long> post,
                               IRepository<Category, int> category,
-                              Lazy<IRepository<PostStatistics, long>> statistics,
                               Lazy<IFileManageAppService> fileManage,
                               Lazy<IScheduleQueueCacheService> scheduleQueue)
         {
             _post = post;
             _category = category;
-            _statistics = statistics;
             _fileManage = fileManage;
             _scheduleQueue = scheduleQueue;
         }
@@ -131,8 +128,6 @@ namespace Lycoris.Blog.Application.AppServices.Posts.Impl
             if (res.Category > 0)
                 res.CategoryName = await _category.GetSelectAsync(res.Category, x => x.Name) ?? "";
 
-            res.Browse = new Random().Next(0, 1000);
-
             return res;
         }
 
@@ -207,9 +202,6 @@ namespace Lycoris.Blog.Application.AppServices.Posts.Impl
                         join c in _category.GetAll() on post.Category equals c.Id into cc
                         from category in cc.DefaultIfEmpty()
 
-                        join s in _statistics.Value.GetAll() on post.Id equals s.Id into ss
-                        from statistics in ss.DefaultIfEmpty()
-
                         select new PostQueryDataDto()
                         {
                             Id = post.Id,
@@ -222,8 +214,8 @@ namespace Lycoris.Blog.Application.AppServices.Posts.Impl
                             Comment = post.Comment,
                             IsPublish = post.IsPublish,
                             Recommend = post.Recommend,
-                            BrowseCount = statistics != null ? statistics.Browse : 0,
-                            CommentCount = statistics != null ? statistics.Comment : 0,
+                            BrowseCount = post.Statistics != null ? post.Statistics.Browse : 0,
+                            CommentCount = post.Statistics != null ? post.Statistics.Comment : 0,
                             UpdateTime = post.UpdateTime,
                         };
 

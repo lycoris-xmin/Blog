@@ -221,7 +221,7 @@ namespace Lycoris.Blog.Server.Controllers
         /// <returns></returns>
         [HttpGet("FileUpload/Channel")]
         [Produces("application/json")]
-        public Task<ListOutput<EnumsViewModel<int>>> FileSaveChannelEnum()
+        public Task<ListOutput<EnumsViewModel<int>>> FileUploadChannelEnum()
         {
             var dto = _configuration.GetFileSaveChannelEnum();
             return Task.FromResult(Success(dto.ToMapList<EnumsViewModel<int>>()));
@@ -254,25 +254,25 @@ namespace Lycoris.Blog.Server.Controllers
         {
             try
             {
-                var channel = (FileSaveChannelEnum)input.SaveChannel!.Value;
+                var channel = (FileUploadChannelEnum)input.UploadChannel!.Value;
 
                 switch (channel)
                 {
-                    case Model.Configurations.FileSaveChannelEnum.Github:
+                    case Model.Configurations.FileUploadChannelEnum.Github:
                         if (input.Github == null)
                             throw new HttpStatusException(System.Net.HttpStatusCode.BadRequest, $"github configuration can not convert to null");
                         break;
-                    case Model.Configurations.FileSaveChannelEnum.Minio:
+                    case Model.Configurations.FileUploadChannelEnum.Minio:
                         if (input.Minio == null)
                             throw new HttpStatusException(System.Net.HttpStatusCode.BadRequest, $"monio configuration can not convert to null");
                         break;
-                    case Model.Configurations.FileSaveChannelEnum.OSS:
+                    case Model.Configurations.FileUploadChannelEnum.OSS:
                         break;
-                    case Model.Configurations.FileSaveChannelEnum.COS:
+                    case Model.Configurations.FileUploadChannelEnum.COS:
                         break;
-                    case Model.Configurations.FileSaveChannelEnum.OBS:
+                    case Model.Configurations.FileUploadChannelEnum.OBS:
                         break;
-                    case Model.Configurations.FileSaveChannelEnum.Kodo:
+                    case Model.Configurations.FileUploadChannelEnum.Kodo:
                         break;
                     default:
                         break;
@@ -286,7 +286,7 @@ namespace Lycoris.Blog.Server.Controllers
             }
             catch (Exception ex)
             {
-                throw new HttpStatusException(System.Net.HttpStatusCode.BadRequest, $"{nameof(input.SaveChannel)}:{input.SaveChannel} check failed:{ex.Message}");
+                throw new HttpStatusException(System.Net.HttpStatusCode.BadRequest, $"{nameof(input.UploadChannel)}:{input.UploadChannel} check failed:{ex.Message}");
             }
         }
     }

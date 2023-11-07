@@ -5,12 +5,20 @@ namespace Lycoris.Blog.Application.AppServices.StaticFiles.Dtos
 {
     public class StaticFileListFilter : PageFilter
     {
-        public FileSaveChannelEnum? SaveChannel { get; set; }
-
-        public bool? Use { get; set; }
-
         public DateTime? BeginTime { get; set; }
 
         public DateTime? EndTime { get; set; }
+
+        public FileUploadChannelEnum? UploadChannel { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool? LocalBack { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool? Use { get; set; }
     }
 }

@@ -71,5 +71,33 @@ namespace Lycoris.Blog.Server.Controllers
             await _user.UpdateUserBrieAsync(data, input.File);
             return Success();
         }
+
+        /// <summary>
+        /// 用户简要信息
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("Dashboard/Brief")]
+        [AppAuthentication]
+        [Produces("application/json")]
+        public async Task<DataOutput<UserBriefViewModel>> DashboardUserBrief()
+        {
+            var dto = await _user.GetUserBriefAsync();
+            return Success(dto?.ToMap<UserBriefViewModel>() ?? new UserBriefViewModel());
+        }
+
+        /// <summary>
+        /// 更新用户简要信息
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpPost("Dashboard/Brief/Update")]
+        [AppAuthentication]
+        [Consumes("multipart/form-data"), Produces("application/json")]
+        public async Task<BaseOutput> UpdateDashboardUserBrief([FromForm] UpdateUserBriefInput input)
+        {
+            var data = input.ToMap<UserBriefDto>();
+            await _user.UpdateUserBrieAsync(data, input.File);
+            return Success();
+        }
     }
 }

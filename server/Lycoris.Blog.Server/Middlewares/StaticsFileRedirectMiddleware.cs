@@ -23,6 +23,7 @@ namespace Lycoris.Blog.Server.Middlewares
         /// <param name="serviceProvider"></param>
         public StaticsFileRedirectMiddleware(RequestDelegate next, ILycorisLoggerFactory factory, IServiceProvider serviceProvider) : base(next, factory.CreateLogger<StaticsFileRedirectMiddleware>())
         {
+            //this.IgnoreOpptionsReuqest = true;
             _serviceProvider = serviceProvider;
         }
 
@@ -50,7 +51,7 @@ namespace Lycoris.Blog.Server.Middlewares
             }
 
             var config = await GetConfigurationAsync();
-            if (config == null || config.SaveChannel == FileSaveChannelEnum.Local || config.LoadFileSrc == LoadFileSrcEnum.Local)
+            if (config == null || config.UploadChannel == FileUploadChannelEnum.Local || config.LoadFileSrc == LoadFileSrcEnum.Local)
             {
                 await _next.Invoke(context);
                 return;
@@ -58,8 +59,10 @@ namespace Lycoris.Blog.Server.Middlewares
 
             var redirectUrl = "";
 
-            if (config.SaveChannel == FileSaveChannelEnum.Github)
+            if (config.UploadChannel == FileUploadChannelEnum.Github)
                 redirectUrl = config.Github.ChangeJsDelivrCDNUrl(context.Request.Path.Value);
+            else if (config.UploadChannel == FileUploadChannelEnum.Minio)
+                redirectUrl = config.Minio.ChangeMonioFileUrl(context.Request.Path.Value);
 
             if (redirectUrl.IsNullOrEmpty())
             {

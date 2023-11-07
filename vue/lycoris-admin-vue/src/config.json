@@ -6,7 +6,8 @@
     "ssoReferer": "127.0.0.1:5173"
   },
   "api": {
-    "server": "http://localhost:8019/api",
+    "server": "http://127.0.0.1:8019",
+    "routePrefix": "/api",
     "timeout": 15000,
     "signalR": {
       "level": "info"

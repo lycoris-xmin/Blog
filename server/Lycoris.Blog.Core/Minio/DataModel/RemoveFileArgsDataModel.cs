@@ -11,7 +11,7 @@ namespace Lycoris.Blog.Core.Minio.DataModel
         public RemoveFileArgsDataModel(MinioConfiguration configuration)
         {
             Configuration = configuration;
-            BucketName = Configuration.DefaultBucket ?? "";
+            BucketName = Configuration.Bucket ?? "";
         }
 
         /// <summary>

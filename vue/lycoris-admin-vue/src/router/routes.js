@@ -100,7 +100,7 @@ const menusRoutes = [
         component: () => import('../views/file-manage/index.vue'),
         meta: {
           title: '文件管理',
-          keepAlive: true
+          keepAlive: false
         }
       }
     ]

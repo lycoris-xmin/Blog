@@ -69,6 +69,11 @@
         /// <summary>
         /// 发布失败
         /// </summary>
-        IMPublishFailed = 11
+        IMPublishFailed = 11,
+
+        /// <summary>
+        /// 远端文件已存在
+        /// </summary>
+        RemoteFileRepeat = 110,
     }
 }

@@ -4,25 +4,25 @@
       <el-row :gutter="24">
         <el-col :span="8">
           <el-form-item label="保存位置">
-            <el-select v-model="model.saveChannel" placeholder="please select your zone">
-              <el-option v-for="item in model.saveChannelEnum" :key="item.value" :label="item.name" :value="item.value" />
+            <el-select v-model="model.uploadChannel" placeholder="请选择保存位置">
+              <el-option v-for="item in model.uploadChannelEnum" :key="item.value" :label="item.name" :value="item.value" />
             </el-select>
           </el-form-item>
-          <el-form-item label="本地备份" v-if="model.saveChannel != 0">
+          <el-form-item label="本地备份" v-if="model.uploadChannel != 0">
             <el-select v-model="model.localBackup" @change="localBackupChange">
               <el-option :key="false" :label="'不启用'" :value="false" />
               <el-option :key="true" :label="'启用'" :value="true" />
             </el-select>
           </el-form-item>
-          <el-form-item label="加载方式" v-if="model.saveChannel != 0">
+          <el-form-item label="加载方式" v-if="model.uploadChannel != 0">
             <el-select v-model="model.loadFileSrc" :disabled="model.loadFileSrcState">
               <el-option :key="0" :label="'本地仓库'" :value="0" />
               <el-option :key="1" :label="'远端仓库'" :value="1" />
             </el-select>
           </el-form-item>
           <div>
-            <transition-list :tag="div">
-              <div v-if="model.saveChannel == 10">
+            <transition-list tag="div">
+              <div v-if="model.uploadChannel == 10">
                 <el-form-item label="Github仓库">
                   <el-input v-model="github.repositoryUrl" placeholder="https://github.com/user/repository.git"></el-input>
                 </el-form-item>
@@ -39,7 +39,7 @@
                   <el-input v-model="github.cdn"></el-input>
                 </el-form-item>
               </div>
-              <div v-else-if="model.saveChannel == 20">
+              <div v-else-if="model.uploadChannel == 20">
                 <el-form-item label="服务地址">
                   <el-input v-model="minio.endpoint" placeholder="http(s)://host:port"></el-input>
                 </el-form-item>
@@ -56,22 +56,22 @@
                   </el-select>
                 </el-form-item>
                 <el-form-item label="存储桶">
-                  <el-input v-model="minio.defaultBucket"></el-input>
+                  <el-input v-model="minio.bucket"></el-input>
                 </el-form-item>
               </div>
-              <div v-else-if="model.saveChannel == 30">
+              <div v-else-if="model.uploadChannel == 30">
                 <p>阿里云存储</p>
                 <p>暂未开发</p>
               </div>
-              <div v-else-if="model.saveChannel == 40">
+              <div v-else-if="model.uploadChannel == 40">
                 <p>腾讯云存储</p>
                 <p>暂未开发</p>
               </div>
-              <div v-else-if="model.saveChannel == 50">
+              <div v-else-if="model.uploadChannel == 50">
                 <p>华为云存储</p>
                 <p>暂未开发</p>
               </div>
-              <div v-else-if="model.saveChannel == 60">
+              <div v-else-if="model.uploadChannel == 60">
                 <p>七牛云存储</p>
                 <p>暂未开发</p>
               </div>
@@ -90,13 +90,13 @@
 <script setup>
 import { reactive, onMounted } from 'vue';
 import transitionList from '../../../components/transitions/list-transition.vue';
-import { getFileSaveChannelEnum, getStaticFileSettings, saveStaticFileSettings } from '../../../api/configuration';
+import { getUploadChannelEnum, getStaticFileSettings, saveStaticFileSettings } from '../../../api/configuration';
 import toast from '../../../utils/toast';
 
 const model = reactive({
-  saveChannel: 0,
+  uploadChannel: 0,
   loading: false,
-  saveChannelEnum: [],
+  uploadChannelEnum: [],
   localBackup: true,
   loadFileSrc: 0,
   loadFileSrcState: false
@@ -115,7 +115,7 @@ const minio = reactive({
   accessKey: '',
   secretKey: '',
   ssl: false,
-  defaultBucket: ''
+  bucket: ''
 });
 
 const oss = reactive({});
@@ -142,9 +142,9 @@ onMounted(async () => {
 
 const getEnum = async () => {
   try {
-    let res = await getFileSaveChannelEnum();
+    let res = await getUploadChannelEnum();
     if (res != null && res.resCode == 0) {
-      model.saveChannelEnum = res.data.list;
+      model.uploadChannelEnum = res.data.list;
     }
   } catch (error) {}
 };
@@ -153,7 +153,7 @@ const getSettings = async () => {
   try {
     let res = await getStaticFileSettings();
     if (res && res.resCode == 0) {
-      model.saveChannel = res.data.saveChannel;
+      model.uploadChannel = res.data.uploadChannel;
       model.localBackup = res.data.localBackup;
       model.loadFileSrc = res.data.loadFileSrc;
 
@@ -175,7 +175,7 @@ const monioSetting = setting => {
   minio.accessKey = setting?.accessKey || '';
   minio.secretKey = setting?.secretKey || '';
   minio.ssl = setting?.ssl == null ? false : setting.ssl;
-  minio.defaultBucket = setting?.defaultBucket || '';
+  minio.bucket = setting?.bucket || '';
 };
 
 const githubSeting = setting => {
@@ -201,22 +201,22 @@ const submit = async () => {
   model.loading = true;
   try {
     let data = {
-      saveChannel: model.saveChannel,
+      uploadChannel: model.uploadChannel,
       localBackup: model.localBackup,
       loadFileSrc: model.loadFileSrc
     };
 
-    if (data.saveChannel === 10) {
+    if (data.uploadChannel === 10) {
       data.github = { ...github };
-    } else if (data.saveChannel === 20) {
+    } else if (data.uploadChannel === 20) {
       data.minio = { ...minio };
-    } else if (data.saveChannel === 30) {
+    } else if (data.uploadChannel === 30) {
       data.oss = { ...oss };
-    } else if (data.saveChannel === 40) {
+    } else if (data.uploadChannel === 40) {
       data.cos = { ...cos };
-    } else if (data.saveChannel === 50) {
+    } else if (data.uploadChannel === 50) {
       data.obs = { ...obs };
-    } else if (data.saveChannel === 60) {
+    } else if (data.uploadChannel === 60) {
       data.kodo = { ...kodo };
     }
 

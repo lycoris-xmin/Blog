@@ -70,7 +70,7 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
                 return null;
 
             var failedIds = new List<long>();
-            var _list = list!.Where(x => x.SaveChannel == FileSaveChannelEnum.Github).ToList();
+            var _list = list!.Where(x => x.UploadChannel == FileUploadChannelEnum.Github).ToList();
 
             foreach (var item in _list!)
             {
@@ -106,7 +106,7 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
                 return null;
 
             var failedIds = new List<long>();
-            var _list = list!.Where(x => x.SaveChannel == FileSaveChannelEnum.Minio).ToList();
+            var _list = list!.Where(x => x.UploadChannel == FileUploadChannelEnum.Minio).ToList();
 
             foreach (var item in _list!)
             {

@@ -50,12 +50,29 @@ namespace Lycoris.Blog.Server.Controllers
         /// <returns></returns>
         [HttpPost("Check/UseState/{id}")]
         [Produces("application/json")]
-        public async Task<BaseOutput> CheckFileUseState([FromQuery] long? id)
+        public async Task<BaseOutput> CheckFileUseState(long? id)
         {
             if (!id.HasValue || id.Value <= 0)
                 throw new HttpStatusException(System.Net.HttpStatusCode.BadRequest, "wrong id parameter");
 
             await _staticFile.CheckFileUseStateAsync(id.Value);
+
+            return Success();
+        }
+
+        /// <summary>
+        /// 同步文件至远端仓库
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPost("Syncfile/Remote/{id}")]
+        [Produces("application/json")]
+        public async Task<BaseOutput> SyncFileToRemote(long? id)
+        {
+            if (!id.HasValue || id.Value <= 0)
+                throw new HttpStatusException(System.Net.HttpStatusCode.BadRequest, "wrong id parameter");
+
+            await _staticFile.SyncFileToRemoteRepositoryAsync(id.Value);
 
             return Success();
         }

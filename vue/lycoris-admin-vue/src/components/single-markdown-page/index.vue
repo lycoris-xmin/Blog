@@ -53,8 +53,8 @@ const handleKeyDownSave = () => {
 
 defineExpose({
   init,
-  showLoading: () => {
-    markdown.value.showLoading();
+  showLoading: text => {
+    markdown.value.showLoading(text);
   },
   hideLoading: () => {
     markdown.value.hideLoading();

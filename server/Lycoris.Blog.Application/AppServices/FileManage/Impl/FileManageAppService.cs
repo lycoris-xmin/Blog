@@ -49,33 +49,33 @@ namespace Lycoris.Blog.Application.AppServices.FileManage.Impl
                 {
                     Path = $"/{path.TrimStart('/').TrimEnd('/')}",
                     FileName = fileName,
-                    SaveChannel = config.SaveChannel,
+                    UploadChannel = config.UploadChannel,
                     PathUrl = $"/{path.TrimStart('/').TrimEnd('/')}/{fileName}",
                     Use = true,
                     CreateTime = DateTime.Now
                 };
 
-                switch (data.SaveChannel)
+                switch (data.UploadChannel)
                 {
-                    case FileSaveChannelEnum.Github:
+                    case FileUploadChannelEnum.Github:
                         data = await GitHubUploadFileAsync(file, data);
                         break;
-                    case FileSaveChannelEnum.Minio:
+                    case FileUploadChannelEnum.Minio:
                         data = await MinioUploadFileAsync(file, data);
                         break;
-                    case FileSaveChannelEnum.OSS:
+                    case FileUploadChannelEnum.OSS:
                         break;
-                    case FileSaveChannelEnum.COS:
+                    case FileUploadChannelEnum.COS:
                         break;
-                    case FileSaveChannelEnum.OBS:
+                    case FileUploadChannelEnum.OBS:
                         break;
-                    case FileSaveChannelEnum.Kodo:
+                    case FileUploadChannelEnum.Kodo:
                         break;
                     default:
                         break;
                 }
 
-                if (data.SaveChannel == FileSaveChannelEnum.Local || config.LocalBackup)
+                if (data.UploadChannel == FileUploadChannelEnum.Local || config.LocalBackup)
                 {
                     var filePath = Path.Combine(AppSettings.Path.WebRootPath, data.Path.TrimStart('/'));
 
@@ -84,17 +84,70 @@ namespace Lycoris.Blog.Application.AppServices.FileManage.Impl
                     await file.SaveAsAsync(Path.Combine(filePath, data.FileName));
                 }
 
+                data.LocalBack = config.LocalBackup;
+
                 await _repository.CreateAsync(data);
 
                 return AppSettings.Application.HttpPort == 80
                     ? $"{AppSettings.Application.Domain}{data.PathUrl}"
                     : $"{AppSettings.Application.Domain}:{AppSettings.Application.HttpPort}{data.PathUrl}";
             }
+            catch (GitHubFileException ex)
+            {
+                _logger.Error($"upload file failed:{ex.Message}");
+                throw new FriendlyException(ex.Message);
+            }
             catch (Exception ex)
             {
                 _logger.Error("upload file failed", ex);
                 throw new FriendlyException("上传失败", ex.Message);
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public async Task<StaticFile> UploadLocalToRemoteAsync(StaticFile data)
+        {
+            var filePath = Path.Combine(AppSettings.Path.WebRootPath, data.Path.TrimStart('/'), data.FileName);
+
+            if (!File.Exists(filePath))
+            {
+                data.LocalBack = false;
+                await _repository.UpdateFieIdsAsync(data, x => x.LocalBack);
+                throw new FriendlyException("找不到本地备份文件，无法上传");
+            }
+
+            var config = await GetConfigurationAsync();
+
+            switch (config.UploadChannel)
+            {
+                case FileUploadChannelEnum.Github:
+                    data = await GitHubUploadFileAsync(data, filePath);
+                    break;
+                case FileUploadChannelEnum.Minio:
+                    data = await MinioUploadFileAsync(data, filePath);
+                    break;
+                case FileUploadChannelEnum.OSS:
+                    break;
+                case FileUploadChannelEnum.COS:
+                    break;
+                case FileUploadChannelEnum.OBS:
+                    break;
+                case FileUploadChannelEnum.Kodo:
+                    break;
+                default:
+                    break;
+            }
+
+            if (data.UploadChannel != config.UploadChannel)
+                data.UploadChannel = config.UploadChannel;
+
+            await _repository.UpdateFieIdsAsync(data, x => x.UploadChannel, x => x.RemoteUrl, x => x.FileSha);
+
+            return data;
         }
 
         /// <summary>
@@ -125,9 +178,27 @@ namespace Lycoris.Blog.Application.AppServices.FileManage.Impl
         /// <returns></returns>
         private async Task<StaticFile> GitHubUploadFileAsync(IFormFile file, StaticFile data)
         {
-            data.SaveChannel = FileSaveChannelEnum.Github;
+            data.UploadChannel = FileUploadChannelEnum.Github;
 
             var (url, sha) = await _github.Value.UploadFileAsync(file, $"{data.Path}/{data.FileName}");
+
+            data.RemoteUrl = url;
+            data.FileSha = sha ?? "";
+
+            return data;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="localFilePath"></param>
+        /// <returns></returns>
+        private async Task<StaticFile> GitHubUploadFileAsync(StaticFile data, string localFilePath)
+        {
+            data.UploadChannel = FileUploadChannelEnum.Github;
+
+            var (url, sha) = await _github.Value.UploadFileAsync(localFilePath, $"{data.Path}/{data.FileName}");
 
             data.RemoteUrl = url;
             data.FileSha = sha ?? "";
@@ -143,12 +214,31 @@ namespace Lycoris.Blog.Application.AppServices.FileManage.Impl
         /// <returns></returns>
         private async Task<StaticFile> MinioUploadFileAsync(IFormFile file, StaticFile data)
         {
-            data.SaveChannel = FileSaveChannelEnum.Minio;
+            data.UploadChannel = FileUploadChannelEnum.Minio;
 
             data.RemoteUrl = await _minio.Value.UploadFileAsync(x =>
             {
                 x.WithBucketPath(data.Path);
                 x.WithFormFile(file);
+            });
+
+            return data;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="localFilePath"></param>
+        /// <returns></returns>
+        private async Task<StaticFile> MinioUploadFileAsync(StaticFile data, string localFilePath)
+        {
+            data.UploadChannel = FileUploadChannelEnum.Minio;
+
+            data.RemoteUrl = await _minio.Value.UploadFileAsync(x =>
+            {
+                x.WithBucketPath(data.Path);
+                x.WithFile(localFilePath);
             });
 
             return data;

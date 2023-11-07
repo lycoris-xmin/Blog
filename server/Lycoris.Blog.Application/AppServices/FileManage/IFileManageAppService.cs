@@ -1,4 +1,5 @@
 ﻿using Lycoris.Blog.Application.Shared;
+using Lycoris.Blog.EntityFrameworkCore.Tables;
 using Microsoft.AspNetCore.Http;
 
 namespace Lycoris.Blog.Application.AppServices.FileManage
@@ -12,6 +13,13 @@ namespace Lycoris.Blog.Application.AppServices.FileManage
         /// <param name="path">上传路径</param>
         /// <returns></returns>
         Task<string> UploadFileAsync(IFormFile file, string path);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        Task<StaticFile> UploadLocalToRemoteAsync(StaticFile data);
 
         /// <summary>
         /// 

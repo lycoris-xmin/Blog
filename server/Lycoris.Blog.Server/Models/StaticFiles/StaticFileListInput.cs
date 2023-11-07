@@ -20,7 +20,12 @@ namespace Lycoris.Blog.Server.Models.StaticFiles
         /// <summary>
         /// 
         /// </summary>
-        public int? SaveChannel { get; set; }
+        public int? UploadChannel { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool? LocalBack { get; set; }
 
         /// <summary>
         /// 

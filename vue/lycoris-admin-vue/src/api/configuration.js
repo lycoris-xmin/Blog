@@ -38,7 +38,7 @@ export const saveStaticFileSettings = data => {
   return request.post(`${controller}/staticFile`, data);
 };
 
-export const getFileSaveChannelEnum = () => {
+export const getUploadChannelEnum = () => {
   return request.get(`${controller}/fileUpload/channel`);
 };
 

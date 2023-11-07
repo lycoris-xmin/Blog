@@ -8,7 +8,7 @@ namespace Lycoris.Blog.Core.Minio.DataModel
     {
         public GetRandomFileUrlArgsDataModel(MinioConfiguration configuration)
         {
-            BucketName = configuration.DefaultBucket ?? "";
+            BucketName = configuration.Bucket ?? "";
         }
 
         /// <summary>

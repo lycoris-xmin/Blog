@@ -175,7 +175,7 @@ namespace Lycoris.Blog.Core.Minio.Impl
 
             var config = data.Value!.ToObject<StaticFileConfiguration>();
 
-            if (config == null || config.SaveChannel != FileSaveChannelEnum.Minio || config.Minio.MinioEndpoint.IsNullOrEmpty())
+            if (config == null || config.UploadChannel != FileUploadChannelEnum.Minio || config.Minio.MinioEndpoint.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(config));
 
             return config.Minio;

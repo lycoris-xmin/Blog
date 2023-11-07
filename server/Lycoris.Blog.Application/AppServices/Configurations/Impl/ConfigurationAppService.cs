@@ -61,10 +61,10 @@ namespace Lycoris.Blog.Application.AppServices.Configurations.Impl
         /// <returns></returns>
         public List<EnumsDto<int>> GetFileSaveChannelEnum()
         {
-            return Enum.GetValues<FileSaveChannelEnum>().Select(x => new EnumsDto<int>
+            return Enum.GetValues<FileUploadChannelEnum>().Select(x => new EnumsDto<int>
             {
                 Value = (int)x,
-                Name = x.GetEnumDescription<FileSaveChannelEnum>()
+                Name = x.GetEnumDescription<FileUploadChannelEnum>()
             }).ToList();
         }
 

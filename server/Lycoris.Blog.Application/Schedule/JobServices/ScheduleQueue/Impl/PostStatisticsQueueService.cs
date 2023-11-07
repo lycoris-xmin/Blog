@@ -13,17 +13,15 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
         public IJobExecutionContext? JobContext { get; set; }
 
         private readonly IRepository<Post, long> _post;
-        private readonly IRepository<PostStatistics, long> _postStatistics;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="post"></param>
         /// <param name="postStatistics"></param>
-        public PostStatisticsQueueService(IRepository<Post, long> post, IRepository<PostStatistics, long> postStatistics)
+        public PostStatisticsQueueService(IRepository<Post, long> post)
         {
             _post = post;
-            _postStatistics = postStatistics;
         }
 
         public async Task JobDoWorkAsync(string? data, DateTime? time)
@@ -36,20 +34,11 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
             if (post == null)
                 return;
 
-            var statistics = await _postStatistics.GetAsync(dto.PostId) ?? new PostStatistics() { Browse = 0, Comment = 0 };
+            post.Statistics ??= new PostStatisticsDao();
+            post.Statistics.Comment += dto.StaticType == PostStaticTypeEnum.Comment ? 1 : 0;
+            post.Statistics.Browse += dto.StaticType == PostStaticTypeEnum.Browse ? 1 : 0;
 
-            statistics.Comment += dto.StaticType == PostStaticTypeEnum.Comment ? 1 : 0;
-            statistics.Browse += dto.StaticType == PostStaticTypeEnum.Browse ? 1 : 0;
-
-            if (statistics.Id > 0)
-            {
-                await _postStatistics.UpdateAsync(statistics);
-            }
-            else
-            {
-                statistics.Id = dto.PostId;
-                await _postStatistics.CreateAsync(statistics);
-            }
+            await _post.UpdateFieIdsAsync(post, x => x.Statistics);
         }
     }
 }

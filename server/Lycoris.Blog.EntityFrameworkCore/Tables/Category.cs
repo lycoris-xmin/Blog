@@ -9,6 +9,8 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
     /// </summary>
     [Table("Category")]
     [TableIndex("CreateTime")]
+    [TableIndex("Icon")]
+    [TableIndex("Keyword")]
     public class Category : MySqlBaseEntity<int>
     {
         /// <summary>

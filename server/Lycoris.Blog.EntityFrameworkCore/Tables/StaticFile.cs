@@ -10,7 +10,7 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
     /// 上传文件
     /// </summary>
     [Table("StaticFile")]
-    [TableIndex("SaveChannel")]
+    [TableIndex("UploadChannel")]
     [TableIndex("PathUrl")]
     [TableIndex("Use")]
     [TableIndex("CreateTime")]
@@ -31,8 +31,8 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
         /// <summary>
         /// 存储位置
         /// </summary>
-        [TableColumn(Required = true, DefaultValue = FileSaveChannelEnum.Local)]
-        public FileSaveChannelEnum SaveChannel { get; set; }
+        [TableColumn(Required = true, DefaultValue = FileUploadChannelEnum.Local)]
+        public FileUploadChannelEnum UploadChannel { get; set; }
 
         /// <summary>
         /// 相对路径
@@ -51,6 +51,12 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
         /// </summary>
         [TableColumn(StringLength = 100)]
         public string FileSha { get; set; } = string.Empty;
+
+        /// <summary>
+        /// 本地备份
+        /// </summary>
+        [TableColumn(Required = true, DefaultValue = false)]
+        public bool LocalBack { get; set; } = false;
 
         /// <summary>
         /// 是否有在使用

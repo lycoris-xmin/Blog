@@ -18,7 +18,7 @@
         /// <summary>
         /// 
         /// </summary>
-        public int SaveChannel { get; set; }
+        public int UploadChannel { get; set; }
 
         /// <summary>
         /// 
@@ -34,6 +34,11 @@
         /// 
         /// </summary>
         public string? FileSha { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool LocalBack { get; set; }
 
         /// <summary>
         /// 

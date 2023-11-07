@@ -84,6 +84,28 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
         /// 更新时间
         /// </summary>
         public DateTime UpdateTime { get; set; }
+
+        /// <summary>
+        /// 文章互动
+        /// </summary>
+        [TableColumn(JsonMap = true)]
+        public PostStatisticsDao Statistics { get; set; } = new PostStatisticsDao();
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class PostStatisticsDao
+    {
+        /// <summary>
+        /// 浏览量
+        /// </summary>
+        public int Browse { get; set; }
+
+        /// <summary>
+        /// 评论数量
+        /// </summary>
+        public int Comment { get; set; }
     }
 }
 

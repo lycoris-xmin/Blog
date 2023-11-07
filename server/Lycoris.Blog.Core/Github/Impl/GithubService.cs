@@ -40,11 +40,21 @@ namespace Lycoris.Blog.Core.Github.Impl
 
             var client = CreateGitHubClient(config);
 
-            var res = await client.Repository.Content.CreateFile(owner, repo, remotePath.TrimStart('/'), new CreateFileRequest("upload file", content, false));
+            try
+            {
+                var res = await client.Repository.Content.CreateFile(owner, repo, remotePath.TrimStart('/'), new CreateFileRequest("upload file", content, false));
 
-            var url = config.ChangeJsDelivrCDNUrl(owner, repo, res.Content!.Path);
+                var url = config.ChangeJsDelivrCDNUrl(owner, repo, res.Content!.Path);
 
-            return (url, res.Content!.Sha);
+                return (url, res.Content!.Sha);
+            }
+            catch (ApiValidationException ex)
+            {
+                if (ex.Message.Contains("\"sha\" wasn't supplied"))
+                    throw new GitHubFileException(UploadFileResultEnum.Repeat, "文件已存在远端仓库");
+
+                throw;
+            }
         }
 
         /// <summary>
@@ -67,11 +77,21 @@ namespace Lycoris.Blog.Core.Github.Impl
 
             var client = CreateGitHubClient(config);
 
-            var res = await client.Repository.Content.CreateFile(owner, repo, remotePath.TrimStart('/'), new CreateFileRequest("upload file", content, false));
+            try
+            {
+                var res = await client.Repository.Content.CreateFile(owner, repo, remotePath.TrimStart('/'), new CreateFileRequest("upload file", content, false));
 
-            var url = config.ChangeJsDelivrCDNUrl(owner, repo, res.Content!.Path);
+                var url = config.ChangeJsDelivrCDNUrl(owner, repo, res.Content!.Path);
 
-            return (url, res.Content!.Sha);
+                return (url, res.Content!.Sha);
+            }
+            catch (ApiValidationException ex)
+            {
+                if (ex.Message.Contains("\"sha\" wasn't supplied"))
+                    throw new GitHubFileException(UploadFileResultEnum.Repeat, "文件已存在远端仓库");
+
+                throw;
+            }
         }
 
         /// <summary>

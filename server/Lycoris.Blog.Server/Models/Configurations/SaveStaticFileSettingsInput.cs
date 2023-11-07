@@ -12,7 +12,7 @@ namespace Lycoris.Blog.Server.Models.Configurations
         /// 
         /// </summary>
         [Required]
-        public int? SaveChannel { get; set; }
+        public int? UploadChannel { get; set; }
 
         /// <summary>
         /// 

@@ -5,7 +5,7 @@ import response_interceptors from './response_interceptors';
 import toast from '../toast';
 
 const service = axios.create({
-  baseURL: api.server,
+  baseURL: `${api.server}${api.routePrefix}`,
   timeout: api.timeout,
   withCredentials: true
 });

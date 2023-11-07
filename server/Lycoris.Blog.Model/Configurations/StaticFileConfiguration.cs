@@ -12,7 +12,7 @@ namespace Lycoris.Blog.Model.Configurations
         /// <summary>
         /// 
         /// </summary>
-        public FileSaveChannelEnum SaveChannel { get; set; }
+        public FileUploadChannelEnum UploadChannel { get; set; }
 
         /// <summary>
         /// 
@@ -69,14 +69,14 @@ namespace Lycoris.Blog.Model.Configurations
         /// <summary>
         /// 
         /// </summary>
-        public string DefaultBucket { get; set; } = string.Empty;
+        public string Bucket { get; set; } = string.Empty;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="remotePath"></param>
         /// <returns></returns>
-        public string ChangeMonioFileUrl(string? remotePath) => $"{this.Endpoint}/{this.DefaultBucket}/{remotePath}";
+        public string ChangeMonioFileUrl(string? remotePath) => $"{this.Endpoint}/{this.Bucket}/{remotePath}";
     }
 
     /// <summary>
@@ -150,7 +150,7 @@ namespace Lycoris.Blog.Model.Configurations
     /// <summary>
     /// 
     /// </summary>
-    public enum FileSaveChannelEnum
+    public enum FileUploadChannelEnum
     {
         /// <summary>
         /// 本地

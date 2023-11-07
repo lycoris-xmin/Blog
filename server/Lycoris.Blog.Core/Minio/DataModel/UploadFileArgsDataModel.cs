@@ -13,7 +13,7 @@ namespace Lycoris.Blog.Core.Minio.DataModel
         public UploadFileArgsDataModel(MinioConfiguration configuration)
         {
             Configuration = configuration;
-            BucketName = Configuration.DefaultBucket ?? "";
+            BucketName = Configuration.Bucket ?? "";
         }
 
         /// <summary>
@@ -155,7 +155,7 @@ namespace Lycoris.Blog.Core.Minio.DataModel
         {
             var args = new PutObjectArgs();
 
-            args.WithBucket(BucketName ?? Configuration.DefaultBucket);
+            args.WithBucket(BucketName ?? Configuration.Bucket);
             if (BucketSavePath.IsNullOrEmpty())
                 args.WithObject(FileName);
             else

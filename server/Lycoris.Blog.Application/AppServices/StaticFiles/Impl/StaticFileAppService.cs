@@ -111,7 +111,7 @@ namespace Lycoris.Blog.Application.AppServices.StaticFiles.Impl
             {
                 await _fileManage.Value.UploadLocalToRemoteAsync(data);
             }
-            catch (FileManageException ex)
+            catch (GitHubFileException ex)
             {
                 throw new OutputException(ResCodeEnum.RemoteFileRepeat, ex.Message);
             }

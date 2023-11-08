@@ -1,5 +1,6 @@
 ﻿using Lycoris.Blog.Model.Exceptions;
 using Microsoft.AspNetCore.Http;
+using Octokit;
 
 namespace Lycoris.Blog.Core.Github
 {
@@ -28,7 +29,7 @@ namespace Lycoris.Blog.Core.Github
         /// </summary>
         /// <param name="remotePath"></param>
         /// <returns></returns>
-        Task<byte[]?> GetFileAsync(string remotePath);
+        Task<RepositoryContent?> GetFileAsync(string remotePath);
 
         /// <summary>
         /// 

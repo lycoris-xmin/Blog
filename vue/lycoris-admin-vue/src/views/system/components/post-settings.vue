@@ -44,7 +44,7 @@
         </el-col>
       </el-row>
       <div class="submit">
-        <el-button type="primary" @click="submit">保存</el-button>
+        <el-button type="primary" :loading="model.loading" @click="submit">保存</el-button>
       </div>
     </el-form>
   </div>
@@ -112,6 +112,8 @@ const submit = async () => {
     images: model.images
   };
 
+  model.loading = true;
+
   // 先上传文件
   try {
     if (model.files && model.files.length) {
@@ -131,10 +133,13 @@ const submit = async () => {
 
     let res = await savePostSettings(data);
     if (res && res.resCode == 0) {
+      model.files = [];
       //
       toast.success('保存成功');
     }
-  } catch (error) {}
+  } finally {
+    model.loading = false;
+  }
 };
 </script>
 

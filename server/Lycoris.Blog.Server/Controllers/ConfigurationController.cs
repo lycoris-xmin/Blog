@@ -239,7 +239,7 @@ namespace Lycoris.Blog.Server.Controllers
             var fileUrl = "";
 
             if (input.ConfigName == AppConfig.PostSettings)
-                fileUrl = await _fileManage.Value.UploadFileAsync(input.File!, "/post");
+                fileUrl = await _fileManage.Value.UploadFileAsync(input.File!, "/post/carousel");
 
             return Success(fileUrl);
         }

@@ -103,7 +103,7 @@ onMounted(async () => {
 
     await getWebPath();
 
-    await signalR.setupSignalR('/lycoris/hub/dashboard');
+    await signalR.setupSignalR('/hub/dashboard');
 
     subscribeAuthroization();
     subscribeRefreshToken();

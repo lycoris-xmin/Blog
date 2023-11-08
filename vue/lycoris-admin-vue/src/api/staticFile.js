@@ -1,6 +1,6 @@
 import request from '../utils/request';
 
-const controller = '/lycoris/staticfile';
+const controller = '/staticfile';
 
 export const getList = ({ beginTime, endTime, uploadChannel, localBack, use, pageIndex, pageSize }) => {
   let data = {
@@ -37,4 +37,8 @@ export const checkFileUseState = id => {
 
 export const syncFileToRemote = id => {
   return request.post(`${controller}/syncfile/remote/${id}`);
+};
+
+export const downAllFile = () => {
+  return request.post(`${controller}/download/file/all`);
 };

@@ -92,10 +92,9 @@ namespace Lycoris.Blog.Application.AppServices.FileManage.Impl
                     ? $"{AppSettings.Application.Domain}{data.PathUrl}"
                     : $"{AppSettings.Application.Domain}:{AppSettings.Application.HttpPort}{data.PathUrl}";
             }
-            catch (GitHubFileException ex)
+            catch (FriendlyException)
             {
-                _logger.Error($"upload file failed:{ex.Message}");
-                throw new FriendlyException(ex.Message);
+                throw;
             }
             catch (Exception ex)
             {
@@ -111,43 +110,55 @@ namespace Lycoris.Blog.Application.AppServices.FileManage.Impl
         /// <returns></returns>
         public async Task<StaticFile> UploadLocalToRemoteAsync(StaticFile data)
         {
-            var filePath = Path.Combine(AppSettings.Path.WebRootPath, data.Path.TrimStart('/'), data.FileName);
-
-            if (!File.Exists(filePath))
+            try
             {
-                data.LocalBack = false;
-                await _repository.UpdateFieIdsAsync(data, x => x.LocalBack);
-                throw new FriendlyException("找不到本地备份文件，无法上传");
+                var filePath = Path.Combine(AppSettings.Path.WebRootPath, data.Path.TrimStart('/'), data.FileName);
+
+                if (!File.Exists(filePath))
+                {
+                    data.LocalBack = false;
+                    await _repository.UpdateFieIdsAsync(data, x => x.LocalBack);
+                    throw new FriendlyException("找不到本地备份文件，无法上传");
+                }
+
+                var config = await GetConfigurationAsync();
+
+                switch (config.UploadChannel)
+                {
+                    case FileUploadChannelEnum.Github:
+                        data = await GitHubUploadFileAsync(data, filePath);
+                        break;
+                    case FileUploadChannelEnum.Minio:
+                        data = await MinioUploadFileAsync(data, filePath);
+                        break;
+                    case FileUploadChannelEnum.OSS:
+                        break;
+                    case FileUploadChannelEnum.COS:
+                        break;
+                    case FileUploadChannelEnum.OBS:
+                        break;
+                    case FileUploadChannelEnum.Kodo:
+                        break;
+                    default:
+                        break;
+                }
+
+                if (data.UploadChannel != config.UploadChannel)
+                    data.UploadChannel = config.UploadChannel;
+
+                await _repository.UpdateFieIdsAsync(data, x => x.UploadChannel, x => x.RemoteUrl, x => x.FileSha);
+
+                return data;
             }
-
-            var config = await GetConfigurationAsync();
-
-            switch (config.UploadChannel)
+            catch (FriendlyException)
             {
-                case FileUploadChannelEnum.Github:
-                    data = await GitHubUploadFileAsync(data, filePath);
-                    break;
-                case FileUploadChannelEnum.Minio:
-                    data = await MinioUploadFileAsync(data, filePath);
-                    break;
-                case FileUploadChannelEnum.OSS:
-                    break;
-                case FileUploadChannelEnum.COS:
-                    break;
-                case FileUploadChannelEnum.OBS:
-                    break;
-                case FileUploadChannelEnum.Kodo:
-                    break;
-                default:
-                    break;
+                throw;
             }
-
-            if (data.UploadChannel != config.UploadChannel)
-                data.UploadChannel = config.UploadChannel;
-
-            await _repository.UpdateFieIdsAsync(data, x => x.UploadChannel, x => x.RemoteUrl, x => x.FileSha);
-
-            return data;
+            catch (Exception ex)
+            {
+                _logger.Error("upload file failed", ex);
+                throw new FriendlyException("同步失败", ex.Message);
+            }
         }
 
         /// <summary>

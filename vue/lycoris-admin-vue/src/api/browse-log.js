@@ -1,5 +1,5 @@
 import request from '../utils/request';
-const controller = '/lycoris/browselog';
+const controller = '/browselog';
 
 export const getList = ({ pageIndex, pageSize, beginTime, endTime, path, ip, referer }) => {
   let data = {

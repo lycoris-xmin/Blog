@@ -84,22 +84,27 @@ const error = function () {
   return ElMessageBox.alert(message, title, option);
 };
 
-const confirm = function () {
-  let { message, title, config } = getArgs(arguments);
+const confirm = async function () {
+  try {
+    let { message, title, config } = getArgs(arguments);
 
-  title = title || '警告';
-  config = config || {};
+    title = title || '警告';
+    config = config || {};
 
-  let option = {
-    type: 'warning',
-    cancelButtonText: '取消',
-    confirmButtonText: '确定',
-    draggable: true
-  };
+    let option = {
+      type: 'warning',
+      cancelButtonText: '取消',
+      confirmButtonText: '确定',
+      draggable: true
+    };
 
-  Object.assign(option, config);
+    Object.assign(option, config);
 
-  return ElMessageBox.confirm(message, title, option);
+    await ElMessageBox.confirm(message, title, option);
+    return true;
+  } catch {
+    return false;
+  }
 };
 
 export default {

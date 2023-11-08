@@ -1,5 +1,5 @@
 import request from '../utils/request';
-const controller = '/lycoris/post';
+const controller = '/post';
 
 export const getList = data => {
   if (data.title == '') {

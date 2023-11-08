@@ -42,5 +42,11 @@ namespace Lycoris.Blog.Application.AppServices.StaticFiles
         /// <param name="id"></param>
         /// <returns></returns>
         Task DeleteLocalFileAsync(long id);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        Task<string> DownloadAllFileAsync();
     }
 }

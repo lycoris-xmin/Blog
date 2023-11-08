@@ -1,6 +1,6 @@
 import request from '../utils/request';
 
-const controller = '/lycoris/category';
+const controller = '/category';
 
 export const getList = data => {
   return request.get(`${controller}/list`, data);

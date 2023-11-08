@@ -3,15 +3,14 @@ using Lycoris.Blog.Application.AppServices.FileManage;
 using Lycoris.Blog.Application.AppServices.StaticFiles.Dtos;
 using Lycoris.Blog.Application.Cached.StaticFiles;
 using Lycoris.Blog.Application.Schedule.Jobs;
+using Lycoris.Blog.Application.Schedule.Models;
 using Lycoris.Blog.Application.Shared.Dtos;
 using Lycoris.Blog.Application.Shared.Impl;
 using Lycoris.Blog.Common;
-using Lycoris.Blog.EntityFrameworkCore.Constants;
+using Lycoris.Blog.Core.SharpFastZip;
 using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
-using Lycoris.Blog.Model.Configurations;
 using Lycoris.Blog.Model.Exceptions;
-using Lycoris.Blog.Model.Global.Output;
 using Lycoris.Common.Extensions;
 using Lycoris.Quartz.Extensions;
 using Microsoft.AspNetCore.Http;
@@ -29,16 +28,19 @@ namespace Lycoris.Blog.Application.AppServices.StaticFiles.Impl
         private readonly Lazy<IStaticFilesCacheService> _cache;
         private readonly Lazy<IQuartzSchedulerCenter> _schedulerCenter;
         private readonly Lazy<IFileManageAppService> _fileManage;
+        private readonly Lazy<ISharpFastZipService> _sharpFastZip;
 
         public StaticFileAppService(IRepository<StaticFile, long> repository,
                                     Lazy<IStaticFilesCacheService> cache,
                                     Lazy<IQuartzSchedulerCenter> schedulerCenter,
-                                    Lazy<IFileManageAppService> fileManage)
+                                    Lazy<IFileManageAppService> fileManage,
+                                    Lazy<ISharpFastZipService> sharpFastZip)
         {
             _repository = repository;
             _cache = cache;
             _schedulerCenter = schedulerCenter;
             _fileManage = fileManage;
+            _sharpFastZip = sharpFastZip;
         }
 
         /// <summary>
@@ -107,14 +109,7 @@ namespace Lycoris.Blog.Application.AppServices.StaticFiles.Impl
             if (!data.LocalBack)
                 throw new FriendlyException("该文件本地没有备份，无法上传");
 
-            try
-            {
-                await _fileManage.Value.UploadLocalToRemoteAsync(data);
-            }
-            catch (GitHubFileException ex)
-            {
-                throw new OutputException(ResCodeEnum.RemoteFileRepeat, ex.Message);
-            }
+            await _fileManage.Value.UploadLocalToRemoteAsync(data);
         }
 
         /// <summary>
@@ -149,6 +144,28 @@ namespace Lycoris.Blog.Application.AppServices.StaticFiles.Impl
                 return;
 
             File.Delete(filePath);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public async Task<string> DownloadAllFileAsync()
+        {
+            var zipPath = Path.Combine(AppSettings.Path.AppData, "Temp");
+            var zipFileName = $"staticfile-{DateTime.Now:yyyyMMddHHmmss}.zip";
+            var zipFilePath = Path.Combine(zipPath, zipFileName);
+
+            if (!Directory.Exists(zipPath))
+                Directory.CreateDirectory(zipPath);
+
+            await _schedulerCenter.Value.AddOnceJobAsync<BackupFileJob, BackupFileJobModel>(new BackupFileJobModel()
+            {
+                SourceFilePath = AppSettings.Path.WebRootPath,
+                ZipFilePath = zipFilePath
+            });
+
+            return Path.GetFileName(zipFilePath);
         }
     }
 }

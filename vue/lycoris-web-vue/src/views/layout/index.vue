@@ -116,6 +116,8 @@ const userBriefInit = async () => {
       stores.user.setLoginState(res.data);
       model.isAdmin = res.data.isAdmin;
       signalR.setupSignalR('/lycoris/hub/home');
+    } else {
+      stores.user.setLogoutState();
     }
   } catch (error) {}
 };

@@ -1,6 +1,6 @@
 import request from '../utils/request';
 
-const controller = '/lycoris/authentication';
+const controller = '/authentication';
 
 export const ssoLogin = token => {
   return request.post(`${controller}/sso/login`, {}, false, {

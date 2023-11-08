@@ -7,7 +7,7 @@
   },
   "api": {
     "server": "http://127.0.0.1:8019",
-    "routePrefix": "/api",
+    "routePrefix": "/api/lycoris",
     "timeout": 15000,
     "signalR": {
       "level": "info"

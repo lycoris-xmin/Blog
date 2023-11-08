@@ -53,8 +53,8 @@
           <el-option label="中专" value="中专" />
           <el-option label="大专" value="大专" />
           <el-option label="本科" value="本科" />
-          <el-option label="硕士" value="硕士" />
-          <el-option label="博士" value="博士" />
+          <el-option label="硕士研究生" value="硕士研究生" />
+          <el-option label="博士研究生" value="博士研究生" />
         </el-select>
       </div>
       <div class="form-group form-group-col">

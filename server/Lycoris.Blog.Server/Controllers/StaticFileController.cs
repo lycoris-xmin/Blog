@@ -76,5 +76,17 @@ namespace Lycoris.Blog.Server.Controllers
 
             return Success();
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("Download/File/All")]
+        [Produces("application/json")]
+        public async Task<DataOutput<string>> DownloadAllFile()
+        {
+            var fileName = await _staticFile.DownloadAllFileAsync();
+            return Success(fileName);
+        }
     }
 }

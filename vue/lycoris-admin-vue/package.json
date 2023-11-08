@@ -24,6 +24,7 @@
     "pinia": "^2.0.32",
     "velocity-animate": "^1.5.2",
     "vue": "^3.2.47",
+    "vue-clipboard3": "^2.0.0",
     "vue-router": "4.1.3"
   },
   "devDependencies": {

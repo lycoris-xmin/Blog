@@ -258,10 +258,6 @@ const setImgPreview = callback => {
   const imgs = document.querySelector('div.cherry-previewer').querySelectorAll('img');
   if (imgs.length > 0) {
     imgs.forEach(el => {
-      el.parentNode.style.display = 'flex';
-      el.parentNode.style['justify-content'] = 'center';
-      el.parentNode.style['align-items'] = 'center';
-
       el.addEventListener('click', function () {
         callback.call(this);
       });
@@ -333,6 +329,12 @@ defineExpose({
           content: '>';
           color: var(--color-danger);
         }
+      }
+
+      p:has(img) {
+        display: flex;
+        justify-content: center;
+        align-items: center;
       }
     }
 

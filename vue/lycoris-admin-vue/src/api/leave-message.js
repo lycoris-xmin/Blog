@@ -1,5 +1,5 @@
 import request from '../utils/request';
-const controller = '/lycoris/leavemessage';
+const controller = '/leavemessage';
 
 export const getList = ({ pageIndex, pageSize, beginTime, endTime, content, ip, status }) => {
   let data = {

@@ -76,16 +76,18 @@
 </template>
 
 <script setup name="statistics-request">
-import { reactive, ref, onMounted } from 'vue';
+import { reactive, ref, onMounted, onActivated } from 'vue';
 import PageLayout from '../layout/page-layout.vue';
 import LycorisTable from '../../components/lycoris-table/index.vue';
 import detailView from './components/detail-view.vue';
 import { getList, deleteLog } from '../../api/request-log';
 import swal from '../../utils/swal';
 import toast from '../../utils/toast';
+import { useRoute } from 'vue-router';
 
 const tableRef = ref();
 const detailViewRef = ref();
+const route = useRoute();
 
 const model = reactive({
   loading: true,
@@ -154,6 +156,23 @@ onMounted(async () => {
   Object.freeze(column);
   await getTableList();
   model.loading = false;
+});
+
+let searchKey = '';
+
+onActivated(async () => {
+  //
+  if (route.params?.key) {
+    if (searchKey != route.params.key) {
+      searchKey = route.params.key;
+      model.status = searchKey == 'api' ? '' : '2';
+      await getTableList();
+    }
+  } else {
+    searchKey = '';
+    model.status = '';
+    await getTableList();
+  }
 });
 
 const getTableList = async () => {

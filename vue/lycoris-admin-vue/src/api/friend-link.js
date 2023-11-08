@@ -1,6 +1,6 @@
 import request from '../utils/request';
 
-const controller = '/lycoris/friendLink';
+const controller = '/friendLink';
 
 export const getList = ({ pageIndex, pageSize, status, name }) => {
   if (status != 0 && status != 1 && status != 2) {

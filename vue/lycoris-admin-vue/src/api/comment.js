@@ -1,5 +1,5 @@
 import request from '../utils/request';
-const controller = '/lycoris/comment';
+const controller = '/comment';
 
 export const getCommentList = ({ pageIndex, pageSize, title, content, userId }) => {
   let data = {

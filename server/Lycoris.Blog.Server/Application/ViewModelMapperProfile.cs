@@ -226,6 +226,8 @@ namespace Lycoris.Blog.Server.Application
             CreateMap<StaticFileListInput, StaticFileListFilter>();
 
             CreateMap<StaticFileDataDto, StaticFileDataViewModel>();
+
+            CreateMap<WebStatisticsDto, WebStatisticsViewModel>();
         }
 
         /// <summary>

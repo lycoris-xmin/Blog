@@ -1,6 +1,6 @@
 import request from '../utils/request';
 
-const controller = '/lycoris/website';
+const controller = '/website';
 
 export const getAboutWeb = () => {
   return request.get(`${controller}/about/web`);

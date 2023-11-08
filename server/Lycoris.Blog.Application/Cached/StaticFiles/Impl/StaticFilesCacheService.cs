@@ -37,6 +37,12 @@ namespace Lycoris.Blog.Application.Cached.StaticFiles.Impl
         /// 
         /// </summary>
         /// <param name="fileName"></param>
+        public void RemoveStaticFileUse(string fileName) => _memoryCache.RemoveMemory(GetCacheKey(fileName));
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fileName"></param>
         /// <returns></returns>
         private static string GetCacheKey(string fileName) => $"CheckFileUser:{fileName}";
     }

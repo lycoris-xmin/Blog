@@ -1,5 +1,5 @@
 import request from '../utils/request';
-const controller = '/lycoris/sitenavigation';
+const controller = '/sitenavigation';
 
 export const getList = ({ name, group, domain, pageIndex, pageSize }) => {
   let data = {

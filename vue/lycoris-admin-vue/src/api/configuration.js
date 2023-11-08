@@ -1,6 +1,6 @@
 import request from '../utils/request';
 
-const controller = '/lycoris/configuration';
+const controller = '/configuration';
 
 export const getWebSettings = () => {
   return request.get(`${controller}/web`);

@@ -45,13 +45,15 @@
       @toolbar-search="$search"
     >
       <template #toolbar>
-        <el-button @click="clearSearchForm">清空</el-button>
+        <el-button type="info" @click="clearSearchForm" plain>清空条件</el-button>
+        <el-button type="primary" @click="syncAllFile" plain>同步远端</el-button>
+        <el-button type="danger" style="width: 120px" @click="downloadAll" plain :loading="model.downloadAllLoading">下载全部文件</el-button>
       </template>
 
-      <template #fileName="{ row }">
+      <template #pathUrl="{ row }">
         <el-popover placement="bottom" :width="400" trigger="hover">
           <template #reference>
-            <span class="file-name">{{ row.fileName }}</span>
+            <span class="file-name" @click="copyFileUrl(row.pathUrl)">{{ row.pathUrl }}</span>
           </template>
           <template #default>
             <div class="staticfile-img-preview">
@@ -82,10 +84,9 @@
       </template>
 
       <template #action="{ row }">
-        <el-button v-if="row.use" type="warning" plain @click="checkFileUse(row)" :loading="row.check">状态检测</el-button>
-        <el-button v-if="row.uploadChannel != model.configUploadChannel" type="success" plain :loading="row.syncFileToRemote" @click="syncFile(row)">同步远端</el-button>
+        <el-button type="warning" plain @click="checkFileUse(row)" :loading="row.check">状态检测</el-button>
+        <el-button v-if="row.uploadChannel != model.configUploadChannel" type="success" :loading="row.syncFileToRemote" @click="syncFile(row)" plain>同步远端</el-button>
         <el-button v-if="!row.localBack" type="primary" plain @click="$viewLog(row)">本地备份</el-button>
-        <el-button v-else type="danger" plain @click="$viewLog(row)">删除备份</el-button>
       </template>
     </lycoris-table>
   </page-layout>
@@ -95,13 +96,16 @@
 import { reactive, ref, onMounted, onBeforeMount, onBeforeUnmount, inject } from 'vue';
 import PageLayout from '../layout/page-layout.vue';
 import LycorisTable from '../../components/lycoris-table/index.vue';
-import { getList, checkFileUseState, syncFileToRemote } from '../../api/staticFile';
+import { getList, checkFileUseState, syncFileToRemote, downAllFile } from '../../api/staticFile';
 import { getUploadChannelEnum, getStaticFileSettings } from '../../api/configuration';
 import { api } from '../../config.json';
 import { setStaticSource } from '../../utils/staticfile';
 import toast from '../../utils/toast';
+import useClipboard from 'vue-clipboard3';
+import swal from '../../utils/swal';
 
 const signalR = inject('$signalR');
+const { toClipboard } = useClipboard();
 
 const model = reactive({
   loading: true,
@@ -111,7 +115,8 @@ const model = reactive({
   uploadChannel: '',
   localBack: '',
   use: '',
-  configUploadChannel: 0
+  configUploadChannel: 0,
+  downloadAllLoading: false
 });
 
 const toolbar = reactive({
@@ -120,7 +125,7 @@ const toolbar = reactive({
 
 const column = ref([
   {
-    column: 'fileName',
+    column: 'pathUrl',
     name: '文件名称',
     overflow: true
   },
@@ -147,7 +152,7 @@ const column = ref([
   {
     column: 'action',
     name: '操作',
-    width: '350px',
+    width: '250px',
     fixed: 'right',
     align: 'left'
   }
@@ -172,27 +177,15 @@ onMounted(async () => {
   await getTableList();
   model.loading = false;
 
-  signalR.subscribe('checkkFileUseState', data => {
-    if (data && data.id) {
-      let index = table.list.findIndex(x => x.id == data.id);
-      if (index > -1) {
-        if (table.list[index].use != data.use) {
-          table.list[index].use = data.use;
-        }
-
-        setTimeout(() => {
-          table.list[index].check = false;
-          toast.success(`${table.list[index].fileName} 检测结果:${data.use ? '使用中' : '未使用'}`);
-        }, 1000);
-      }
-    }
-  });
+  signalR.subscribe('checkkFileUseState', subscribeCheckkFileUseState);
+  signalR.subscribe('downloadAll', subscribeDownloadAll);
 });
 
 onBeforeUnmount(() => {
   setStaticSource('cdn');
 
   signalR.unsubscribe('checkkFileUseState');
+  signalR.unsubscribe('downloadAll');
 });
 
 const getEnum = async () => {
@@ -280,6 +273,72 @@ const clearSearchForm = () => {
   model.localBack = '';
   model.use = '';
 };
+
+const copyFileUrl = async pathUrl => {
+  //
+  await toClipboard(`${api.server}${pathUrl}`);
+  toast.success('复制图片链接成功');
+};
+
+const subscribeCheckkFileUseState = data => {
+  if (data && data.id) {
+    let index = table.list.findIndex(x => x.id == data.id);
+    if (index > -1) {
+      setTimeout(() => {
+        if (table.list[index].use != data.use) {
+          table.list[index].use = data.use;
+        }
+
+        table.list[index].check = false;
+        if (data.use) {
+          toast.success(`${table.list[index].fileName}：${data.message}`);
+        } else {
+          toast.warn(`${table.list[index].fileName}：未检测到使用状态`);
+        }
+      }, 1000);
+    }
+  }
+};
+
+let downloadAllZipFile = '';
+const downloadAll = async () => {
+  let result = await swal.confirm('<p>下载的文件为本地备份的文件</p><p>远端仓库的文件请自行前往远端仓库下载</p>', '下载提醒', {
+    dangerouslyUseHTMLString: true
+  });
+
+  if (!result) {
+    return;
+  }
+
+  //
+  model.downloadAllLoading = true;
+  try {
+    let res = await downAllFile();
+    if (res && res.resCode == 0) {
+      downloadAllZipFile = res.data;
+    }
+  } finally {
+    model.downloadAllLoading = false;
+  }
+};
+
+const subscribeDownloadAll = data => {
+  // 触发下载
+  if (downloadAllZipFile == data) {
+    //
+    window.open(`${api.server}${api.routePrefix}/download/staticfile/all/${data}`, '_self');
+  }
+};
+
+const syncAllFile = async () => {
+  //
+  let result = await swal.confirm('确定要同步所有文件到远端仓库吗？', '同步提醒');
+  if (!result) {
+    return;
+  }
+
+  // 请求接口
+};
 </script>
 
 <style lang="scss" scoped>
@@ -292,12 +351,17 @@ const clearSearchForm = () => {
   }
 }
 
+$imgMaxWidth: 1400px;
+
 .staticfile-img-preview {
   position: relative;
+  max-height: 800px;
+  max-width: $imgMaxWidth;
+  overflow-x: hidden;
+  overflow-y: auto;
 
-  > img {
-    max-height: 600px;
-    max-width: 800px;
+  :deep(img) {
+    max-width: $imgMaxWidth;
     object-fit: cover;
     border-radius: 5px;
   }

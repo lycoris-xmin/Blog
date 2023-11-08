@@ -43,7 +43,7 @@ const refreshToken = service => {
 
   const config = {
     method: 'post',
-    url: '/lycoris/authentication/dashboard/refresh/token',
+    url: '/authentication/dashboard/refresh/token',
     data: {
       refreshToken: stores.authorize.refreshToken
     }

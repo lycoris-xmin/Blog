@@ -34,7 +34,7 @@
               <el-input v-model="item.name" :ref="`editNameRef${index}`" placeholder="技术名称" />
             </div>
             <div>
-              <el-input v-model="item.proficiency" placeholder="掌握程度" type="number" />
+              <el-input v-model="item.proficiency" :min="0" :max="100" :step="1" placeholder="掌握度" type="number" @input="value => numberInputChange(value, index)" />
             </div>
             <div class="flex-center-center">
               <el-button @click="cancelEditInputConfirm(index)">取消</el-button>
@@ -50,7 +50,7 @@
             <el-input v-model="model.name" ref="nameRef" placeholder="技术名称" />
           </div>
           <div>
-            <el-input v-model="model.proficiency" placeholder="掌握程度" type="number" />
+            <el-input v-model="model.proficiency" :min="0" :max="100" :step="1" placeholder="掌握度" type="number" @input="numberInputChange" />
           </div>
           <div class="flex-center-center">
             <el-button @click="cancelInputConfirm">取消</el-button>
@@ -146,6 +146,17 @@ const cancelInputConfirm = () => {
 
 const handleInputConfirm = () => {
   if (model.name && model.proficiency) {
+    let repeat = model.data.filter(x => x.id == model.name);
+    if (repeat.length) {
+      swal.warn(`${model.name} 已存在`);
+      return;
+    }
+
+    if (model.proficiency <= 0 || model.proficiency > 100) {
+      swal.warn('掌握度的范围应为1-100');
+      return;
+    }
+
     model.data.push({
       id: model.name,
       name: model.name,
@@ -178,10 +189,34 @@ const cancelEditInputConfirm = index => {
 };
 
 const handleEditInputConfirm = index => {
+  for (let i = 0; i < model.data.length; i++) {
+    if (model.data[i].name == model.name) {
+      swal.warn(`${model.name} 已存在`);
+      return;
+    }
+
+    if (i == index) {
+      if (model.data[i].proficiency <= 0 || model.data[i].proficiency > 100) {
+        swal.warn('掌握度的范围应为1-100');
+        return;
+      }
+    }
+  }
+
   const item = model.data[index];
   if (item.name && item.proficiency) {
     emit('skillChange', model.data);
     model.data[index].modify = false;
+  }
+};
+
+const numberInputChange = (value, index) => {
+  const item = index != undefined ? model.data[index] : model;
+  value = parseInt(value);
+  if (value <= 0) {
+    item.proficiency = 0;
+  } else if (value > 100) {
+    item.proficiency = 100;
   }
 };
 </script>

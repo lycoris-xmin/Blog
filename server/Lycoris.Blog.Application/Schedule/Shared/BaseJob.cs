@@ -16,7 +16,15 @@ namespace Lycoris.Blog.Application.Schedule.Shared
         protected override Task DoWorkAsync()
         {
             _logger.JobWorkRegister(JobTraceId, JobName);
-            return HandlerWorkAsync();
+            try
+            {
+                return HandlerWorkAsync();
+            }
+            catch (Exception ex)
+            {
+                this._logger.Error("job handle failed", ex);
+                return Task.CompletedTask;
+            }
         }
 
         protected abstract Task HandlerWorkAsync();

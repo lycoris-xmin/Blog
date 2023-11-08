@@ -1,6 +1,6 @@
 <template>
   <div class="statistic-group">
-    <div class="statistic-card" v-for="item in model.statistics" :key="item.key">
+    <div class="statistic-card" v-for="item in model.statistics" :key="item.key" @click="routeTo(item.key)">
       <div class="statistic-header">
         <el-icon>
           <component :is="item.icon"></component>
@@ -23,6 +23,9 @@
 import { onMounted, reactive } from 'vue';
 import { countChange } from '../../../utils/tool';
 import { getWebStatistics } from '../../../api/dashboard';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const model = reactive({
   loading: true,
@@ -52,7 +55,7 @@ const model = reactive({
       count: 0
     },
     {
-      key: 'users',
+      key: 'message',
       title: '网站留言统计',
       icon: 'message',
       count: 0
@@ -88,6 +91,26 @@ const getData = async () => {
   } finally {
     model.loading = false;
   }
+};
+
+const routeTo = key => {
+  let opt = {
+    name: ''
+  };
+  if (key == 'browse' || key == 'totalBrowse') {
+    opt.name = 'statistics-browse';
+  } else if (key == 'api' || key == 'errorApi') {
+    opt.name = 'statistics-request';
+    opt.params = {
+      key
+    };
+  } else if (key == 'message') {
+    opt.name = 'message';
+  } else {
+    opt.name = 'user';
+  }
+
+  router.push(opt);
 };
 </script>
 

@@ -14,5 +14,11 @@
         /// </summary>
         /// <returns></returns>
         bool GetStaticFileUse(string fileName);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fileName"></param>
+        void RemoveStaticFileUse(string fileName);
     }
 }

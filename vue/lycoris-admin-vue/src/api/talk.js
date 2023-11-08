@@ -1,6 +1,6 @@
 import request from '../utils/request';
 
-const controller = '/lycoris/talk';
+const controller = '/talk';
 
 export const getList = ({ pageIndex, pageSize }) => {
   return request.get(`${controller}/query/list`, {

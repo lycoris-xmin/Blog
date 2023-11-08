@@ -98,10 +98,12 @@ import { useRoute, useRouter } from 'vue-router';
 import pageLayout from '../layout/page-layout.vue';
 import markdownContainer from '../../components/markdown-editor/index.vue';
 import { getPostInfo, uploadMarkdownPicture, savePost } from '../../api/post';
+import { getPostSettings } from '../../api/configuration';
 import { getCategoryEnums } from '../../api/category';
 import toast from '../../utils/toast';
 import swal from '../../utils/swal';
 import { stores } from '../../stores';
+import { debounce } from '../../utils/tool';
 
 const route = useRoute();
 const router = useRouter();
@@ -113,9 +115,11 @@ var postInfo = {};
 
 const model = reactive({
   autoSave: false,
+  autoSaveSecond: 0,
   tagValue: '',
   tagInputVisible: false,
-  isModify: false
+  isModify: false,
+  lastSaveTime: 0
 });
 
 const form = reactive({
@@ -149,13 +153,18 @@ const fileUpload = async (file, callback) => {
 };
 
 const markdownEvents = ref({
-  afterChange: markdown => {
+  afterChange: debounce(markdown => {
     if (!model.isModify && form.markdown != markdown) {
       model.isModify = true;
     } else if (model.isModify && form.markdown == markdown) {
       model.isModify = false;
     }
-  }
+
+    if (model.autoSave) {
+      model.lastSaveTime = new Date().addSeconds(model.autoSaveSecond).getTime();
+      console.log(model.lastSaveTime);
+    }
+  }, 500)
 });
 
 const toPostPage = () => {
@@ -195,7 +204,7 @@ onMounted(async () => {
         markdown.value.init(res.data.markdown);
 
         postInfo = { ...form };
-      } catch (error) {
+      } catch {
         swal
           .error('获取博客文章数据失败')
           .then(() => {
@@ -209,10 +218,31 @@ onMounted(async () => {
       postInfo = { ...form };
       markdown.value.init();
     }
+
+    await getSettings();
   } catch (err) {
     console.log(err);
   }
+
+  if (model.autoSave) {
+    //
+    setInterval(async () => {
+      if (model.lastSaveTime < new Date().getTime()) {
+        await autoSavePost();
+      }
+    }, model.autoSaveSecond * 1000);
+  }
 });
+
+const getSettings = async () => {
+  let res = await getPostSettings();
+  if (res && res.resCode == 0) {
+    //
+    model.autoSave = res.data.autoSave;
+    model.autoSaveSecond = res.data.second;
+    toast.info(`配置已开启自动存档，每${model.autoSaveSecond}秒将会提交自动存档`);
+  }
+};
 
 const categoryChange = val => {
   try {
@@ -296,6 +326,8 @@ const checkPostChange = data => {
 };
 
 const submitSave = async (publish, redirect = true) => {
+  form.isPublish = publish;
+
   let data = {
     ...form
   };
@@ -318,7 +350,6 @@ const submitSave = async (publish, redirect = true) => {
   //
   data.category = data.category || 0;
   data.markdown = markdown.value.getMarkdown();
-  data.isPublish = publish;
 
   if (data) {
     data = checkPostChange(data);
@@ -341,6 +372,62 @@ const submitSave = async (publish, redirect = true) => {
       } else {
         postInfo = data;
       }
+
+      if (model.autoSave) {
+        model.lastSaveTime = new Date().addSeconds(model.autoSaveSecond * 1000).getTime();
+      }
+    }
+  }
+};
+
+const autoSavePost = async () => {
+  try {
+    //
+    let data = {
+      ...form
+    };
+
+    data.markdown = markdown.value.getMarkdown();
+    if (!data.markdown) {
+      return;
+    }
+
+    //
+    if (data.title == '') {
+      form.title = '未命名';
+      data.title = form.title;
+    }
+
+    if (!data.info) {
+      data.info = markdown.value.getInfoText(200);
+    }
+
+    if (!data.info) {
+      form.info = '未描述';
+      data.info = form.info;
+    }
+
+    //
+    data.category = data.category || 0;
+
+    if (data) {
+      data = checkPostChange(data);
+      if (!data) {
+        toast.success('自动存档成功');
+      }
+
+      let res = await savePost(data);
+      if (res && res.resCode == 0) {
+        toast.success('自动存档成功');
+        postInfo = data;
+      }
+    }
+  } catch (err) {
+    toast.error('自动存档失败');
+    console.log(err);
+  } finally {
+    if (model.autoSave) {
+      model.lastSaveTime = new Date().addSeconds(model.autoSaveSecond * 1000).getTime();
     }
   }
 };

@@ -94,8 +94,7 @@ const cherry = {
           insert: ['image', 'audio', 'video', 'pdf', 'word', 'formula']
         },
         'graph',
-        'togglePreview',
-        'export'
+        'togglePreview'
       ],
       sidebar: [],
       bubble: false,
@@ -314,9 +313,13 @@ defineExpose({
 
       img {
         cursor: pointer;
+        border-radius: 5px;
       }
 
-      p:has(> img) {
+      p:has(img) {
+        display: flex;
+        justify-content: center;
+        align-items: center;
         overflow: hidden;
       }
 

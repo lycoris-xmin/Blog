@@ -50,6 +50,24 @@ export const saveSeoSettings = data => {
   return request.post(`${controller}/seo`, data);
 };
 
+export const getSystemSettings = () => {
+  return request.get(`${controller}/systemsettings`);
+};
+
+export const saveShowdocSettings = host => {
+  return request.post(`${controller}/systemsettings/showdoc`, {
+    host
+  });
+};
+
+export const saveSystemFileClear = ({ staticFile, tempFile, logFile }) => {
+  return request.post(`${controller}/systemsettings/fileclear`, { staticFile, tempFile, logFile });
+};
+
+export const saveSystemDbClear = ({ requestLog, browseLog, postComment, leaveMessage }) => {
+  return request.post(`${controller}/systemsettings/dbclear`, { requestLog, browseLog, postComment, leaveMessage });
+};
+
 export const uploadFile = (configName, file) => {
   let data = {
     configName: configName,
@@ -57,4 +75,8 @@ export const uploadFile = (configName, file) => {
   };
 
   return request.post(`${controller}/upload`, data, true);
+};
+
+export const showdocPushTest = data => {
+  return request.post(`${controller}/showdoc/pushtest`, data);
 };

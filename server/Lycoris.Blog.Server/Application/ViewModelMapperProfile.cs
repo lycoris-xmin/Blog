@@ -228,6 +228,10 @@ namespace Lycoris.Blog.Server.Application
             CreateMap<StaticFileDataDto, StaticFileDataViewModel>();
 
             CreateMap<WebStatisticsDto, WebStatisticsViewModel>();
+
+            CreateMap<SaveSystemFileClearConfigurationInput, SystemFileClearConfiguration>();
+
+            CreateMap<SaveSystemDBClearConfigurationInput, SystemDBClearConfiguration>();
         }
 
         /// <summary>

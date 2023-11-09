@@ -152,12 +152,11 @@ namespace Lycoris.Blog.Application.AppServices.StaticFiles.Impl
         /// <returns></returns>
         public async Task<string> DownloadAllFileAsync()
         {
-            var zipPath = Path.Combine(AppSettings.Path.AppData, "Temp");
             var zipFileName = $"staticfile-{DateTime.Now:yyyyMMddHHmmss}.zip";
-            var zipFilePath = Path.Combine(zipPath, zipFileName);
+            var zipFilePath = Path.Combine(AppSettings.Path.Temp, zipFileName);
 
-            if (!Directory.Exists(zipPath))
-                Directory.CreateDirectory(zipPath);
+            if (!Directory.Exists(AppSettings.Path.Temp))
+                Directory.CreateDirectory(AppSettings.Path.Temp);
 
             await _schedulerCenter.Value.AddOnceJobAsync<BackupFileJob, BackupFileJobModel>(new BackupFileJobModel()
             {

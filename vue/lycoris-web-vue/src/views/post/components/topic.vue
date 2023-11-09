@@ -250,28 +250,15 @@ ${window.location.href}
 
 @keyframes topic-scale {
   0% {
-    letter-spacing: 1.5px;
-    color: var(--color-purple);
-  }
-
-  25% {
-    letter-spacing: 3.5px;
-    color: var(--color-dark);
-  }
-
-  50% {
-    letter-spacing: 5.5px;
-    color: var(--color-purple);
+    background-color: var(--color-danger);
   }
 
   75% {
-    letter-spacing: 3.5px;
-    color: var(--color-dark);
+    background-color: var(--color-danger-light);
   }
 
   100% {
-    letter-spacing: 1.5px;
-    color: var(--color-dark);
+    background-color: transparent;
   }
 }
 </style>

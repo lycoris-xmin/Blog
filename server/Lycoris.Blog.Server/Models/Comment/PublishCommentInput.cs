@@ -24,5 +24,10 @@ namespace Lycoris.Blog.Server.Models.Comment
         /// </summary>
         [StringValid("内容", Required = true, MinLength = 1, MaxLength = 100)]
         public string? Content { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public long? RepliedUserId { get; set; }
     }
 }

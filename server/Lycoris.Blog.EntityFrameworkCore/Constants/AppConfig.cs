@@ -45,9 +45,9 @@ namespace Lycoris.Blog.EntityFrameworkCore.Constants
         public const string WebStatistics = "App.WebStatistics";
 
         /// <summary>
-        /// 其他设置
+        /// 系统设置
         /// </summary>
-        [Configuration("其他设置", typeof(OtherSettingsConfiguration))]
-        public const string OtherSettings = "App.OtherSettings";
+        [Configuration("系统设置", typeof(SystemSettingsConfiguration))]
+        public const string SystemSettings = "App.SystemSettings";
     }
 }

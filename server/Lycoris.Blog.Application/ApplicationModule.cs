@@ -23,13 +23,13 @@ namespace Lycoris.Blog.Application
 
             // 任务调度
             services.AddQuartzSchedulerCenter()
-                    .AddQuartzSchedulerJob<ScheduleQueueJob>()
-                    .AddQuartzSchedulerJob<DBRegularCleanerJob>()
-                    .AddQuartzSchedulerJob<WebStatisticsJob>()
-                    .AddQuartzSchedulerJob<ServerMonitorJob>()
-                    .AddQuartzSchedulerJob<StaticFileCleanerJob>()
-                    .AddQuartzSchedulerJob<CheckFileUseStateJob>()
-                    .AddQuartzSchedulerJob<BackupFileJob>();
+            .AddQuartzSchedulerJob<ScheduleQueueJob>()
+            .AddQuartzSchedulerJob<DBCleanerJob>()
+            .AddQuartzSchedulerJob<WebStatisticsJob>()
+            .AddQuartzSchedulerJob<ServerMonitorJob>()
+            .AddQuartzSchedulerJob<StaticFileCleanerJob>()
+            .AddQuartzSchedulerJob<CheckFileUseStateJob>()
+            .AddQuartzSchedulerJob<BackupFileJob>();
         }
     }
 }

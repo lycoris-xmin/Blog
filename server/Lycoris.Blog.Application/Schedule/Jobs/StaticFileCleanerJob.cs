@@ -38,6 +38,24 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
         /// <returns></returns>
         protected override async Task HandlerWorkAsync()
         {
+            // 静态文件清理
+            await StaticFileHandlerAsync();
+
+            // 缓存文件清理
+            TempFileHandler();
+
+            // 日志文件清理
+            LogFileHandler();
+        }
+
+        #region 静态文件清理
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        private async Task StaticFileHandlerAsync()
+        {
             var filter = _staticFile.GetAll().Where(x => x.Use == false);
 
             var pageIndex = 1;
@@ -52,6 +70,13 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
                 deleteFiles = await RemoveMinioFilesAsync(deleteFiles);
 
                 deleteFiles = RemoveLocalFiles(deleteFiles);
+
+                if (deleteFiles.HasValue())
+                {
+                    // 删除数据
+                    var sql = $"DELETE FROM {_staticFile.TableName} WHERE Id IN ({string.Join(",", deleteFiles!.Select(x => x.Id))})";
+                    await _staticFile.ExecuteNonQueryAsync(sql);
+                }
 
                 if (list.Count < pageSize)
                     break;
@@ -81,7 +106,6 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
                 catch (NotFoundException)
                 {
                     _logger.Warn($"github delete file failed: not found file by {item.PathUrl}");
-                    failedIds.Add(item.Id);
                 }
                 catch (Exception ex)
                 {
@@ -156,5 +180,53 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
 
             return list.Where(x => !failedIds.Contains(x.Id)).ToList();
         }
+
+        #endregion
+
+        #region 缓存文件清理
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private static void TempFileHandler()
+        {
+            var files = Directory.GetFiles(AppSettings.Path.Temp);
+
+            if (files == null || files.Length == 0)
+                return;
+
+            foreach (var item in files)
+            {
+                var time = File.GetCreationTime(item);
+                if (time.AddDays(1) < DateTime.Now.Date)
+                    File.Delete(item);
+            }
+        }
+
+        #endregion
+
+        #region 日志文件清理
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private static void LogFileHandler()
+        {
+            var path = Path.Combine(AppSettings.Path.AppData, "logs");
+            var files = Directory.GetFiles(path);
+
+
+            if (files == null || files.Length == 0)
+                return;
+
+            foreach (var item in files)
+            {
+                var time = File.GetCreationTime(item);
+                if (time.AddDays(7) < DateTime.Now.Date)
+                    File.Delete(item);
+            }
+        }
+
+        #endregion
     }
 }

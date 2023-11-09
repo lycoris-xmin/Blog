@@ -31,7 +31,7 @@
                   <el-image :src="userAgentIcon(item.agentFlag)" lazy></el-image>
                 </el-tooltip>
 
-                <el-dropdown>
+                <el-dropdown v-if="stores.user.id != item.user.id">
                   <el-icon :size="20">
                     <component :is="'more'"></component>
                   </el-icon>
@@ -102,6 +102,7 @@ import { getCommentList, publishComment } from '../../../api/comment';
 import { getUserAgentIconByEnum as userAgentIcon, getUserAgentNameByEnum as userAgentName } from '../../../utils/user-agent';
 import toast from '../../../utils/toast';
 import { webSettings } from '../../../config.json';
+import { stores } from '../../../stores';
 
 const inputRef = ref();
 const groupRef = ref();

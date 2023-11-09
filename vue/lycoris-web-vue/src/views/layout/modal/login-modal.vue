@@ -315,12 +315,12 @@ const userRegister = debounce(async () => {
     toast.warn('密码不能为空');
     return;
   } else if (!passwordRegex(registerForm.password)) {
-    toast.warn('帐号或密码错误');
+    toast.warn('密码格式错误');
     return;
   }
 
   if (registerForm.password != registerForm.confirmPassword) {
-    toast.warn('密码不能为空');
+    toast.warn('两次密码不一致');
     return;
   }
 

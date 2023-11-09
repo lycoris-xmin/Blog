@@ -73,7 +73,12 @@ namespace Lycoris.Blog.Server.Middlewares
             }
             catch (Exception ex)
             {
-                RequestLog(context, "", startTime, ipAddress, ex);
+                var httpMethod = context.Request.Method.ToUpper();
+                var path = context.Request.Path.Value ?? "";
+                var queryString = context.Request.QueryString.Value ?? "";
+                var statusCode = context.Response.StatusCode;
+
+                RequestLog(httpMethod, $"{path.TrimEnd('/')}?{queryString.TrimStart('?')}", "", statusCode, startTime, ipAddress, ex);
                 await HandleWebApiExceptionAsync(context, ex, traceId, startTime);
             }
         }
@@ -120,33 +125,56 @@ namespace Lycoris.Blog.Server.Middlewares
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="startTime"></param>
+        /// <param name="ipAddress"></param>
+        /// <param name="traceId"></param>
+        /// <returns></returns>
         private bool ApiRequestVerification(HttpContext context, DateTime startTime, string ipAddress, string traceId)
         {
+            var result = true;
+            var response = "";
+
             if (!CheckAllowMethod(context))
             {
+                response = "request method invalid";
                 context.Response.StatusCode = 415;
-                RequestLog(context, "request method invalid", startTime, ipAddress);
-                _logger.Error($"invalid request - {(context.Request.Path.HasValue ? context.Request.Path.Value : "/")} - request method invalid", traceId);
-                return false;
+                _logger.Error($"invalid request - {(context.Request.Path.HasValue ? context.Request.Path.Value : "/")} - {response}", traceId);
+                result = false;
             }
-
-            if (!CheckAllowRoute(context))
+            else if (!CheckAllowRoute(context))
             {
+                response = "request path invalid";
                 context.Response.StatusCode = 400;
-                RequestLog(context, "request path invalid", startTime, ipAddress);
-                _logger.Error($"invalid request - {(context.Request.Path.HasValue ? context.Request.Path.Value : "/")} - request path invalid", traceId);
-                return false;
+                _logger.Error($"invalid request - {(context.Request.Path.HasValue ? context.Request.Path.Value : "/")} - {response}", traceId);
+                result = false;
             }
-
-            if (!CheckRequestOrign(context))
+            else if (!CheckRequestOrign(context))
             {
+                response = "request orign invalid";
                 context.Response.StatusCode = 400;
-                RequestLog(context, "request orign invalid", startTime, ipAddress);
-                _logger.Error($"invalid request - {(context.Request.Path.HasValue ? context.Request.Path.Value : "/")} - request orign invalid", traceId);
-                return false;
+                _logger.Error($"invalid request - {(context.Request.Path.HasValue ? context.Request.Path.Value : "/")} - {response}", traceId);
+                result = false;
             }
 
-            return true;
+            if (!result)
+            {
+                var httpMethod = context.Request.Method.ToUpper();
+                var path = context.Request.Path.Value ?? "";
+                var queryString = context.Request.QueryString.Value ?? "";
+                var statusCode = context.Response.StatusCode;
+
+                context.Response.OnCompleted(() =>
+                {
+                    RequestLog(httpMethod, $"{path.TrimEnd('/')}?{queryString.TrimStart('?')}", response, statusCode, startTime, ipAddress);
+                    return Task.CompletedTask;
+                });
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -223,20 +251,21 @@ namespace Lycoris.Blog.Server.Middlewares
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="context"></param>
+        /// <param name="httpMethod"></param>
+        /// <param name="path"></param>
         /// <param name="response"></param>
+        /// <param name="statusCode"></param>
         /// <param name="startTime"></param>
         /// <param name="ipAddress"></param>
         /// <param name="ex"></param>
-        /// <returns></returns>
-        private void RequestLog(HttpContext context, string response, DateTime startTime, string ipAddress, Exception? ex = null)
+        private void RequestLog(string httpMethod, string path, string response, int statusCode, DateTime startTime, string ipAddress, Exception? ex = null)
         {
             _scheduleQueue.Enqueue(ScheduleTypeEnum.RequestLog, new RequestLogQueueModel()
             {
-                Method = context.Request.Method.ToUpper(),
-                Route = context.Request.Path,
+                Method = httpMethod,
+                Route = path,
                 Params = "",
-                StatusCode = context.Response.StatusCode,
+                StatusCode = statusCode,
                 Response = response,
                 ElapsedMilliseconds = (long)((DateTime.Now - startTime).TotalMilliseconds),
                 IP = ipAddress,

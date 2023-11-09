@@ -73,10 +73,42 @@ namespace Lycoris.Blog.Core.Showdoc.Impl
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="host"></param>
+        /// <param name="title"></param>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        public async Task PublishAsync(string host, string title, string content)
+        {
+            var request = new HttpUtils(host);
+
+            var body = new ShowdocPublishDataModel()
+            {
+                Title = title,
+                Content = content
+            }.ToJson();
+
+            request.AddJsonBody(body);
+
+            _logger.Info($"showdoc publish -> request:{host} Body:{body}");
+
+            var response = await request.HttpPostAsync();
+
+            if (!response.Success || response.Content.IsNullOrEmpty())
+            {
+                _logger.Error($"showdoc publish -> request failed:{(response.Exception != null ? $"{response.Exception.Message}\r\n{response.Exception.StackTrace}" : response.ToJson())}");
+                return;
+            }
+
+            _logger.Info($"showdoc publish -> response:{response.Content}");
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <returns></returns>
         private async Task<string> GetShowdocConfigurationAsync()
         {
-            var settings = await _configuration.GetConfigurationAsync<OtherSettingsConfiguration>(AppConfig.OtherSettings);
+            var settings = await _configuration.GetConfigurationAsync<SystemSettingsConfiguration>(AppConfig.SystemSettings);
             return settings?.ShowDocHost ?? "";
         }
     }

@@ -96,7 +96,7 @@ namespace Lycoris.Blog.Application.AppServices.Comment.Impl
             var comment = new PostComment()
             {
                 PostId = post.Id,
-                RepliedUserId = 0,
+                RepliedUserId = input.RepliedUserId ?? 0,
                 Content = SensitiveWordMemoryStore.SensitiveWordsReplace(input.Content.Trim()),
                 UserAgent = CurrentRequest.UserAgent,
                 AgentFlag = UserAgentHelper.GetUserAgent(CurrentRequest.UserAgent)?.Code ?? 0,
@@ -106,21 +106,14 @@ namespace Lycoris.Blog.Application.AppServices.Comment.Impl
                 CreateTime = DateTime.Now
             };
 
-            if (comment.Content != input.Content.Trim())
-                comment.OriginalContent = input.Content.Trim();
+            if(comment.RepliedUserId == CurrentUser.Id)
+                comment.RepliedUserId = 0;
 
             var repliedUser = "";
-            if (input.CommentId.HasValue && input.CommentId.Value > 0)
-            {
-                var replyComment = await _comment.GetSelectAsync(input.CommentId.Value, x => new PostComment { Id = x.Id, CreateUserId = x.CreateUserId });
-                if (replyComment != null && replyComment.CreateUserId != CurrentUser.Id)
-                {
-                    comment.RepliedUserId = replyComment.CreateUserId;
-                    repliedUser = (await _user.Value.GetSelectAsync(replyComment.CreateUserId, x => new User() { Id = x.Id, NickName = x.NickName }))?.NickName ?? "";
-                }
-            }
+            if (input.RepliedUserId.HasValue && input.RepliedUserId.Value > 0)
+                repliedUser = (await _user.Value.GetSelectAsync(input.RepliedUserId.Value, x => new User() { Id = x.Id, NickName = x.NickName }))?.NickName ?? "";
 
-            comment.IpAddress = comment.IpAddress == "未知" ? "局域网" : comment.IpAddress;
+            comment.IpAddress = comment.IpAddress;
 
             comment = await _comment.CreateAsync(comment);
 
@@ -154,7 +147,7 @@ namespace Lycoris.Blog.Application.AppServices.Comment.Impl
         {
             var filter = _comment.GetAll()
                                  .WhereIf(input.UserId.HasValue, x => x.CreateUserId == input.UserId)
-                                 .WhereIf(!input.Content.IsNullOrEmpty(), x => EF.Functions.Like(x.Content, $"%{input.Content}%") || EF.Functions.Like(x.OriginalContent, $"%{input.Content}%"));
+                                 .WhereIf(!input.Content.IsNullOrEmpty(), x => EF.Functions.Like(x.Content, $"%{input.Content}%"));
 
             var query = from comment in filter.OrderByDescending(x => x.CreateTime)
 
@@ -169,7 +162,6 @@ namespace Lycoris.Blog.Application.AppServices.Comment.Impl
                             Id = comment.Id,
                             Title = post != null ? post.Title : "文章不存在",
                             Content = comment.Content,
-                            OriginalContent = comment.OriginalContent,
                             IsOwner = user != null && user.IsAdmin,
                             UserName = user != null ? user.NickName : "用户已注销",
                             IpAddress = comment.IpAddress,

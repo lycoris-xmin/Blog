@@ -1,6 +1,7 @@
 ﻿using Lycoris.AutoMapper.Extensions;
 using Lycoris.Blog.Application.AppServices.Configurations;
 using Lycoris.Blog.Application.AppServices.FileManage;
+using Lycoris.Blog.Core.Showdoc;
 using Lycoris.Blog.EntityFrameworkCore.Constants;
 using Lycoris.Blog.Model.Configurations;
 using Lycoris.Blog.Model.Exceptions;
@@ -23,16 +24,19 @@ namespace Lycoris.Blog.Server.Controllers
     {
         private readonly IConfigurationAppService _configuration;
         private readonly Lazy<IFileManageAppService> _fileManage;
+        private readonly Lazy<IShowdocService> _showdoc;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="configuration"></param>
         /// <param name="fileManage"></param>
-        public ConfigurationController(IConfigurationAppService configuration, Lazy<IFileManageAppService> fileManage)
+        /// <param name="showdoc"></param>
+        public ConfigurationController(IConfigurationAppService configuration, Lazy<IFileManageAppService> fileManage, Lazy<IShowdocService> showdoc)
         {
             _configuration = configuration;
             _fileManage = fileManage;
+            _showdoc = showdoc;
         }
 
         /// <summary>
@@ -95,8 +99,8 @@ namespace Lycoris.Blog.Server.Controllers
             config!.AutoSave = input.AutoSave!.Value;
             if (input.Second.HasValue && input.Second > 0)
                 config.Second = input.Second!.Value;
-            if (input.Images.HasValue())
-                config.Images = input.Images!;
+
+            config.Images = input.Images ?? new List<string>();
 
             await _configuration.SaveConfigurationAsync(AppConfig.PostSettings, config!);
             return Success();
@@ -216,7 +220,94 @@ namespace Lycoris.Blog.Server.Controllers
         }
 
         /// <summary>
-        /// 
+        /// 获取系统设置配置
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("SystemSettings")]
+        [Produces("application/json")]
+        public async Task<DataOutput<SystemSettingsConfiguration>> SystemSettingsConfiguration()
+        {
+            var dto = await _configuration.GetConfigurationAsync<SystemSettingsConfiguration>(AppConfig.SystemSettings);
+            return Success(dto);
+        }
+
+        /// <summary>
+        /// 保存Showdoc公众号推送配置
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpPost("SystemSettings/Showdoc")]
+        [Consumes("application/json"), Produces("application/json")]
+        public async Task<BaseOutput> SaveShowdocPushConfiguration([FromBody] SaveShowdocPushConfigurationInput input)
+        {
+            var config = await _configuration.GetConfigurationAsync<SystemSettingsConfiguration>(AppConfig.SystemSettings);
+            if (config!.ShowDocHost != input.Host)
+            {
+                config.ShowDocHost = input.Host!;
+                await _configuration.SaveConfigurationAsync(AppConfig.SystemSettings, config);
+            }
+
+            return Success();
+        }
+
+        /// <summary>
+        /// 保存系统文件清理配置
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpPost("SystemSettings/FileClear")]
+        [Consumes("application/json"), Produces("application/json")]
+        public async Task<BaseOutput> SaveSystemFileClearConfiguration([FromBody] SaveSystemFileClearConfigurationInput input)
+        {
+            if (input.StaticFile!.Value < 1 || input.StaticFile!.Value > 30)
+                throw new FriendlyException("保留范围为 1 - 30 天");
+            else if (input.TempFile!.Value < 1 || input.TempFile!.Value > 30)
+                throw new FriendlyException("保留范围为 1 - 30 天");
+            else if (input.LogFile!.Value < 1 || input.LogFile!.Value > 30)
+                throw new FriendlyException("保留范围为 1 - 30 天");
+
+            var config = await _configuration.GetConfigurationAsync<SystemSettingsConfiguration>(AppConfig.SystemSettings);
+
+            if (input.StaticFile!.Value != config!.SystemFileClear.StaticFile || input.TempFile!.Value != config!.SystemFileClear.TempFile || input.LogFile!.Value != config!.SystemFileClear.LogFile)
+            {
+                config!.SystemFileClear = input.ToMap<SystemFileClearConfiguration>();
+                await _configuration.SaveConfigurationAsync(AppConfig.SystemSettings, config);
+            }
+
+            return Success();
+        }
+
+        /// <summary>
+        /// 保存数据库清理配置
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpPost("SystemSettings/DBClear")]
+        [Consumes("application/json"), Produces("application/json")]
+        public async Task<BaseOutput> SaveSystemDBClearConfiguration([FromBody] SaveSystemDBClearConfigurationInput input)
+        {
+            if (input.RequestLog!.Value < 0 || input.RequestLog!.Value > 30)
+                throw new FriendlyException("保留范围为 0 - 365 天");
+            else if (input.BrowseLog!.Value < 0 || input.BrowseLog!.Value > 30)
+                throw new FriendlyException("保留范围为 0 - 365 天");
+            else if (input.PostComment!.Value < 0 || input.PostComment!.Value > 30)
+                throw new FriendlyException("保留范围为 0 - 365 天");
+            else if (input.LeaveMessage!.Value < 0 || input.LeaveMessage!.Value > 30)
+                throw new FriendlyException("保留范围为 0 - 365 天");
+
+            var config = await _configuration.GetConfigurationAsync<SystemSettingsConfiguration>(AppConfig.SystemSettings);
+
+            if (input.RequestLog!.Value != config!.SystemDBClear.RequestLog || input.BrowseLog!.Value != config!.SystemDBClear.BrowseLog || input.PostComment!.Value != config!.SystemDBClear.PostComment || input.LeaveMessage!.Value != config!.SystemDBClear.LeaveMessage)
+            {
+                config!.SystemDBClear = input.ToMap<SystemDBClearConfiguration>();
+                await _configuration.SaveConfigurationAsync(AppConfig.SystemSettings, config);
+            }
+
+            return Success();
+        }
+
+        /// <summary>
+        /// 静态文件保存渠道枚举
         /// </summary>
         /// <returns></returns>
         [HttpGet("FileUpload/Channel")]
@@ -242,6 +333,19 @@ namespace Lycoris.Blog.Server.Controllers
                 fileUrl = await _fileManage.Value.UploadFileAsync(input.File!, "/post/carousel");
 
             return Success(fileUrl);
+        }
+
+        /// <summary>
+        /// Showodc推送测试
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpPost("Showdoc/PushTest")]
+        [Consumes("application/json"), Produces("application/json")]
+        public async Task<BaseOutput> ShowdocPushTest([FromBody] ShowdocPushTestInput input)
+        {
+            await _showdoc.Value.PublishAsync(input.Host!, input.Title!, input.Content!);
+            return Success(input);
         }
 
         /// <summary>

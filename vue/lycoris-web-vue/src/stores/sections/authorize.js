@@ -18,13 +18,36 @@ const decryptString = data => {
 
 export default defineStore('authorize', {
   state: () => {
-    let token = decryptString(localStorage.getItem(tokenKey));
-    let refreshToken = decryptString(localStorage.getItem(refreshTokenKey));
-
     return {
-      token: token || '',
-      refreshToken: refreshToken || ''
+      data: {
+        token: '',
+        refreshToken: ''
+      }
     };
+  },
+  getters: {
+    token: state => {
+      if (state.data.token) {
+        return state.data.token;
+      }
+
+      let token = decryptString(localStorage.getItem(tokenKey));
+      if (!token) {
+        return '';
+      }
+
+      state.data.token = token;
+      return state.data.token;
+    },
+    refreshToken: state => {
+      if (state.data.refreshToken) {
+        return state.data.refreshToken;
+      }
+
+      let refreshToken = decryptString(localStorage.getItem(refreshTokenKey));
+      state.data.refreshToken = refreshToken;
+      return state.data.refreshToken;
+    }
   },
   actions: {
     /**
@@ -44,8 +67,8 @@ export default defineStore('authorize', {
      * @function 设置用户登出
      */
     setUserLogoutState: function () {
-      this.token = '';
-      this.refreshToken = '';
+      this.data.token = '';
+      this.data.refreshToken = '';
       localStorage.removeItem(tokenKey);
       localStorage.removeItem(refreshTokenKey);
     }

@@ -20,7 +20,7 @@ namespace Lycoris.Blog.Server.Controllers
         [HttpGet("StaticFile/All/{fileName}")]
         public async Task<IActionResult> StaticFileAll(string fileName)
         {
-            var filePath = Path.Combine(AppSettings.Path.AppData, "Temp", fileName);
+            var filePath = Path.Combine(AppSettings.Path.Temp, fileName);
             if (!System.IO.File.Exists(filePath))
                 return NotFound();
 

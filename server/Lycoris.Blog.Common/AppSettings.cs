@@ -123,6 +123,8 @@ namespace Lycoris.Blog.Common
             /// 
             /// </summary>
             public static string SensitiveWord => $"{AppData}/sensitive_words.txt";
+
+            public static string Temp => System.IO.Path.Combine(AppData, "temp");
         }
 
         /// <summary>

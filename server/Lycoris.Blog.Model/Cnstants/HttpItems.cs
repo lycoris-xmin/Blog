@@ -39,5 +39,15 @@
         /// 响应体
         /// </summary>
         public const string ResponseBody = "ResponseBody";
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public const string Exception = "Exception";
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public const string StackTrace = "StackTrace";
     }
 }

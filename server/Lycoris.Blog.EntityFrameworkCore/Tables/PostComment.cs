@@ -29,12 +29,6 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
         public string Content { get; set; } = "";
 
         /// <summary>
-        /// 评论内容
-        /// </summary>
-        [TableColumn(StringLength = 1500)]
-        public string OriginalContent { get; set; } = "";
-
-        /// <summary>
         /// 客户端枚举标识
         /// </summary>
         [TableColumn(ColumnType = MySqlType.TINYINT)]
@@ -43,7 +37,7 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
         /// <summary>
         /// 评论用户客户端
         /// </summary>
-        [TableColumn(StringLength = 100)]
+        [TableColumn(StringLength = 255)]
         public string UserAgent { get; set; } = "";
 
         /// <summary>

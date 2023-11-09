@@ -7,7 +7,7 @@
         <email-settings v-if="item.value == 'emailSettings'" :value="2" @tab-complete="complete"></email-settings>
         <staticfile-settings v-if="item.value == 'fileUploadSettings'" :value="3" @tab-complete="complete"></staticfile-settings>
         <seo-settings v-if="item.value == 'seoSettings'" :value="4" @tab-complete="complete"></seo-settings>
-        <other-settings v-if="item.value == 'otherSettings'" :value="5" @tab-complete="complete"></other-settings>
+        <system-settings v-if="item.value == 'systemSettings'" :value="5" @tab-complete="complete"></system-settings>
         <systemInfo v-if="item.value == 'systemInfo'" :value="6" @tab-complete="complete"></systemInfo>
       </el-tab-pane>
     </el-tabs>
@@ -22,7 +22,7 @@ import postSettings from './components/post-settings.vue';
 import emailSettings from './components/email-settings.vue';
 import staticfileSettings from './components/staticfile-settings.vue';
 import seoSettings from './components/seo-settings.vue';
-import otherSettings from './components/other-settings.vue';
+import systemSettings from './components/system-settings.vue';
 import systemInfo from './components/system-info.vue';
 
 const model = reactive({
@@ -54,8 +54,8 @@ const model = reactive({
       loading: true
     },
     {
-      title: '其他设置',
-      value: 'otherSettings',
+      title: '系统设置',
+      value: 'systemSettings',
       loading: true
     },
     {

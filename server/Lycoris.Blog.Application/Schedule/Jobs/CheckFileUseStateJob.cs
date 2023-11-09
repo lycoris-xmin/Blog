@@ -5,6 +5,7 @@ using Lycoris.Blog.Core.Logging;
 using Lycoris.Blog.EntityFrameworkCore.Constants;
 using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
+using Lycoris.Blog.Model.Configurations;
 using Lycoris.Common.Extensions;
 using Lycoris.Quartz.Extensions;
 using Microsoft.AspNetCore.SignalR;
@@ -19,9 +20,10 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
     public class CheckFileUseStateJob : BaseJob
     {
         private readonly IRepository<StaticFile, long> _staticFile;
-        private readonly IRepository<Post, long> _post; // 60
-        private readonly IRepository<Category, int> _category; // 20
-        private readonly IRepository<WebSiteAbout, string> _webSiteAbout; // 20
+        private readonly IRepository<Post, long> _post;
+        private readonly IRepository<Category, int> _category;
+        private readonly IRepository<Configuration, string> _configuration;
+        private readonly IRepository<WebSiteAbout, string> _webSiteAbout;
         private readonly IHubContext<DashboardHub> _hubContext;
         private readonly Lazy<IStaticFilesCacheService> _cache;
 
@@ -29,6 +31,7 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
                                     IRepository<StaticFile, long> staticFile,
                                     IRepository<Post, long> post,
                                     IRepository<Category, int> category,
+                                    IRepository<Configuration, string> configuration,
                                     IRepository<WebSiteAbout, string> webSiteAbout,
                                     IHubContext<DashboardHub> hubContext,
                                     Lazy<IStaticFilesCacheService> cache) : base(factory.CreateLogger<CheckFileUseStateJob>())
@@ -36,6 +39,7 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
             _staticFile = staticFile;
             _post = post;
             _category = category;
+            _configuration = configuration;
             _webSiteAbout = webSiteAbout;
             _hubContext = hubContext;
             _cache = cache;
@@ -66,6 +70,7 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
 
             var result = await CheckPostUseAsync(file);
             result = await CheckCategoryUseAsync(file, result);
+            result = await CheckConfigurationUseAsync(file, result);
             result = await CheckWebSiteAboutUseAsync(file, result);
 
             // 更新数据库
@@ -139,6 +144,36 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
                     result.Use = true;
                     result.Message = $"分类 {item.Name} 使用中";
                     return result;
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        private async Task<CheckResult> CheckConfigurationUseAsync(StaticFile file, CheckResult result)
+        {
+            if (result.Use)
+                return result;
+
+            var list = await _configuration.GetAll().Where(x => x.Id == AppConfig.PostSettings).ToListAsync();
+
+            foreach (var item in list)
+            {
+                if (item.Id == AppConfig.PostSettings)
+                {
+                    var data = item.Value.ToObject<PostSettingConfiguration>();
+                    result.Use = data?.Images.Any(x => x.EndsWith(file.PathUrl)) ?? false;
+                    if (result.Use)
+                    {
+                        result.Message = "博客设置 使用中";
+                        break;
+                    }
                 }
             }
 

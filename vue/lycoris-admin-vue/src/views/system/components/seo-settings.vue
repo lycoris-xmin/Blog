@@ -1,5 +1,5 @@
 <template>
-  <div>SEO</div>
+  <div>SEO未开发</div>
 </template>
 
 <script setup>

@@ -63,6 +63,6 @@ namespace Lycoris.Blog.Application.Schedule.Shared
         /// </summary>
         /// <param name="message"></param>
         /// <returns></returns>
-        private string ChangeMessage(string message) => $"{JobName} - {message}";
+        private string ChangeMessage(string message) => $"SchedulerJob({JobName}) - {message}";
     }
 }

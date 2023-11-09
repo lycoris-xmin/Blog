@@ -79,13 +79,15 @@ namespace Lycoris.Blog.Server.Middlewares
 
             await _next.Invoke(context);
 
-            var responseHeaders = GetHttpResponseHeadersMap(context);
+            var responseLog = new ResponseLogTemp(context)
+            {
+                HttpMethod = httpMethod,
+                Path = path,
+                RequestIp = requestIp,
+                Request = body ?? "",
+            };
 
-            var requestTime = context.Items.GetValue<DateTime>(HttpItems.RequestTime);
-            var response = context.Items.GetValue(HttpItems.ResponseBody);
-            var statusCode = context.Response.StatusCode;
-
-            context.Response.OnCompleted(() => ResponseOnCompletedAsync(httpMethod, requestTime, responseHeaders, response, statusCode, path, body ?? "", requestIp));
+            context.Response.OnCompleted(() => ResponseOnCompletedAsync(responseLog));
 
             context.Items.RemoveValue(HttpItems.ResponseBody);
         }
@@ -280,50 +282,45 @@ namespace Lycoris.Blog.Server.Middlewares
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="httpMethod"></param>
-        /// <param name="requestTime"></param>
-        /// <param name="responseHeaders"></param>
-        /// <param name="response"></param>
-        /// <param name="statusCode"></param>
-        /// <param name="path"></param>
-        /// <param name="request"></param>
-        /// <param name="requestIp"></param>
+        /// <param name="responseLog"></param>
         /// <returns></returns>
-        private Task ResponseOnCompletedAsync(string httpMethod, DateTime requestTime, Dictionary<string, string> responseHeaders, string? response, int statusCode, string path, string request, string requestIp)
+        private Task ResponseOnCompletedAsync(ResponseLogTemp responseLog)
         {
             var log = new StringBuilder();
-            var temp = responseHeaders.Select(x => $"{x.Key}: {x.Value}").ToArray();
-            log.AppendFormat("{0} -> response headers:[{1}]", httpMethod, string.Join("; ", temp));
+            var temp = responseLog.ResponseHeaders.Select(x => $"{x.Key}: {x.Value}").ToArray();
+            log.AppendFormat("{0} -> response headers:[{1}]", responseLog.HttpMethod, string.Join("; ", temp));
             _logger.Info(log.ToString());
 
             log.Clear();
 
-            if (!response.IsNullOrEmpty())
+            if (!responseLog.Response.IsNullOrEmpty())
             {
-                log.AppendFormat("{0} -> response body", httpMethod);
+                log.AppendFormat("{0} -> response body", responseLog.HttpMethod);
                 log.Append(" - ");
-                log.Append(response);
+                log.Append(responseLog.Response);
             }
             else
-                log.AppendFormat("{0} response", httpMethod);
+                log.AppendFormat("{0} response", responseLog.HttpMethod);
 
-            log.AppendFormat(" - {0} - ", statusCode);
+            log.AppendFormat(" - {0} - ", responseLog.StatusCode);
 
-            var elapsedMilliseconds = (DateTime.Now - requestTime).TotalMilliseconds;
+            var elapsedMilliseconds = (DateTime.Now - responseLog.RequestTime).TotalMilliseconds;
 
             log.AppendFormat("{0}ms", elapsedMilliseconds.ToString("0.000"));
             _logger.Info(log.ToString());
 
             RequestLog(new RequestLogQueueModel()
             {
-                Method = httpMethod.ToUpper(),
-                Route = path,
-                Params = httpMethod == "get" ? "" : (request ?? ""),
-                StatusCode = statusCode,
-                Response = response ?? "",
+                Method = responseLog.HttpMethod.ToUpper(),
+                Route = responseLog.Path,
+                Params = responseLog.HttpMethod == "get" ? "" : (responseLog.Request ?? ""),
+                StatusCode = responseLog.StatusCode,
+                Response = responseLog.Response ?? "",
                 ElapsedMilliseconds = (long)elapsedMilliseconds,
-                IP = requestIp,
-                CreateTime = requestTime
+                IP = responseLog.RequestIp,
+                Exception = responseLog.Exception,
+                StackTrace = responseLog.StackTrace,
+                CreateTime = responseLog.RequestTime
             });
 
             return Task.CompletedTask;
@@ -342,6 +339,42 @@ namespace Lycoris.Blog.Server.Middlewares
                 return;
 
             _scheduleQueue.Enqueue(ScheduleTypeEnum.RequestLog, data);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private class ResponseLogTemp
+        {
+            public ResponseLogTemp(HttpContext context)
+            {
+                this.ResponseHeaders = GetHttpResponseHeadersMap(context);
+                this.Response = context.Items.GetValue(HttpItems.ResponseBody);
+                this.StatusCode = context.Response.StatusCode;
+                this.RequestTime = context.Items.GetValue<DateTime>(HttpItems.RequestTime);
+                this.Exception = context.Items.GetValue(HttpItems.Exception) ?? "";
+                this.StackTrace = context.Items.GetValue(HttpItems.StackTrace) ?? "";
+            }
+
+            public string HttpMethod { get; set; } = string.Empty;
+
+            public string Path { get; set; } = string.Empty;
+
+            public DateTime RequestTime { get; set; }
+
+            public Dictionary<string, string> ResponseHeaders { get; set; } = new Dictionary<string, string>();
+
+            public string Request { get; set; } = string.Empty;
+
+            public string Response { get; set; } = string.Empty;
+
+            public int StatusCode { get; set; }
+
+            public string RequestIp { get; set; } = string.Empty;
+
+            public string Exception { get; set; } = string.Empty;
+
+            public string StackTrace { get; set; } = string.Empty;
         }
     }
 }

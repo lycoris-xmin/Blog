@@ -135,6 +135,9 @@ namespace Lycoris.Blog.Server.FilterAttributes
 
             context.HttpContext.Items.AddOrUpdate(HttpItems.ResponseBody, ex.Message);
 
+            context.HttpContext.Items.AddOrUpdate(HttpItems.Exception, ex.Message);
+            context.HttpContext.Items.AddOrUpdate(HttpItems.StackTrace, ex.StackTrace!);
+
             context.Result = new ContentResult { Content = "", StatusCode = 500 };
         }
     }

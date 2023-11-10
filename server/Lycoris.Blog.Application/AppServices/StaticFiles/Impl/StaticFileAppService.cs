@@ -7,7 +7,6 @@ using Lycoris.Blog.Application.Schedule.Models;
 using Lycoris.Blog.Application.Shared.Dtos;
 using Lycoris.Blog.Application.Shared.Impl;
 using Lycoris.Blog.Common;
-using Lycoris.Blog.Core.SharpFastZip;
 using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
 using Lycoris.Blog.Model.Exceptions;
@@ -28,19 +27,16 @@ namespace Lycoris.Blog.Application.AppServices.StaticFiles.Impl
         private readonly Lazy<IStaticFilesCacheService> _cache;
         private readonly Lazy<IQuartzSchedulerCenter> _schedulerCenter;
         private readonly Lazy<IFileManageAppService> _fileManage;
-        private readonly Lazy<ISharpFastZipService> _sharpFastZip;
 
         public StaticFileAppService(IRepository<StaticFile, long> repository,
                                     Lazy<IStaticFilesCacheService> cache,
                                     Lazy<IQuartzSchedulerCenter> schedulerCenter,
-                                    Lazy<IFileManageAppService> fileManage,
-                                    Lazy<ISharpFastZipService> sharpFastZip)
+                                    Lazy<IFileManageAppService> fileManage)
         {
             _repository = repository;
             _cache = cache;
             _schedulerCenter = schedulerCenter;
             _fileManage = fileManage;
-            _sharpFastZip = sharpFastZip;
         }
 
         /// <summary>

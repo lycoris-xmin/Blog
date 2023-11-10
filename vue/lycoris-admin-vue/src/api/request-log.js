@@ -51,3 +51,9 @@ export const deleteLog = ids => {
     ids
   });
 };
+
+export const setAccessControl = ip => {
+  return request.post(`${controller}/accesscontrol`, {
+    ip
+  });
+};

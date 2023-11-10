@@ -5,24 +5,24 @@ namespace Lycoris.Blog.Application.Schedule.Shared
 {
     public abstract class BaseJob : BaseQuartzJob
     {
-        protected readonly JobLogger _logger;
+        protected readonly JobLogger JobLogger;
 
         public BaseJob(ILycorisLogger logger)
         {
-            _logger = new JobLogger(logger);
+            JobLogger = new JobLogger(logger);
         }
 
 
         protected override Task DoWorkAsync()
         {
-            _logger.JobWorkRegister(JobTraceId, JobName);
+            this.JobLogger.JobWorkRegister(JobTraceId, JobName);
             try
             {
                 return HandlerWorkAsync();
             }
             catch (Exception ex)
             {
-                this._logger.Error("job handle failed", ex);
+                this.JobLogger.Error("job handle failed", ex);
                 return Task.CompletedTask;
             }
         }

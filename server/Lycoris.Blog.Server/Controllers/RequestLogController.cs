@@ -70,5 +70,18 @@ namespace Lycoris.Blog.Server.Controllers
 
             return Success();
         }
+
+        /// <summary>
+        /// 设置访问管控
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpPost("AccessControl")]
+        [Consumes("application/json"), Produces("application/json")]
+        public async Task<BaseOutput> SetAccessControl([FromBody] SetAccessControlInput input)
+        {
+            await _requestLog.SetAccessControlAsync(input.Ip!);
+            return Success();
+        }
     }
 }

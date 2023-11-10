@@ -1,7 +1,22 @@
-﻿namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Models
+﻿using Microsoft.AspNetCore.Http;
+
+namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Models
 {
     public class RequestLogQueueModel
     {
+        public RequestLogQueueModel()
+        {
+
+        }
+
+        public RequestLogQueueModel(HttpContext context)
+        {
+            this.Method = context.Request.Method.ToUpper();
+            this.Params = context.Request.QueryString.Value ?? "";
+            this.Route = context.Request.Path.Value ?? "";
+            this.StatusCode = context.Response.StatusCode;
+        }
+
         /// <summary>
         /// 请求方式
         /// </summary>
@@ -43,9 +58,9 @@
         public string StackTrace { get; set; } = string.Empty;
 
         /// <summary>
-        /// 客户端IP
+        /// 客户端Ip
         /// </summary>
-        public string IP { get; set; } = string.Empty;
+        public string Ip { get; set; } = string.Empty;
 
         /// <summary>
         /// 请求时间

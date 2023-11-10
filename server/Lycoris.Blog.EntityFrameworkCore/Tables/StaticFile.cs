@@ -70,6 +70,12 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
         public DateTime CreateTime { get; set; }
 
         /// <summary>
+        /// 最后更新时间
+        /// </summary>
+        [TableColumn(Required = false)]
+        public DateTime? LastUpdateTime { get; set; }
+
+        /// <summary>
         /// 
         /// </summary>
         [NotMapped]

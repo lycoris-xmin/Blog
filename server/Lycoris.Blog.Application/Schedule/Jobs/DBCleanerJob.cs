@@ -81,7 +81,7 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
             }
             catch (Exception ex)
             {
-                _logger.Error("", ex);
+                this.JobLogger.Error("", ex);
             }
         }
 
@@ -104,7 +104,7 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
             }
             catch (Exception ex)
             {
-                _logger.Error("", ex);
+                this.JobLogger.Error("", ex);
             }
         }
 
@@ -127,7 +127,7 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
             }
             catch (Exception ex)
             {
-                _logger.Error("", ex);
+                this.JobLogger.Error("", ex);
             }
         }
 
@@ -150,7 +150,7 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
             }
             catch (Exception ex)
             {
-                _logger.Error("", ex);
+                this.JobLogger.Error("", ex);
             }
         }
     }

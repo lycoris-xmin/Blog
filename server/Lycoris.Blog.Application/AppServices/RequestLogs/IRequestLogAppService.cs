@@ -26,5 +26,12 @@ namespace Lycoris.Blog.Application.AppServices.RequestLogs
         /// <param name="ids"></param>
         /// <returns></returns>
         Task DeleteAsync(params long[] ids);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ip"></param>
+        /// <returns></returns>
+        Task SetAccessControlAsync(string ip);
     }
 }

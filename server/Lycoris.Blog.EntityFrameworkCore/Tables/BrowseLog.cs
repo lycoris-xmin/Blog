@@ -57,7 +57,7 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
         public uint Ip { get; set; }
 
         /// <summary>
-        /// IP归属地
+        /// Ip归属地
         /// </summary>
         [TableColumn(StringLength = 100)]
         public string IpAddress { get; set; } = "";

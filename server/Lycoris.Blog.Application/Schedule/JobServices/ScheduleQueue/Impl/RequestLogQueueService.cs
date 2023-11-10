@@ -1,12 +1,13 @@
 ﻿using Lycoris.Autofac.Extensions;
 using Lycoris.AutoMapper.Extensions;
 using Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Models;
-using Lycoris.Blog.Core.Logging;
+using Lycoris.Blog.Application.Schedule.Shared;
 using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
 using Lycoris.Blog.Model.Global.Output;
 using Lycoris.Common.Extensions;
 using Lycoris.Common.Helper;
+using Microsoft.EntityFrameworkCore;
 using Quartz;
 
 namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
@@ -16,13 +17,19 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
     {
         public IJobExecutionContext? JobContext { get; set; }
 
-        private readonly ILycorisLogger _logger;
-        private readonly IRepository<RequestLog, long> _requestLog;
+        public JobLogger? JobLogger { get; set; }
 
-        public RequestLogQueueService(ILycorisLoggerFactory factory, IRepository<RequestLog, long> requestLog)
+        private readonly IRepository<RequestLog, long> _requestLog;
+        private readonly IRepository<AccessControl, int> _accessControl;
+        private readonly IRepository<AccessControlLog, long> _accessControlLog;
+
+        public RequestLogQueueService(IRepository<RequestLog, long> requestLog,
+                                      IRepository<AccessControl, int> accessControl,
+                                      IRepository<AccessControlLog, long> accessControlLog)
         {
-            _logger = factory.CreateLogger<RequestLogQueueService>();
             _requestLog = requestLog;
+            _accessControl = accessControl;
+            _accessControlLog = accessControlLog;
         }
 
         /// <summary>
@@ -33,23 +40,35 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
         /// <returns></returns>
         public async Task JobDoWorkAsync(string? data, DateTime? time)
         {
-            var dto = data.ToObject<RequestLogQueueModel>();
-            if (dto == null)
+            var model = data.ToObject<RequestLogQueueModel>();
+            if (model == null)
                 return;
 
-            var log = dto!.ToMap<RequestLog>();
+            var log = await CreateRequestLogAsync(model);
 
-            if (!dto!.IP.IsNullOrEmpty())
+            await DealAccessControlAsync(log);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        private async Task<RequestLog> CreateRequestLogAsync(RequestLogQueueModel input)
+        {
+            var log = input!.ToMap<RequestLog>();
+
+            if (!input!.Ip.IsNullOrEmpty())
             {
-                log.IP = IPAddressHelper.Ipv4ToUInt32(dto.IP);
+                log.Ip = IPAddressHelper.Ipv4ToUInt32(input.Ip);
 
-                if (IPAddressHelper.IsPrivateNetwork(dto.IP))
-                    log.IPAddress = "局域网";
+                if (IPAddressHelper.IsPrivateNetwork(input.Ip))
+                    log.IpAddress = "局域网";
                 else
-                    log.IPAddress = IPAddressHelper.ChangeAddress(IPAddressHelper.Search(dto.IP));
+                    log.IpAddress = IPAddressHelper.ChangeAddress(IPAddressHelper.Search(input.Ip));
             }
             else
-                log.IPAddress = "未知";
+                log.IpAddress = "未知";
 
             log.Success = log.StatusCode == 200;
 
@@ -59,7 +78,30 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
                 log.Success = resp != null && (resp.ResCode == ResCodeEnum.Success || resp.ResCode == ResCodeEnum.TokenExpired);
             }
 
-            await _requestLog.CreateAsync(log);
+            return await _requestLog.CreateAsync(log);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="log"></param>
+        /// <returns></returns>
+        private async Task DealAccessControlAsync(RequestLog log)
+        {
+            var data = await _accessControl.GetAll().Where(x => x.Ip == log.Ip).SingleOrDefaultAsync();
+            if (data == null)
+                return;
+
+            data.Count++;
+            data.LastAccessTime = DateTime.Now;
+
+            // 更新数据
+            await _accessControl.UpdateFieIdsAsync(data, x => x.Count, x => x.LastAccessTime);
+
+            var accessLog = log.ToMap<AccessControlLog>();
+            accessLog.AccessControlId = data.Id;
+            // 插入管控日志记录
+            await _accessControlLog.CreateAsync(accessLog);
         }
     }
 }

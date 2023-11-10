@@ -52,6 +52,13 @@
       @toolbar-delete="$delete"
       @toolbar-search="$search"
     >
+      <template #route="{ row }">
+        <p class="request-route">
+          <span class="http-method" :class="{ get: row.httpMethod == 'GET', post: row.httpMethod == 'POST' }">{{ row.httpMethod }}</span>
+          {{ row.route }}
+        </p>
+      </template>
+
       <template #success="{ value }">
         <el-tag v-if="value">正常</el-tag>
         <el-tag type="danger" v-else>异常</el-tag>
@@ -68,6 +75,7 @@
 
       <template #action="{ row }">
         <el-button type="info" plain @click="$viewLog(row)">详情</el-button>
+        <el-button type="danger" v-if="!row.success && !row.route.startsWith(api.routePrefix)" plain @click="$accessContorl(row)" :loading="row.controlLoading">IP管控</el-button>
       </template>
     </lycoris-table>
 
@@ -80,10 +88,11 @@ import { reactive, ref, onMounted, onActivated } from 'vue';
 import PageLayout from '../layout/page-layout.vue';
 import LycorisTable from '../../components/lycoris-table/index.vue';
 import detailView from './components/detail-view.vue';
-import { getList, deleteLog } from '../../api/request-log';
+import { getList, deleteLog, setAccessControl } from '../../api/request-log';
 import swal from '../../utils/swal';
 import toast from '../../utils/toast';
 import { useRoute } from 'vue-router';
+import { api } from '../../config.json';
 
 const tableRef = ref();
 const detailViewRef = ref();
@@ -107,7 +116,7 @@ const toolbar = reactive({
 const column = ref([
   {
     column: 'route',
-    name: '请求地址',
+    name: '路由地址',
     overflow: true
   },
   {
@@ -139,8 +148,9 @@ const column = ref([
   {
     column: 'action',
     name: '操作',
-    width: '100px',
-    fixed: 'right'
+    width: '200px',
+    fixed: 'right',
+    align: 'left'
   }
 ]);
 
@@ -152,15 +162,22 @@ const table = reactive({
   loading: false
 });
 
+let mounted = true;
+
 onMounted(async () => {
   Object.freeze(column);
   await getTableList();
   model.loading = false;
+  mounted = false;
 });
 
 let searchKey = '';
 
 onActivated(async () => {
+  if (mounted) {
+    return;
+  }
+
   //
   if (route.params?.key) {
     if (searchKey != route.params.key) {
@@ -250,6 +267,35 @@ const $viewLog = async row => {
   await detailViewRef.value.show(row);
   table.loading = false;
 };
+
+const $accessContorl = async row => {
+  row.controlLoading = true;
+  try {
+    let res = await setAccessControl(row.ip);
+    if (res && res.resCode == 0) {
+      toast.success('加入IP管控成功');
+    }
+  } finally {
+    row.controlLoading = false;
+  }
+};
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss">
+.request-route {
+  .http-method {
+    padding: 3px 8px;
+    color: #fff;
+    border-radius: 15px;
+    font-size: 12px;
+  }
+
+  .get {
+    background-color: var(--color-info);
+  }
+
+  .post {
+    background-color: var(--color-purple);
+  }
+}
+</style>

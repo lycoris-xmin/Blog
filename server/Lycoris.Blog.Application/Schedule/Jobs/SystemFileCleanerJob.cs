@@ -3,6 +3,7 @@ using Lycoris.Blog.Common;
 using Lycoris.Blog.Core.Github;
 using Lycoris.Blog.Core.Logging;
 using Lycoris.Blog.Core.Minio;
+using Lycoris.Blog.EntityFrameworkCore.Constants;
 using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
 using Lycoris.Blog.Model.Configurations;
@@ -15,18 +16,21 @@ using Quartz;
 namespace Lycoris.Blog.Application.Schedule.Jobs
 {
     [DisallowConcurrentExecution]
-    [QuartzJob("静态文件清理", Trigger = QuartzTriggerEnum.CRON, Cron = "0 0 1 * * ?")]
-    public class StaticFileCleanerJob : BaseJob
+    [QuartzJob("系统文件清理", Trigger = QuartzTriggerEnum.CRON, Cron = "0 0 1 * * ?")]
+    public class SystemFileCleanerJob : BaseJob
     {
+        private readonly IConfigurationRepository _configuration;
         private readonly IRepository<StaticFile, long> _staticFile;
         private readonly Lazy<IGithubService> _github;
         private readonly Lazy<IMinioService> _minio;
 
-        public StaticFileCleanerJob(ILycorisLoggerFactory factory,
+        public SystemFileCleanerJob(ILycorisLoggerFactory factory,
+                                    IConfigurationRepository configuration,
                                     IRepository<StaticFile, long> staticFile,
                                     Lazy<IGithubService> github,
-                                    Lazy<IMinioService> minio) : base(factory.CreateLogger<StaticFileCleanerJob>())
+                                    Lazy<IMinioService> minio) : base(factory.CreateLogger<SystemFileCleanerJob>())
         {
+            _configuration = configuration;
             _staticFile = staticFile;
             _github = github;
             _minio = minio;
@@ -38,8 +42,10 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
         /// <returns></returns>
         protected override async Task HandlerWorkAsync()
         {
+            var config = await GetConfigurationAsync();
+
             // 静态文件清理
-            await StaticFileHandlerAsync();
+            await StaticFileHandlerAsync(config);
 
             // 缓存文件清理
             TempFileHandler();
@@ -48,15 +54,26 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
             LogFileHandler();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        private async Task<SystemFileClearConfiguration> GetConfigurationAsync()
+        {
+            var config = await _configuration.GetConfigurationAsync<SystemSettingsConfiguration>(AppConfig.SystemSettings);
+            return config!.SystemFileClear;
+        }
+
         #region 静态文件清理
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        private async Task StaticFileHandlerAsync()
+        private async Task StaticFileHandlerAsync(SystemFileClearConfiguration config)
         {
-            var filter = _staticFile.GetAll().Where(x => x.Use == false);
+            var checkTime = DateTime.Now.AddDays(-config.StaticFile).Date;
+            var filter = _staticFile.GetAll().Where(x => x.Use == false).Where(x => x.LastUpdateTime.HasValue && x.LastUpdateTime.Value <= checkTime);
 
             var pageIndex = 1;
             var pageSize = 50;
@@ -105,11 +122,11 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
                 }
                 catch (NotFoundException)
                 {
-                    _logger.Warn($"github delete file failed: not found file by {item.PathUrl}");
+                    this.JobLogger.Warn($"github delete file failed: not found file by {item.PathUrl}");
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error($"github delete file({item.PathUrl}) failed", ex);
+                    this.JobLogger.Error($"github delete file({item.PathUrl}) failed", ex);
                     failedIds.Add(item.Id);
                 }
 
@@ -140,7 +157,7 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error($"minio delete file({item.PathUrl}) failed", ex);
+                    this.JobLogger.Error($"minio delete file({item.PathUrl}) failed", ex);
                     failedIds.Add(item.Id);
                 }
 
@@ -173,7 +190,7 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error($"local delete file({filePath}) failed", ex);
+                    this.JobLogger.Error($"local delete file({filePath}) failed", ex);
                     failedIds.Add(item.Id);
                 }
             }

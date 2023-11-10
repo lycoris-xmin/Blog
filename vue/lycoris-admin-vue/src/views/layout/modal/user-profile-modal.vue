@@ -13,17 +13,17 @@
         </el-col>
 
         <el-col :span="12">
-          <el-form-item label="昵称" prop="nickName">
-            <el-input v-model="form.nickName" autocomplete="off" />
-          </el-form-item>
-        </el-col>
-
-        <el-col :span="12">
           <el-tooltip effect="dark" content="邮箱作为登录帐号，无法修改" placement="bottom">
             <el-form-item label="邮箱" prop="email">
               <el-input :value="form.email" disabled />
             </el-form-item>
           </el-tooltip>
+        </el-col>
+
+        <el-col :span="12">
+          <el-form-item label="昵称" prop="nickName">
+            <el-input v-model="form.nickName" autocomplete="off" />
+          </el-form-item>
         </el-col>
 
         <el-col :span="12">
@@ -39,8 +39,14 @@
         </el-col>
 
         <el-col :span="12">
-          <el-form-item label="gitHub" prop="gitHub">
+          <el-form-item label="GitHub" prop="gitHub">
             <el-input v-model="form.gitHub" autocomplete="off" placeholder="请输入github个人主页地址" />
+          </el-form-item>
+        </el-col>
+
+        <el-col :span="12">
+          <el-form-item label="Gitee" prop="gitee">
+            <el-input v-model="form.gitee" autocomplete="off" placeholder="请输入码云个人主页地址" />
           </el-form-item>
         </el-col>
 
@@ -88,6 +94,7 @@ const form = reactive({
   qq: '',
   wechat: '',
   gitHub: '',
+  gitee: '',
   bilibili: '',
   cloudMusic: '',
   file: ''

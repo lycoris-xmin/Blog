@@ -13,6 +13,11 @@
         /// <summary>
         /// 
         /// </summary>
+        public string? HttpMethod { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public string? Route { get; set; }
 
         /// <summary>
@@ -28,7 +33,7 @@
         /// <summary>
         /// 
         /// </summary>
-        public string? IP { get; set; }
+        public string? Ip { get; set; }
 
         /// <summary>
         /// 

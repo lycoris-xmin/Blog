@@ -5,20 +5,23 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Lycoris.Blog.EntityFrameworkCore.Tables
 {
     /// <summary>
-    /// API请求记录表
+    /// 访问管控监控日志
     /// </summary>
-    [Table("Log_Request")]
+    [Table("Log_AccessControl")]
     [TableIndex("Route")]
     [TableIndex("StatusCode")]
-    [TableIndex("Success")]
-    [TableIndex("ElapsedMilliseconds")]
-    public class RequestLog : MySqlBaseEntity<long>
+    public class AccessControlLog : MySqlBaseEntity<long>
     {
         /// <summary>
         /// 主键
         /// </summary>
         [TableColumn(IsPrimary = true, IsIdentity = true)]
         public override long Id { get; set; }
+
+        /// <summary>
+        /// 访问管控编号
+        /// </summary>
+        public int AccessControlId { get; set; }
 
         /// <summary>
         /// 请求方式
@@ -44,20 +47,9 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
         public uint StatusCode { get; set; } = 200;
 
         /// <summary>
-        /// 响应结果
-        /// </summary>
-        [TableColumn(DefaultValue = true)]
-        public bool Success { get; set; }
-
-        /// <summary>
         /// 响应内容
         /// </summary>
         public string Response { get; set; } = string.Empty;
-
-        /// <summary>
-        /// 耗时
-        /// </summary>
-        public int ElapsedMilliseconds { get; set; }
 
         /// <summary>
         /// 异常信息
@@ -69,17 +61,6 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
         /// 异常堆栈信息
         /// </summary>
         public string StackTrace { get; set; } = string.Empty;
-
-        /// <summary>
-        /// 客户端Ip
-        /// </summary>
-        public uint Ip { get; set; } = 0;
-
-        /// <summary>
-        /// 客户端Ip归属地
-        /// </summary>
-        [TableColumn(StringLength = 255)]
-        public string IpAddress { get; set; } = string.Empty;
 
         /// <summary>
         /// 请求时间

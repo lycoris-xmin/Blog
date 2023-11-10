@@ -4,15 +4,17 @@
     {
         public long Id { get; set; }
 
+        public string? HttpMethod { get; set; }
+
         public string? Route { get; set; }
 
         public bool Success { get; set; }
 
         public int ElapsedMilliseconds { get; set; }
 
-        public uint IP { get; set; }
+        public uint Ip { get; set; }
 
-        public string? IPAddress { get; set; }
+        public string? IpAddress { get; set; }
 
         public DateTime CreateTime { get; set; }
     }

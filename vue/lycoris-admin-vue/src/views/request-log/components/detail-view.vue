@@ -4,14 +4,19 @@
       <div class="request">
         <div class="request-flex-item border-bottom flex-start-center">
           <div class="flex-item-title w-100">请求地址</div>
-          <div class="flex-item-value">{{ model.route }}</div>
+          <div class="flex-item-value">
+            <p class="request-route">
+              <span class="http-method" :class="{ get: model.httpMethod == 'GET', post: model.httpMethod == 'POST' }">{{ model.httpMethod }}</span>
+              {{ model.route }}
+            </p>
+          </div>
         </div>
         <div class="request-flex-item border-bottom flex-start-center">
           <div class="flex-start-center" style="width: 50%">
             <div class="flex-item-title w-100">客户端IP</div>
             <div class="flex-item-value">{{ model.ip }}</div>
           </div>
-          <div class="flex-start-center" style="width: 50%">
+          <div class="flex-start-center border-left" style="width: 50%">
             <div class="flex-item-title w-100">IP归属地</div>
             <div class="flex-item-value">{{ model.ipAddress }}</div>
           </div>
@@ -27,7 +32,7 @@
             <div class="flex-item-title w-100">响应状态码</div>
             <div class="flex-item-value">{{ model.statusCode }}</div>
           </div>
-          <div class="flex-start-center" style="width: 50%">
+          <div class="flex-start-center border-left" style="width: 50%">
             <div class="flex-item-title w-100">响应耗时</div>
             <div class="flex-item-value">{{ model.elapsedMilliseconds }}ms</div>
           </div>
@@ -62,6 +67,7 @@ import { getInfo } from '../../../api/request-log';
 const model = reactive({
   dialogVisible: false,
   id: '',
+  httpMethod: '',
   route: '',
   params: '',
   success: true,
@@ -113,6 +119,7 @@ const show = async row => {
     }
 
     model.id = row.id;
+    model.httpMethod = row.httpMethod;
     model.route = row.route;
     model.success = row.success;
     model.elapsedMilliseconds = row.elapsedMilliseconds;

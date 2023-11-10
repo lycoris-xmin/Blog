@@ -177,8 +177,9 @@ namespace Lycoris.Blog.Application.AppServices.FileManage.Impl
                 return;
 
             data.Use = false;
+            data.LastUpdateTime = DateTime.Now;
 
-            await _repository.UpdateFieIdsAsync(data, x => x.Use);
+            await _repository.UpdateFieIdsAsync(data, x => x.Use, x => x.LastUpdateTime!);
         }
 
         /// <summary>

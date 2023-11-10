@@ -2,7 +2,7 @@
 using Lycoris.Blog.Application.Cached.ScheduleQueue;
 using Lycoris.Blog.Application.Cached.ScheduleQueue.Models;
 using Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Models;
-using Lycoris.Blog.Core.Logging;
+using Lycoris.Blog.Application.Schedule.Shared;
 using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
 using Lycoris.Common.Extensions;
@@ -19,8 +19,8 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
     public class BrowseLogQueueService : IScheduleQueueService
     {
         public IJobExecutionContext? JobContext { get; set; }
+        public JobLogger? JobLogger { get; set; }
 
-        private readonly ILycorisLogger _logger;
         private readonly IRepository<BrowseReferer, int> _browseReferer;
         private readonly IScheduleQueueCacheService _scheduleQueue;
 
@@ -30,11 +30,8 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
         /// <param name="factory"></param>
         /// <param name="browseReferer"></param>
         /// <param name="scheduleQueue"></param>
-        public BrowseLogQueueService(ILycorisLoggerFactory factory,
-                                   IRepository<BrowseReferer, int> browseReferer,
-                                   IScheduleQueueCacheService scheduleQueue)
+        public BrowseLogQueueService(IRepository<BrowseReferer, int> browseReferer, IScheduleQueueCacheService scheduleQueue)
         {
-            _logger = factory.CreateLogger<BrowseLogQueueService>();
             _browseReferer = browseReferer;
             _scheduleQueue = scheduleQueue;
         }
@@ -52,7 +49,7 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
                 return;
 
             // 文章浏览量统计事件插入
-            await CalcPostStatisticsAsync(dto);
+            PushCalcPostStatisticsQueue(dto);
 
             if (dto.Referer.IsNullOrEmpty())
                 return;
@@ -69,7 +66,7 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        private async Task CalcPostStatisticsAsync(BrowseLogQueueModel data)
+        private void PushCalcPostStatisticsQueue(BrowseLogQueueModel data)
         {
             try
             {
@@ -84,7 +81,7 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
             }
             catch (Exception ex)
             {
-                _logger.Warn("", ex);
+                this.JobLogger!.Warn("", ex);
             }
         }
 

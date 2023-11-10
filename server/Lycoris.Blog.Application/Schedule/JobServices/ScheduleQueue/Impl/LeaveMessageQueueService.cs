@@ -1,5 +1,5 @@
 ﻿using Lycoris.Autofac.Extensions;
-using Lycoris.Blog.Core.Logging;
+using Lycoris.Blog.Application.Schedule.Shared;
 using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
 using Lycoris.Blog.EntityFrameworkCore.Tables.Enums;
@@ -15,12 +15,12 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
     {
         public IJobExecutionContext? JobContext { get; set; }
 
-        private readonly ILycorisLogger _logger;
+        public JobLogger? JobLogger { get; set; }
+
         private readonly IRepository<LeaveMessage, int> _message;
 
-        public LeaveMessageQueueService(ILycorisLoggerFactory factory, IRepository<LeaveMessage, int> message)
+        public LeaveMessageQueueService(IRepository<LeaveMessage, int> message)
         {
-            _logger = factory.CreateLogger<LeaveMessageQueueService>();
             _message = message;
         }
 

@@ -23,7 +23,7 @@
         /// <summary>
         /// Nginx真实来源请求头
         /// </summary>
-        public const string NginxRemoteIp = "X-Real-IP";
+        public const string NginxRemoteIp = "X-Real-Ip";
 
         /// <summary>
         /// 

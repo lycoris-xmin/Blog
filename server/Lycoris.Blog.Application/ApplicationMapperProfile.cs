@@ -46,8 +46,8 @@ namespace Lycoris.Blog.Application
 
             CreateMap<RequestLogQueueModel, RequestLog>()
                   .ForMember(x => x.Id, opt => opt.Ignore())
-                  .ForMember(x => x.IP, opt => opt.Ignore())
-                  .ForMember(x => x.IPAddress, opt => opt.Ignore());
+                  .ForMember(x => x.Ip, opt => opt.Ignore())
+                  .ForMember(x => x.IpAddress, opt => opt.Ignore());
 
             CreateMap<Talk, MasterTalkDataDto>();
 
@@ -70,6 +70,8 @@ namespace Lycoris.Blog.Application
             CreateMap<ChatMessageDataDto, ChatMessageSignalRModel>();
 
             CreateMap<RequestMonitorContext, RequestMonitorModel>();
+
+            CreateMap<RequestLog, AccessControlLog>().ForMember(x => x.Id, opt => opt.Ignore());
         }
 
         /// <summary>

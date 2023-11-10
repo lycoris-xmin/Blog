@@ -1,5 +1,5 @@
 ﻿using Lycoris.Autofac.Extensions;
-using Lycoris.Blog.Core.Logging;
+using Lycoris.Blog.Application.Schedule.Shared;
 using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
 using Lycoris.Common.Extensions;
@@ -15,16 +15,14 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
     public class CategoryPostCountQueueService : IScheduleQueueService
     {
         public IJobExecutionContext? JobContext { get; set; }
+        public JobLogger? JobLogger { get; set; }
 
-        private readonly ILycorisLogger _logger;
+
         private readonly IRepository<Category, int> _category;
         private readonly IRepository<Post, long> _post;
 
-        public CategoryPostCountQueueService(ILycorisLoggerFactory factory,
-                                           IRepository<Category, int> category,
-                                           IRepository<Post, long> post)
+        public CategoryPostCountQueueService(IRepository<Category, int> category, IRepository<Post, long> post)
         {
-            _logger = factory.CreateLogger<LeaveMessageQueueService>();
             _category = category;
             _post = post;
         }

@@ -54,7 +54,7 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
             var args = this.Context.GetJobArgs();
             if (args.IsNullOrEmpty())
             {
-                // 
+                this.JobLogger.Warn("can not find job start argument");
                 return;
             }
 
@@ -64,7 +64,7 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
 
             if (file == null)
             {
-                // 
+                this.JobLogger.Warn($"can not find static file by id:{fileId}");
                 return;
             }
 
@@ -77,7 +77,8 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
             if (file.Use != result.Use)
             {
                 file.Use = result.Use;
-                await _staticFile.UpdateFieIdsAsync(file, x => x.Use);
+                file.LastUpdateTime = DateTime.Now;
+                await _staticFile.UpdateFieIdsAsync(file, x => x.Use, x => x.LastUpdateTime!);
             }
 
             // 推送

@@ -47,7 +47,7 @@ namespace Lycoris.Blog.Server.Middlewares
             // socket 直接过
             if (context.WebSockets.IsWebSocketRequest)
             {
-                await _next(context);
+                await _next.Invoke(context);
                 return;
             }
 
@@ -61,7 +61,7 @@ namespace Lycoris.Blog.Server.Middlewares
             if (IsStaticFileReuqest(context))
             {
                 _logger.Info($"{httpMethod} -> {context.Request.Path.Value} - {requestIp}");
-                await _next(context);
+                await _next.Invoke(context);
                 return;
             }
 
@@ -317,7 +317,7 @@ namespace Lycoris.Blog.Server.Middlewares
                 StatusCode = responseLog.StatusCode,
                 Response = responseLog.Response ?? "",
                 ElapsedMilliseconds = (long)elapsedMilliseconds,
-                IP = responseLog.RequestIp,
+                Ip = responseLog.RequestIp,
                 Exception = responseLog.Exception,
                 StackTrace = responseLog.StackTrace,
                 CreateTime = responseLog.RequestTime

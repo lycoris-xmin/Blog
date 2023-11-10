@@ -106,7 +106,7 @@ namespace Lycoris.Blog.Application.AppServices.Comment.Impl
                 CreateTime = DateTime.Now
             };
 
-            if(comment.RepliedUserId == CurrentUser.Id)
+            if (comment.RepliedUserId == CurrentUser.Id)
                 comment.RepliedUserId = 0;
 
             var repliedUser = "";

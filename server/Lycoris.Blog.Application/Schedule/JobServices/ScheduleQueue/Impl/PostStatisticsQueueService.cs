@@ -1,5 +1,6 @@
 ﻿using Lycoris.Autofac.Extensions;
 using Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Models;
+using Lycoris.Blog.Application.Schedule.Shared;
 using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
 using Lycoris.Common.Extensions;
@@ -11,6 +12,9 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
     public class PostStatisticsQueueService : IScheduleQueueService
     {
         public IJobExecutionContext? JobContext { get; set; }
+
+        public JobLogger? JobLogger { get; set; }
+
 
         private readonly IRepository<Post, long> _post;
 

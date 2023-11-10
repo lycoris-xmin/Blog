@@ -53,6 +53,11 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
                 value.LastTime = value.LastTime.Value.Date;
             }
 
+            // 如果当天任务已执行过，则不再重复统计
+            // 预防服务重启时，会重复统计的问题
+            if (value.LastTime == DateTime.Now.Date)
+                return;
+
             var startDate = value.LastTime.Value;
             var endDate = startDate.AddDays(1);
             var absoultEndDate = DateTime.Now.Date;

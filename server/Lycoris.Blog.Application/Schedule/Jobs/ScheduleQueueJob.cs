@@ -35,7 +35,8 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
             var sechduleJob = _multipleService.TryGetService<IScheduleQueueService>(cache.Type.ToString());
             if (sechduleJob != null)
             {
-                sechduleJob.JobContext = Context;
+                sechduleJob.JobContext = this.Context;
+                sechduleJob.JobLogger = this.JobLogger;
                 await sechduleJob.JobDoWorkAsync(cache!.Data, cache.Time);
             }
         }

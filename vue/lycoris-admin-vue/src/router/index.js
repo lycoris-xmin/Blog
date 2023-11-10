@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import { pageRoutes, getMenus } from './routes';
 import nProgress from 'nprogress';
 import { web } from '../config.json';
-import { stores } from '../stores';
+// import { stores } from '../stores';
 
 nProgress.configure({
   easing: 'ease',
@@ -49,9 +49,9 @@ $router.beforeEach(async to => {
       document.title = `管理后台_${web.name}`;
     }
 
-    if (stores.authorize.token && stores.screenLock.checkLossOfActivity()) {
-      return { name: 'screen-lock', query: { path: to.path } };
-    }
+    // if (stores.authorize.token && stores.screenLock.checkLossOfActivity()) {
+    //   return { name: 'screen-lock', query: { path: to.path } };
+    // }
   } else {
     if (to.meta.title) {
       document.title = `${to.meta.title}_${web.name}`;

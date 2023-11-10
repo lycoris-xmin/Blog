@@ -1,4 +1,5 @@
-﻿using Quartz;
+﻿using Lycoris.Blog.Application.Schedule.Shared;
+using Quartz;
 
 namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue
 {
@@ -8,6 +9,11 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue
         /// 
         /// </summary>
         IJobExecutionContext? JobContext { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        JobLogger? JobLogger { get; set; }
 
         /// <summary>
         /// 

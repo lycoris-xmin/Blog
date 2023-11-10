@@ -31,7 +31,7 @@
             登录记录
           </div>
 
-          <div class="options-item" @click="screenLock">
+          <div class="options-item" v-if="false" @click="screenLock">
             <el-icon>
               <component :is="'lock'"></component>
             </el-icon>

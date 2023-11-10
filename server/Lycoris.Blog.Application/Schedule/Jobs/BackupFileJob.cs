@@ -40,14 +40,14 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
             var args = this.Context.GetJobArgs<BackupFileJobModel>();
             if (args == null)
             {
-                this._logger.Error("job arguments is null");
+                this.JobLogger.Error("job arguments is null");
                 return;
             }
 
             if (args.SourceFilePath.IsNullOrEmpty() || args.ZipFilePath.IsNullOrEmpty())
             {
                 // 如果路径为空不处理
-                this._logger.Error($"path must not be null:{args.ToJson()}");
+                this.JobLogger.Error($"path must not be null:{args.ToJson()}");
                 return;
             }
 

@@ -16,7 +16,7 @@
         public const string Origin = "Origin";
 
         /// <summary>
-        /// 请求来源IP
+        /// 请求来源Ip
         /// </summary>
         public const string RequestIP = "RequestIP";
 

@@ -1,6 +1,7 @@
 ﻿using Lycoris.Autofac.Extensions;
 using Lycoris.Blog.Application.AppServices.LoginFailedRecords;
 using Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Models;
+using Lycoris.Blog.Application.Schedule.Shared;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
 using Lycoris.Common.Extensions;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,8 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
     public class LoginFailedRecordQueueService : IScheduleQueueService
     {
         public IJobExecutionContext? JobContext { get; set; }
+
+        public JobLogger? JobLogger { get; set; }
 
         private readonly ILoginFailedRecordService _loginFailedRecord;
 

@@ -25,7 +25,7 @@ namespace Lycoris.Blog.Server.FilterAttributes
             // 请求唯一标识码
             request.TraceId = context.HttpContext.Items.GetValue(HttpItems.TraceId);
 
-            // 请求IP
+            // 请求Ip
             request.RequestIP = context.HttpContext.Items.GetValue(HttpItems.RequestIP);
             context.HttpContext.Items.Remove(HttpItems.RequestIP);
 

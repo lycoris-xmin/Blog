@@ -4,6 +4,7 @@ using Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Models;
 using Lycoris.Blog.Common;
 using Lycoris.Blog.Core.Logging;
 using Lycoris.Blog.Model.Cnstants;
+using Lycoris.Blog.Model.Contexts;
 using Lycoris.Blog.Model.Global.Output;
 using Lycoris.Blog.Server.Application.Constants;
 using Lycoris.Blog.Server.Shared;
@@ -17,6 +18,7 @@ namespace Lycoris.Blog.Server.Middlewares
     public class ExceptionHandlerMiddleware : BaseMiddleware
     {
         private readonly IScheduleQueueCacheService _scheduleQueue;
+        private readonly ApplicationContext _applicationContext;
 
         /// <summary>
         /// 
@@ -24,12 +26,15 @@ namespace Lycoris.Blog.Server.Middlewares
         /// <param name="next"></param>
         /// <param name="factory"></param>
         /// <param name="scheduleQueue"></param>
+        /// <param name="applicationContext"></param>
         public ExceptionHandlerMiddleware(RequestDelegate next,
                                           ILycorisLoggerFactory factory,
-                                          IScheduleQueueCacheService scheduleQueue) : base(next, factory.CreateLogger<ExceptionHandlerMiddleware>())
+                                          IScheduleQueueCacheService scheduleQueue,
+                                          ApplicationContext applicationContext) : base(next, factory.CreateLogger<ExceptionHandlerMiddleware>())
         {
             this.IgnoreOpptionsReuqest = true;
             _scheduleQueue = scheduleQueue;
+            _applicationContext = applicationContext;
         }
 
         /// <summary>
@@ -44,6 +49,11 @@ namespace Lycoris.Blog.Server.Middlewares
 
             var ipAddress = GetRequestIpAddress(context);
             context.Items.AddOrUpdate(HttpItems.RequestIP, ipAddress);
+
+            if (_applicationContext.AccessControl.Any(x => x == ipAddress))
+            {
+                // ip管控处理
+            }
 
             if (IsStaticFileReuqest(context))
             {
@@ -73,18 +83,12 @@ namespace Lycoris.Blog.Server.Middlewares
             }
             catch (Exception ex)
             {
-                var httpMethod = context.Request.Method.ToUpper();
-                var path = context.Request.Path.Value ?? "";
-                var queryString = context.Request.QueryString.Value ?? "";
-                var statusCode = context.Response.StatusCode;
-
-                RequestLog(httpMethod, $"{path.TrimEnd('/')}?{queryString.TrimStart('?')}", "", statusCode, startTime, ipAddress, ex);
-                await HandleWebApiExceptionAsync(context, ex, traceId, startTime);
+                await HandleWebApiExceptionAsync(context, ex, traceId, startTime, ipAddress);
             }
         }
 
         /// <summary>
-        /// 获取请求来源IP
+        /// 获取请求来源Ip
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
@@ -94,7 +98,7 @@ namespace Lycoris.Blog.Server.Middlewares
             {
                 string ipAddress = string.Empty;
 
-                // 网关转发的客户端请求IP
+                // 网关转发的客户端请求Ip
                 if (context.Request.Headers.ContainsKey(HttpHeaders.RequestIP))
                     ipAddress = context.Request.Headers[HttpHeaders.RequestIP].ToString();
 
@@ -162,47 +166,24 @@ namespace Lycoris.Blog.Server.Middlewares
 
             if (!result)
             {
-                var httpMethod = context.Request.Method.ToUpper();
-                var path = context.Request.Path.Value ?? "";
-                var queryString = context.Request.QueryString.Value ?? "";
-                var statusCode = context.Response.StatusCode;
+                var requestLog = new RequestLogQueueModel(context)
+                {
+                    Response = response,
+                    ElapsedMilliseconds = (long)((DateTime.Now - startTime).TotalMilliseconds),
+                    Ip = ipAddress,
+                    Exception = "",
+                    StackTrace = "",
+                    CreateTime = startTime
+                };
 
                 context.Response.OnCompleted(() =>
                 {
-                    RequestLog(httpMethod, $"{path.TrimEnd('/')}?{queryString.TrimStart('?')}", response, statusCode, startTime, ipAddress);
+                    _scheduleQueue.Enqueue(ScheduleTypeEnum.RequestLog, requestLog);
                     return Task.CompletedTask;
                 });
             }
 
             return result;
-        }
-
-        /// <summary>
-        /// WebApi全局错误拦截
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="ex"></param>
-        /// <param name="traceId"></param>
-        /// <param name="requestTime"></param>
-        /// <returns></returns>
-        private async Task HandleWebApiExceptionAsync(HttpContext context, Exception ex, string traceId, DateTime requestTime)
-        {
-            context.Response.StatusCode = 500;
-            context.Response.ContentType = "application/problem+json";
-
-            if (AppSettings.IsDebugger)
-            {
-                var res = new BaseOutput
-                {
-                    ResCode = ResCodeEnum.ApplicationError,
-                    ResMsg = ex?.Message ?? "",
-                    TraceId = traceId
-                };
-
-                await context.Response.WriteAsync(res.ToJson());
-            }
-
-            _logger.Error($"global middleware {ex?.GetType().Name ?? "exception"} catch - {(DateTime.Now - requestTime).TotalMilliseconds:0.000}ms", ex, traceId);
         }
 
         /// <summary>
@@ -249,29 +230,47 @@ namespace Lycoris.Blog.Server.Middlewares
         }
 
         /// <summary>
-        /// 
+        /// WebApi全局错误拦截
         /// </summary>
-        /// <param name="httpMethod"></param>
-        /// <param name="path"></param>
-        /// <param name="response"></param>
-        /// <param name="statusCode"></param>
-        /// <param name="startTime"></param>
-        /// <param name="ipAddress"></param>
+        /// <param name="context"></param>
         /// <param name="ex"></param>
-        private void RequestLog(string httpMethod, string path, string response, int statusCode, DateTime startTime, string ipAddress, Exception? ex = null)
+        /// <param name="traceId"></param>
+        /// <param name="requestTime"></param>
+        /// <param name="ipAddress"></param>
+        /// <returns></returns>
+        private async Task HandleWebApiExceptionAsync(HttpContext context, Exception ex, string traceId, DateTime requestTime, string ipAddress)
         {
-            _scheduleQueue.Enqueue(ScheduleTypeEnum.RequestLog, new RequestLogQueueModel()
+            context.Response.StatusCode = 500;
+            context.Response.ContentType = "application/problem+json";
+
+            if (AppSettings.IsDebugger)
             {
-                Method = httpMethod,
-                Route = path,
-                Params = "",
-                StatusCode = statusCode,
-                Response = response,
-                ElapsedMilliseconds = (long)((DateTime.Now - startTime).TotalMilliseconds),
-                IP = ipAddress,
-                Exception = ex?.Message ?? "",
-                StackTrace = ex?.StackTrace ?? "",
-                CreateTime = startTime
+                var res = new BaseOutput
+                {
+                    ResCode = ResCodeEnum.ApplicationError,
+                    ResMsg = ex?.Message ?? "",
+                    TraceId = traceId
+                };
+
+                await context.Response.WriteAsync(res.ToJson());
+            }
+
+            _logger.Error($"global middleware {ex?.GetType().Name ?? "exception"} catch - {(DateTime.Now - requestTime).TotalMilliseconds:0.000}ms", ex, traceId);
+
+            var requestLog = new RequestLogQueueModel(context)
+            {
+                Response = "",
+                ElapsedMilliseconds = (long)((DateTime.Now - requestTime).TotalMilliseconds),
+                Ip = ipAddress,
+                Exception = "",
+                StackTrace = "",
+                CreateTime = requestTime
+            };
+
+            context.Response.OnCompleted(() =>
+            {
+                _scheduleQueue.Enqueue(ScheduleTypeEnum.RequestLog, requestLog);
+                return Task.CompletedTask;
             });
         }
     }

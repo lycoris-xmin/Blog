@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Lycoris.Blog.Application.AppServices.AccessControls.Dtos;
 using Lycoris.Blog.Application.AppServices.Authentication.Dtos;
 using Lycoris.Blog.Application.AppServices.BrowseLogs.Dtos;
 using Lycoris.Blog.Application.AppServices.Categorys.Dtos;
@@ -17,6 +18,7 @@ using Lycoris.Blog.Application.Shared.Dtos;
 using Lycoris.Blog.Application.SignalR.Models;
 using Lycoris.Blog.Model.Configurations;
 using Lycoris.Blog.Model.Global.Output;
+using Lycoris.Blog.Server.Models.AccessControls;
 using Lycoris.Blog.Server.Models.Authentication;
 using Lycoris.Blog.Server.Models.BrowseLogs;
 using Lycoris.Blog.Server.Models.Categorys;
@@ -130,7 +132,7 @@ namespace Lycoris.Blog.Server.Application
 
             CreateMap<RequestLogListInput, GetRequestLogListFilter>().ForMember(x => x.Ip, opt => opt.MapFrom(src => IPAddressHelper.Ipv4ToUInt32(src.Ip ?? "")));
 
-            CreateMap<RequestLogDataDto, RequestLogDataViewModel>().ForMember(x => x.IP, opt => opt.MapFrom(src => IPAddressHelper.UInt32ToIpv4(src.IP)));
+            CreateMap<RequestLogDataDto, RequestLogDataViewModel>().ForMember(x => x.Ip, opt => opt.MapFrom(src => IPAddressHelper.UInt32ToIpv4(src.Ip)));
 
             CreateMap<RequestLogInfoDto, RequestLogInfoViewModel>();
 
@@ -232,6 +234,11 @@ namespace Lycoris.Blog.Server.Application
             CreateMap<SaveSystemFileClearConfigurationInput, SystemFileClearConfiguration>();
 
             CreateMap<SaveSystemDBClearConfigurationInput, SystemDBClearConfiguration>();
+
+            CreateMap<AccessControlListInput, GetAccessControlListFilter>();
+
+            CreateMap<AccessControlDataDto, AccessControlDataViewModel>()
+                .ForMember(x => x.Ip, opt => opt.MapFrom(src => IPAddressHelper.UInt32ToIpv4(src.Ip)));
         }
 
         /// <summary>

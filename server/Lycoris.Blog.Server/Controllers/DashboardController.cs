@@ -1,6 +1,5 @@
 ﻿using Lycoris.AutoMapper.Extensions;
 using Lycoris.Blog.Application.AppServices.Dashboard;
-using Lycoris.Blog.Model.Contexts;
 using Lycoris.Blog.Model.Global.Output;
 using Lycoris.Blog.Server.Application.Constants;
 using Lycoris.Blog.Server.FilterAttributes;
@@ -17,17 +16,14 @@ namespace Lycoris.Blog.Server.Controllers
     public class DashboardController : BaseController
     {
         private readonly IDashboardAppService _dashboard;
-        private readonly AppMonitorContext _serverMonitor;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="dashboard"></param>
-        /// <param name="serverMonitor"></param>
-        public DashboardController(IDashboardAppService dashboard, AppMonitorContext serverMonitor)
+        public DashboardController(IDashboardAppService dashboard)
         {
             _dashboard = dashboard;
-            _serverMonitor = serverMonitor;
         }
 
         /// <summary>

@@ -1,13 +1,17 @@
 ﻿using Lycoris.Blog.Common;
 using Lycoris.Blog.EntityFrameworkCore.Contexts;
+using Lycoris.Blog.EntityFrameworkCore.Repositories;
+using Lycoris.Blog.EntityFrameworkCore.Tables;
 using Lycoris.Blog.Model.Contexts;
 using Lycoris.Blog.Server.FilterAttributes;
 using Lycoris.Blog.Server.Shared;
 using Lycoris.Common.Extensions;
+using Lycoris.Common.Helper;
 using Lycoris.Common.Utils.SensitiveWord;
 using Lycoris.Quartz.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
 namespace Lycoris.Blog.Server.Application
@@ -20,6 +24,7 @@ namespace Lycoris.Blog.Server.Application
         private readonly IServiceProvider _serviceProvider;
         private readonly RequestRouteMap _routeMap;
         private readonly AppMonitorContext _serverMonitor;
+        private readonly ApplicationContext _applicationContext;
         private readonly IQuartzSchedulerCenter _scheduler;
 
         /// <summary>
@@ -31,6 +36,7 @@ namespace Lycoris.Blog.Server.Application
             _serviceProvider = serviceProvider;
             _routeMap = serviceProvider.GetRequiredService<RequestRouteMap>();
             _serverMonitor = serviceProvider.GetRequiredService<AppMonitorContext>();
+            _applicationContext = serviceProvider.GetRequiredService<ApplicationContext>();
             _scheduler = serviceProvider.GetRequiredService<IQuartzSchedulerCenter>();
         }
 
@@ -50,6 +56,9 @@ namespace Lycoris.Blog.Server.Application
             // 数据库迁移，预热
             await EntityFrameworkCoreWarmUpAsync(scope.ServiceProvider);
 
+            // 
+            await ApplicationContextInitAsync(scope.ServiceProvider);
+
             await SensitiveWordStoreInitAsync();
 
             await _scheduler.StartScheduleAsync();
@@ -62,16 +71,6 @@ namespace Lycoris.Blog.Server.Application
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
-
-        /// <summary>
-        /// 数据库迁移，预热
-        /// </summary>
-        /// <param name="provider"></param>
-        private static Task EntityFrameworkCoreWarmUpAsync(IServiceProvider provider)
-        {
-            var context = provider.GetRequiredService<MySqlContext>();
-            return context.WarmUpAsync();
-        }
 
         /// <summary>
         /// 
@@ -119,6 +118,28 @@ namespace Lycoris.Blog.Server.Application
                 // 仅博客网站进行请求日志记录
                 _routeMap.LogFilter = RequestLogFilterEnum.OnlyWeb;
             }
+        }
+
+        /// <summary>
+        /// 数据库迁移，预热
+        /// </summary>
+        /// <param name="provider"></param>
+        private static Task EntityFrameworkCoreWarmUpAsync(IServiceProvider provider)
+        {
+            var context = provider.GetRequiredService<MySqlContext>();
+            return context.WarmUpAsync();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="provider"></param>
+        /// <returns></returns>
+        private async Task ApplicationContextInitAsync(IServiceProvider provider)
+        {
+            var repo = provider.GetRequiredService<IRepository<AccessControl, int>>();
+            var ipList = await repo.GetAll().Select(x => x.Ip).ToListAsync();
+            _applicationContext.AccessControl.AddRange(ipList.Select(x => IPAddressHelper.UInt32ToIpv4(x)).ToList());
         }
 
         /// <summary>

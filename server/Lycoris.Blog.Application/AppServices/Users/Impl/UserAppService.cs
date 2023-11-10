@@ -2,6 +2,7 @@
 using Lycoris.Blog.Application.AppServices.FileManage;
 using Lycoris.Blog.Application.Shared.Dtos;
 using Lycoris.Blog.Application.Shared.Impl;
+using Lycoris.Blog.Core.Interceptors.Transactional;
 using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
 using Lycoris.Blog.Model.Exceptions;
@@ -76,6 +77,7 @@ namespace Lycoris.Blog.Application.AppServices.Users.Impl
         /// <param name="input"></param>
         /// <param name="file"></param>
         /// <returns></returns>
+        [Transactional]
         public async Task UpdateUserBrieAsync(UserBriefDto input, IFormFile? file)
         {
             // 用户

@@ -5,6 +5,7 @@ using Lycoris.Blog.Application.AppServices.LoginTokens;
 using Lycoris.Blog.Application.Cached.Authentication;
 using Lycoris.Blog.Application.Cached.Authentication.Models;
 using Lycoris.Blog.Application.Shared.Impl;
+using Lycoris.Blog.Core.Interceptors.Transactional;
 using Lycoris.Blog.EntityFrameworkCore.Common.Impl;
 using Lycoris.Blog.EntityFrameworkCore.Constants;
 using Lycoris.Blog.EntityFrameworkCore.Repositories;
@@ -302,6 +303,7 @@ namespace Lycoris.Blog.Application.AppServices.Authentication.Impl
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
+        [Transactional]
         public async Task RegisterAsync(RegisterDto input)
         {
             input.Email = input.Email.ToLower();

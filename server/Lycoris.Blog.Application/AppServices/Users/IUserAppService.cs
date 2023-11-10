@@ -26,7 +26,6 @@ namespace Lycoris.Blog.Application.AppServices.Users
         /// <param name="input"></param>
         /// <param name="file"></param>
         /// <returns></returns>
-        [Transactional]
         Task UpdateUserBrieAsync(UserBriefDto input, IFormFile? file);
     }
 }

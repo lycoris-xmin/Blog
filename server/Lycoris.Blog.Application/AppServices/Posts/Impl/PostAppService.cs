@@ -6,6 +6,7 @@ using Lycoris.Blog.Application.Cached.ScheduleQueue;
 using Lycoris.Blog.Application.Cached.ScheduleQueue.Models;
 using Lycoris.Blog.Application.Shared.Dtos;
 using Lycoris.Blog.Application.Shared.Impl;
+using Lycoris.Blog.Core.Interceptors.Transactional;
 using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
 using Lycoris.Blog.Model.Exceptions;
@@ -252,6 +253,7 @@ namespace Lycoris.Blog.Application.AppServices.Posts.Impl
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
+        [Transactional]
         public async Task SaveAsync(PostSaveDto input)
         {
             var data = await _post.GetAsync(input.Id) ?? new Post() { Id = 0, Recommend = false };
@@ -278,6 +280,7 @@ namespace Lycoris.Blog.Application.AppServices.Posts.Impl
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        [Transactional]
         public async Task DeleteAsync(long id)
         {
             var data = await _post.GetAsync(id);

@@ -72,7 +72,6 @@ namespace Lycoris.Blog.Application.AppServices.Posts
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        [Transactional]
         Task SaveAsync(PostSaveDto input);
 
         /// <summary>
@@ -80,7 +79,6 @@ namespace Lycoris.Blog.Application.AppServices.Posts
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [Transactional]
         Task DeleteAsync(long id);
 
         /// <summary>

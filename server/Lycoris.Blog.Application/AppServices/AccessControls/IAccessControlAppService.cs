@@ -12,5 +12,12 @@ namespace Lycoris.Blog.Application.AppServices.AccessControls
         /// <param name="input"></param>
         /// <returns></returns>
         Task<PageResultDto<AccessControlDataDto>> GetListAsync(GetAccessControlListFilter input);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task DeleteAsync(int id);
     }
 }

@@ -64,7 +64,6 @@ namespace Lycoris.Blog.Application.AppServices.Authentication
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        [Transactional]
         Task RegisterAsync(RegisterDto input);
 
         /// <summary>

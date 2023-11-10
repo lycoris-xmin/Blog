@@ -110,8 +110,6 @@ namespace Lycoris.Blog.Server.Application
 
             CreateMap<UserBriefDto, UserBriefViewModel>();
 
-            //CreateMap<ChangePasswordInput, ChangePasswordDto>();
-
             CreateMap<HomeCategoryDataDto, CategoryHeaderDataViewModel>();
 
             CreateMap<SaveStaticFileSettingsInput, StaticFileConfiguration>();

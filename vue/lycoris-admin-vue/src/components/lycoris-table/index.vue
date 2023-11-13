@@ -1,5 +1,5 @@
 <template>
-  <div class="lycoris-table">
+  <div class="lycoris-table" ref="lycorisTableRef">
     <div class="table-toolbar flex-start-center">
       <el-button v-if="props.toolbar && props.toolbar.create" type="primary" @click="$create" plain :loading="loading.create">新增</el-button>
       <el-button v-if="props.toolbar && props.toolbar.delete" type="danger" @click="$delete" plain :loading="loading.delete">删除</el-button>
@@ -39,7 +39,19 @@
       </el-table-column>
     </el-table>
     <div class="table-pagination">
-      <div class="table-total">{{ props.list.length }}条记录 / 共 {{ props.count }} 条记录</div>
+      <div class="table-total">
+        <span v-show="props.list.length < props.count">
+          <span
+            >第
+            <span>{{ (props.pageIndex - 1) * props.pageSize + 1 }}</span>
+            -
+            <span>{{ props.pageIndex * props.pageSize < props.count ? props.pageIndex * props.pageSize : props.count }}</span>
+            条记录
+          </span>
+          <span>/</span>
+        </span>
+        共 {{ props.count }} 条记录
+      </div>
       <el-pagination
         background
         :hide-on-single-page="props.hideOnSinglePage"
@@ -55,6 +67,7 @@
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue';
 
+const lycorisTableRef = ref();
 const table = ref();
 const pageIndex = ref(1);
 const loading = ref({
@@ -174,11 +187,11 @@ const emit = defineEmits(['update:selected', 'pageChange', 'toolbar-create', 'to
 
 onMounted(() => {
   if (props.tableHeight) {
-    let table = document.querySelector('.card-table'),
-      tablewrapper = table.querySelector('.el-table__inner-wrapper');
+    let _table = lycorisTableRef.value.querySelector('.card-table'),
+      _tableWrapper = lycorisTableRef.value.querySelector('.el-table__inner-wrapper');
 
-    table.style.height = props.tableHeight;
-    tablewrapper.style.height = props.tableHeight;
+    _table.style.height = props.tableHeight;
+    _tableWrapper.style.height = props.tableHeight;
   }
 
   let index = parseInt(props.pageIndex);
@@ -270,21 +283,19 @@ defineExpose({
       cursor: default;
     }
   }
-}
-</style>
 
-<style lang="scss">
-.el-scrollbar {
-  border-bottom: 1px solid var(--color-secondary);
-
-  .el-scrollbar__wrap {
+  :deep(.el-scrollbar) {
     border-bottom: 1px solid var(--color-secondary);
-  }
-}
 
-.table-toolbar {
-  .el-button {
-    width: 100px;
+    .el-scrollbar__wrap {
+      border-bottom: 1px solid var(--color-secondary);
+    }
+  }
+
+  .table-toolbar {
+    :deep(.el-button) {
+      width: 100px;
+    }
   }
 }
 </style>

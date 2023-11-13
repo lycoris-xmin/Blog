@@ -47,7 +47,7 @@
       :list="table.list"
       :count="table.count"
       :loading="table.loading"
-      :toolbar="toolbar"
+      :toolbar="{ search: true, delete: true }"
       @page-change="handleCurrentChange"
       @toolbar-delete="$delete"
       @toolbar-search="$search"
@@ -106,11 +106,6 @@ const model = reactive({
   route: '',
   status: '',
   elapsed: ''
-});
-
-const toolbar = reactive({
-  search: true,
-  delete: true
 });
 
 const column = ref([
@@ -280,22 +275,3 @@ const $accessContorl = async row => {
   }
 };
 </script>
-
-<style lang="scss">
-.request-route {
-  .http-method {
-    padding: 3px 8px;
-    color: #fff;
-    border-radius: 15px;
-    font-size: 12px;
-  }
-
-  .get {
-    background-color: var(--color-info);
-  }
-
-  .post {
-    background-color: var(--color-purple);
-  }
-}
-</style>

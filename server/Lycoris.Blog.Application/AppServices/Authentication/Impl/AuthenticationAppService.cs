@@ -69,6 +69,10 @@ namespace Lycoris.Blog.Application.AppServices.Authentication.Impl
                 throw new FriendlyException("帐号或密码错误", $"email:{email} password verification failed");
             else if (data.Status == UserStatusEnum.Defalut)
                 throw new FriendlyException("帐号还未通过审核", $"email:{email} has not been approved");
+            else if (data.Status == UserStatusEnum.Black)
+                throw new FriendlyException("您的账号存在异常，请联系站长处理", $"email:{email} user status is black");
+            else if (data.Status == UserStatusEnum.Cancellation)
+                throw new FriendlyException("您的账号已被注销，请联系站长处理", $"email:{email} user status is cancellation");
 
             return data.ToMap<LoginValidateDto>();
         }
@@ -316,6 +320,7 @@ namespace Lycoris.Blog.Application.AppServices.Authentication.Impl
                 NickName = RandomHelper.GetRandomNickName(),
                 Avatar = "/images/404.png",
                 Password = input.Password,
+                Status = UserStatusEnum.Audited,
                 ShowOnlineStatus = true,
                 CreateTime = DateTime.Now,
                 GoogleAuthentication = false,

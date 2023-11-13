@@ -32,11 +32,15 @@ export const getList = ({ beginTime, endTime, uploadChannel, localBack, use, pag
 };
 
 export const checkFileUseState = id => {
-  return request.post(`${controller}/check/usestate/${id}`);
+  return request.post(`${controller}/check/usestate`, {
+    id
+  });
 };
 
 export const syncFileToRemote = id => {
-  return request.post(`${controller}/syncfile/remote/${id}`);
+  return request.post(`${controller}/syncfile/remote`, {
+    id
+  });
 };
 
 export const downAllFile = () => {

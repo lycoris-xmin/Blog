@@ -1,10 +1,10 @@
 ﻿using Lycoris.AutoMapper.Extensions;
 using Lycoris.Blog.Application.AppServices.StaticFiles;
 using Lycoris.Blog.Application.AppServices.StaticFiles.Dtos;
-using Lycoris.Blog.Model.Exceptions;
 using Lycoris.Blog.Model.Global.Output;
 using Lycoris.Blog.Server.Application.Constants;
 using Lycoris.Blog.Server.FilterAttributes;
+using Lycoris.Blog.Server.Models.Shared;
 using Lycoris.Blog.Server.Models.StaticFiles;
 using Lycoris.Blog.Server.Shared;
 using Microsoft.AspNetCore.Mvc;
@@ -46,34 +46,26 @@ namespace Lycoris.Blog.Server.Controllers
         /// <summary>
         /// 验证文件归档状态
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="input"></param>
         /// <returns></returns>
-        [HttpPost("Check/UseState/{id}")]
-        [Produces("application/json")]
-        public async Task<BaseOutput> CheckFileUseState(long? id)
+        [HttpPost("Check/UseState")]
+        [Consumes("application/json"), Produces("application/json")]
+        public async Task<BaseOutput> CheckFileUseState([FromBody] SingleIdInput<long?> input)
         {
-            if (!id.HasValue || id.Value <= 0)
-                throw new HttpStatusException(System.Net.HttpStatusCode.BadRequest, "wrong id parameter");
-
-            await _staticFile.CheckFileUseStateAsync(id.Value);
-
+            await _staticFile.CheckFileUseStateAsync(input.Id!.Value);
             return Success();
         }
 
         /// <summary>
         /// 同步文件至远端仓库
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="input"></param>
         /// <returns></returns>
-        [HttpPost("Syncfile/Remote/{id}")]
-        [Produces("application/json")]
-        public async Task<BaseOutput> SyncFileToRemote(long? id)
+        [HttpPost("Syncfile/Remote")]
+        [Consumes("application/json"), Produces("application/json")]
+        public async Task<BaseOutput> SyncFileToRemote([FromBody] SingleIdInput<long?> input)
         {
-            if (!id.HasValue || id.Value <= 0)
-                throw new HttpStatusException(System.Net.HttpStatusCode.BadRequest, "wrong id parameter");
-
-            await _staticFile.SyncFileToRemoteRepositoryAsync(id.Value);
-
+            await _staticFile.SyncFileToRemoteRepositoryAsync(input.Id!.Value);
             return Success();
         }
 

@@ -18,3 +18,8 @@ export const urlRegex = function (url) {
   var urlReg = /^(http|https):\/\/[a-z0-9-]+(\.[a-z0-9-]+)*\.[a-z]{2,5}(\/[^\s]*)?$/;
   return urlReg.test(url);
 };
+
+export const ipRegex = function (ip) {
+  var ipReg = /^((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.){3}(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])(?::(?:[0-9]|[1-9][0-9]{1,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]))?$/;
+  return ipReg.test(ip);
+};

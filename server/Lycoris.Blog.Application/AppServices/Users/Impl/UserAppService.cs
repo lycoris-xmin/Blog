@@ -1,13 +1,18 @@
 ﻿using Lycoris.Autofac.Extensions;
+using Lycoris.AutoMapper.Extensions;
 using Lycoris.Blog.Application.AppServices.FileManage;
+using Lycoris.Blog.Application.AppServices.Users.Dtos;
+using Lycoris.Blog.Application.Cached.Authentication;
 using Lycoris.Blog.Application.Shared.Dtos;
 using Lycoris.Blog.Application.Shared.Impl;
 using Lycoris.Blog.Core.Interceptors.Transactional;
 using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
+using Lycoris.Blog.EntityFrameworkCore.Tables.Enums;
 using Lycoris.Blog.Model.Exceptions;
 using Lycoris.Common.Extensions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace Lycoris.Blog.Application.AppServices.Users.Impl
@@ -20,16 +25,17 @@ namespace Lycoris.Blog.Application.AppServices.Users.Impl
     {
         private readonly IRepository<User, long> _user;
         private readonly IRepository<UserLink, long> _userLink;
+        private readonly Lazy<IRepository<LoginToken, int>> _loginToken;
         private readonly Lazy<IFileManageAppService> _fileManage;
+        private readonly Lazy<IAuthenticationCacheService> _cache;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public UserAppService(IRepository<User, long> user, IRepository<UserLink, long> userLink, Lazy<IFileManageAppService> fileManage)
+        public UserAppService(IRepository<User, long> user, IRepository<UserLink, long> userLink, Lazy<IRepository<LoginToken, int>> loginToken, Lazy<IFileManageAppService> fileManage, Lazy<IAuthenticationCacheService> cache)
         {
             _user = user;
             _userLink = userLink;
+            _loginToken = loginToken;
             _fileManage = fileManage;
+            _cache = cache;
         }
 
         /// <summary>
@@ -67,6 +73,9 @@ namespace Lycoris.Blog.Application.AppServices.Users.Impl
             dto.Github = link?.Github;
             dto.WeChat = link?.WeChat;
             dto.QQ = link?.QQ;
+            dto.Gitee = link?.Gitee;
+            dto.CloudMusic = link?.CloudMusic;
+            dto.Bilibili = link?.Bilibili;
 
             return dto;
         }
@@ -113,6 +122,10 @@ namespace Lycoris.Blog.Application.AppServices.Users.Impl
             {
                 userLink!.Github = input.Github!.TrimEnd('/').Trim();
                 userLinkFieIds.Add(x => x.Github!);
+            }).UpdatePorpertyIf(input.Gitee != null && input.Gitee != userLink!.Gitee, x =>
+            {
+                userLink!.Gitee = input.Gitee!.TrimEnd('/').Trim();
+                userLinkFieIds.Add(x => x.Gitee!);
             }).UpdatePorpertyIf(input.CloudMusic != null && input.CloudMusic != userLink!.CloudMusic, x =>
             {
                 userLink!.CloudMusic = input.CloudMusic!.TrimEnd('/').Trim();
@@ -130,6 +143,90 @@ namespace Lycoris.Blog.Application.AppServices.Users.Impl
             }
             else
                 await _userLink.UpdateFieIdsAsync(userLink, userLinkFieIds);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public async Task<PageResultDto<UserDataDto>> GetListAsync(GetUserListFilter input)
+        {
+            var filter = _user.GetAll().Where(x => x.IsAdmin == false)
+                              .WhereIf(!input.NickName.IsNullOrEmpty(), x => EF.Functions.Like(x.NickName, $"%{input.NickName}%"))
+                              .WhereIf(!input.Email.IsNullOrEmpty(), x => x.Email == input.Email);
+
+            var count = await filter.CountAsync();
+            if (count == 0 || !CheckPageFilter(input, count))
+                return new PageResultDto<UserDataDto>(count);
+
+            var query = filter.OrderBy(x => x.Id)
+                              .PageBy(input.PageIndex, input.PageSize)
+                              .Select(x => new UserDataDto()
+                              {
+                                  Id = x.Id,
+                                  Email = x.Email,
+                                  NickName = x.NickName,
+                                  Avatar = x.Avatar,
+                                  Status = x.Status,
+                                  CreateTime = x.CreateTime
+                              });
+
+            var list = await query.ToListAsync();
+
+            return new PageResultDto<UserDataDto>(count, list);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public async Task<UserLinkDto> GetUserLinkAsync(long userId)
+        {
+            var data = await _userLink.GetAsync(userId);
+            return data?.ToMap<UserLinkDto>() ?? new UserLinkDto();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public List<EnumsDto<int>> GetUserStatusEnums()
+        {
+            return Enum.GetValues<UserStatusEnum>().Select(x => new EnumsDto<int>
+            {
+                Value = (int)x,
+                Name = x.GetEnumDescription<UserStatusEnum>()
+            }).ToList();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        /// <exception cref="FriendlyException"></exception>
+        [Transactional]
+        public async Task AuditUserAsync(AuditUserDto input)
+        {
+            var data = await _user.GetAsync(input.Id) ?? throw new FriendlyException("用户不存在", $"can not find user by id:{input.Id}");
+
+            if (data.Status != input.Status)
+                data.Status = input.Status;
+
+            data.Remark = input.Remark ?? "";
+
+            await _user.UpdateFieIdsAsync(data, x => x.Status, x => x.Remark);
+
+            // 缓存处理
+            var token = await _loginToken.Value.GetAll().Where(x => x.UserId == data.Id).Where(x => x.IsManagement == false).SingleOrDefaultAsync();
+
+            if (token == null || (token.TokenExpireTime <= DateTime.Now && token.RefreshTokenExpireTime <= DateTime.Now))
+                return;
+
+            // 更新令牌
+            _cache.Value.UpdateLoginState(token.Token, x => x.Status = data.Status);
         }
     }
 }

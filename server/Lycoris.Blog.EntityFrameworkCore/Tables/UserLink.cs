@@ -48,6 +48,12 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
         public string Bilibili { get; set; } = "";
 
         /// <summary>
+        /// 码云
+        /// </summary>
+        [TableColumn(StringLength = 255, Sensitive = true)]
+        public string Gitee { get; set; } = "";
+
+        /// <summary>
         /// 种子数据
         /// </summary>
         /// <returns></returns>

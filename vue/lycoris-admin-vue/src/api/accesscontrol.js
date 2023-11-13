@@ -9,3 +9,15 @@ export const getList = ({ pageIndex, pageSize, ip }) => {
     ip
   });
 };
+
+export const createAccessControl = ip => {
+  return request.post(`${controller}/create`, { ip });
+};
+
+export const deleteAccessControl = id => {
+  return request.post(`${controller}/delete`, { id });
+};
+
+export const getAccessControlLogList = ({ pageIndex, pageSize, id }) => {
+  return request.get(`${controller}/log/list`, { pageIndex, pageSize, id });
+};

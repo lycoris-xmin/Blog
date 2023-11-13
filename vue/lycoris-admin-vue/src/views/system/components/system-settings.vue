@@ -231,6 +231,8 @@ const handleShowdocPushTest = async () => {
     let res = await showdocPushTest(data);
     if (res && res.resCode == 0) {
       toast.success('公众号消息已推送');
+      showdoc.title = '';
+      showdoc.content = '';
     }
   } finally {
     showdoc.testLoading = false;

@@ -19,14 +19,19 @@
       :list="table.list"
       :count="table.count"
       :loading="table.loading"
-      :toolbar="{ search: true }"
+      :toolbar="{ search: true, create: true }"
       @page-change="handleCurrentChange"
       @toolbar-search="$search"
+      @toolbar-create="$create"
     >
-      <template #action="{ row }">
-        <el-button plain type="danger" :loading="row.removeLoading" @click="remove">移除管控</el-button>
+      <template #action="{ row, index }">
+        <el-button plain type="info" @click="viewLog(row)">访问日志</el-button>
+        <el-button plain type="danger" :loading="row.removeLoading" @click="remove(row, index)">移除管控</el-button>
       </template>
     </lycoris-table>
+
+    <create-modal ref="createModalRef" @sumit="createSumit"></create-modal>
+    <log-list-modal ref="logListModalRef"></log-list-modal>
   </page-layout>
 </template>
 
@@ -34,7 +39,14 @@
 import { reactive, ref, onMounted } from 'vue';
 import PageLayout from '../layout/page-layout.vue';
 import LycorisTable from '../../components/lycoris-table/index.vue';
-import { getList } from '../../api/accesscontrol';
+import createModal from './components/create.vue';
+import logListModal from './components/log-list.vue';
+import { getList, deleteAccessControl } from '../../api/accesscontrol';
+import toast from '../../utils/toast';
+import swal from '../../utils/swal';
+
+const createModalRef = ref();
+const logListModalRef = ref();
 
 const model = reactive({
   loading: true,
@@ -65,7 +77,7 @@ const column = ref([
   {
     column: 'action',
     name: '操作',
-    width: '200px',
+    width: '250px',
     fixed: 'right',
     align: 'left'
   }
@@ -102,6 +114,11 @@ const getTableList = async () => {
   }
 };
 
+const $create = () => {
+  //
+  createModalRef.value.show();
+};
+
 const $search = () => {
   table.pageIndex = 1;
   getTableList();
@@ -112,13 +129,37 @@ const handleCurrentChange = pageIndex => {
   getTableList();
 };
 
-const remove = row => {
-  row.removeLoading = true;
-  try {
-    //
-  } finally {
-    row.removeLoading = false;
+const remove = async (row, index) => {
+  let result = await swal.confirm('确定要删除该访问管控数据吗？', '删除提示');
+
+  if (result) {
+    row.removeLoading = true;
+    try {
+      //
+      let res = await deleteAccessControl(row.id);
+      if (res && res.resCode == 0) {
+        toast.success('移除访问管控成功');
+        table.list.splice(index, 1);
+      }
+    } finally {
+      row.removeLoading = false;
+    }
   }
+};
+
+const viewLog = row => {
+  logListModalRef.value.show(row.id);
+};
+
+const createSumit = data => {
+  if (table.list.length == table.pageSize) {
+    //
+    table.list.pop();
+  }
+
+  table.list.unshift(data);
+
+  toast.success('保存成功');
 };
 </script>
 

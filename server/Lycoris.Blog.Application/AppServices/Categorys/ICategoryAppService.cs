@@ -38,7 +38,7 @@ namespace Lycoris.Blog.Application.AppServices.Categorys
         /// 
         /// </summary>
         /// <returns></returns>
-        Task<List<EnumsDto<int>>> GetEnumAsync();
+        Task<List<EnumsDto<int>>> GetCategoryEnumsAsync();
 
         /// <summary>
         /// 

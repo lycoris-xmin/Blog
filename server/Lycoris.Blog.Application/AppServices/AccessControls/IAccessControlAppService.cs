@@ -16,8 +16,22 @@ namespace Lycoris.Blog.Application.AppServices.AccessControls
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="ip"></param>
+        /// <returns></returns>
+        Task<AccessControlDataDto> CreateAsync(string ip);
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         Task DeleteAsync(int id);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        Task<PageResultDto<AccessControlLogDataDto>> GetAccessControlLogListAsync(GetAccessControlLogListFilter input);
     }
 }

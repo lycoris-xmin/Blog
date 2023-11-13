@@ -56,6 +56,8 @@ provide('$signalR', signalR);
 
 const drawer = ref(null);
 
+const enableScreenLock = false;
+
 const model = reactive({
   showDrawer: false,
   slide: 'fold',
@@ -97,9 +99,10 @@ onMounted(async () => {
       }
     }
 
-    checkLossOfActivityTo();
-
-    screenLock.timer = setInterval(checkLossOfActivityTo, 10000);
+    if (enableScreenLock) {
+      checkLossOfActivityTo();
+      screenLock.timer = setInterval(checkLossOfActivityTo, 10000);
+    }
 
     await getWebPath();
 
@@ -108,18 +111,22 @@ onMounted(async () => {
     subscribeAuthroization();
     subscribeRefreshToken();
 
-    // 鼠标移动
-    screenLock.body?.addEventListener('mousemove', handleEvent);
-    // 鼠标滚动事件
-    screenLock.body?.addEventListener('mousewheel', handleEvent);
+    if (enableScreenLock) {
+      // 鼠标移动
+      screenLock.body?.addEventListener('mousemove', handleEvent);
+      // 鼠标滚动事件
+      screenLock.body?.addEventListener('mousewheel', handleEvent);
+    }
   } catch (error) {}
 });
 
 onUnmounted(async () => {
-  screenLock.body?.removeEventListener('mousemove', handleEvent);
-  screenLock.body?.removeEventListener('mousewheel', handleEvent);
+  if (enableScreenLock) {
+    screenLock.body?.removeEventListener('mousemove', handleEvent);
+    screenLock.body?.removeEventListener('mousewheel', handleEvent);
 
-  clearInterval(screenLock.timer);
+    clearInterval(screenLock.timer);
+  }
 
   await signalR.stop();
 });

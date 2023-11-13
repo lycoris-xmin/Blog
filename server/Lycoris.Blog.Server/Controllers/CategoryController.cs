@@ -118,7 +118,7 @@ namespace Lycoris.Blog.Server.Controllers
         [Produces("application/json")]
         public async Task<ListOutput<EnumsViewModel<int>>> Enum()
         {
-            var dto = await _category.GetEnumAsync();
+            var dto = await _category.GetCategoryEnumsAsync();
             return Success(dto.ToMapList<EnumsViewModel<int>>());
         }
 

@@ -27,7 +27,7 @@
                   <el-input v-model="github.repositoryUrl" placeholder="https://github.com/user/repository.git"></el-input>
                 </el-form-item>
                 <el-form-item label="AccessToken">
-                  <el-input v-model="github.accessToken"></el-input>
+                  <el-input v-model="github.accessToken" type="password" show-password></el-input>
                 </el-form-item>
                 <el-form-item label="上传者名称">
                   <el-input v-model="github.committerName"></el-input>

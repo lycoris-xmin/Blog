@@ -148,7 +148,7 @@ namespace Lycoris.Blog.Application.AppServices.Categorys.Impl
         /// 
         /// </summary>
         /// <returns></returns>
-        public async Task<List<EnumsDto<int>>> GetEnumAsync()
+        public async Task<List<EnumsDto<int>>> GetCategoryEnumsAsync()
         {
             return await _category.GetAll().Select(x => new EnumsDto<int>()
             {

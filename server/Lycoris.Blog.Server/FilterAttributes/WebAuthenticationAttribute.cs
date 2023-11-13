@@ -16,7 +16,7 @@ namespace Lycoris.Blog.Server.FilterAttributes
     public class WebAuthenticationAttribute : BaseActionAttribute
     {
         /// <summary>
-        /// 
+        /// 默认：<see langword="false"/>
         /// </summary>
         public bool IsRequired { get; set; } = false;
 
@@ -55,6 +55,7 @@ namespace Lycoris.Blog.Server.FilterAttributes
                 Id = data.Id,
                 NickName = data.NickName ?? "",
                 Avatar = data.Avatar ?? "",
+                Status = (int)data.Status,
                 IsAdmin = data.IsAdmin ?? false
             };
 

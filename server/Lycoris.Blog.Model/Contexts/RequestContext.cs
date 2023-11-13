@@ -62,6 +62,11 @@ namespace Lycoris.Blog.Model.Contexts
         /// <summary>
         /// 
         /// </summary>
+        public int Status { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public bool IsAdmin { get; set; } = false;
     }
 }

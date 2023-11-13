@@ -1,7 +1,6 @@
 ﻿using Lycoris.Blog.Application.AppServices.Posts.Dtos;
 using Lycoris.Blog.Application.Shared;
 using Lycoris.Blog.Application.Shared.Dtos;
-using Lycoris.Blog.Core.Interceptors.Transactional;
 using Microsoft.AspNetCore.Http;
 
 namespace Lycoris.Blog.Application.AppServices.Posts

@@ -1,5 +1,6 @@
 @import './base.css';
 @import url(animate.css/animate.min.css);
+@import './theme/theme.min.css';
 
 @font-face {
   font-family: AlimamaFangYuan;

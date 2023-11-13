@@ -69,6 +69,12 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
         public DateTime CreateTime { get; set; }
 
         /// <summary>
+        /// 用户备注
+        /// </summary>
+        [TableColumn(StringLength = 500, Required = false)]
+        public string Remark { get; set; } = string.Empty;
+
+        /// <summary>
         /// 种子数据
         /// </summary>
         /// <returns></returns>

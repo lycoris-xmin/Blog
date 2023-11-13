@@ -20,6 +20,8 @@
 
         public string? Bilibili { get; set; }
 
+        public string? Gitee { get; set; }
+
         public bool IsAdmin { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Lycoris.Blog.Application.AppServices.AccessControls.Dtos;
 using Lycoris.Blog.Application.AppServices.Authentication.Dtos;
 using Lycoris.Blog.Application.AppServices.Categorys.Dtos;
 using Lycoris.Blog.Application.AppServices.Chat.Dtos;
@@ -9,6 +10,7 @@ using Lycoris.Blog.Application.AppServices.Posts.Dtos;
 using Lycoris.Blog.Application.AppServices.RequestLogs.Dtos;
 using Lycoris.Blog.Application.AppServices.SiteNavigations.Dtos;
 using Lycoris.Blog.Application.AppServices.Talks.Dtos;
+using Lycoris.Blog.Application.AppServices.Users.Dtos;
 using Lycoris.Blog.Application.Cached.Authentication.Models;
 using Lycoris.Blog.Application.Cached.LoginFailedRecord.Models;
 using Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Models;
@@ -72,6 +74,10 @@ namespace Lycoris.Blog.Application
             CreateMap<RequestMonitorContext, RequestMonitorModel>();
 
             CreateMap<RequestLog, AccessControlLog>().ForMember(x => x.Id, opt => opt.Ignore());
+
+            CreateMap<AccessControl, AccessControlDataDto>();
+
+            CreateMap<UserLink, UserLinkDto>();
         }
 
         /// <summary>

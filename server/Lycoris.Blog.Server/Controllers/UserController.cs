@@ -1,5 +1,6 @@
 ﻿using Lycoris.AutoMapper.Extensions;
 using Lycoris.Blog.Application.AppServices.Users;
+using Lycoris.Blog.Application.AppServices.Users.Dtos;
 using Lycoris.Blog.Application.Shared.Dtos;
 using Lycoris.Blog.Model.Exceptions;
 using Lycoris.Blog.Model.Global.Output;
@@ -28,6 +29,8 @@ namespace Lycoris.Blog.Server.Controllers
         {
             _user = user;
         }
+
+        #region 博客网站
 
         /// <summary>
         /// 用户简要信息
@@ -72,6 +75,38 @@ namespace Lycoris.Blog.Server.Controllers
             return Success();
         }
 
+        #endregion
+
+        #region 管理后台
+        /// <summary>
+        /// 获取用户列表
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpGet("List")]
+        [AppAuthentication]
+        [Produces("application/json")]
+        public async Task<PageOutput<UserDataViewModel>> List([FromQuery] UserListInput input)
+        {
+            var filter = input.ToMap<GetUserListFilter>();
+            var dto = await _user.GetListAsync(filter);
+            return Success(dto.Count, dto.List.ToMapList<UserDataViewModel>());
+        }
+
+        /// <summary>
+        /// 获取用户绑定信息
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpGet("Link")]
+        [AppAuthentication]
+        [Produces("application/json")]
+        public async Task<DataOutput<UserLinkViewModel>> UserLink([FromQuery] SingleIdInput<long?> input)
+        {
+            var dto = await _user.GetUserLinkAsync(input.Id!.Value);
+            return Success(dto.ToMap<UserLinkViewModel>());
+        }
+
         /// <summary>
         /// 用户简要信息
         /// </summary>
@@ -99,5 +134,34 @@ namespace Lycoris.Blog.Server.Controllers
             await _user.UpdateUserBrieAsync(data, input.File);
             return Success();
         }
+
+        /// <summary>
+        /// 用户状态枚举
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("Status/Enum")]
+        [AppAuthentication]
+        [Produces("application/json")]
+        public Task<ListOutput<EnumsViewModel<int>>> UserStatusEnum()
+        {
+            var dto = _user.GetUserStatusEnums();
+            return Task.FromResult(Success(dto.ToMapList<EnumsViewModel<int>>()));
+        }
+
+        /// <summary>
+        /// 审核用户
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpPost("Audit")]
+        [AppAuthentication]
+        [Consumes("application/json"), Produces("application/json")]
+        public async Task<BaseOutput> Audit([FromBody] AuditUserInput input)
+        {
+            var data = input.ToMap<AuditUserDto>();
+            await _user.AuditUserAsync(data);
+            return Success();   
+        }
+        #endregion
     }
 }

@@ -53,6 +53,11 @@
         /// <summary>
         /// 
         /// </summary>
+        public string? Gitee { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public bool IsAdmin { get; set; }
     }
 }

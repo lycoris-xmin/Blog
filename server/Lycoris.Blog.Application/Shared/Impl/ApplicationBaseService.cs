@@ -1,6 +1,7 @@
 ﻿using Lycoris.Blog.Application.Shared.Dtos;
 using Lycoris.Blog.Core.Logging;
 using Lycoris.Blog.EntityFrameworkCore.Repositories;
+using Lycoris.Blog.EntityFrameworkCore.Tables.Enums;
 using Lycoris.Blog.Model.Contexts;
 
 namespace Lycoris.Blog.Application.Shared.Impl
@@ -90,5 +91,18 @@ namespace Lycoris.Blog.Application.Shared.Impl
 
             return (int)Math.Ceiling((double)count / pageSize) >= pageIndex;
         }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    internal static class RequestUserContextExtension
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public static UserStatusEnum GetUserStatus(this RequestUserContext context) => (UserStatusEnum)context.Status;
     }
 }

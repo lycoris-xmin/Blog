@@ -52,17 +52,6 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
         public string Response { get; set; } = string.Empty;
 
         /// <summary>
-        /// 异常信息
-        /// </summary>
-        [TableColumn(StringLength = 500)]
-        public string Exception { get; set; } = string.Empty;
-
-        /// <summary>
-        /// 异常堆栈信息
-        /// </summary>
-        public string StackTrace { get; set; } = string.Empty;
-
-        /// <summary>
         /// 请求时间
         /// </summary>
         public DateTime CreateTime { get; set; }

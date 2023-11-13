@@ -14,6 +14,7 @@ using Lycoris.Blog.Application.AppServices.RequestLogs.Dtos;
 using Lycoris.Blog.Application.AppServices.SiteNavigations.Dtos;
 using Lycoris.Blog.Application.AppServices.StaticFiles.Dtos;
 using Lycoris.Blog.Application.AppServices.Talks.Dtos;
+using Lycoris.Blog.Application.AppServices.Users.Dtos;
 using Lycoris.Blog.Application.Shared.Dtos;
 using Lycoris.Blog.Application.SignalR.Models;
 using Lycoris.Blog.Model.Configurations;
@@ -35,6 +36,7 @@ using Lycoris.Blog.Server.Models.Shared;
 using Lycoris.Blog.Server.Models.SiteNavigations;
 using Lycoris.Blog.Server.Models.StaticFiles;
 using Lycoris.Blog.Server.Models.Talks;
+using Lycoris.Blog.Server.Models.Users;
 using Lycoris.Common.Extensions;
 using Lycoris.Common.Helper;
 using System.Text;
@@ -237,6 +239,18 @@ namespace Lycoris.Blog.Server.Application
 
             CreateMap<AccessControlDataDto, AccessControlDataViewModel>()
                 .ForMember(x => x.Ip, opt => opt.MapFrom(src => IPAddressHelper.UInt32ToIpv4(src.Ip)));
+
+            CreateMap<AccessControlLogListInput, GetAccessControlLogListFilter>().ForMember(x => x.AccessControlId, opt => opt.MapFrom(src => src.Id.HasValue ? src.Id.Value : 0));
+
+            CreateMap<AccessControlLogDataDto, AccessControlLogDataViewModel>();
+
+            CreateMap<UserListInput, GetUserListFilter>();
+
+            CreateMap<UserDataDto, UserDataViewModel>();
+
+            CreateMap<UserLinkDto, UserLinkViewModel>();
+
+            CreateMap<AuditUserInput, AuditUserDto>();
         }
 
         /// <summary>

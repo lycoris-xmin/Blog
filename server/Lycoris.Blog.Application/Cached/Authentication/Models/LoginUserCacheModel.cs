@@ -1,4 +1,6 @@
-﻿namespace Lycoris.Blog.Application.Cached.Authentication.Models
+﻿using Lycoris.Blog.EntityFrameworkCore.Tables.Enums;
+
+namespace Lycoris.Blog.Application.Cached.Authentication.Models
 {
     public class LoginUserCacheModel
     {
@@ -7,6 +9,8 @@
         public string? NickName { get; set; }
 
         public string? Avatar { get; set; }
+
+        public UserStatusEnum Status { get; set; }
 
         public bool? IsAdmin { get; set; }
 

@@ -2,7 +2,7 @@
 
 namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Models
 {
-    public class LoginFailedRecordQueueModel
+    internal class LoginFailedRecordQueueModel
     {
         public LoginFailedRecordQueueModel() { }
 

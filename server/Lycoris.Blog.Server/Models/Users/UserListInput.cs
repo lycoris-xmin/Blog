@@ -1,4 +1,5 @@
 ﻿using Lycoris.Blog.Model.Global.Input;
+using Lycoris.Blog.Server.PropertyAttribute;
 
 namespace Lycoris.Blog.Server.Models.Users
 {
@@ -15,6 +16,7 @@ namespace Lycoris.Blog.Server.Models.Users
         /// <summary>
         /// 邮箱
         /// </summary>
+        [EmailRegex]
         public string? Email { get; set; }
     }
 }

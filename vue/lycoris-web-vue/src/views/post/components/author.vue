@@ -48,7 +48,7 @@
       </div>
       <div class="info-item">
         <p>123</p>
-        <p>吐槽</p>
+        <p>说说</p>
       </div>
       <div class="info-item">
         <p>123</p>

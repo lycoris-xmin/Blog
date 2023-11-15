@@ -1,6 +1,6 @@
 ﻿namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Models
 {
-    public class PostStaticQueueModel
+    internal class PostStaticQueueModel
     {
         public PostStaticQueueModel() { }
 

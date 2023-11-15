@@ -70,7 +70,7 @@ const menusRoutes = [
       {
         path: `${dashboardUrlPrefix}/message`,
         name: 'message',
-        component: () => import('../views/leave-message/index.vue'),
+        component: () => import('../views/leavemessage/index.vue'),
         meta: {
           title: '留言管理',
           keepAlive: true
@@ -88,7 +88,7 @@ const menusRoutes = [
       {
         path: `${dashboardUrlPrefix}/friendlink`,
         name: 'friendlink',
-        component: () => import('../views/friend-link/index.vue'),
+        component: () => import('../views/friendlink/index.vue'),
         meta: {
           title: '友链管理',
           keepAlive: true
@@ -96,8 +96,8 @@ const menusRoutes = [
       },
       {
         path: `${dashboardUrlPrefix}/file`,
-        name: 'file-manage',
-        component: () => import('../views/file-manage/index.vue'),
+        name: 'filemanage',
+        component: () => import('../views/filemanage/index.vue'),
         meta: {
           title: '文件管理',
           keepAlive: false
@@ -188,8 +188,8 @@ const menusRoutes = [
       {
         isRoute: true,
         path: `${dashboardUrlPrefix}/access/control`,
-        name: 'access-control',
-        component: () => import('../views/access-control/index.vue'),
+        name: 'accesscontrol',
+        component: () => import('../views/accesscontrol/index.vue'),
         meta: {
           title: '访问管控',
           autuorize: true,

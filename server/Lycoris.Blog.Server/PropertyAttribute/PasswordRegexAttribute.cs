@@ -9,12 +9,21 @@ namespace Lycoris.Blog.Server.PropertyAttribute
     /// 
     /// </summary>
     [AttributeUsage(AttributeTargets.Property)]
-    public class PasswordValidAttribute : ValidationAttribute
+    public class PasswordRegexAttribute : ValidationAttribute
     {
+        private readonly string _passwordRegex;
+
         /// <summary>
         /// 
         /// </summary>
-        public bool Required = false;
+        public PasswordRegexAttribute() => _passwordRegex = PropertyRegex.Password;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="passwordRegex"></param>
+        public PasswordRegexAttribute(string passwordRegex) => _passwordRegex = passwordRegex;
+
 
         /// <summary>
         /// 
@@ -29,28 +38,19 @@ namespace Lycoris.Blog.Server.PropertyAttribute
         public override bool IsValid(object? value)
         {
             if (value == null)
-                return !Required;
+                return true;
 
             if (value is not string)
             {
-                if (!Required)
-                    return true;
-
                 ErrorMessage = $"{ParamName}格式错误";
                 return false;
             }
 
             var password = (string)value;
             if (password.IsNullOrEmpty())
-            {
-                if (!Required)
-                    return true;
+                return true;
 
-                ErrorMessage = $"{ParamName}不能为空";
-                return false;
-            }
-
-            var regex = new Regex(PropertyRegex.Password);
+            var regex = new Regex(_passwordRegex);
             if (!regex.IsMatch(password))
             {
                 ErrorMessage = $"{ParamName}格式错误";

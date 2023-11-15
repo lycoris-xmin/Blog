@@ -1,6 +1,6 @@
 <template>
   <page-layout :loading="laoding">
-    <el-tabs tab-position="top">
+    <el-tabs tab-position="top" class="system-setting">
       <el-tab-pane v-for="item in model.tabs" :label="item.title" :key="item.value">
         <web-settings v-if="item.value == 'webSettings'" :value="0" @tab-complete="complete"></web-settings>
         <post-settings v-if="item.value == 'postSettings'" :value="1" @tab-complete="complete"></post-settings>
@@ -100,5 +100,69 @@ const complete = index => {
 
 .el-tab-pane {
   padding: 0 10px;
+}
+</style>
+
+<style lang="scss">
+.system-setting {
+  .card-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 500px));
+    grid-gap: 15px;
+    padding: 10px;
+
+    .card-group-cell {
+      padding: 10px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+
+      .form-text {
+        margin-bottom: 8px;
+        line-height: 22px;
+        font-size: var(--el-form-label-font-size);
+        color: var(--el-text-color-regular);
+      }
+    }
+  }
+
+  .card {
+    border: 1px solid var(--color-secondary);
+    border-radius: 10px;
+    box-shadow: 0 0 6px 5px var(--color-secondary);
+    padding: 10px;
+
+    .el-collapse {
+      border: 0;
+
+      .el-collapse-item__header {
+        border: 0;
+      }
+
+      .el-collapse-item__wrap {
+        border: 0;
+      }
+    }
+
+    .card-title {
+      padding-left: 15px;
+
+      > span {
+        font-size: 18px;
+        font-weight: 500;
+      }
+    }
+
+    .card-body {
+      padding: 10px 15px;
+
+      .input-remind {
+        color: var(--color-danger);
+        margin: 0;
+        padding-bottom: 5px;
+      }
+    }
+  }
 }
 </style>

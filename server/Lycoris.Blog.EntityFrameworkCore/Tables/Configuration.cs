@@ -13,7 +13,6 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
     /// 网站配置表
     /// </summary>
     [Table("Configuration")]
-    [TableIndex("ConfigName")]
     public class Configuration : MySqlBaseEntity<string>
     {
         /// <summary>
@@ -27,11 +26,6 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
         /// </summary>
         [TableColumn(Sensitive = true)]
         public string Value { get; set; } = "";
-
-        /// <summary>
-        /// 侧首
-        /// </summary>
-        public string Test { get; set; } = "";
 
         /// <summary>
         /// 配置保存格式

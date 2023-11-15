@@ -44,21 +44,24 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
         /// <returns></returns>
         public async Task JobDoWorkAsync(string? data, DateTime? time)
         {
-            var dto = data?.ToObject<BrowseLogQueueModel>();
-            if (dto == null)
+            var model = data?.ToObject<BrowseLogQueueModel>();
+            if (model == null)
                 return;
 
             // 文章浏览量统计事件插入
-            PushCalcPostStatisticsQueue(dto);
+            PushCalcPostStatisticsQueue(model);
 
-            if (dto.Referer.IsNullOrEmpty())
+            if (model.Referer.IsNullOrEmpty())
                 return;
 
-            var referer = await _browseReferer.GetAll().Where(x => x.Referer == dto.Referer).SingleOrDefaultAsync() ?? new BrowseReferer() { Referer = dto.Referer!, Count = 0, Domain = GetUrlDomain(dto.Path) };
+            var referer = await _browseReferer.GetAll().Where(x => x.Referer == model.Referer).SingleOrDefaultAsync() ?? new BrowseReferer() { Referer = model.Referer!, Count = 0, Domain = GetUrlDomain(model.Path) };
 
             referer.Count++;
 
             await _browseReferer.CreateOrUpdateAsync(referer, x => x.Count);
+
+            // 
+            _scheduleQueue.Enqueue(ScheduleTypeEnum.WebStatistics, new WebStatisticsQueueModel() { Browse = 1 });
         }
 
         /// <summary>

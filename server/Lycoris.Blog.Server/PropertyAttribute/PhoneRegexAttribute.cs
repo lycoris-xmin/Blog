@@ -9,12 +9,20 @@ namespace Lycoris.Blog.Server.PropertyAttribute
     /// 
     /// </summary>
     [AttributeUsage(AttributeTargets.Property)]
-    public class PhoneValidAttribute : ValidationAttribute
+    public class PhoneRegexAttribute : ValidationAttribute
     {
+        private readonly string _phoneRegex;
+
         /// <summary>
         /// 
         /// </summary>
-        public bool Required = false;
+        public PhoneRegexAttribute() => _phoneRegex = PropertyRegex.Phone;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="phoneRegex"></param>
+        public PhoneRegexAttribute(string phoneRegex) => _phoneRegex = phoneRegex;
 
         /// <summary>
         /// 
@@ -24,28 +32,19 @@ namespace Lycoris.Blog.Server.PropertyAttribute
         public override bool IsValid(object? value)
         {
             if (value == null)
-                return !Required;
+                return true;
 
             if (value is not string)
             {
-                if (!Required)
-                    return true;
-
                 ErrorMessage = "手机号格式错误";
                 return false;
             }
 
             var phone = (string)value;
             if (phone.IsNullOrEmpty())
-            {
-                if (!Required)
-                    return true;
+                return true;
 
-                ErrorMessage = "手机号不能为空";
-                return false;
-            }
-
-            var regex = new Regex(PropertyRegex.Phone);
+            var regex = new Regex(_phoneRegex);
             if (!regex.IsMatch(phone))
             {
                 ErrorMessage = "手机号格式错误";

@@ -29,7 +29,8 @@ import { getAccessControlLogList } from '../../../api/accesscontrol';
 
 const model = reactive({
   visible: false,
-  id: ''
+  id: '',
+  index: ''
 });
 
 const column = ref([
@@ -68,9 +69,12 @@ const table = reactive({
   loading: false
 });
 
-const show = id => {
+const emit = defineEmits(['count-update']);
+
+const show = (id, index) => {
   model.visible = true;
   model.id = id;
+  model.index = index;
   getTableList();
 };
 
@@ -94,6 +98,10 @@ const getTableList = async () => {
     if (res && res.resCode == 0) {
       table.count = res.data.count;
       table.list = res.data.list;
+      emit('count-update', {
+        count: table.count,
+        index: model.index
+      });
     }
   } finally {
     table.loading = false;

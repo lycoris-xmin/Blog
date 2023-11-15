@@ -9,12 +9,20 @@ namespace Lycoris.Blog.Server.PropertyAttribute
     /// 
     /// </summary>
     [AttributeUsage(AttributeTargets.Property)]
-    public class IDCardValidAttribute : ValidationAttribute
+    public class IDCardRegexAttribute : ValidationAttribute
     {
+        private readonly string _idCardRegex;
+
         /// <summary>
         /// 
         /// </summary>
-        public bool Required = false;
+        public IDCardRegexAttribute() => _idCardRegex = PropertyRegex.IDCard;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="idCardRegex"></param>
+        public IDCardRegexAttribute(string idCardRegex) => _idCardRegex = idCardRegex;
 
         /// <summary>
         /// 
@@ -29,28 +37,19 @@ namespace Lycoris.Blog.Server.PropertyAttribute
         public override bool IsValid(object? value)
         {
             if (value == null)
-                return !Required;
+                return true;
 
             if (value is not string)
             {
-                if (!Required)
-                    return true;
-
                 ErrorMessage = Message ?? "身份证号格式错误";
                 return false;
             }
 
             var idcard = (string)value;
             if (idcard.IsNullOrEmpty())
-            {
-                if (!Required)
-                    return true;
+                return true;
 
-                ErrorMessage = Message ?? "身份证号不能为空";
-                return false;
-            }
-
-            var regex = new Regex(PropertyRegex.IDCard);
+            var regex = new Regex(_idCardRegex);
             if (!regex.IsMatch(idcard))
             {
                 ErrorMessage = Message ?? "身份证号格式错误";

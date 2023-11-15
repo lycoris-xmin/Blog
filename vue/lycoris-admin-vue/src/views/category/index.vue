@@ -157,13 +157,13 @@ const $delete = async (index, row) => {
   try {
     let res = await deleteCategory(row.id);
     if (res && res.resCode == 0) {
-      if (table.count <= table.pageSize) {
+      toast.success('删除成功');
+
+      if (table.list.length == table.count || table.list.length < table.pageSize) {
         table.list.splice(index, 1);
       } else {
         getTableList();
       }
-
-      toast.success('删除成功');
     }
   } finally {
     row.loading = false;

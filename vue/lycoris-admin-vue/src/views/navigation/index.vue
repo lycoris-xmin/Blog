@@ -30,6 +30,10 @@
       @toolbar-create="$create"
       @toolbar-search="$search"
     >
+      <template #domain="{ value }">
+        <a class="domain-link" :href="value" target="_blank">{{ value }}</a>
+      </template>
+
       <template #action="{ row, index }">
         <el-button type="warning" plain @click="$update(index, row)">编辑</el-button>
         <el-popconfirm title="确定要删除吗?" @confirm="$delete(index, row)">
@@ -211,4 +215,13 @@ const $delete = async (index, row) => {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.domain-link {
+  transition: all 0.3s;
+
+  &:hover {
+    font-size: 18px;
+    color: var(--color-primary);
+  }
+}
+</style>

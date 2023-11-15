@@ -180,10 +180,10 @@ const $delete = async (index, row) => {
   try {
     let res = await deleteComment(row.id);
     if (res && res.resCode == 0) {
-      if (table.list.length == table.pageSize && table.list.length < table.count) {
-        getTableList();
-      } else {
+      if (table.list.length == table.count || table.list.length < table.pageSize) {
         table.list.splice(index, 1);
+      } else {
+        getTableList();
       }
     }
   } finally {

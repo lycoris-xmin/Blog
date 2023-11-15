@@ -49,6 +49,13 @@ namespace Lycoris.Blog.Application.AppServices.Users
         List<EnumsDto<int>> GetUserStatusEnums();
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        Task<UserDataDto> CreateUserAsync(CreateUserDto input);
+
+        /// <summary>
         /// 审核用户
         /// </summary>
         /// <param name="input"></param>

@@ -30,17 +30,17 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
 
         public async Task JobDoWorkAsync(string? data, DateTime? time)
         {
-            var dto = data?.ToObject<PostStaticQueueModel>();
-            if (dto == null)
+            var model = data?.ToObject<PostStaticQueueModel>();
+            if (model == null)
                 return;
 
-            var post = await _post.GetAsync(dto.PostId);
+            var post = await _post.GetAsync(model.PostId);
             if (post == null)
                 return;
 
             post.Statistics ??= new PostStatisticsDao();
-            post.Statistics.Comment += dto.StaticType == PostStaticTypeEnum.Comment ? 1 : 0;
-            post.Statistics.Browse += dto.StaticType == PostStaticTypeEnum.Browse ? 1 : 0;
+            post.Statistics.Comment += model.StaticType == PostStaticTypeEnum.Comment ? 1 : 0;
+            post.Statistics.Browse += model.StaticType == PostStaticTypeEnum.Browse ? 1 : 0;
 
             await _post.UpdateFieIdsAsync(post, x => x.Statistics);
         }

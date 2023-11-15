@@ -78,34 +78,6 @@ namespace Lycoris.Blog.Server.Controllers
         #endregion
 
         #region 管理后台
-        /// <summary>
-        /// 获取用户列表
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        [HttpGet("List")]
-        [AppAuthentication]
-        [Produces("application/json")]
-        public async Task<PageOutput<UserDataViewModel>> List([FromQuery] UserListInput input)
-        {
-            var filter = input.ToMap<GetUserListFilter>();
-            var dto = await _user.GetListAsync(filter);
-            return Success(dto.Count, dto.List.ToMapList<UserDataViewModel>());
-        }
-
-        /// <summary>
-        /// 获取用户绑定信息
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        [HttpGet("Link")]
-        [AppAuthentication]
-        [Produces("application/json")]
-        public async Task<DataOutput<UserLinkViewModel>> UserLink([FromQuery] SingleIdInput<long?> input)
-        {
-            var dto = await _user.GetUserLinkAsync(input.Id!.Value);
-            return Success(dto.ToMap<UserLinkViewModel>());
-        }
 
         /// <summary>
         /// 用户简要信息
@@ -149,6 +121,50 @@ namespace Lycoris.Blog.Server.Controllers
         }
 
         /// <summary>
+        /// 获取用户列表
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpGet("List")]
+        [AppAuthentication]
+        [Produces("application/json")]
+        public async Task<PageOutput<UserDataViewModel>> List([FromQuery] UserListInput input)
+        {
+            var filter = input.ToMap<GetUserListFilter>();
+            var dto = await _user.GetListAsync(filter);
+            return Success(dto.Count, dto.List.ToMapList<UserDataViewModel>());
+        }
+
+        /// <summary>
+        /// 获取用户绑定信息
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpGet("Link")]
+        [AppAuthentication]
+        [Produces("application/json")]
+        public async Task<DataOutput<UserLinkViewModel>> UserLink([FromQuery] SingleIdInput<long?> input)
+        {
+            var dto = await _user.GetUserLinkAsync(input.Id!.Value);
+            return Success(dto.ToMap<UserLinkViewModel>());
+        }
+
+        /// <summary>
+        /// 创建用户
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpPost("Create")]
+        [AppAuthentication]
+        [Consumes("application/json"), Produces("application/json")]
+        public async Task<DataOutput<UserDataViewModel>> Create([FromBody] UserCreateInput input)
+        {
+            var data = input.ToMap<CreateUserDto>();
+            var dto = await _user.CreateUserAsync(data);
+            return Success(dto.ToMap<UserDataViewModel>());
+        }
+
+        /// <summary>
         /// 审核用户
         /// </summary>
         /// <param name="input"></param>
@@ -156,11 +172,11 @@ namespace Lycoris.Blog.Server.Controllers
         [HttpPost("Audit")]
         [AppAuthentication]
         [Consumes("application/json"), Produces("application/json")]
-        public async Task<BaseOutput> Audit([FromBody] AuditUserInput input)
+        public async Task<BaseOutput> Audit([FromBody] UserAuditInput input)
         {
             var data = input.ToMap<AuditUserDto>();
             await _user.AuditUserAsync(data);
-            return Success();   
+            return Success();
         }
         #endregion
     }

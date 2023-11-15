@@ -82,7 +82,7 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
             }
 
             // 推送
-            await _hubContext.Clients.All.SendAsync("checkkFileUseState", new
+            await _hubContext.Clients.All.SendAsync("CheckkFileUseState", new
             {
                 Id = fileId.ToString(),
                 file.Use,
@@ -111,7 +111,7 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
                 // 
                 foreach (var item in postList)
                 {
-                    if (item.Icon == file.PathUrl || item.Markdown.IndexOf(file.PathUrl) > -1)
+                    if (item.Icon.EndsWith(file.PathUrl) || item.Markdown.IndexOf(file.PathUrl) > -1)
                         return new CheckResult($"文章 {item.Title} 使用中");
                 }
 
@@ -140,7 +140,7 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
 
             foreach (var item in list)
             {
-                if (item.Icon == file.PathUrl)
+                if (item.Icon.EndsWith(file.PathUrl))
                 {
                     result.Use = true;
                     result.Message = $"分类 {item.Name} 使用中";

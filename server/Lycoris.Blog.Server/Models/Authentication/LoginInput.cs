@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Lycoris.Blog.Server.PropertyAttribute;
+using System.ComponentModel.DataAnnotations;
 
 namespace Lycoris.Blog.Server.Models.Authentication
 {
@@ -10,7 +11,7 @@ namespace Lycoris.Blog.Server.Models.Authentication
         /// <summary>
         /// 
         /// </summary>
-        [Required]
+        [Required, EmailRegex]
         public string? Email { get; set; }
 
         /// <summary>

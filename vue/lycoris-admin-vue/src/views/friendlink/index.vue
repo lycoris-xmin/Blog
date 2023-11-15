@@ -58,8 +58,8 @@
       </template>
     </lycoris-table>
 
-    <create-modal ref="createModalRef" @complete="handleComplete"></create-modal>
-    <audit-modal ref="auditModalRef" @complete="handleComplete"></audit-modal>
+    <friendlink-create ref="createModalRef" @complete="handleComplete"></friendlink-create>
+    <friendlink-audit ref="auditModalRef" @complete="handleComplete"></friendlink-audit>
   </page-layout>
 </template>
 
@@ -67,8 +67,8 @@
 import { reactive, ref, onMounted } from 'vue';
 import PageLayout from '../layout/page-layout.vue';
 import LycorisTable from '../../components/lycoris-table/index.vue';
-import createModal from './components/create-modal.vue';
-import auditModal from './components/audit-modal.vue';
+import friendlinkCreate from './components/friendlink-create.vue';
+import friendlinkAudit from './components/friendlink-audit.vue';
 import { getList, deleteFriendLink } from '../../api/friend-link.js';
 
 const createModalRef = ref();
@@ -172,7 +172,7 @@ const $delete = async (index, row) => {
   try {
     let res = await deleteFriendLink(row.id);
     if (res && res.resCode === 0) {
-      if (table.list.length == table.count) {
+      if (table.list.length == table.count || table.list.length < table.pageSize) {
         table.list.splice(index, 1);
       } else {
         getFriendLinkList();

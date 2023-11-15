@@ -46,6 +46,7 @@
       </template>
     </lycoris-table>
 
+    <user-create ref="userCreateRef" @complete="handleComplete"></user-create>
     <user-detail ref="userDetailRef"></user-detail>
     <user-audit ref="userAuditRef" @submit="handleAuditUser"></user-audit>
   </page-layout>
@@ -57,9 +58,11 @@ import PageLayout from '../layout/page-layout.vue';
 import LycorisTable from '../../components/lycoris-table/index.vue';
 import { getList } from '../../api/user';
 import { api } from '../../config.json';
+import userCreate from './components/user-create.vue';
 import userDetail from './components/user-detail.vue';
 import userAudit from './components/user-audit.vue';
 
+const userCreateRef = ref();
 const userDetailRef = ref();
 const userAuditRef = ref();
 
@@ -147,7 +150,7 @@ const handleCurrentChange = pageIndex => {
 };
 
 const $create = () => {
-  //
+  userCreateRef.value.show();
 };
 
 const viewDetail = row => {
@@ -162,6 +165,15 @@ const $audit = (row, index) => {
 const handleAuditUser = data => {
   table.list[data.index].status = data.status;
   table.list[data.index].remark = data.remark;
+};
+
+const handleComplete = data => {
+  //
+  if (table.list.length == table.pageSize) {
+    table.list.pop();
+  }
+
+  table.list.unshift(data);
 };
 </script>
 

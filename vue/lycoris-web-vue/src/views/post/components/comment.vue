@@ -76,16 +76,21 @@
         <span style="display: block; height: 35px; min-width: 1px">
           <el-tag v-if="model.repliedUserName" closable @close="handleCloseReply">@{{ model.repliedUserName }}</el-tag>
         </span>
-        <el-input
-          ref="inputRef"
-          v-model="model.content"
-          type="textarea"
-          :autosize="{ minRows: 5 }"
-          maxlength="100"
-          show-word-limit
-          :placeholder="model.repliedUserName ? `回复 ${model.repliedUserName} 的评论` : model.placeholder"
-        ></el-input>
-        <div class="publich-comment-action flex-end-center">
+        <div style="position: relative">
+          <el-input
+            ref="inputRef"
+            v-model="model.content"
+            type="textarea"
+            :autosize="{ minRows: 5 }"
+            maxlength="100"
+            show-word-limit
+            :placeholder="model.repliedUserName ? `回复 ${model.repliedUserName} 的评论` : model.placeholder"
+          ></el-input>
+          <div v-if="!stores.user.state" class="to-login-wrap">
+            <el-button type="info" @click="toLogin">请先登录</el-button>
+          </div>
+        </div>
+        <div class="publich-comment-action flex-end-center" v-if="stores.user.state">
           <el-button type="primary" @click="publish" :loading="model.loading">发布评论</el-button>
         </div>
       </div>
@@ -121,10 +126,6 @@ const props = defineProps({
     type: String,
     required: true,
     default: ''
-  },
-  user: {
-    type: Object,
-    required: true
   }
 });
 
@@ -178,7 +179,7 @@ const handleCloseReply = () => {
 
 const publish = async () => {
   if (model.content) {
-    if (!props.user.state) {
+    if (!stores.user.state) {
       toast.info('请先登录');
       loginModalRef.value.show();
       return;
@@ -217,6 +218,10 @@ const commentReport = item => {
   //
   console.log(item);
   toast.warn('功能还未开发');
+};
+
+const toLogin = () => {
+  loginModalRef.value.show();
 };
 </script>
 
@@ -393,6 +398,18 @@ const commentReport = item => {
 
     .publich-comment-action {
       padding: 10px 0;
+    }
+
+    .to-login-wrap {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      background-color: rgb(228 231 234 / 50%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
   }
 }

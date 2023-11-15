@@ -34,6 +34,19 @@ export const getUserStatusEnum = () => {
   return request.get(`${controller}/status/enum`);
 };
 
+export const createUser = ({ email, nickName, password }) => {
+  let data = {
+    email,
+    nickName
+  };
+
+  if (password) {
+    data.password = password;
+  }
+
+  return request.post(`${controller}/create`, data);
+};
+
 export const auditUser = ({ id, status, remark }) => {
   let data = {
     id,

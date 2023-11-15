@@ -92,7 +92,7 @@
   </page-layout>
 </template>
 
-<script setup name="file-manage">
+<script setup name="filemanage">
 import { reactive, ref, onMounted, onBeforeMount, onBeforeUnmount, inject } from 'vue';
 import PageLayout from '../layout/page-layout.vue';
 import LycorisTable from '../../components/lycoris-table/index.vue';

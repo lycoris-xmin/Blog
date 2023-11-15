@@ -78,6 +78,8 @@ namespace Lycoris.Blog.Application
             CreateMap<AccessControl, AccessControlDataDto>();
 
             CreateMap<UserLink, UserLinkDto>();
+
+            CreateMap<User, UserDataDto>();
         }
 
         /// <summary>

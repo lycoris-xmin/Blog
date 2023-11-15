@@ -9,12 +9,20 @@ namespace Lycoris.Blog.Server.PropertyAttribute
     /// 
     /// </summary>
     [AttributeUsage(AttributeTargets.Property)]
-    public class EmailValidAttribute : ValidationAttribute
+    public class EmailRegexAttribute : ValidationAttribute
     {
+        private readonly string _emailRegex;
+
         /// <summary>
         /// 
         /// </summary>
-        public bool Required = false;
+        public EmailRegexAttribute() => _emailRegex = PropertyRegex.Email;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="emailRegex"></param>
+        public EmailRegexAttribute(string emailRegex) => _emailRegex = emailRegex;
 
         /// <summary>
         /// 
@@ -24,28 +32,19 @@ namespace Lycoris.Blog.Server.PropertyAttribute
         public override bool IsValid(object? value)
         {
             if (value == null)
-                return !Required;
+                return true;
 
             if (value is not string)
             {
-                if (!Required)
-                    return true;
-
                 ErrorMessage = "邮箱格式错误";
                 return false;
             }
 
             var email = (string)value;
             if (email.IsNullOrEmpty())
-            {
-                if (!Required)
-                    return true;
+                return true;
 
-                ErrorMessage = "邮箱不能为空";
-                return false;
-            }
-
-            var regex = new Regex(PropertyRegex.Email);
+            var regex = new Regex(_emailRegex);
             if (!regex.IsMatch(email))
             {
                 ErrorMessage = "邮箱格式错误";

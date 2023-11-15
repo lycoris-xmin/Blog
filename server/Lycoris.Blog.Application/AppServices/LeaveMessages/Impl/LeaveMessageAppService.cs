@@ -2,6 +2,7 @@
 using Lycoris.Blog.Application.AppServices.LeaveMessages.Dtos;
 using Lycoris.Blog.Application.Cached.ScheduleQueue;
 using Lycoris.Blog.Application.Cached.ScheduleQueue.Models;
+using Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Models;
 using Lycoris.Blog.Application.Shared.Dtos;
 using Lycoris.Blog.Application.Shared.Impl;
 using Lycoris.Blog.EntityFrameworkCore.Repositories;
@@ -21,19 +22,19 @@ namespace Lycoris.Blog.Application.AppServices.LeaveMessages.Impl
     {
         private readonly IRepository<LeaveMessage, int> _message;
         private readonly Lazy<IRepository<User, long>> _user;
-        private readonly Lazy<IScheduleQueueCacheService> _scheduleQueue;
+        private readonly Lazy<IScheduleQueueCacheService> _scheduleQueueCache;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="message"></param>
         /// <param name="user"></param>
-        /// <param name="scheduleQueue"></param>
-        public LeaveMessageAppService(IRepository<LeaveMessage, int> message, Lazy<IRepository<User, long>> user, Lazy<IScheduleQueueCacheService> scheduleQueue)
+        /// <param name="scheduleQueueCache"></param>
+        public LeaveMessageAppService(IRepository<LeaveMessage, int> message, Lazy<IRepository<User, long>> user, Lazy<IScheduleQueueCacheService> scheduleQueueCache)
         {
             _message = message;
             _user = user;
-            _scheduleQueue = scheduleQueue;
+            _scheduleQueueCache = scheduleQueueCache;
         }
 
         #region ======== 博客网站 ========
@@ -192,6 +193,8 @@ namespace Lycoris.Blog.Application.AppServices.LeaveMessages.Impl
 
             data = await _message.CreateAsync(data);
 
+            _scheduleQueueCache.Value.Enqueue(ScheduleTypeEnum.WebStatistics, new WebStatisticsQueueModel() { Message = 1 });
+
             return new WebMessageDataDto()
             {
                 Id = data.Id,
@@ -246,7 +249,7 @@ namespace Lycoris.Blog.Application.AppServices.LeaveMessages.Impl
 
             data = await _message.CreateAsync(data);
 
-            _scheduleQueue.Value.Enqueue(ScheduleTypeEnum.LeaveMessage, data.ParentId.ToString());
+            _scheduleQueueCache.Value.Enqueue(ScheduleTypeEnum.LeaveMessage, data.ParentId.ToString());
 
             var res = new WebMessageReplyDataDto()
             {
@@ -303,7 +306,7 @@ namespace Lycoris.Blog.Application.AppServices.LeaveMessages.Impl
             if (data.ParentId == 0)
                 return;
 
-            _scheduleQueue.Value.Enqueue(ScheduleTypeEnum.LeaveMessage, data.ParentId.ToString());
+            _scheduleQueueCache.Value.Enqueue(ScheduleTypeEnum.LeaveMessage, data.ParentId.ToString());
         }
 
         /// <summary>
@@ -495,7 +498,7 @@ namespace Lycoris.Blog.Application.AppServices.LeaveMessages.Impl
             await _message.UpdateFieIdsAsync(data, x => x.Status);
 
             if (data.ParentId > 0)
-                _scheduleQueue.Value.Enqueue(ScheduleTypeEnum.LeaveMessage, data.ParentId.ToString());
+                _scheduleQueueCache.Value.Enqueue(ScheduleTypeEnum.LeaveMessage, data.ParentId.ToString());
         }
 
         /// <summary>
@@ -519,7 +522,7 @@ namespace Lycoris.Blog.Application.AppServices.LeaveMessages.Impl
                 await _message.ExecuteNonQueryAsync(sql);
 
                 foreach (var item in parentIds)
-                    _scheduleQueue.Value.Enqueue(ScheduleTypeEnum.LeaveMessage, item.ToString());
+                    _scheduleQueueCache.Value.Enqueue(ScheduleTypeEnum.LeaveMessage, item.ToString());
             }
         }
         #endregion

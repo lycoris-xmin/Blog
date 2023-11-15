@@ -2,6 +2,7 @@
 using Lycoris.Blog.Common.Cache;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
 using Lycoris.Common.Extensions;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Lycoris.Blog.EntityFrameworkCore.Repositories.Impl
 {
@@ -75,8 +76,55 @@ namespace Lycoris.Blog.EntityFrameworkCore.Repositories.Impl
         /// 
         /// </summary>
         /// <param name="configId"></param>
+        /// <param name="value"></param>
         /// <returns></returns>
-        public void RemoveConfigurationCacheAsync(string configId) => _memoryCache.RemoveMemory(GetCacheKey(configId));
+        public async Task SaveConfigurationAsync(string configId, string value)
+        {
+            var data = await GetDataAsync(configId);
+            if (data == null)
+                return;
+
+            data.Value = value;
+            await _repository.UpdateFieIdsAsync(data, x => x.Value);
+
+            RemoveConfigurationCache(configId);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="configId"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public async Task SaveConfigurationAsync<T>(string configId, [NotNull] T value) where T : class
+        {
+            var data = await GetDataAsync(configId);
+            if (data == null)
+                return;
+
+            data.Value = value.ToJson();
+            await _repository.UpdateFieIdsAsync(data, x => x.Value);
+
+            RemoveConfigurationCache(configId);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public async Task SaveConfigurationAsync(Configuration value)
+        {
+            await _repository.UpdateAsync(value);
+            RemoveConfigurationCache(value.Id);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="configId"></param>
+        /// <returns></returns>
+        public void RemoveConfigurationCache(string configId) => _memoryCache.RemoveMemory(GetCacheKey(configId));
 
         /// <summary>
         /// 

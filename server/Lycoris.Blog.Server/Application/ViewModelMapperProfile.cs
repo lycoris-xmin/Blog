@@ -250,7 +250,9 @@ namespace Lycoris.Blog.Server.Application
 
             CreateMap<UserLinkDto, UserLinkViewModel>();
 
-            CreateMap<AuditUserInput, AuditUserDto>();
+            CreateMap<UserAuditInput, AuditUserDto>();
+
+            CreateMap<UserCreateInput, CreateUserDto>();
         }
 
         /// <summary>

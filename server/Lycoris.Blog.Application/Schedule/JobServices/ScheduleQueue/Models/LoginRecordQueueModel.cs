@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Models
 {
-    public class LoginRecordQueueModel
+    internal class LoginRecordQueueModel
     {
         public LoginRecordQueueModel() { }
 

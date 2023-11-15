@@ -3,6 +3,9 @@ using Lycoris.AutoMapper.Extensions;
 using Lycoris.Blog.Application.AppServices.FileManage;
 using Lycoris.Blog.Application.AppServices.Users.Dtos;
 using Lycoris.Blog.Application.Cached.Authentication;
+using Lycoris.Blog.Application.Cached.ScheduleQueue;
+using Lycoris.Blog.Application.Cached.ScheduleQueue.Models;
+using Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Models;
 using Lycoris.Blog.Application.Shared.Dtos;
 using Lycoris.Blog.Application.Shared.Impl;
 using Lycoris.Blog.Core.Interceptors.Transactional;
@@ -28,14 +31,21 @@ namespace Lycoris.Blog.Application.AppServices.Users.Impl
         private readonly Lazy<IRepository<LoginToken, int>> _loginToken;
         private readonly Lazy<IFileManageAppService> _fileManage;
         private readonly Lazy<IAuthenticationCacheService> _cache;
+        private readonly Lazy<IScheduleQueueCacheService> _scheduleQueueCache;
 
-        public UserAppService(IRepository<User, long> user, IRepository<UserLink, long> userLink, Lazy<IRepository<LoginToken, int>> loginToken, Lazy<IFileManageAppService> fileManage, Lazy<IAuthenticationCacheService> cache)
+        public UserAppService(IRepository<User, long> user,
+                              IRepository<UserLink, long> userLink,
+                              Lazy<IRepository<LoginToken, int>> loginToken,
+                              Lazy<IFileManageAppService> fileManage,
+                              Lazy<IAuthenticationCacheService> cache,
+                              Lazy<IScheduleQueueCacheService> scheduleQueueCache)
         {
             _user = user;
             _userLink = userLink;
             _loginToken = loginToken;
             _fileManage = fileManage;
             _cache = cache;
+            _scheduleQueueCache = scheduleQueueCache;
         }
 
         /// <summary>
@@ -160,7 +170,7 @@ namespace Lycoris.Blog.Application.AppServices.Users.Impl
             if (count == 0 || !CheckPageFilter(input, count))
                 return new PageResultDto<UserDataDto>(count);
 
-            var query = filter.OrderBy(x => x.Id)
+            var query = filter.OrderByDescending(x => x.Id)
                               .PageBy(input.PageIndex, input.PageSize)
                               .Select(x => new UserDataDto()
                               {
@@ -199,6 +209,35 @@ namespace Lycoris.Blog.Application.AppServices.Users.Impl
                 Value = (int)x,
                 Name = x.GetEnumDescription<UserStatusEnum>()
             }).ToList();
+        }
+
+        /// <summary>
+        /// 创建用户
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public async Task<UserDataDto> CreateUserAsync(CreateUserDto input)
+        {
+            var repeat = await _user.GetAll().Where(x => x.Email == input.Email).AnyAsync();
+            if (repeat)
+                throw new FriendlyException("邮箱已被注册");
+
+            var data = new User()
+            {
+                Email = input.Email!,
+                NickName = input.NickName!,
+                Password = input.Password ?? "",
+                Avatar = "",
+                Status = UserStatusEnum.Audited,
+                CreateTime = DateTime.Now
+
+            };
+
+            data = await _user.CreateAsync(data);
+
+            _scheduleQueueCache.Value.Enqueue(ScheduleTypeEnum.WebStatistics, new WebStatisticsQueueModel() { User = 1 });
+
+            return data.ToMap<UserDataDto>();
         }
 
         /// <summary>

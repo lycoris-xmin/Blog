@@ -1,4 +1,5 @@
 ﻿using Lycoris.Blog.EntityFrameworkCore.Tables;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Lycoris.Blog.EntityFrameworkCore.Repositories
 {
@@ -33,7 +34,30 @@ namespace Lycoris.Blog.EntityFrameworkCore.Repositories
         /// 
         /// </summary>
         /// <param name="configId"></param>
+        /// <param name="value"></param>
         /// <returns></returns>
-        void RemoveConfigurationCacheAsync(string configId);
+        Task SaveConfigurationAsync(string configId, string value);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="configId"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        Task SaveConfigurationAsync<T>(string configId, [NotNull] T value) where T : class;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        Task SaveConfigurationAsync(Configuration value);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="configId"></param>
+        /// <returns></returns>
+        void RemoveConfigurationCache(string configId);
     }
 }

@@ -12,7 +12,7 @@ namespace Lycoris.Blog.Server.Models.Authentication
         /// <summary>
         /// 
         /// </summary>
-        [EmailValid(Required = true)]
+        [Required, EmailRegex]
         public string? Email { get; set; }
 
         /// <summary>

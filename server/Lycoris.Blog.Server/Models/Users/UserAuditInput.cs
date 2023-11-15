@@ -5,7 +5,7 @@ namespace Lycoris.Blog.Server.Models.Users
     /// <summary>
     /// 
     /// </summary>
-    public class AuditUserInput
+    public class UserAuditInput
     {
         /// <summary>
         /// 

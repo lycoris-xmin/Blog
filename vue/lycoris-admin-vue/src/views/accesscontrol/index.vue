@@ -25,13 +25,13 @@
       @toolbar-create="$create"
     >
       <template #action="{ row, index }">
-        <el-button plain type="info" @click="viewLog(row)">访问日志</el-button>
+        <el-button plain type="info" @click="viewLog(row, index)">访问日志</el-button>
         <el-button plain type="danger" :loading="row.removeLoading" @click="remove(row, index)">移除管控</el-button>
       </template>
     </lycoris-table>
 
-    <create-modal ref="createModalRef" @sumit="createSumit"></create-modal>
-    <log-list-modal ref="logListModalRef"></log-list-modal>
+    <access-control-create ref="createModalRef" @sumit="createSumit"></access-control-create>
+    <access-control-log ref="logListModalRef" @count-update="handleCountUpdate"></access-control-log>
   </page-layout>
 </template>
 
@@ -39,8 +39,8 @@
 import { reactive, ref, onMounted } from 'vue';
 import PageLayout from '../layout/page-layout.vue';
 import LycorisTable from '../../components/lycoris-table/index.vue';
-import createModal from './components/create.vue';
-import logListModal from './components/log-list.vue';
+import accessControlCreate from './components/access-control-create.vue';
+import accessControlLog from './components/access-control-log.vue';
 import { getList, deleteAccessControl } from '../../api/accesscontrol';
 import toast from '../../utils/toast';
 import swal from '../../utils/swal';
@@ -147,8 +147,8 @@ const remove = async (row, index) => {
   }
 };
 
-const viewLog = row => {
-  logListModalRef.value.show(row.id);
+const viewLog = (row, index) => {
+  logListModalRef.value.show(row.id, index);
 };
 
 const createSumit = data => {
@@ -160,6 +160,12 @@ const createSumit = data => {
   table.list.unshift(data);
 
   toast.success('保存成功');
+};
+
+const handleCountUpdate = ({ count, index }) => {
+  if (table.list[index].count != count) {
+    table.list[index].count = count;
+  }
 };
 </script>
 

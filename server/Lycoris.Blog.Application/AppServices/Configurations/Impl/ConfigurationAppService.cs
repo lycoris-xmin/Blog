@@ -82,7 +82,7 @@ namespace Lycoris.Blog.Application.AppServices.Configurations.Impl
             if (data.Value != value)
             {
                 // 移除缓存
-                ApplicationConfiguration.Value.RemoveConfigurationCacheAsync(data.Id);
+                this.ApplicationConfiguration.Value.RemoveConfigurationCache(data.Id);
 
                 data.Value = value;
                 await _configuration.UpdateFieIdsAsync(data, x => x.Value);

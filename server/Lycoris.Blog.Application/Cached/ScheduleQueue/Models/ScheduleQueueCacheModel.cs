@@ -41,6 +41,10 @@
         /// <summary>
         /// 帐号登录失败记录
         /// </summary>
-        LoginFailedRecord = 6
+        LoginFailedRecord = 6,
+        /// <summary>
+        /// 网站数据统计
+        /// </summary>
+        WebStatistics = 7
     }
 }

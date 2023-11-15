@@ -33,6 +33,7 @@
 <script setup>
 import { reactive, ref } from 'vue';
 import { createCategory, updateCategory } from '../../../api/category';
+import toast from '../../../utils/toast';
 
 const formRef = ref();
 
@@ -92,6 +93,7 @@ const submit = async () => {
     model.btnLoading = true;
     let res = form.id ? await updateCategory(data) : await createCategory(data);
     if (res && res.resCode == 0) {
+      toast.success('保存成功');
       emit('complete', res.data, model.index);
       close();
     }
@@ -180,10 +182,6 @@ defineExpose({
 
   .el-select {
     width: 100%;
-  }
-
-  .dialog-footer button:first-child {
-    margin-right: 10px;
   }
 }
 </style>

@@ -32,22 +32,22 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
         /// <returns></returns>
         public async Task JobDoWorkAsync(string? data, DateTime? time)
         {
-            var dto = data?.ToObject<LoginRecordQueueModel>();
-            if (dto == null)
+            var model = data?.ToObject<LoginRecordQueueModel>();
+            if (model == null)
                 return;
 
-            var record = await _LoginRecord.GetAll().Where(x => x.UserId == dto.UserId).FirstOrDefaultAsync();
+            var record = await _LoginRecord.GetAll().Where(x => x.UserId == model.UserId).FirstOrDefaultAsync();
 
             var tmp = new LoginRecord()
             {
-                UserId = dto.UserId,
-                UserAgent = dto.UserAgent,
-                Ip = IPAddressHelper.Ipv4ToUInt32(dto.Ip),
-                IpAddress = IPAddressHelper.ChangeAddress(IPAddressHelper.Search(dto.Ip)),
+                UserId = model.UserId,
+                UserAgent = model.UserAgent,
+                Ip = IPAddressHelper.Ipv4ToUInt32(model.Ip),
+                IpAddress = IPAddressHelper.ChangeAddress(IPAddressHelper.Search(model.Ip)),
                 LoginTime = time ?? DateTime.Now
             };
 
-            if (record != null && record.Ip == tmp.Ip && record.UserAgent == dto.UserAgent && record.LoginTime.AddMinutes(10) > DateTime.Now)
+            if (record != null && record.Ip == tmp.Ip && record.UserAgent == model.UserAgent && record.LoginTime.AddMinutes(10) > DateTime.Now)
                 return;
 
             await _LoginRecord.CreateAsync(tmp);

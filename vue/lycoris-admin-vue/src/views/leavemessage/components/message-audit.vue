@@ -4,7 +4,7 @@
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="close">关闭</el-button>
-        <el-button v-if="model.showSetBtn" type="danger" @click="submit" :loading="model.btnLoading">违规内容</el-button>
+        <el-button v-if="model.showSetBtn" type="danger" @click="submit" :loading="model.btnLoading">设置为违规内容</el-button>
       </span>
     </template>
   </el-dialog>
@@ -13,6 +13,7 @@
 <script setup>
 import { reactive, nextTick } from 'vue';
 import { setViolation } from '../../../api/leave-message';
+import toast from '../../../utils/toast';
 
 const model = reactive({
   visible: false,
@@ -46,7 +47,7 @@ const submit = async () => {
   try {
     let res = await setViolation(model.id);
     if (res && res.resCode == 0) {
-      //
+      toast.success('设置成功');
       emit('complete', model.index);
       close();
     }

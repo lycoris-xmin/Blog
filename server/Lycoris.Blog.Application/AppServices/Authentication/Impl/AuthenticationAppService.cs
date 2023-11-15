@@ -4,6 +4,9 @@ using Lycoris.Blog.Application.AppServices.Authentication.Dtos;
 using Lycoris.Blog.Application.AppServices.LoginTokens;
 using Lycoris.Blog.Application.Cached.Authentication;
 using Lycoris.Blog.Application.Cached.Authentication.Models;
+using Lycoris.Blog.Application.Cached.ScheduleQueue;
+using Lycoris.Blog.Application.Cached.ScheduleQueue.Models;
+using Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Models;
 using Lycoris.Blog.Application.Shared.Impl;
 using Lycoris.Blog.Core.Interceptors.Transactional;
 using Lycoris.Blog.EntityFrameworkCore.Common.Impl;
@@ -32,6 +35,7 @@ namespace Lycoris.Blog.Application.AppServices.Authentication.Impl
         private readonly Lazy<ILoginTokenAppService> _loginTokenService;
         private readonly Lazy<IRepository<UserLink, long>> _userLink;
         private readonly Lazy<IAuthenticationCacheService> _cache;
+        private readonly Lazy<IScheduleQueueCacheService> _scheduleQueueCache;
 
         /// <summary>
         /// 
@@ -44,13 +48,15 @@ namespace Lycoris.Blog.Application.AppServices.Authentication.Impl
                                         IRepository<LoginToken, int> loginToken,
                                         Lazy<ILoginTokenAppService> loginTokenService,
                                         Lazy<IRepository<UserLink, long>> userLink,
-                                        Lazy<IAuthenticationCacheService> cache)
+                                        Lazy<IAuthenticationCacheService> cache,
+                                        Lazy<IScheduleQueueCacheService> scheduleQueueCache)
         {
             _user = user;
             _loginToken = loginToken;
             _loginTokenService = loginTokenService;
             _userLink = userLink;
             _cache = cache;
+            _scheduleQueueCache = scheduleQueueCache;
         }
 
         /// <summary>
@@ -328,6 +334,8 @@ namespace Lycoris.Blog.Application.AppServices.Authentication.Impl
             });
 
             await _userLink.Value.CreateAsync(new UserLink() { Id = data.Id });
+
+            _scheduleQueueCache.Value.Enqueue(ScheduleTypeEnum.WebStatistics, new WebStatisticsQueueModel() { User = 1 });
         }
 
         /// <summary>

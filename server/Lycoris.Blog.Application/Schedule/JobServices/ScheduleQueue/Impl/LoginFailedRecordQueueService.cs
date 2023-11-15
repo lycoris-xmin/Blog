@@ -31,16 +31,16 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
         /// <returns></returns>
         public async Task JobDoWorkAsync(string? data, DateTime? time)
         {
-            var dto = data?.ToObject<LoginFailedRecordQueueModel>();
-            if (dto == null)
+            var model = data?.ToObject<LoginFailedRecordQueueModel>();
+            if (model == null)
                 return;
 
-            var record = await _loginFailedRecord.GetAll().Where(x => x.Email == dto.Email).FirstOrDefaultAsync() ?? new LoginFailedRecord() { Email = dto.Email };
+            var record = await _loginFailedRecord.GetAll().Where(x => x.Email == model.Email).FirstOrDefaultAsync() ?? new LoginFailedRecord() { Email = model.Email };
 
-            if (record.Count >= dto.Count && record.FreezeTime > DateTime.Now)
+            if (record.Count >= model.Count && record.FreezeTime > DateTime.Now)
                 return;
 
-            record.Count = dto.Count;
+            record.Count = model.Count;
 
             if (record.Count >= 5)
             {

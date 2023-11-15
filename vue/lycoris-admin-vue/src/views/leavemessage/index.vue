@@ -59,8 +59,12 @@
       </template>
 
       <template #action="{ row, index }">
-        <el-button v-if="row.originalContent" type="success" plain @click="audit(row, index)">查看</el-button>
-        <el-button v-else type="primary" plain>设置</el-button>
+        <el-button v-if="row.originalContent" type="success" plain @click="$audit(row, index)">审核</el-button>
+        <el-popconfirm v-else title="确定要删除吗?" @confirm="$deleteOne(index, row)">
+          <template #reference>
+            <el-button type="danger" plain :loading="row.deleteLoading">删除</el-button>
+          </template>
+        </el-popconfirm>
       </template>
     </lycoris-table>
 
@@ -72,7 +76,7 @@
 import { reactive, ref, onMounted } from 'vue';
 import PageLayout from '../layout/page-layout.vue';
 import LycorisTable from '../../components/lycoris-table/index.vue';
-import auditMessage from './components/audit-message.vue';
+import auditMessage from './components/message-audit.vue';
 import { getList, deleteMessage } from '../../api/leave-message';
 import swal from '../../utils/swal';
 import toast from '../../utils/toast';
@@ -130,7 +134,7 @@ const column = ref([
     column: 'action',
     name: '操作',
     align: 'center',
-    width: '100px'
+    width: '120px'
   }
 ]);
 
@@ -196,7 +200,7 @@ const $delete = async () => {
   }
 };
 
-const audit = (row, index) => {
+const $audit = (row, index) => {
   auditModalRef.value.show(row, index);
 };
 
@@ -207,7 +211,24 @@ const handleCurrentChange = pageIndex => {
 
 const auditComplete = index => {
   table.list[index].status = 1;
-  toast.success('设置成功');
+};
+
+const $deleteOne = async (row, index) => {
+  //
+  row.deleteLoading = true;
+  try {
+    let res = await deleteMessage([row.id]);
+    if (res && res.resCode == 0) {
+      toast.success('删除成功');
+      if (table.list.length == table.count || table.list.length < table.pageSize) {
+        table.list.splice(index, 1);
+      } else {
+        getTableList();
+      }
+    }
+  } finally {
+    row.deleteLoading = false;
+  }
 };
 </script>
 

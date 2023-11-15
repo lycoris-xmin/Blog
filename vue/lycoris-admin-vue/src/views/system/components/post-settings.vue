@@ -3,44 +3,44 @@
     <el-form>
       <el-row :gutter="24">
         <el-col :span="12">
-          <el-card>
-            <template #header>
-              <div class="card-header">
-                <span>编写设置</span>
-              </div>
-            </template>
-            <el-col :span="10">
-              <el-form-item label="自动保存">
-                <el-switch v-model="model.autoSave" inline-prompt style="--el-switch-off-color: #ff4949" active-text="开" inactive-text="关" />
-              </el-form-item>
-              <el-form-item label="保存间隔">
-                <el-input v-model="model.second" type="number" placeholder="0"> <template #append>秒</template></el-input>
-              </el-form-item>
-              <el-form-item label="博客文章随机图"></el-form-item>
-            </el-col>
-            <div class="post-random-img-group">
-              <div class="random-img-group flex-start-center">
-                <div class="random-img" v-for="(item, index) in model.images" :key="index">
-                  <img :src="item" />
-                  <div class="img-wrap">
-                    <div class="wrap-body flex-center-center">
-                      <el-icon :size="30" @click="deleteRandowImg(index)">
-                        <component :is="'delete'"></component>
+          <div class="card">
+            <div class="card-title">
+              <span>编写设置</span>
+            </div>
+            <div class="card-body">
+              <el-col :span="10">
+                <el-form-item label="自动保存">
+                  <el-switch v-model="model.autoSave" inline-prompt style="--el-switch-off-color: #ff4949" active-text="开" inactive-text="关" />
+                </el-form-item>
+                <el-form-item label="保存间隔">
+                  <el-input v-model="model.second" type="number" placeholder="0"> <template #append>秒</template></el-input>
+                </el-form-item>
+                <el-form-item label="博客文章随机图"></el-form-item>
+              </el-col>
+              <div class="post-random-img-group">
+                <div class="random-img-group flex-start-center">
+                  <div class="random-img" v-for="(item, index) in model.images" :key="index">
+                    <img :src="item" />
+                    <div class="img-wrap">
+                      <div class="wrap-body flex-center-center">
+                        <el-icon :size="30" @click="deleteRandowImg(index)">
+                          <component :is="'delete'"></component>
+                        </el-icon>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="random-img" v-show="model.images.length < 6">
+                    <div class="upload-body flex-center-center" @click="addRandowImg">
+                      <input type="file" accept="image/*" ref="uploadRandomImage" @change="randomImageChange" hidden />
+                      <el-icon :size="30">
+                        <component :is="'plus'"></component>
                       </el-icon>
                     </div>
                   </div>
                 </div>
-                <div class="random-img" v-show="model.images.length < 6">
-                  <div class="upload-body flex-center-center" @click="addRandowImg">
-                    <input type="file" accept="image/*" ref="uploadRandomImage" @change="randomImageChange" hidden />
-                    <el-icon :size="30">
-                      <component :is="'plus'"></component>
-                    </el-icon>
-                  </div>
-                </div>
               </div>
             </div>
-          </el-card>
+          </div>
         </el-col>
       </el-row>
       <div class="submit">
@@ -144,10 +144,8 @@ const submit = async () => {
 </script>
 
 <style lang="scss" scoped>
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.card-title {
+  padding-bottom: 15px;
 }
 
 .post-random-img-group {

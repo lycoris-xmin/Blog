@@ -1,4 +1,5 @@
 ﻿using Lycoris.Blog.Server.PropertyAttribute;
+using System.ComponentModel.DataAnnotations;
 
 namespace Lycoris.Blog.Server.Models.Authentication
 {
@@ -10,7 +11,7 @@ namespace Lycoris.Blog.Server.Models.Authentication
         /// <summary>
         /// 
         /// </summary>
-        [PasswordValid(Required = true)]
+        [Required, PasswordRegex]
         public string? Password { get; set; }
     }
 }

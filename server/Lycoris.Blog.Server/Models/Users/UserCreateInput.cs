@@ -1,12 +1,12 @@
 ﻿using Lycoris.Blog.Server.PropertyAttribute;
 using System.ComponentModel.DataAnnotations;
 
-namespace Lycoris.Blog.Server.Models.Authentication
+namespace Lycoris.Blog.Server.Models.Users
 {
     /// <summary>
     /// 
     /// </summary>
-    public class LoginValidateInput
+    public class UserCreateInput
     {
         /// <summary>
         /// 邮箱
@@ -15,9 +15,14 @@ namespace Lycoris.Blog.Server.Models.Authentication
         public string? Email { get; set; }
 
         /// <summary>
-        /// 密码
+        /// 用户昵称
         /// </summary>
         [Required]
+        public string? NickName { get; set; }
+
+        /// <summary>
+        /// 密码
+        /// </summary>
         public string? Password { get; set; }
     }
 }

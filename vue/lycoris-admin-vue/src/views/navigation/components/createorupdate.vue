@@ -84,13 +84,13 @@ const props = defineProps({
 const emit = defineEmits(['complete']);
 
 const beforeClose = done => {
+  done();
+
   //
   model.id = '';
   model.name = '';
   model.group = '';
   model.domain = '';
-
-  done();
 };
 
 const show = ({ id, name, group, domain }, index) => {

@@ -19,6 +19,7 @@ using Lycoris.Blog.Application.SignalR.Shared.Models;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
 using Lycoris.Blog.Model.Contexts;
 using Lycoris.Common.Extensions;
+using Org.BouncyCastle.Math.EC.Rfc7748;
 
 namespace Lycoris.Blog.Application
 {
@@ -49,7 +50,8 @@ namespace Lycoris.Blog.Application
             CreateMap<RequestLogQueueModel, RequestLog>()
                   .ForMember(x => x.Id, opt => opt.Ignore())
                   .ForMember(x => x.Ip, opt => opt.Ignore())
-                  .ForMember(x => x.IpAddress, opt => opt.Ignore());
+                  .ForMember(x => x.IpAddress, opt => opt.Ignore())
+                  .ForMember(x => x.Headers, opt => opt.MapFrom(src => src.Headers.Count > 0 ? src.Headers.ToJson() : ""));
 
             CreateMap<Talk, MasterTalkDataDto>();
 

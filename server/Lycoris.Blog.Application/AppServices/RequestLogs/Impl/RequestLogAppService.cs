@@ -43,8 +43,6 @@ namespace Lycoris.Blog.Application.AppServices.RequestLogs.Impl
                                     .WhereIf(input.Elapsed.HasValue && input.Elapsed.Value == 2, x => x.ElapsedMilliseconds > 2000 && x.ElapsedMilliseconds <= 5000)
                                     .WhereIf(input.Elapsed.HasValue && input.Elapsed.Value == 3, x => x.ElapsedMilliseconds > 5000 && x.ElapsedMilliseconds <= 10000)
                                     .WhereIf(input.Elapsed.HasValue && input.Elapsed.Value == 4, x => x.ElapsedMilliseconds > 10000)
-                                    .WhereIf(input.Status.HasValue && input.Status.Value == 1, x => x.StatusCode >= 200 && x.StatusCode < 300)
-                                    .WhereIf(input.Status.HasValue && input.Status.Value == 2, x => x.StatusCode >= 300)
                                     .WhereIf(input.Success.HasValue, x => x.Success == input.Success!.Value);
 
             var count = await filter.CountAsync();
@@ -59,6 +57,7 @@ namespace Lycoris.Blog.Application.AppServices.RequestLogs.Impl
                                   HttpMethod = x.Method,
                                   Route = x.Route,
                                   Success = x.Success,
+                                  StatusCode = x.StatusCode,
                                   ElapsedMilliseconds = x.ElapsedMilliseconds,
                                   Ip = x.Ip,
                                   IpAddress = x.IpAddress,
@@ -78,7 +77,6 @@ namespace Lycoris.Blog.Application.AppServices.RequestLogs.Impl
         public async Task<RequestLogInfoDto> GetInfoAsync(long id)
         {
             var data = await _requestLog.GetAsync(id) ?? throw new FriendlyException("数据不存在或已被删除");
-
             return data.ToMap<RequestLogInfoDto>();
         }
 

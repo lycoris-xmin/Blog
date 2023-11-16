@@ -21,7 +21,19 @@
             <div class="flex-item-value">{{ model.ipAddress }}</div>
           </div>
         </div>
-        <div class="request-flex-item border-bottom flex-start-center">
+        <div class="request-flex-item border-bottom flex-start-center" v-if="model.headers.length">
+          <div class="flex-item-title w-100">请求头</div>
+          <div class="flex-item-value" style="width: 100%; overflow: auto">
+            <ul class="request-headers">
+              <li v-for="item in model.headers" :key="item.key">
+                <span>{{ item.key }}</span>
+                :
+                <span>{{ item.value }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="request-flex-item border-bottom flex-start-center" v-if="model.params">
           <div class="flex-item-title w-100">请求体</div>
           <div class="flex-item-value" style="width: 100%; overflow: auto">
             <pre v-html="syntaxHighlight(model.params)"></pre>
@@ -69,6 +81,7 @@ const model = reactive({
   id: '',
   httpMethod: '',
   route: '',
+  headers: [],
   params: '',
   success: true,
   statusCode: 0,
@@ -87,24 +100,27 @@ const getLogInfo = async id => {
     if (res && res.resCode == 0) {
       return {
         statusCode: res.data.statusCode,
+        headers: res.data.headers,
         params: res.data.params,
         response: res.data.response,
         exception: res.data.exception,
         stackTrace: res.data.stackTrace
       };
     }
-  } catch (error) {
+  } catch {
     return false;
   }
 };
 
 const show = async row => {
   if (model.id != row.id) {
+    model.headers = [];
     let result = await getLogInfo(row.id);
 
     if (!result) {
       model.id = '';
       model.route = '';
+      model.headers = [];
       model.params = '';
       model.success = false;
       model.statusCode = 0;
@@ -121,6 +137,16 @@ const show = async row => {
     model.id = row.id;
     model.httpMethod = row.httpMethod;
     model.route = row.route;
+
+    if (result.headers && Object.keys(result.headers).length > 0) {
+      for (let item in result.headers) {
+        model.headers.push({
+          key: item,
+          value: result.headers[item]
+        });
+      }
+    }
+
     model.success = row.success;
     model.elapsedMilliseconds = row.elapsedMilliseconds;
     model.ip = row.ip;
@@ -231,6 +257,7 @@ defineExpose({
 
     pre {
       padding: 5px;
+      font-family: Consolas, monaco, monospace;
 
       :deep(span) {
         overflow: hidden;
@@ -256,6 +283,36 @@ defineExpose({
 
       :deep(.null) {
         color: var(--color-pink);
+      }
+    }
+
+    .request-headers {
+      padding: 5px;
+      li {
+        list-style: none;
+        display: block;
+        overflow: hidden;
+        word-break: break-all;
+        padding: 2px 0;
+
+        &:first-child {
+          padding-top: 0;
+        }
+
+        &:last-child {
+          padding-bottom: 0;
+        }
+
+        > span {
+          line-height: 14px;
+          &:last-child {
+            cursor: pointer;
+            transition: all 0.3s;
+            &:hover {
+              color: var(--color-primary);
+            }
+          }
+        }
       }
     }
   }

@@ -85,6 +85,7 @@ namespace Lycoris.Blog.Server.Middlewares
                 Path = path,
                 RequestIp = requestIp,
                 Request = body ?? "",
+                RequestHeaders = requestHeaders,
             };
 
             context.Response.OnCompleted(() => ResponseOnCompletedAsync(responseLog));
@@ -282,45 +283,46 @@ namespace Lycoris.Blog.Server.Middlewares
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="responseLog"></param>
+        /// <param name="logTmp"></param>
         /// <returns></returns>
-        private Task ResponseOnCompletedAsync(ResponseLogTemp responseLog)
+        private Task ResponseOnCompletedAsync(ResponseLogTemp logTmp)
         {
             var log = new StringBuilder();
-            var temp = responseLog.ResponseHeaders.Select(x => $"{x.Key}: {x.Value}").ToArray();
-            log.AppendFormat("{0} -> response headers:[{1}]", responseLog.HttpMethod, string.Join("; ", temp));
+            var temp = logTmp.ResponseHeaders.Select(x => $"{x.Key}: {x.Value}").ToArray();
+            log.AppendFormat("{0} -> response headers:[{1}]", logTmp.HttpMethod, string.Join("; ", temp));
             _logger.Info(log.ToString());
 
             log.Clear();
 
-            if (!responseLog.Response.IsNullOrEmpty())
+            if (!logTmp.Response.IsNullOrEmpty())
             {
-                log.AppendFormat("{0} -> response body", responseLog.HttpMethod);
+                log.AppendFormat("{0} -> response body", logTmp.HttpMethod);
                 log.Append(" - ");
-                log.Append(responseLog.Response);
+                log.Append(logTmp.Response);
             }
             else
-                log.AppendFormat("{0} response", responseLog.HttpMethod);
+                log.AppendFormat("{0} response", logTmp.HttpMethod);
 
-            log.AppendFormat(" - {0} - ", responseLog.StatusCode);
+            log.AppendFormat(" - {0} - ", logTmp.StatusCode);
 
-            var elapsedMilliseconds = (DateTime.Now - responseLog.RequestTime).TotalMilliseconds;
+            var elapsedMilliseconds = (DateTime.Now - logTmp.RequestTime).TotalMilliseconds;
 
             log.AppendFormat("{0}ms", elapsedMilliseconds.ToString("0.000"));
             _logger.Info(log.ToString());
 
             RequestLog(new RequestLogQueueModel()
             {
-                Method = responseLog.HttpMethod.ToUpper(),
-                Route = responseLog.Path,
-                Params = responseLog.HttpMethod == "get" ? "" : (responseLog.Request ?? ""),
-                StatusCode = responseLog.StatusCode,
-                Response = responseLog.Response ?? "",
+                Method = logTmp.HttpMethod.ToUpper(),
+                Route = logTmp.Path,
+                Headers = logTmp.RequestHeaders,
+                Params = logTmp.HttpMethod == "get" ? "" : (logTmp.Request ?? ""),
+                StatusCode = logTmp.StatusCode,
+                Response = logTmp.Response ?? "",
                 ElapsedMilliseconds = (long)elapsedMilliseconds,
-                Ip = responseLog.RequestIp,
-                Exception = responseLog.Exception,
-                StackTrace = responseLog.StackTrace,
-                CreateTime = responseLog.RequestTime
+                Ip = logTmp.RequestIp,
+                Exception = logTmp.Exception,
+                StackTrace = logTmp.StackTrace,
+                CreateTime = logTmp.RequestTime
             });
 
             return Task.CompletedTask;
@@ -359,6 +361,8 @@ namespace Lycoris.Blog.Server.Middlewares
             public string HttpMethod { get; set; } = string.Empty;
 
             public string Path { get; set; } = string.Empty;
+
+            public Dictionary<string, string> RequestHeaders { get; set; } = new Dictionary<string, string>();
 
             public DateTime RequestTime { get; set; }
 

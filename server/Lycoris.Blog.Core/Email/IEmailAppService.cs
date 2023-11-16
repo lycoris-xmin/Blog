@@ -1,4 +1,5 @@
 ﻿using Lycoris.Blog.Core.Email.DataModel;
+using Lycoris.Blog.Model.Configurations;
 using Lycoris.Blog.Model.Exceptions;
 
 namespace Lycoris.Blog.Core.Email
@@ -12,6 +13,15 @@ namespace Lycoris.Blog.Core.Email
         /// <returns></returns>
         /// <exception cref="FriendlyException"></exception>
         Task SendTestEmailAsync(string emailAddress);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="emailAddress"></param>
+        /// <param name="option"></param>
+        /// <param name="basic"></param>
+        /// <returns></returns>
+        Task SendTestEmailAsync(string emailAddress, EmailSettingsConfiguration option, WebSettingsConfiguration? basic = null);
 
         /// <summary>
         /// 邮箱验证码

@@ -12,6 +12,7 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
     [TableIndex("StatusCode")]
     [TableIndex("Success")]
     [TableIndex("ElapsedMilliseconds")]
+    [TableIndex("CreateTime")]
     public class RequestLog : MySqlBaseEntity<long>
     {
         /// <summary>
@@ -31,6 +32,11 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
         /// </summary>
         [TableColumn(StringLength = 255)]
         public string Route { get; set; } = string.Empty;
+
+        /// <summary>
+        /// 请求头
+        /// </summary>
+        public string Headers { get; set; } = string.Empty;
 
         /// <summary>
         /// 请求参数

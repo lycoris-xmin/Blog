@@ -24,5 +24,10 @@
         /// 
         /// </summary>
         public DateTime BuildTime { get; set; } = new DateTime(2000, 1, 1);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string DefaultAvatar { get; set; } = string.Empty;
     }
 }

@@ -13,7 +13,6 @@
 
     <lycoris-table
       ref="tableRef"
-      :show-selection="true"
       :column="column"
       :page-index="table.pageIndex"
       :table-height="'calc(100vh - 385px)'"

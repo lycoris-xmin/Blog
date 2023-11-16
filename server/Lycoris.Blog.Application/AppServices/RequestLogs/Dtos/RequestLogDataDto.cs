@@ -10,6 +10,8 @@
 
         public bool Success { get; set; }
 
+        public uint StatusCode { get; set; }
+
         public int ElapsedMilliseconds { get; set; }
 
         public uint Ip { get; set; }

@@ -254,8 +254,6 @@ const getTableList = async (autoLoading = true) => {
           model.recommendSwitchLoading.push(false);
         });
       }
-
-      toast.success('查询成功');
     }
   } finally {
     if (autoLoading) {

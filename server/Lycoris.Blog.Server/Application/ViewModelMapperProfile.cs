@@ -130,11 +130,13 @@ namespace Lycoris.Blog.Server.Application
 
             CreateMap<PublishCommentInput, CreatePostCommentDto>();
 
-            CreateMap<RequestLogListInput, GetRequestLogListFilter>().ForMember(x => x.Ip, opt => opt.MapFrom(src => IPAddressHelper.Ipv4ToUInt32(src.Ip ?? "")));
+            CreateMap<RequestLogListInput, GetRequestLogListFilter>()
+                .ForMember(x => x.Ip, opt => opt.MapFrom(src => IPAddressHelper.Ipv4ToUInt32(src.Ip ?? "")));
 
             CreateMap<RequestLogDataDto, RequestLogDataViewModel>().ForMember(x => x.Ip, opt => opt.MapFrom(src => IPAddressHelper.UInt32ToIpv4(src.Ip)));
 
-            CreateMap<RequestLogInfoDto, RequestLogInfoViewModel>();
+            CreateMap<RequestLogInfoDto, RequestLogInfoViewModel>()
+                .ForMember(x => x.Headers, opt => opt.MapFrom(src => src.Headers.ToObject<Dictionary<string, string>>()));
 
             CreateMap<SavePostSettingsInput, PostSettingConfiguration>()
                 .ForMember(x => x.Second, opt => opt.MapFrom(src => src.Second ?? 0))
@@ -240,7 +242,7 @@ namespace Lycoris.Blog.Server.Application
             CreateMap<AccessControlDataDto, AccessControlDataViewModel>()
                 .ForMember(x => x.Ip, opt => opt.MapFrom(src => IPAddressHelper.UInt32ToIpv4(src.Ip)));
 
-            CreateMap<AccessControlLogListInput, GetAccessControlLogListFilter>().ForMember(x => x.AccessControlId, opt => opt.MapFrom(src => src.Id.HasValue ? src.Id.Value : 0));
+            CreateMap<AccessControlLogListInput, GetAccessControlLogListFilter>().ForMember(x => x.AccessControlId, opt => opt.MapFrom(src => src.Id ?? 0));
 
             CreateMap<AccessControlLogDataDto, AccessControlLogDataViewModel>();
 
@@ -253,6 +255,8 @@ namespace Lycoris.Blog.Server.Application
             CreateMap<UserAuditInput, AuditUserDto>();
 
             CreateMap<UserCreateInput, CreateUserDto>();
+
+            CreateMap<EmailServiceTestInput, EmailSettingsConfiguration>();
         }
 
         /// <summary>

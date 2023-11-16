@@ -13,6 +13,9 @@
       "level": "info"
     }
   },
+  "uploadAccept": {
+    "imgAccept": ".jpg,.png,.bmp,.jpeg,.gif"
+  },
   "cryptoKey": "as-Crypto-js",
   "dashboardUrlPrefix": "/little/brokenstation",
   "build": {

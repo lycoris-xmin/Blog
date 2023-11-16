@@ -1,6 +1,8 @@
 ﻿using Lycoris.AutoMapper.Extensions;
 using Lycoris.Blog.Application.AppServices.Configurations;
 using Lycoris.Blog.Application.AppServices.FileManage;
+using Lycoris.Blog.Common;
+using Lycoris.Blog.Core.Email;
 using Lycoris.Blog.Core.Showdoc;
 using Lycoris.Blog.EntityFrameworkCore.Constants;
 using Lycoris.Blog.Model.Configurations;
@@ -12,6 +14,7 @@ using Lycoris.Blog.Server.Models.Configurations;
 using Lycoris.Blog.Server.Models.Shared;
 using Lycoris.Blog.Server.Shared;
 using Lycoris.Common.Extensions;
+using Lycoris.Common.Helper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Lycoris.Blog.Server.Controllers
@@ -54,10 +57,12 @@ namespace Lycoris.Blog.Server.Controllers
         /// <summary>
         /// 保存网站基础配置
         /// </summary>
+        /// <param name="input"></param>
+        /// <param name="fileManage"></param>
         /// <returns></returns>
         [HttpPost("Web")]
-        [Consumes("application/json"), Produces("application/json")]
-        public async Task<BaseOutput> SaveWebSettings([FromBody] SaveWebSettingsInput input)
+        [Consumes("multipart/form-data"), Produces("application/json")]
+        public async Task<DataOutput<WebSettingsConfiguration>> SaveWebSettings([FromForm] SaveWebSettingsInput input, [FromServices] IFileManageAppService fileManage)
         {
             var config = await _configuration.GetConfigurationAsync<WebSettingsConfiguration>(AppConfig.WebSettings);
 
@@ -70,8 +75,11 @@ namespace Lycoris.Blog.Server.Controllers
             if (input.BuildTime.HasValue)
                 config!.BuildTime = input.BuildTime!.Value;
 
+            if (input.Avatar != null)
+                config!.DefaultAvatar = await fileManage.UploadFileAsync(input.Avatar, StaticsFilePath.Avatar);
+
             await _configuration.SaveConfigurationAsync(AppConfig.WebSettings, config!);
-            return Success();
+            return Success(config);
         }
 
         /// <summary>
@@ -150,6 +158,21 @@ namespace Lycoris.Blog.Server.Controllers
                 config!.UseSSL = input.UseSSL!.Value;
 
             await _configuration.SaveConfigurationAsync(AppConfig.EmailSettings, input.ToMap<EmailSettingsConfiguration>());
+            return Success();
+        }
+
+        /// <summary>
+        /// 发送测试邮件
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        [HttpPost("Email/Test")]
+        [Consumes("application/json"), Produces("application/json")]
+        public async Task<BaseOutput> EmailServiceTest([FromBody] EmailServiceTestInput input, [FromServices] IEmailAppService email)
+        {
+            var option = input.ToMap<EmailSettingsConfiguration>();
+            await email.SendTestEmailAsync(input.TestEmail!, option);
             return Success();
         }
 

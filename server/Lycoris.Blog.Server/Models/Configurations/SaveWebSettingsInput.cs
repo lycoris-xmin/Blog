@@ -24,5 +24,10 @@
         /// 
         /// </summary>
         public DateTime? BuildTime { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public IFormFile? Avatar { get; set; }
     }
 }

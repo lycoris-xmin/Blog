@@ -31,7 +31,7 @@
                   </div>
                   <div class="random-img" v-show="model.images.length < 6">
                     <div class="upload-body flex-center-center" @click="addRandowImg">
-                      <input type="file" accept="image/*" ref="uploadRandomImage" @change="randomImageChange" hidden />
+                      <input type="file" :accept="uploadAccept.imgAccept" ref="uploadRandomImage" @change="randomImageChange" hidden />
                       <el-icon :size="30">
                         <component :is="'plus'"></component>
                       </el-icon>
@@ -53,6 +53,7 @@
 <script setup>
 import { reactive, ref, onMounted } from 'vue';
 import { getPostSettings, savePostSettings, uploadFile } from '../../../api/configuration';
+import { uploadAccept } from '../../../config.json';
 import toast from '../../../utils/toast';
 
 const uploadRandomImage = ref();

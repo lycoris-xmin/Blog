@@ -28,6 +28,11 @@
         /// <summary>
         /// 
         /// </summary>
+        public uint StatusCode { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public int ElapsedMilliseconds { get; set; }
 
         /// <summary>

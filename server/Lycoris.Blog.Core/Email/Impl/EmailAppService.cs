@@ -33,12 +33,20 @@ namespace Lycoris.Blog.Core.Email.Impl
         /// <exception cref="FriendlyException"></exception>
         public async Task SendTestEmailAsync(string emailAddress)
         {
-            var option = await _configuration.GetConfigurationAsync<EmailSettingsConfiguration>(AppConfig.EmailSettings)
-                ?? throw new FriendlyException("");
+            var (option, basic) = await GetAllConfigurationAsync();
+            await SendTestEmailAsync(emailAddress, option, basic);
+        }
 
-            var basic = await _configuration.GetConfigurationAsync<WebSettingsConfiguration>(AppConfig.WebSettings)
-                ?? throw new FriendlyException("邮件服务暂时不能使用,请稍候再试", $"未获取到有效网站域名配置,无法发送邮箱认证邮件");
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="emailAddress"></param>
+        /// <param name="option"></param>
+        /// <param name="basic"></param>
+        /// <returns></returns>
+        /// <exception cref="FriendlyException"></exception>
+        public async Task SendTestEmailAsync(string emailAddress, EmailSettingsConfiguration option, WebSettingsConfiguration? basic = null)
+        {
             try
             {
                 var message = new MimeMessage();
@@ -56,8 +64,11 @@ namespace Lycoris.Blog.Core.Email.Impl
                 doc.Load(AppSettings.Path.EmailTemplate.EmailTest);
 
                 doc.GetElementbyId("emailUser").InnerHtml = option.EmailSignature;
-                doc.GetElementbyId("web-home-link").SetAttributeValue("href", basic.WebPath);
-                doc.GetElementbyId("web-home").InnerHtml = basic.WebName;
+                if (basic != null)
+                {
+                    doc.GetElementbyId("web-home-link").SetAttributeValue("href", basic.WebPath);
+                    doc.GetElementbyId("web-home").InnerHtml = basic.WebName;
+                }
 
                 string htmlStr = "";
                 using (var sr = new MemoryStream())
@@ -93,11 +104,8 @@ namespace Lycoris.Blog.Core.Email.Impl
         /// <returns></returns>
         public async Task SendEmailCaptchaAsync(SendEmailCaptchaDataModel input)
         {
-            var option = await _configuration.GetConfigurationAsync<EmailSettingsConfiguration>(AppConfig.EmailSettings)
-                ?? throw new FriendlyException("");
+            var (option, basic) = await GetAllConfigurationAsync();
 
-            var basic = await _configuration.GetConfigurationAsync<WebSettingsConfiguration>(AppConfig.WebSettings)
-                ?? throw new FriendlyException("邮件服务暂时不能使用,请稍候再试", $"未获取到有效网站域名配置,无法发送邮箱认证邮件");
             try
             {
                 var message = new MimeMessage();
@@ -166,11 +174,7 @@ namespace Lycoris.Blog.Core.Email.Impl
         /// <returns></returns>
         public async Task SendResetPasswordEmailAsync(string nickName, string emailAddress, long emailValidId)
         {
-            var option = await _configuration.GetConfigurationAsync<EmailSettingsConfiguration>(AppConfig.EmailSettings)
-                ?? throw new FriendlyException("");
-
-            var basic = await _configuration.GetConfigurationAsync<WebSettingsConfiguration>(AppConfig.WebSettings)
-                ?? throw new FriendlyException("邮件服务暂时不能使用,请稍候再试", $"未获取到有效网站域名配置,无法发送邮箱认证邮件");
+            var (option, basic) = await GetAllConfigurationAsync();
 
             try
             {
@@ -233,8 +237,7 @@ namespace Lycoris.Blog.Core.Email.Impl
         /// <returns></returns>
         public async Task SendAsync(SendEmailDataModel input)
         {
-            var option = await _configuration.GetConfigurationAsync<EmailSettingsConfiguration>(AppConfig.EmailSettings)
-                ?? throw new FriendlyException("");
+            var option = await GetEmailConfigurationAsync();
 
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress(option.EmailUser ?? "", option.EmailAddress));
@@ -276,6 +279,36 @@ namespace Lycoris.Blog.Core.Email.Impl
             message.Body = multipart;
 
             await SendAsync(option, message);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="FriendlyException"></exception>
+        private async Task<EmailSettingsConfiguration> GetEmailConfigurationAsync()
+        {
+            var option = await _configuration.GetConfigurationAsync<EmailSettingsConfiguration>(AppConfig.EmailSettings)
+                ?? throw new FriendlyException("邮件服务暂时不能使用,请稍候再试", "未获取到有效邮件服务配置");
+
+            // option 验证
+
+            return option;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="FriendlyException"></exception>
+        private async Task<(EmailSettingsConfiguration option, WebSettingsConfiguration basic)> GetAllConfigurationAsync()
+        {
+            var option = await GetEmailConfigurationAsync();
+
+            var basic = await _configuration.GetConfigurationAsync<WebSettingsConfiguration>(AppConfig.WebSettings)
+                ?? throw new FriendlyException("邮件服务暂时不能使用,请稍候再试", $"未获取到有效网站域名配置,无法发送邮箱认证邮件");
+
+            return (option, basic);
         }
 
         /// <summary>

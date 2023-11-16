@@ -48,7 +48,9 @@
                 <div class="form-group">
                   <div class="form-text">
                     <label>静态文件保留</label>
+                    <p style="color: var(--color-danger)">*仅会清理被标记为未使用的文件</p>
                   </div>
+
                   <el-input v-model="systemFileClear.staticFile" type="number" @input="value => fileClearInput(value, 'staticFile', 1, 30)">
                     <template #append>天</template>
                   </el-input>

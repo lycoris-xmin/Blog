@@ -1,6 +1,5 @@
 ﻿using Lycoris.Autofac.Extensions;
 using Lycoris.AutoMapper.Extensions;
-using Lycoris.Blog.Application.AppServices.FileManage;
 using Lycoris.Blog.Application.AppServices.Posts.Dtos;
 using Lycoris.Blog.Application.Cached.ScheduleQueue;
 using Lycoris.Blog.Application.Cached.ScheduleQueue.Models;
@@ -12,7 +11,6 @@ using Lycoris.Blog.EntityFrameworkCore.Tables;
 using Lycoris.Blog.Model.Exceptions;
 using Lycoris.Blog.Model.Global.Output;
 using Lycoris.Common.Extensions;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -24,17 +22,14 @@ namespace Lycoris.Blog.Application.AppServices.Posts.Impl
     {
         private readonly IRepository<Post, long> _post;
         private readonly IRepository<Category, int> _category;
-        private readonly Lazy<IFileManageAppService> _fileManage;
         private readonly Lazy<IScheduleQueueCacheService> _scheduleQueue;
 
         public PostAppService(IRepository<Post, long> post,
                               IRepository<Category, int> category,
-                              Lazy<IFileManageAppService> fileManage,
                               Lazy<IScheduleQueueCacheService> scheduleQueue)
         {
             _post = post;
             _category = category;
-            _fileManage = fileManage;
             _scheduleQueue = scheduleQueue;
         }
 
@@ -239,16 +234,6 @@ namespace Lycoris.Blog.Application.AppServices.Posts.Impl
         }
 
         /// <summary>
-        /// Markdown插件上传文件
-        /// </summary>
-        /// <param name="file"></param>
-        /// <returns></returns>
-        public async Task<string> MarkdownUploadAsync(IFormFile file)
-        {
-            return await _fileManage.Value.UploadFileAsync(file, "/post/markdown");
-        }
-
-        /// <summary>
         /// 保存文章
         /// </summary>
         /// <param name="input"></param>
@@ -262,11 +247,7 @@ namespace Lycoris.Blog.Application.AppServices.Posts.Impl
             if (data.Category != input.Category && input.Category > 0 && !await _category.ExistsAsync(x => x.Id == input.Category!.Value))
                 throw new FriendlyException("文章分类不存在，请刷新文章分类选项后重新选择");
 
-            if (input.File != null)
-            {
-                input.Icon = await _fileManage.Value.UploadFileAsync(input.File, "/post/icon");
-            }
-            else if (input.Icon.IsNullOrEmpty() && data.Category != input.Category && input.Category > 0)
+            if (input.Icon.IsNullOrEmpty() && data.Category != input.Category && input.Category > 0)
                 input.Icon = await _category.GetSelectAsync(input.Category!.Value, x => x.Icon);
 
             data = data.Id == 0 ? await CreateAsync(input, data) : await UpdateAsync(input, data);

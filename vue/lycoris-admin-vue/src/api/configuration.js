@@ -6,8 +6,8 @@ export const getWebSettings = () => {
   return request.get(`${controller}/web`);
 };
 
-export const saveWebSettings = ({ webName, webPath, adminPath, buildTime }) => {
-  return request.post(`${controller}/web`, { webName, webPath, adminPath, buildTime });
+export const saveWebSettings = ({ webName, webPath, adminPath, buildTime, avatar }) => {
+  return request.post(`${controller}/web`, { webName, webPath, adminPath, buildTime, avatar }, true);
 };
 
 export const getPostSettings = () => {
@@ -28,6 +28,10 @@ export const getEmailSettings = () => {
 
 export const saveEmailSettings = ({ emailAddress, emailUser, stmpServer, stmpPort, emailPassword, emailSignature, useSSL }) => {
   return request.post(`${controller}/email`, { emailAddress, emailUser, stmpServer, stmpPort, emailPassword, emailSignature, useSSL });
+};
+
+export const sendTestEmail = ({ emailAddress, emailUser, stmpServer, stmpPort, emailPassword, emailSignature, useSSL, testEmail }) => {
+  return request.post(`${controller}/email/test`, { emailAddress, emailUser, stmpServer, stmpPort, emailPassword, emailSignature, useSSL, testEmail });
 };
 
 export const getStaticFileSettings = () => {

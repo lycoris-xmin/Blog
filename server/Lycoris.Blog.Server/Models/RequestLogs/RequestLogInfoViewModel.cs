@@ -11,6 +11,11 @@
         public uint StatusCode { get; set; }
 
         /// <summary>
+        /// 
+        /// </summary>
+        public Dictionary<string, string>? Headers { get; set; }
+
+        /// <summary>
         /// 请求参数
         /// </summary>
         public string? Params { get; set; }

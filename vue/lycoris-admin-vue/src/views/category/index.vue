@@ -120,8 +120,6 @@ const getTableList = async () => {
     if (res && res.resCode == 0) {
       table.count = res.data.count;
       table.list = res.data.list;
-
-      toast.success('查询成功');
     }
   } finally {
     table.loading = false;

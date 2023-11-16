@@ -1,5 +1,4 @@
 ﻿using Lycoris.Blog.Application.Shared;
-using Microsoft.AspNetCore.Http;
 
 namespace Lycoris.Blog.Application.AppServices.WebSite
 {
@@ -35,13 +34,5 @@ namespace Lycoris.Blog.Application.AppServices.WebSite
         /// <param name="value"></param>
         /// <returns></returns>
         Task SaveAboutAsync<T>(string configId, T value) where T : class;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="file"></param>
-        /// <param name="remotePath"></param>
-        /// <returns></returns>
-        Task<string> UploadFileAsync(IFormFile file, string remotePath);
     }
 }

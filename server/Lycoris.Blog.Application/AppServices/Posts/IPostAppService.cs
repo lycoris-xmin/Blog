@@ -1,7 +1,6 @@
 ﻿using Lycoris.Blog.Application.AppServices.Posts.Dtos;
 using Lycoris.Blog.Application.Shared;
 using Lycoris.Blog.Application.Shared.Dtos;
-using Microsoft.AspNetCore.Http;
 
 namespace Lycoris.Blog.Application.AppServices.Posts
 {
@@ -58,13 +57,6 @@ namespace Lycoris.Blog.Application.AppServices.Posts
         /// <param name="id"></param>
         /// <returns></returns>
         Task<PostInfoDto> GetInfoAsync(long id);
-
-        /// <summary>
-        /// Markdown插件上传文件
-        /// </summary>
-        /// <param name="file"></param>
-        /// <returns></returns>
-        Task<string> MarkdownUploadAsync(IFormFile file);
 
         /// <summary>
         /// 保存文章

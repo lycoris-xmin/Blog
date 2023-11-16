@@ -15,9 +15,9 @@
         </el-form-item>
 
         <el-form-item class="form-group" label="响应状态">
-          <el-select v-model="model.status" class="m-2" placeholder="- 全部 -" clearable>
-            <el-option label="正常" value="1" />
-            <el-option label="异常" value="2" />
+          <el-select v-model="model.success" class="m-2" placeholder="- 全部 -" clearable>
+            <el-option label="正常" :value="true" />
+            <el-option label="异常" :value="false" />
           </el-select>
         </el-form-item>
 
@@ -60,8 +60,14 @@
       </template>
 
       <template #success="{ value }">
-        <el-tag v-if="value">正常</el-tag>
-        <el-tag type="danger" v-else>异常</el-tag>
+        <el-tag v-if="value"> 正常 </el-tag>
+        <el-tag type="danger" v-else> 异常 </el-tag>
+      </template>
+
+      <template #statusCode="{ value }">
+        <el-tag type="success" v-if="value == 200">{{ value }}</el-tag>
+        <el-tag type="warning" v-else-if="value == 401 || value == 403 || value == 415"> {{ value }} </el-tag>
+        <el-tag type="danger" v-else> {{ value }} </el-tag>
       </template>
 
       <template #elapsedMilliseconds="{ value }">
@@ -104,7 +110,7 @@ const model = reactive({
   endTime: '',
   ip: '',
   route: '',
-  status: '',
+  success: '',
   elapsed: ''
 });
 
@@ -117,7 +123,14 @@ const column = ref([
   {
     column: 'success',
     name: '响应状态',
+    align: 'center',
     width: '100px'
+  },
+  {
+    column: 'statusCode',
+    name: '状态码',
+    align: 'center',
+    width: '80px'
   },
   {
     column: 'elapsedMilliseconds',
@@ -161,31 +174,42 @@ let mounted = true;
 
 onMounted(async () => {
   Object.freeze(column);
-  await getTableList();
+  await loadList();
   model.loading = false;
   mounted = false;
 });
-
-let searchKey = '';
 
 onActivated(async () => {
   if (mounted) {
     return;
   }
 
+  await loadList();
+});
+
+let searchKey = '';
+
+const loadList = async () => {
   //
   if (route.params?.key) {
+    model.beginTime = new Date().format('yyyy-MM-dd 00:00:00');
+    model.endTime = new Date().format('yyyy-MM-dd 23:59:59');
+
     if (searchKey != route.params.key) {
       searchKey = route.params.key;
-      model.status = searchKey == 'api' ? '' : '2';
+      model.success = searchKey == 'api' ? '' : false;
       await getTableList();
+    } else {
+      model.success = searchKey == 'api' ? '' : false;
     }
   } else {
     searchKey = '';
-    model.status = '';
+    model.beginTime = '';
+    model.endTime = '';
+    model.success = '';
     await getTableList();
   }
-});
+};
 
 const getTableList = async () => {
   table.loading = true;

@@ -1,7 +1,7 @@
 import request from '../utils/request';
 const controller = '/requestlog';
 
-export const getList = ({ pageIndex, pageSize, beginTime, endTime, route, ip, status, elapsed }) => {
+export const getList = ({ pageIndex, pageSize, beginTime, endTime, route, ip, success, elapsed }) => {
   let data = {
     pageIndex,
     pageSize,
@@ -10,7 +10,7 @@ export const getList = ({ pageIndex, pageSize, beginTime, endTime, route, ip, st
     route,
     ip,
     elapsed,
-    status
+    success
   };
 
   if (!data.beginTime) {
@@ -33,8 +33,8 @@ export const getList = ({ pageIndex, pageSize, beginTime, endTime, route, ip, st
     delete data.elapsed;
   }
 
-  if (data.status == '') {
-    delete data.status;
+  if (typeof data.success != 'boolean') {
+    delete data.success;
   }
 
   return request.get(`${controller}/list`, data);

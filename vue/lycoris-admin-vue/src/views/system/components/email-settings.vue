@@ -28,18 +28,28 @@
             <el-input v-model="model.emailSignature"></el-input>
           </el-form-item>
           <div class="flex-start-center">
-            <el-button @click="emailTest">邮件测试</el-button>
+            <el-button @click="dialogShow">邮件测试</el-button>
             <el-button type="primary" :loading="model.lodading" @click="submit">保存</el-button>
           </div>
         </el-col>
       </el-row>
     </el-form>
+
+    <el-dialog v-model="model.visible" title="邮件服务测试" width="500px">
+      <el-input v-model="model.testEmail" placeholder="请输入测试邮件地址"></el-input>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="dialogClose">取消</el-button>
+          <el-button type="primary" @click="dialogSumit" :loading="model.testLoading"> 发送 </el-button>
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup>
 import { onMounted, reactive } from 'vue';
-import { getEmailSettings, saveEmailSettings } from '../../../api/configuration';
+import { getEmailSettings, saveEmailSettings, sendTestEmail } from '../../../api/configuration';
 import toast from '../../../utils/toast';
 
 const props = defineProps({
@@ -59,7 +69,10 @@ const model = reactive({
   emailPassword: '',
   emailSignature: '',
   useSSL: false,
-  lodading: false
+  lodading: false,
+  visible: false,
+  testEmail: '',
+  testLoading: false
 });
 
 onMounted(async () => {
@@ -79,8 +92,6 @@ onMounted(async () => {
   }
 });
 
-const emailTest = () => {};
-
 const submit = async () => {
   model.lodading = true;
   try {
@@ -90,6 +101,58 @@ const submit = async () => {
     }
   } finally {
     model.lodading = false;
+  }
+};
+
+const dialogShow = () => {
+  if (!model.emailUser) {
+    toast.warn('发件人名称不能为空');
+    return;
+  } else if (!model.stmpServer) {
+    toast.warn('STMP服务器不能为空');
+    return;
+  } else if (!model.stmpPort) {
+    toast.warn('SMTP端口不能为空');
+    return;
+  } else if (!model.emailAddress) {
+    toast.warn('发件箱地址不能为空');
+    return;
+  } else if (!model.emailPassword) {
+    toast.warn('发件箱授权码不能为空');
+    return;
+  } else if (!model.emailSignature) {
+    toast.warn('邮件署名不能为空');
+    return;
+  }
+
+  model.visible = true;
+};
+
+const dialogClose = () => {
+  model.visible = false;
+};
+
+const dialogSumit = async () => {
+  if (!model.testEmail) {
+    toast.warn('测试邮件地址不能为空');
+    return;
+  }
+
+  if (model.testEmail == model.emailAddress) {
+    toast.warn('测试邮件地址不能与邮件服务发件箱地址相同');
+    return;
+  }
+
+  model.testLoading = true;
+  try {
+    let res = await sendTestEmail({ ...model });
+    if (res && res.resCode == 0) {
+      //
+      toast.success('测试邮件发送成功');
+      dialogClose();
+    }
+  } finally {
+    model.testLoading = false;
   }
 };
 </script>

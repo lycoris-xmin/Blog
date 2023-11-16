@@ -1,11 +1,9 @@
 ﻿using Lycoris.Autofac.Extensions;
-using Lycoris.Blog.Application.AppServices.FileManage;
 using Lycoris.Blog.Application.Shared.Impl;
 using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
 using Lycoris.Blog.Model.Exceptions;
 using Lycoris.Common.Extensions;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace Lycoris.Blog.Application.AppServices.WebSite.Impl
@@ -18,15 +16,11 @@ namespace Lycoris.Blog.Application.AppServices.WebSite.Impl
     {
         private readonly IRepository<WebSiteAbout, string> _webSiteAbout;
         private readonly Lazy<IWebSiteAboutRepository> _webAboutRepository;
-        private readonly Lazy<IFileManageAppService> _fileManage;
 
-        public WebSiteAppService(IRepository<WebSiteAbout, string> webSiteAbout,
-                                 Lazy<IWebSiteAboutRepository> webAboutRepository,
-                                 Lazy<IFileManageAppService> fileManage)
+        public WebSiteAppService(IRepository<WebSiteAbout, string> webSiteAbout, Lazy<IWebSiteAboutRepository> webAboutRepository)
         {
             _webSiteAbout = webSiteAbout;
             _webAboutRepository = webAboutRepository;
-            _fileManage = fileManage;
         }
 
         /// <summary>
@@ -63,17 +57,6 @@ namespace Lycoris.Blog.Application.AppServices.WebSite.Impl
         /// <param name="value"></param>
         /// <returns></returns>
         public Task SaveAboutAsync<T>(string configId, T value) where T : class => UpdateAsync(configId, value?.ToJson() ?? "");
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="file"></param>
-        /// <param name="remotePath"></param>
-        /// <returns></returns>
-        public async Task<string> UploadFileAsync(IFormFile file, string remotePath)
-        {
-            return await _fileManage.Value.UploadFileAsync(file, remotePath);
-        }
 
         /// <summary>
         /// 

@@ -36,7 +36,7 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
         /// <summary>
         /// 头像
         /// </summary>
-        [TableColumn(StringLength = 30)]
+        [TableColumn(StringLength = 255)]
         public string Avatar { get; set; } = "";
 
         /// <summary>

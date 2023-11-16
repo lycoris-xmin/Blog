@@ -27,7 +27,6 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="factory"></param>
         /// <param name="browseReferer"></param>
         /// <param name="scheduleQueue"></param>
         public BrowseLogQueueService(IRepository<BrowseReferer, int> browseReferer, IScheduleQueueCacheService scheduleQueue)

@@ -1,7 +1,4 @@
-﻿using Lycoris.Common.Extensions;
-using Newtonsoft.Json;
-
-namespace Lycoris.Blog.Model.Configurations
+﻿namespace Lycoris.Blog.Model.Configurations
 {
     /// <summary>
     /// 
@@ -42,11 +39,5 @@ namespace Lycoris.Blog.Model.Configurations
         /// 
         /// </summary>
         public bool UseSSL { get; set; } = true;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [JsonIgnore]
-        public bool IsValid => !this.EmailAddress.IsNullOrEmpty() && !this.STMPServer.IsNullOrEmpty() && this.STMPPort > 0 && !this.EmailPassword.IsNullOrEmpty();
     }
 }

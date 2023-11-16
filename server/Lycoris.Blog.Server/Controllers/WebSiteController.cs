@@ -1,4 +1,5 @@
-﻿using Lycoris.Blog.Application.AppServices.WebSite;
+﻿using Lycoris.Blog.Application.AppServices.FileManage;
+using Lycoris.Blog.Application.AppServices.WebSite;
 using Lycoris.Blog.EntityFrameworkCore.Constants;
 using Lycoris.Blog.Model.Configurations;
 using Lycoris.Blog.Model.Exceptions;
@@ -133,15 +134,13 @@ namespace Lycoris.Blog.Server.Controllers
         /// 文件上传
         /// </summary>
         /// <param name="input"></param>
+        /// <param name="fileManage"></param>
         /// <returns></returns>
         [HttpPost("About/Upload")]
         [Consumes("multipart/form-data"), Produces("application/json")]
-        public async Task<DataOutput<string>> Upload([FromForm] WebSiteFileUploadInput input)
+        public async Task<DataOutput<string>> Upload([FromForm] WebSiteFileUploadInput input, [FromServices] IFileManageAppService fileManage)
         {
-            var fileUrl = "";
-
-            fileUrl = await _webSiteAbout.UploadFileAsync(input.File!, input.Path!);
-
+            var fileUrl = await fileManage.UploadFileAsync(input.File!, input.Path!);
             return Success(fileUrl);
         }
     }

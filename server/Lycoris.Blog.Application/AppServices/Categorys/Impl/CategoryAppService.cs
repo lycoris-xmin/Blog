@@ -17,9 +17,9 @@ namespace Lycoris.Blog.Application.AppServices.Categorys.Impl
     public class CategoryAppService : ApplicationBaseService, ICategoryAppService
     {
         private readonly IRepository<Category, int> _category;
-        private readonly IFileManageAppService _fileManage;
+        private readonly Lazy<IFileManageAppService> _fileManage;
 
-        public CategoryAppService(IRepository<Category, int> category, IFileManageAppService fileManage)
+        public CategoryAppService(IRepository<Category, int> category, Lazy<IFileManageAppService> fileManage)
         {
             _category = category;
             _fileManage = fileManage;
@@ -65,9 +65,6 @@ namespace Lycoris.Blog.Application.AppServices.Categorys.Impl
             if (repeatName)
                 throw new FriendlyException("分类名称重复");
 
-            if (input.File != null)
-                input.Icon = await _fileManage.UploadFileAsync(input.File!, "/category");
-
             var data = input.ToMap<Category>();
 
             data.Keyword = string.Join(",", data.Keyword.Split(',').Distinct().ToArray());
@@ -88,12 +85,6 @@ namespace Lycoris.Blog.Application.AppServices.Categorys.Impl
 
             var oldIcon = "";
 
-            if (input.File != null)
-            {
-                oldIcon = data.Icon;
-                input.Icon = await _fileManage.UploadFileAsync(input.File!, "/category");
-            }
-
             input.Keyword = string.Join(",", input.Keyword?.Split(',')?.Distinct().ToArray() ?? Array.Empty<string>());
 
             var fieIds = new List<Expression<Func<Category, object>>>();
@@ -108,6 +99,7 @@ namespace Lycoris.Blog.Application.AppServices.Categorys.Impl
                 fieIds.Add(x => x.Keyword!);
             }).UpdatePorpertyIf(!input.Icon.IsNullOrEmpty() && input.Icon != data.Icon, x =>
             {
+                oldIcon = data.Icon;
                 data.Icon = input.Icon!;
                 fieIds.Add(x => x.Icon!);
             });
@@ -116,10 +108,7 @@ namespace Lycoris.Blog.Application.AppServices.Categorys.Impl
                 await _category.UpdateFieIdsAsync(data, fieIds);
 
             if (oldIcon.IsNullOrEmpty())
-            {
-                // 删除文件
-                await _fileManage.SetFileDeleteAsync(oldIcon);
-            }
+                await _fileManage.Value.SetFileDeleteAsync(oldIcon);
 
             return data.ToMap<CategoryDataDto>();
         }
@@ -136,10 +125,7 @@ namespace Lycoris.Blog.Application.AppServices.Categorys.Impl
                 return;
 
             if (!data.Icon.IsNullOrEmpty())
-            {
-                // 移除minio里的文件
-                await _fileManage.SetFileDeleteAsync(data.Icon);
-            }
+                await _fileManage.Value.SetFileDeleteAsync(data.Icon);
 
             await _category.DeleteAsync(id);
         }

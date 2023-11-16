@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-
-namespace Lycoris.Blog.Application.AppServices.Posts.Dtos
+﻿namespace Lycoris.Blog.Application.AppServices.Posts.Dtos
 {
     public class PostSaveDto : PostInfoDto
     {
@@ -18,10 +16,5 @@ namespace Lycoris.Blog.Application.AppServices.Posts.Dtos
         /// 
         /// </summary>
         public bool? Recommend { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public IFormFile? File { get; set; }
     }
 }

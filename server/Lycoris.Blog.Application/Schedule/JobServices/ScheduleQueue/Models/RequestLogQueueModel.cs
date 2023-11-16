@@ -28,6 +28,11 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Models
         public string Route { get; set; } = string.Empty;
 
         /// <summary>
+        /// 
+        /// </summary>
+        public Dictionary<string, string> Headers { get; set; } = new Dictionary<string, string>();
+
+        /// <summary>
         /// 请求参数
         /// </summary>
         public string Params { get; set; } = string.Empty;

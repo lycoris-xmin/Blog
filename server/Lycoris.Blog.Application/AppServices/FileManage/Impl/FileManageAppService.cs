@@ -88,9 +88,11 @@ namespace Lycoris.Blog.Application.AppServices.FileManage.Impl
 
                 await _repository.CreateAsync(data);
 
-                return AppSettings.Application.HttpPort == 80
+                var url = AppSettings.Application.HttpPort == 80
                     ? $"{AppSettings.Application.Domain}{data.PathUrl}"
                     : $"{AppSettings.Application.Domain}:{AppSettings.Application.HttpPort}{data.PathUrl}";
+
+                return url.Replace('\\', '/');
             }
             catch (FriendlyException)
             {

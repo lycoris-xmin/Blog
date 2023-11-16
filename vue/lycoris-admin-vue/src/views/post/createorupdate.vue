@@ -240,7 +240,7 @@ const getSettings = async () => {
     //
     model.autoSave = res.data.autoSave;
     model.autoSaveSecond = res.data.second;
-    toast.info(`配置已开启自动存档，每${model.autoSaveSecond}秒将会提交自动存档`);
+    toast.info(`已开启自动存档，每过${model.autoSaveSecond}秒将会提交自动存档`);
   }
 };
 

@@ -93,8 +93,6 @@ const getTableList = async (autoLoading = true) => {
     if (res && res.resCode == 0) {
       table.count = res.data.count;
       table.list = res.data.list;
-
-      toast.success('查询成功');
     }
   } finally {
     if (autoLoading) {

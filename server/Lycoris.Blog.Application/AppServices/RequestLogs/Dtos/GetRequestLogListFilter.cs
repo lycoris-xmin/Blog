@@ -14,8 +14,6 @@ namespace Lycoris.Blog.Application.AppServices.RequestLogs.Dtos
 
         public int? Elapsed { get; set; }
 
-        public int? Status { get; set; }
-
         public bool? Success { get; set; }
     }
 }

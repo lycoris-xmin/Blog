@@ -35,6 +35,6 @@ namespace Lycoris.Blog.Server.Models.RequestLogs
         /// <summary>
         /// 
         /// </summary>
-        public int? Status { get; set; }
+        public bool? Success { get; set; }
     }
 }

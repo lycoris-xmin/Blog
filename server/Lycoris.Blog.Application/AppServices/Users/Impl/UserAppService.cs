@@ -9,9 +9,11 @@ using Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Models;
 using Lycoris.Blog.Application.Shared.Dtos;
 using Lycoris.Blog.Application.Shared.Impl;
 using Lycoris.Blog.Core.Interceptors.Transactional;
+using Lycoris.Blog.EntityFrameworkCore.Constants;
 using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
 using Lycoris.Blog.EntityFrameworkCore.Tables.Enums;
+using Lycoris.Blog.Model.Configurations;
 using Lycoris.Blog.Model.Exceptions;
 using Lycoris.Common.Extensions;
 using Microsoft.AspNetCore.Http;
@@ -97,12 +99,10 @@ namespace Lycoris.Blog.Application.AppServices.Users.Impl
         /// <param name="file"></param>
         /// <returns></returns>
         [Transactional]
-        public async Task UpdateUserBrieAsync(UserBriefDto input, IFormFile? file)
+        public async Task UpdateUserBrieAsync(UserBriefDto input)
         {
             // 用户
             var user = await _user.GetAsync(CurrentUser.Id) ?? throw new FriendlyException("");
-            if (file != null)
-                input.Avatar = await _fileManage.Value.UploadFileAsync(file, "/avatar");
 
             var userFieIds = new List<Expression<Func<User, object>>>();
             user.UpdatePorpertyIf(!input.NickName.IsNullOrEmpty() && input.NickName != user!.NickName, x =>
@@ -222,15 +222,16 @@ namespace Lycoris.Blog.Application.AppServices.Users.Impl
             if (repeat)
                 throw new FriendlyException("邮箱已被注册");
 
+            var setting = await this.ApplicationConfiguration.Value.GetConfigurationAsync<WebSettingsConfiguration>(AppConfig.WebSettings);
+
             var data = new User()
             {
                 Email = input.Email!,
                 NickName = input.NickName!,
                 Password = input.Password ?? "",
-                Avatar = "",
+                Avatar = setting!.DefaultAvatar,
                 Status = UserStatusEnum.Audited,
                 CreateTime = DateTime.Now
-
             };
 
             data = await _user.CreateAsync(data);

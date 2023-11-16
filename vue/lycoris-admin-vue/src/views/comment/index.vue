@@ -60,6 +60,7 @@ import { ref, reactive, onMounted } from 'vue';
 import PageLayout from '../layout/page-layout.vue';
 import LycorisTable from '../../components/lycoris-table/index.vue';
 import { getCommentList, deleteComment } from '../../api/comment';
+import toast from '../../utils/toast';
 
 const model = reactive({
   loading: true,
@@ -180,6 +181,7 @@ const $delete = async (index, row) => {
   try {
     let res = await deleteComment(row.id);
     if (res && res.resCode == 0) {
+      toast.success('删除成功');
       if (table.list.length == table.count || table.list.length < table.pageSize) {
         table.list.splice(index, 1);
       } else {

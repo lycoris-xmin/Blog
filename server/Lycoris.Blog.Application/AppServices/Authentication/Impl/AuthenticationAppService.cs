@@ -20,6 +20,7 @@ using Lycoris.Blog.Model.Global.Output;
 using Lycoris.Common.Extensions;
 using Lycoris.Common.Helper;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Net;
 
 namespace Lycoris.Blog.Application.AppServices.Authentication.Impl
@@ -320,11 +321,13 @@ namespace Lycoris.Blog.Application.AppServices.Authentication.Impl
             if (await CheckEmailUseAsync(input.Email))
                 throw new FriendlyException("邮箱已被注册");
 
+            var setting = await this.ApplicationConfiguration.Value.GetConfigurationAsync<WebSettingsConfiguration>(AppConfig.WebStatistics);
+
             var data = await _user.CreateAsync(new User()
             {
                 Email = input.Email,
                 NickName = RandomHelper.GetRandomNickName(),
-                Avatar = "/images/404.png",
+                Avatar = setting!.DefaultAvatar,
                 Password = input.Password,
                 Status = UserStatusEnum.Audited,
                 ShowOnlineStatus = true,

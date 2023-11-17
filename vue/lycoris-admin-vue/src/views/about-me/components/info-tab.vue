@@ -1,7 +1,7 @@
 <template>
   <div class="about-panel">
     <div class="form-group form-group-col">
-      <label>首屏简要描述</label>
+      <label>个人简介</label>
       <el-input v-model="info.description" type="textarea" :autosize="{ minRows: 6, maxRows: 10 }" show-word-limit maxlength="350" placeholder="非必填" />
     </div>
 

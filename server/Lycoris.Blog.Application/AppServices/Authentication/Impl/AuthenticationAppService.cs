@@ -20,7 +20,6 @@ using Lycoris.Blog.Model.Global.Output;
 using Lycoris.Common.Extensions;
 using Lycoris.Common.Helper;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Net;
 
 namespace Lycoris.Blog.Application.AppServices.Authentication.Impl
@@ -347,7 +346,7 @@ namespace Lycoris.Blog.Application.AppServices.Authentication.Impl
         /// <returns></returns>
         public async Task<string> GetAdminPathAsync()
         {
-            var config = await ApplicationConfiguration.Value.GetConfigurationAsync<WebSettingsConfiguration>(AppConfig.WebSettings);
+            var config = await ApplicationConfiguration.Value.GetConfigurationAsync<WebSettingsConfiguration>(AppConfig.WebSetting);
             return config?.AdminPath ?? "";
         }
 

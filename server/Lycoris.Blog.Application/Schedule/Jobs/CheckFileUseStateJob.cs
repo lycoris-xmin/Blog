@@ -162,20 +162,21 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
             if (result.Use)
                 return result;
 
-            var list = await _configuration.GetAll().Where(x => x.Id == AppConfig.PostSettings).ToListAsync();
+            var config = await _configuration.GetAsync(AppConfig.WebSetting);
+            var webSetting = config!.Value.ToObject<WebSettingsConfiguration>();
+            result.Use = webSetting!.DefaultAvatar.EndsWith(file.PathUrl);
+            if (result.Use)
+                result.Message = "用户默认头像 使用中";
 
-            foreach (var item in list)
+            if (!result.Use)
             {
-                if (item.Id == AppConfig.PostSettings)
-                {
-                    var data = item.Value.ToObject<PostSettingConfiguration>();
-                    result.Use = data?.Images.Any(x => x.EndsWith(file.PathUrl)) ?? false;
-                    if (result.Use)
-                    {
-                        result.Message = "博客设置 使用中";
-                        break;
-                    }
-                }
+                config = await _configuration.GetAsync(AppConfig.PostSetting);
+
+                var postSetting = config!.Value.ToObject<PostSettingConfiguration>();
+
+                result.Use = postSetting?.Images.Any(x => x.EndsWith(file.PathUrl)) ?? false;
+                if (result.Use)
+                    result.Message = "博客设置 使用中";
             }
 
             return result;

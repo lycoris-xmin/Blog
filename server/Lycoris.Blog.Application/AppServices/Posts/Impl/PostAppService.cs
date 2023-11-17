@@ -6,8 +6,10 @@ using Lycoris.Blog.Application.Cached.ScheduleQueue.Models;
 using Lycoris.Blog.Application.Shared.Dtos;
 using Lycoris.Blog.Application.Shared.Impl;
 using Lycoris.Blog.Core.Interceptors.Transactional;
+using Lycoris.Blog.EntityFrameworkCore.Constants;
 using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
+using Lycoris.Blog.Model.Configurations;
 using Lycoris.Blog.Model.Exceptions;
 using Lycoris.Blog.Model.Global.Output;
 using Lycoris.Common.Extensions;
@@ -53,17 +55,19 @@ namespace Lycoris.Blog.Application.AppServices.Posts.Impl
 
             var list = await query.ToListAsync();
 
-            if (list.HasValue())
-                return list;
-
-            query = filter.OrderByDescending(x => x.CreateTime).PageBy(1, 3).Select(x => new PostRecommendDataDto()
+            if (!list.HasValue())
             {
-                Id = x.Id,
-                Title = x.Title,
-                Info = x.Info,
-            });
+                query = filter.OrderByDescending(x => x.CreateTime).PageBy(1, 3).Select(x => new PostRecommendDataDto()
+                {
+                    Id = x.Id,
+                    Title = x.Title,
+                    Info = x.Info,
+                });
+            }
 
-            return await query.ToListAsync();
+            list = await query.ToListAsync();
+
+            return list;
         }
 
         /// <summary>
@@ -247,8 +251,16 @@ namespace Lycoris.Blog.Application.AppServices.Posts.Impl
             if (data.Category != input.Category && input.Category > 0 && !await _category.ExistsAsync(x => x.Id == input.Category!.Value))
                 throw new FriendlyException("文章分类不存在，请刷新文章分类选项后重新选择");
 
-            if (input.Icon.IsNullOrEmpty() && data.Category != input.Category && input.Category > 0)
-                input.Icon = await _category.GetSelectAsync(input.Category!.Value, x => x.Icon);
+            if (input.Icon.IsNullOrEmpty())
+            {
+                if (data.Category != input.Category && input.Category > 0)
+                    input.Icon = await _category.GetSelectAsync(input.Category!.Value, x => x.Icon);
+                else
+                {
+                    var config = await this.ApplicationConfiguration.Value.GetConfigurationAsync<PostSettingConfiguration>(AppConfig.PostSetting);
+                    input.Icon = config!.GetRandomImage();
+                }
+            }
 
             data = data.Id == 0 ? await CreateAsync(input, data) : await UpdateAsync(input, data);
 
@@ -278,7 +290,7 @@ namespace Lycoris.Blog.Application.AppServices.Posts.Impl
         /// <returns></returns>
         public async Task PublishPostAsync(long id)
         {
-            var data = await _post.GetAsync(id) ?? throw new FriendlyException("");
+            var data = await _post.GetAsync(id) ?? throw new FriendlyException("找不到博客文章");
 
             if (data.IsPublish)
                 return;
@@ -297,7 +309,7 @@ namespace Lycoris.Blog.Application.AppServices.Posts.Impl
         /// <returns></returns>
         public async Task SetPostCommentAsync(long id, bool comment)
         {
-            var post = await _post.GetAsync(id) ?? throw new FriendlyException("");
+            var post = await _post.GetAsync(id) ?? throw new FriendlyException("找不到博客文章");
 
             if (post.Comment == comment)
                 return;
@@ -322,7 +334,7 @@ namespace Lycoris.Blog.Application.AppServices.Posts.Impl
                     throw new FriendlyException("推荐文章最多设置6篇");
             }
 
-            var post = await _post.GetAsync(id) ?? throw new FriendlyException("");
+            var post = await _post.GetAsync(id) ?? throw new FriendlyException("找不到博客文章");
 
             if (post.Recommend == recommend)
                 return;

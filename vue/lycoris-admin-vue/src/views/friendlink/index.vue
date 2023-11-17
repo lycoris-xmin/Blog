@@ -174,6 +174,7 @@ const $delete = async (index, row) => {
     if (res && res.resCode === 0) {
       if (table.list.length == table.count || table.list.length < table.pageSize) {
         table.list.splice(index, 1);
+        table.count--;
       } else {
         getFriendLinkList();
       }

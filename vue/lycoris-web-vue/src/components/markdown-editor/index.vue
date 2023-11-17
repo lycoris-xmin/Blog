@@ -331,10 +331,13 @@ defineExpose({
         }
       }
 
-      p:has(img) {
-        display: flex;
-        justify-content: center;
-        align-items: center;
+      p {
+        &:has(img:only-child) {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          overflow: hidden;
+        }
       }
     }
 

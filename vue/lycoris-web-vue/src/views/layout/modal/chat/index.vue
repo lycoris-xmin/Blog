@@ -208,7 +208,7 @@ const showNotice = data => {
     <div class="flex-start-center">
       <img src="${data.user.avatar}" />
       <span>${data.user.nickName}</span>
-      ${data.isOwner ? `<span class="badge badge-purple">站长</span>` : ''}
+      ${data.isOwner ? `<span class="badge badge-purple">博主</span>` : ''}
     </div>
     <div class="chat-notice-content">
       ${extractTextFromHTML(data.content)}

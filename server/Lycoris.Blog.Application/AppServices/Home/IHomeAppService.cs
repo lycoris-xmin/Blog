@@ -43,6 +43,12 @@ namespace Lycoris.Blog.Application.AppServices.Home
         /// 
         /// </summary>
         /// <returns></returns>
+        Task<OwnerCreateStatisticsDto> GetOwnerCreateStatisticsAsync();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         Task<WebStatisticsDto> GetWebStatisticsAsync();
 
         /// <summary>
@@ -50,5 +56,11 @@ namespace Lycoris.Blog.Application.AppServices.Home
         /// </summary>
         /// <returns></returns>
         Task<List<PostStatisticsDto>> GetPostStatisticsAsync();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        Task<List<string>> GetPostIconAsync();
     }
 }

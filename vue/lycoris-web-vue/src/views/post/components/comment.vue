@@ -22,7 +22,7 @@
                     <div class="user-info-card">123</div>
                   </popover-user-info-card>
                 </div>
-                <span>{{ item.user.nickName }}<el-tag style="margin-left: 5px" v-if="item.isOwner">站长</el-tag></span>
+                <span>{{ item.user.nickName }}<el-tag style="margin-left: 5px" v-if="item.isOwner">博主</el-tag></span>
                 <span class="time">{{ item.createTime }}</span>
               </div>
               <div class="other flex-end-center">
@@ -115,7 +115,7 @@ const loginModalRef = inject('$loginModal');
 
 const model = reactive({
   content: '',
-  placeholder: '站长由于没钱，所以数据库买的比较小，字数要做限制，不然数据太多，钱包撑不住',
+  placeholder: '博主由于没钱，所以数据库买的比较小，字数要做限制，不然数据太多，钱包撑不住',
   repliedUserId: '',
   repliedUserName: '',
   loading: false

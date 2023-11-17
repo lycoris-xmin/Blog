@@ -60,7 +60,7 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
         /// <returns></returns>
         private async Task<SystemFileClearConfiguration> GetConfigurationAsync()
         {
-            var config = await _configuration.GetConfigurationAsync<SystemSettingsConfiguration>(AppConfig.SystemSettings);
+            var config = await _configuration.GetConfigurationAsync<SystemSettingsConfiguration>(AppConfig.SystemSetting);
             return config!.SystemFileClear;
         }
 

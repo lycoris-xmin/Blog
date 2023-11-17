@@ -11,10 +11,12 @@
               <span class="slogan-danger">代码</span>
               <span class="slogan-cyan">未来</span>
             </div>
-            <div class="text flex-center-center">1</div>
+            <div class="text flex-center-center">
+              <p></p>
+            </div>
             <div class="platform">
-              <div v-if="props.owner.github">
-                <a :href="props.owner.github" target="_blank">
+              <div v-if="stores.owner.github">
+                <a :href="stores.owner.github" target="_blank">
                   <el-tooltip effect="dark" placement="bottom">
                     <template #content>
                       <span class="tooltip-text">大型交友平台,你懂得</span>
@@ -24,50 +26,50 @@
                 </a>
               </div>
 
-              <div v-if="props.owner.qq">
+              <div v-if="stores.owner.qq">
                 <el-tooltip effect="dark" placement="bottom">
                   <template #content>
-                    <span class="tooltip-text">QQ：{{ props.owner.qq }} 单击可复制</span>
+                    <span class="tooltip-text">QQ：{{ stores.owner.qq }} 单击可复制</span>
                   </template>
-                  <img class="platform-icon" src="/icon/platform/qq.png" @click="copy(props.owner.qq)" />
+                  <img class="platform-icon" src="/icon/platform/qq.png" @click="copy(stores.owner.qq)" />
                 </el-tooltip>
               </div>
 
-              <div v-if="props.owner.wechat">
+              <div v-if="stores.owner.wechat">
                 <el-tooltip effect="dark" placement="bottom">
                   <template #content>
-                    <span class="tooltip-text">微信号：{{ props.owner.wechat }} 单击可复制</span>
+                    <span class="tooltip-text">微信号：{{ stores.owner.wechat }} 单击可复制</span>
                   </template>
-                  <img class="platform-icon" src="/icon/platform/wechat.png" @click="copy(props.owner.wechat)" />
+                  <img class="platform-icon" src="/icon/platform/wechat.png" @click="copy(stores.owner.wechat)" />
                 </el-tooltip>
               </div>
 
-              <div v-if="props.owner.email">
+              <div v-if="stores.owner.email">
                 <el-tooltip effect="dark" placement="bottom">
                   <template #content>
-                    <span class="tooltip-text">邮箱：{{ props.owner.email }} 单击可复制</span>
+                    <span class="tooltip-text">邮箱：{{ stores.owner.email }} 单击可复制</span>
                   </template>
-                  <img class="platform-icon" src="/icon/platform/email.png" @click="copy(props.owner.email, true)" />
+                  <img class="platform-icon" src="/icon/platform/email.png" @click="copy(stores.owner.email, true)" />
                 </el-tooltip>
               </div>
 
-              <div v-if="props.owner.bilibili">
+              <div v-if="stores.owner.bilibili">
                 <el-tooltip effect="dark" placement="bottom">
                   <template #content>
                     <span class="tooltip-text">不知道为什么要展示这个，但是不展示显得很空</span>
                   </template>
-                  <a :href="props.owner.bilibili" target="_blank">
+                  <a :href="stores.owner.bilibili" target="_blank">
                     <img class="platform-icon" src="/icon/platform/bilibili.png" />
                   </a>
                 </el-tooltip>
               </div>
 
-              <div v-if="props.owner.music">
+              <div v-if="stores.owner.music">
                 <el-tooltip effect="dark" placement="bottom">
                   <template #content>
                     <span class="tooltip-text">网抑云，你懂得</span>
                   </template>
-                  <a :href="props.owner.music" target="_blank">
+                  <a :href="stores.owner.music" target="_blank">
                     <img class="platform-icon" src="/icon/platform/music.png" />
                   </a>
                 </el-tooltip>
@@ -83,6 +85,7 @@
 <script setup>
 import toast from '../../../utils/toast';
 import useClipboard from 'vue-clipboard3';
+import { stores } from '../../../stores';
 
 const { toClipboard } = useClipboard();
 
@@ -94,10 +97,6 @@ const props = defineProps({
   height: {
     type: String,
     defalut: '0px'
-  },
-  owner: {
-    type: Object,
-    defalut: void 0
   }
 });
 

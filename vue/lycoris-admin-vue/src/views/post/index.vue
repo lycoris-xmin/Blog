@@ -353,6 +353,7 @@ const $delete = async (index, row) => {
     if (res.resCode == 0) {
       if (table.list.length <= table.count) {
         table.list.splice(index, 1);
+        table.count--;
       } else {
         getTableList();
       }

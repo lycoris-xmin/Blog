@@ -44,7 +44,7 @@ $router.beforeEach(async to => {
     return { name: 'server-error', params: { code: 404 } };
   }
 
-  if (!['login', 'server-error', 'screen-lock'].includes(to.name)) {
+  if (!['login', 'server-error', 'screen-lock', 'resume'].includes(to.name)) {
     if (!document.title.includes('管理后台')) {
       document.title = `管理后台_${web.name}`;
     }

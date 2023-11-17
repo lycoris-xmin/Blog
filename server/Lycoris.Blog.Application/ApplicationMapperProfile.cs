@@ -19,7 +19,6 @@ using Lycoris.Blog.Application.SignalR.Shared.Models;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
 using Lycoris.Blog.Model.Contexts;
 using Lycoris.Common.Extensions;
-using Org.BouncyCastle.Math.EC.Rfc7748;
 
 namespace Lycoris.Blog.Application
 {

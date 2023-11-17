@@ -1,41 +1,41 @@
 <template>
   <div class="card author">
     <div class="avatar flex-center-center">
-      <el-image :src="props.owner.avatar"></el-image>
+      <el-image :src="stores.owner.avatar"></el-image>
     </div>
-    <p class="name">{{ props.owner.nickName }}</p>
+    <p class="name">{{ stores.owner.nickName }}</p>
     <div class="owner-link flex-center-center">
-      <div v-if="props.owner.github">
+      <div v-if="stores.owner.github">
         <el-tooltip effect="dark" content="github" placement="bottom">
-          <a :href="props.owner.github" target="_blank"><el-image :src="'/icon/platform/github.png'"></el-image></a>
+          <a :href="stores.owner.github" target="_blank"><el-image :src="'/icon/platform/github.png'"></el-image></a>
         </el-tooltip>
       </div>
 
-      <div v-if="props.owner.qq">
-        <el-tooltip effect="dark" :content="props.owner.qq" placement="bottom">
-          <el-image :src="'/icon/platform/qq.png'" @click="copy(props.owner.qq)"></el-image>
+      <div v-if="stores.owner.qq">
+        <el-tooltip effect="dark" :content="stores.owner.qq" placement="bottom">
+          <el-image :src="'/icon/platform/qq.png'" @click="copy(stores.owner.qq)"></el-image>
         </el-tooltip>
       </div>
 
-      <div v-if="props.owner.wechat">
-        <el-tooltip effect="dark" :content="props.owner.wechat" placement="bottom">
-          <el-image :src="'/icon/platform/wechat.png'" @click="copy(props.owner.wechat)"></el-image>
+      <div v-if="stores.owner.wechat">
+        <el-tooltip effect="dark" :content="stores.owner.wechat" placement="bottom">
+          <el-image :src="'/icon/platform/wechat.png'" @click="copy(stores.owner.wechat)"></el-image>
         </el-tooltip>
       </div>
 
-      <div v-if="props.owner.email">
-        <el-tooltip effect="dark" :content="props.owner.email" placement="bottom">
-          <el-image :src="'/icon/platform/email.png'" @click="copy(props.owner.email, true)"></el-image>
+      <div v-if="stores.owner.email">
+        <el-tooltip effect="dark" :content="stores.owner.email" placement="bottom">
+          <el-image :src="'/icon/platform/email.png'" @click="copy(stores.owner.email, true)"></el-image>
         </el-tooltip>
       </div>
 
-      <div v-if="props.owner.bilibili">
+      <div v-if="stores.owner.bilibili">
         <el-tooltip effect="dark" content="bilibili" placement="bottom">
           <el-image :src="'/icon/platform/bilibili.png'"></el-image>
         </el-tooltip>
       </div>
 
-      <div v-if="props.owner.music">
+      <div v-if="stores.owner.music">
         <el-tooltip effect="dark" content="网易云" placement="bottom">
           <el-image :src="'/icon/platform/music.png'"></el-image>
         </el-tooltip>
@@ -43,15 +43,15 @@
     </div>
     <div class="web-info">
       <div class="info-item">
-        <p>123</p>
+        <p>{{ stores.owner.statistics.post }}</p>
         <p>文章</p>
       </div>
       <div class="info-item">
-        <p>123</p>
+        <p>{{ stores.owner.statistics.talk }}</p>
         <p>说说</p>
       </div>
       <div class="info-item">
-        <p>123</p>
+        <p>{{ stores.owner.statistics.category }}</p>
         <p>分类</p>
       </div>
     </div>
@@ -61,15 +61,9 @@
 <script setup>
 import useClipboard from 'vue-clipboard3';
 import toast from '../../../utils/toast';
-const { toClipboard } = useClipboard();
+import { stores } from '../../../stores';
 
-const props = defineProps({
-  owner: {
-    type: Object,
-    required: true,
-    default: void 0
-  }
-});
+const { toClipboard } = useClipboard();
 
 const copy = async (content, isemail = false) => {
   try {

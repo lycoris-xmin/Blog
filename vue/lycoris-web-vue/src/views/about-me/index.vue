@@ -4,13 +4,13 @@
       <img src="/icon/logo/logo-lycoirs.png" @click="toHome" />
     </div>
 
-    <page-home :index="model.index" :height="model.height" :description="model.info.description || ''" :owner="stores.owner"></page-home>
+    <page-home :index="model.index" :height="model.height" :description="model.info.description || []"></page-home>
 
-    <page-owner :index="model.index" :height="model.height" :data="model.info" :owner="stores.owner"></page-owner>
+    <page-owner :index="model.index" :height="model.height" :data="model.info"></page-owner>
 
     <page-skill :index="model.index" :height="model.height" :data="model.skill"></page-skill>
 
-    <page-link :index="model.index" :height="model.height" :owner="stores.owner"></page-link>
+    <page-link :index="model.index" :height="model.height"></page-link>
 
     <div class="page-select">
       <ul>
@@ -49,9 +49,8 @@ import pageOwner from './components/page-owner.vue';
 import pageSkill from './components/page-skill.vue';
 import pageLink from './components/page-link.vue';
 import { stores } from '../../stores';
-import { getWebOwner } from '../../api/home';
+import { getWebOwner, getAboutMe } from '../../api/home';
 import { web } from '../../config.json';
-import { getAboutMe } from '../../api/home';
 
 const router = useRouter();
 

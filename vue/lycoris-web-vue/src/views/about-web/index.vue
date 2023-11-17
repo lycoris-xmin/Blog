@@ -141,7 +141,7 @@ const webRunTime = buildTtime => {
 const aboutwebInit = async () => {
   let res = await getAboutWeb();
   if (res && res.resCode == 0) {
-    markdown.value.init(res.data || '## 站长太懒，还未编辑');
+    markdown.value.init(res.data || '## 博主太懒，还未编辑');
   }
 };
 

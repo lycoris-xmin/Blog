@@ -59,7 +59,7 @@ const column = ref([
   {
     column: 'action',
     name: '操作',
-    width: 180,
+    width: 200,
     align: 'center',
     fixed: 'right'
   }
@@ -128,6 +128,7 @@ const $delete = async (index, row) => {
     if (res && res.resCode == 0) {
       if (table.count <= table.pageSize) {
         table.list.splice(index, 1);
+        table.count--;
       } else {
         getTableList();
       }

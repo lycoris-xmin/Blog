@@ -60,7 +60,7 @@
 
       <template #action="{ row, index }">
         <el-button v-if="row.originalContent" type="success" plain @click="$audit(row, index)">审核</el-button>
-        <el-popconfirm v-else title="确定要删除吗?" @confirm="$deleteOne(index, row)">
+        <el-popconfirm v-else :title="row.parentId == 0 ? '确定要删除吗?' : '当前评论属于一级评论，删除后，会将二级评论也一并删除,确定要删除吗?'" @confirm="$deleteOne(row, index)">
           <template #reference>
             <el-button type="danger" plain :loading="row.deleteLoading">删除</el-button>
           </template>
@@ -222,6 +222,7 @@ const $deleteOne = async (row, index) => {
       toast.success('删除成功');
       if (table.list.length == table.count || table.list.length < table.pageSize) {
         table.list.splice(index, 1);
+        table.count--;
       } else {
         getTableList();
       }

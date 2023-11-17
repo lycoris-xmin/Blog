@@ -51,7 +51,7 @@
       </template>
 
       <template #pathUrl="{ row }">
-        <el-popover placement="bottom" :width="400" trigger="hover">
+        <el-popover :width="400" trigger="hover">
           <template #reference>
             <span class="file-name" @click="copyFileUrl(row.pathUrl)">{{ row.pathUrl }}</span>
           </template>
@@ -126,8 +126,7 @@ const toolbar = reactive({
 const column = ref([
   {
     column: 'pathUrl',
-    name: '文件名称',
-    overflow: true
+    name: '文件名称'
   },
   {
     column: 'uploadChannel',
@@ -343,6 +342,10 @@ const syncAllFile = async () => {
 
 <style lang="scss" scoped>
 .file-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-all;
+  white-space: nowrap;
   cursor: pointer;
   transition: all 0.3;
 
@@ -351,18 +354,17 @@ const syncAllFile = async () => {
   }
 }
 
-$imgMaxWidth: 1400px;
+$imgMaxWidth: 500px;
 
 .staticfile-img-preview {
   position: relative;
-  max-height: 800px;
+  max-height: $imgMaxWidth;
   max-width: $imgMaxWidth;
-  overflow-x: hidden;
-  overflow-y: auto;
 
   :deep(img) {
+    max-height: $imgMaxWidth;
     max-width: $imgMaxWidth;
-    object-fit: cover;
+    object-fit: fill;
     border-radius: 5px;
   }
 }

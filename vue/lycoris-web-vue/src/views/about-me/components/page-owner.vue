@@ -5,12 +5,13 @@
       <div class="view-body flex-center-center">
         <div class="owner">
           <div class="flex-start-center info" style="flex-direction: column">
-            <img :src="props.owner.avatar" alt="" />
+            <img :src="stores.owner.avatar" alt="" />
           </div>
           <ul>
-            <li v-if="data.educational">
+            <li>
               <div>学历</div>
-              <span>{{ data.institutions != undefined ? `${data.educational}${data.institutions > 0 ? `(${data.institutions == 1 ? '211' : '985'}院校)` : ''}` : data.educational }}</span>
+              <span v-if="data.educational">{{ data.institutions != undefined ? `${data.educational}${data.institutions > 0 ? `(${data.institutions == 1 ? '211' : '985'}院校)` : ''}` : data.educational }}</span>
+              <span v-else>山河大学</span>
             </li>
             <li>
               <div>性别</div>
@@ -18,7 +19,8 @@
             </li>
             <li>
               <div>年龄</div>
-              <span>{{ data.age || 0 }}岁</span>
+              <span v-if="data.age">{{ data.age }}岁</span>
+              <span v-else>长命百岁</span>
             </li>
             <li v-if="data.code && data.code.length">
               <div>语言掌握</div>
@@ -35,6 +37,7 @@
             <li v-if="data.introduction">
               <div>关于我</div>
               <p v-for="item in data.introduction" :key="item">{{ item }}</p>
+              <p v-if="data.institutions == null || !data.institutions.length">博主太懒还没有编写</p>
             </li>
           </ul>
         </div>
@@ -45,6 +48,7 @@
 
 <script setup>
 import { computed } from 'vue';
+import { stores } from '../../../stores';
 
 const props = defineProps({
   index: {
@@ -54,10 +58,6 @@ const props = defineProps({
   height: {
     type: String,
     defalut: '0px'
-  },
-  owner: {
-    type: Object,
-    defalut: void 0
   },
   data: {
     type: Object,

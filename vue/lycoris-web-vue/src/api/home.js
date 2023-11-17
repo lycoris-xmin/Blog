@@ -43,10 +43,18 @@ export const pageBrowse = (path, data) => {
   );
 };
 
+export const getOwnerCreateStatistics = () => {
+  return request.get(`${controller}/owner/create/statistics`);
+};
+
 export const getWebStatistics = () => {
   return request.get(`${controller}/web/statistics`);
 };
 
 export const getPostStatistics = () => {
   return request.get(`${controller}/post/statistics`);
+};
+
+export const getPostIcon = () => {
+  return request.get(`${controller}/post/icon`);
 };

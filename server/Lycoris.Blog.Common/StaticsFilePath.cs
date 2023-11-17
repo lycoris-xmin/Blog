@@ -9,5 +9,5 @@
         public const string PostIcon = "/post/icon";
 
         public const string Category = "/category";
-}
+    }
 }

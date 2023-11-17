@@ -140,6 +140,7 @@ const remove = async (row, index) => {
       if (res && res.resCode == 0) {
         toast.success('移除访问管控成功');
         table.list.splice(index, 1);
+        table.count--;
       }
     } finally {
       row.removeLoading = false;

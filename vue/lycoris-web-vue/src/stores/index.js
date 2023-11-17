@@ -7,6 +7,7 @@ import browse from './sections/browse';
 import otherUserInfo from './sections/other-user-info';
 import chat from './sections/chat';
 import chatMessage from './sections/chat-message';
+import postIcon from './sections/post-icon';
 
 export const pinia = $pinia;
 
@@ -18,5 +19,6 @@ export const stores = {
   browse: browse($pinia),
   userInfo: otherUserInfo($pinia),
   chat: chat($pinia),
-  chatMessage: chatMessage($pinia)
+  chatMessage: chatMessage($pinia),
+  postIcon: postIcon($pinia)
 };

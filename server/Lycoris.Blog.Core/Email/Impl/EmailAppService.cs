@@ -288,7 +288,7 @@ namespace Lycoris.Blog.Core.Email.Impl
         /// <exception cref="FriendlyException"></exception>
         private async Task<EmailSettingsConfiguration> GetEmailConfigurationAsync()
         {
-            var option = await _configuration.GetConfigurationAsync<EmailSettingsConfiguration>(AppConfig.EmailSettings)
+            var option = await _configuration.GetConfigurationAsync<EmailSettingsConfiguration>(AppConfig.EmailSetting)
                 ?? throw new FriendlyException("邮件服务暂时不能使用,请稍候再试", "未获取到有效邮件服务配置");
 
             // option 验证
@@ -305,7 +305,7 @@ namespace Lycoris.Blog.Core.Email.Impl
         {
             var option = await GetEmailConfigurationAsync();
 
-            var basic = await _configuration.GetConfigurationAsync<WebSettingsConfiguration>(AppConfig.WebSettings)
+            var basic = await _configuration.GetConfigurationAsync<WebSettingsConfiguration>(AppConfig.WebSetting)
                 ?? throw new FriendlyException("邮件服务暂时不能使用,请稍候再试", $"未获取到有效网站域名配置,无法发送邮箱认证邮件");
 
             return (option, basic);

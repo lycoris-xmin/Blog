@@ -8,6 +8,8 @@
 
         public string? Info { get; set; }
 
+        public string? Icon { get; set; }
+
         public bool Recommend { get; set; } = false;
     }
 }

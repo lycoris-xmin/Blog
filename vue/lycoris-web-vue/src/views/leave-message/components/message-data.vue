@@ -10,7 +10,7 @@
 
         <span class="name">
           {{ props.data.user.nickName }}
-          <el-tag v-if="props.data.isOwner" size="small">站长</el-tag>
+          <el-tag v-if="props.data.isOwner" size="small">博主</el-tag>
         </span>
 
         <span class="time" v-if="props.data.createTime == '刚刚'">刚刚</span>
@@ -41,7 +41,15 @@
       </div>
 
       <div v-show="model.showMoreList" class="flex-center-center li-pagination">
-        <el-pagination style="background-color: transparent" :page-size="reply.pageSize" layout="prev, pager, next" :total="props.data.replyCount" hide-on-single-page @current-change="pageChange" />
+        <el-pagination
+          style="background-color: transparent"
+          :current-page="reply.pageIndex"
+          :page-size="reply.pageSize"
+          layout="prev, pager, next"
+          :total="props.data.replyCount"
+          hide-on-single-page
+          @current-change="pageChange"
+        />
       </div>
 
       <div class="bottom-reply">
@@ -238,7 +246,12 @@ const replyMessage = async () => {
         emit('reply', props.data.id, res.data, replidHeightcalc);
 
         clear();
-        model.showReply = false;
+
+        if (!model.showMoreList) {
+          model.showReply = false;
+        } else if (reply.pageIndex != 1) {
+          reply.pageIndex = 1;
+        }
       }
     } catch (error) {
       if (error && error.statusCode == 401) {

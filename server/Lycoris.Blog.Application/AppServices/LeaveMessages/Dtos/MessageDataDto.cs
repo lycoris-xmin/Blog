@@ -7,6 +7,8 @@ namespace Lycoris.Blog.Application.AppServices.LeaveMessages.Dtos
     {
         public int Id { get; set; }
 
+        public int ParentId { get; set; }
+
         public string? Content { get; set; }
 
         public string? OriginalContent { get; set; }

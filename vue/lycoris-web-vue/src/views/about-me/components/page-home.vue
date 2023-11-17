@@ -2,8 +2,8 @@
   <div class="about-me-screen-view" :style="{ height: props.index > 1 ? '0px' : props.height }">
     <div class="view-body flex-center-center">
       <img src="../../../assets/images/bg.jpg" alt="" />
-      <div class="card" v-show="props.owner.isValid">
-        <p :class="{ 'text-showup': props.index == 1 }">Hello,I`m {{ props.owner.nickName }}</p>
+      <div class="card" v-show="stores.owner.isValid">
+        <p :class="{ 'text-showup': props.index == 1 }">Hello,I`m {{ stores.owner.nickName }}</p>
         <p :class="{ 'text-showup': props.index == 1 }" v-for="item in props.description" :key="item">{{ item }}</p>
       </div>
     </div>
@@ -11,6 +11,8 @@
 </template>
 
 <script setup>
+import { stores } from '../../../stores';
+
 const props = defineProps({
   index: {
     type: Number,
@@ -23,10 +25,6 @@ const props = defineProps({
   description: {
     type: Array,
     defalut: []
-  },
-  owner: {
-    type: Object,
-    defalut: void 0
   }
 });
 </script>

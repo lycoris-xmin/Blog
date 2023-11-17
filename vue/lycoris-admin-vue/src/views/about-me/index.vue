@@ -66,28 +66,36 @@ const ownerInit = async () => {
 };
 
 const submit = async () => {
-  let res = await infoRef.value.submit();
-  if (!res) {
-    toast.error('保存个人信息失败');
-    return;
+  {
+    let res = await infoRef.value.submit();
+    if (!res) {
+      toast.error('保存个人信息失败');
+      return;
+    }
   }
 
-  res = await skillRef.value.submit();
-  if (!res) {
-    toast.error('保存技能掌握信息失败');
-    return;
+  {
+    let res = await skillRef.value.submit();
+    if (!res) {
+      toast.error('保存技能掌握信息失败');
+      return;
+    }
   }
 
-  res = await projectRef.value.submit();
-  if (!res) {
-    toast.error('保存项目经验失败');
-    return;
+  {
+    let res = await projectRef.value.submit();
+    if (!res) {
+      toast.error('保存项目经验失败');
+      return;
+    }
   }
 
-  res = await officeRef.value.submit();
-  if (!res) {
-    toast.error('保存工作经历失败');
-    return;
+  {
+    let res = await officeRef.value.submit();
+    if (!res) {
+      toast.error('保存工作经历失败');
+      return;
+    }
   }
 
   toast.success('保存成功');

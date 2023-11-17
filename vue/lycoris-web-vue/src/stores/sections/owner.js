@@ -10,7 +10,12 @@ export default defineStore('web-owner', {
       wechat: '',
       github: '',
       bilibili: '',
-      music: ''
+      music: '',
+      statistics: {
+        post: 0,
+        talk: 0,
+        category: 0
+      }
     };
   },
   getters: {
@@ -28,6 +33,13 @@ export default defineStore('web-owner', {
       this.github = github || '';
       this.bilibili = bilibili;
       this.music = music;
+    },
+    setStatistics(statistics) {
+      this.statistics = statistics || {
+        post: 0,
+        talk: 0,
+        category: 0
+      };
     }
   }
 });

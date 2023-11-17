@@ -14,7 +14,7 @@
         <span class="badge badge-info" v-else>转载</span>
 
         <router-link :to="`/post/${props.post.id}`" :title="props.post.title">
-          <span>{{ props.post.title }}</span>
+          {{ props.post.title }}
         </router-link>
       </div>
       <div class="info">
@@ -93,17 +93,14 @@ const props = defineProps({
       a {
         color: var(--post-title-color);
         transition: all 0.4s;
+        display: block;
         overflow: hidden;
-
-        > span {
-          display: block;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-        }
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
 
       .badge {
+        padding: 0px 8px;
         flex-shrink: 0;
         font-size: 16px;
         margin-right: 6px;

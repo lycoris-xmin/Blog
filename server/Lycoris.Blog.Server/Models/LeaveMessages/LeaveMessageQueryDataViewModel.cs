@@ -13,6 +13,11 @@
         /// <summary>
         /// 
         /// </summary>
+        public int ParentId { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public string? Content { get; set; }
 
         /// <summary>

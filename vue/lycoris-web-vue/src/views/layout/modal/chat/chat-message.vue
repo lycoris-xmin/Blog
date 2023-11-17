@@ -2,7 +2,7 @@
   <div class="chat-windows">
     <div class="chat-windows-title">
       <span>{{ props.chat.chatUserName }}</span>
-      <span class="badge badge-purple" v-if="props.chat.isOwner">站长</span>
+      <span class="badge badge-purple" v-if="props.chat.isOwner">博主</span>
     </div>
     <ul ref="messageWindowsRef" @scroll="messageScroll">
       <li v-if="chatMessage.count > chatMessage.list.length">

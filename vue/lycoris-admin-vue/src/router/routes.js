@@ -9,7 +9,8 @@ const menusRoutes = [
     meta: {
       title: '首页',
       keepAlive: true,
-      icon: 'element-plus'
+      icon: 'element-plus',
+      menu: true
     }
   },
   {
@@ -22,7 +23,8 @@ const menusRoutes = [
         name: 'post',
         component: () => import('../views/post/index.vue'),
         meta: {
-          title: '文章列表'
+          title: '文章列表',
+          menu: true
         }
       },
       {
@@ -30,7 +32,8 @@ const menusRoutes = [
         name: 'post-markdown',
         component: () => import('../views/post/createorupdate.vue'),
         meta: {
-          title: '文章编写'
+          title: '文章编写',
+          menu: true
         }
       },
       {
@@ -39,7 +42,8 @@ const menusRoutes = [
         component: () => import('../views/category/index.vue'),
         meta: {
           title: '文章分类',
-          keepAlive: true
+          keepAlive: true,
+          menu: true
         }
       },
       {
@@ -48,7 +52,8 @@ const menusRoutes = [
         component: () => import('../views/comment/index.vue'),
         meta: {
           title: '文章评论',
-          keepAlive: true
+          keepAlive: true,
+          menu: true
         }
       }
     ]
@@ -64,7 +69,8 @@ const menusRoutes = [
         component: () => import('../views/talks/index.vue'),
         meta: {
           title: '说说管理',
-          keepAlive: true
+          keepAlive: true,
+          menu: true
         }
       },
       {
@@ -73,7 +79,8 @@ const menusRoutes = [
         component: () => import('../views/leavemessage/index.vue'),
         meta: {
           title: '留言管理',
-          keepAlive: true
+          keepAlive: true,
+          menu: true
         }
       },
       {
@@ -82,7 +89,8 @@ const menusRoutes = [
         component: () => import('../views/navigation/index.vue'),
         meta: {
           title: '网站收录',
-          keepAlive: true
+          keepAlive: true,
+          menu: true
         }
       },
       {
@@ -91,7 +99,8 @@ const menusRoutes = [
         component: () => import('../views/friendlink/index.vue'),
         meta: {
           title: '友链管理',
-          keepAlive: true
+          keepAlive: true,
+          menu: true
         }
       },
       {
@@ -100,7 +109,8 @@ const menusRoutes = [
         component: () => import('../views/filemanage/index.vue'),
         meta: {
           title: '文件管理',
-          keepAlive: false
+          keepAlive: false,
+          menu: true
         }
       }
     ]
@@ -116,7 +126,8 @@ const menusRoutes = [
         component: () => import('../views/request-log/index.vue'),
         meta: {
           title: '请求日志',
-          keepAlive: true
+          keepAlive: true,
+          menu: true
         }
       },
       {
@@ -125,7 +136,8 @@ const menusRoutes = [
         component: () => import('../views/browse-log/index.vue'),
         meta: {
           title: '浏览日志',
-          keepAlive: true
+          keepAlive: true,
+          menu: true
         }
       },
       {
@@ -134,7 +146,8 @@ const menusRoutes = [
         component: () => import('../views/referer-statistics/index.vue'),
         meta: {
           title: '来源统计',
-          keepAlive: true
+          keepAlive: true,
+          menu: true
         }
       }
     ]
@@ -153,7 +166,7 @@ const menusRoutes = [
           title: '关于本站',
           keepAlive: true,
           icon: 'chrome-filled',
-          autuorize: true
+          menu: true
         }
       },
       {
@@ -165,7 +178,7 @@ const menusRoutes = [
           title: '关于我',
           keepAlive: true,
           icon: 'avatar',
-          autuorize: true
+          menu: true
         }
       }
     ]
@@ -181,8 +194,8 @@ const menusRoutes = [
         component: () => import('../views/user/index.vue'),
         meta: {
           title: '用户管理',
-          autuorize: true,
-          keepAlive: true
+          keepAlive: true,
+          menu: true
         }
       },
       {
@@ -192,8 +205,8 @@ const menusRoutes = [
         component: () => import('../views/accesscontrol/index.vue'),
         meta: {
           title: '访问管控',
-          autuorize: true,
-          keepAlive: true
+          keepAlive: true,
+          menu: true
         }
       },
       {
@@ -203,8 +216,8 @@ const menusRoutes = [
         component: () => import('../views/system/index.vue'),
         meta: {
           title: '系统设置',
-          autuorize: true,
-          keepAlive: true
+          keepAlive: true,
+          menu: true
         }
       }
     ]
@@ -266,12 +279,25 @@ export const pageRoutes = [
       keepAlive: false,
       title: '锁屏'
     }
+  },
+  {
+    path: `${dashboardUrlPrefix}/resume/preview`,
+    name: 'resume',
+    component: () => import('../views/resume/index.vue'),
+    meta: {
+      keepAlive: false,
+      title: '简历预览'
+    }
   }
 ];
 
 export const getMenus = () => {
   let menus = [];
   for (let item of menusRoutes) {
+    if (item.meta && !item.meta.menu) {
+      continue;
+    }
+
     if (item.isRoute) {
       menus.push({
         name: item.meta.title,

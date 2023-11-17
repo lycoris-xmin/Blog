@@ -7,7 +7,18 @@
         </div>
         <div class="nav-domain">
           <div class="domain-item" v-for="groupItem in item.groupList" :key="groupItem.domain">
-            <router-link :to="{ name: 'nav-jump', query: { name: groupItem.name, link: groupItem.domain } }" target="_blank">{{ groupItem.name }}</router-link>
+            <router-link class="flex-center-center" :to="{ name: 'nav-jump', query: { name: groupItem.name, link: groupItem.domain } }" target="_blank">
+              <div class="ico">
+                <el-image :src="`${groupItem.domain}/favicon.ico`" :alt="groupItem.name" lazy>
+                  <template #error>
+                    <el-icon>
+                      <component :is="'eleme'"></component>
+                    </el-icon>
+                  </template>
+                </el-image>
+              </div>
+              {{ groupItem.name }}
+            </router-link>
           </div>
         </div>
       </li>
@@ -69,21 +80,39 @@ onMounted(async () => {
       .nav-domain {
         padding: 25px 0px 20px 0px;
         display: grid;
-        grid-template-columns: repeat(12, minmax(100px, 1fr));
-        grid-gap: 5px;
+        grid-template-columns: repeat(10, minmax(50px, 1fr));
+        grid-gap: 10px;
 
         .domain-item {
           text-align: center;
+
           > a {
             transition: all 0.4s;
-            padding: 10px;
+            padding: 8px 5px;
             border-radius: 4px;
             color: #000;
             letter-spacing: 2.5px;
+            background-color: var(--color-secondary-light);
 
             &:hover {
               background-color: var(--color-secondary);
-              color: var(--color-danger);
+              color: var(--color-primary);
+            }
+
+            .ico {
+              padding-right: 5px;
+              display: flex;
+              align-items: center;
+
+              :deep(.el-image) {
+                width: 15px;
+                height: 15px;
+
+                .el-image__wrapper {
+                  display: flex;
+                  align-items: center;
+                }
+              }
             }
           }
         }

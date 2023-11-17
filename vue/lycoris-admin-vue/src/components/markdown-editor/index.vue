@@ -316,11 +316,13 @@ defineExpose({
         border-radius: 5px;
       }
 
-      p:has(img) {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        overflow: hidden;
+      p {
+        &:has(img:only-child) {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          overflow: hidden;
+        }
       }
 
       ul.cherry-list__default {

@@ -109,10 +109,16 @@ const $delete = async () => {
       let res = await deleteReferer(ids);
       if (res && res.resCode == 0) {
         if (table.count <= table.pageSize) {
-          for (let id of ids) {
-            let index = table.list.findIndex(x => x.id == id);
-            table.list.splice(index, 1);
+          if (ids.length == table.list.length) {
+            table.list = [];
+          } else {
+            for (let id of ids) {
+              let index = table.list.findIndex(x => x.id == id);
+              table.list.splice(index, 1);
+            }
           }
+
+          table.count = table.count - ids.length;
         } else {
           getTableList();
         }

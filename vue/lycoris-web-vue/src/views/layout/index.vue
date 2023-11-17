@@ -38,7 +38,7 @@ import SignalRHelper from '../../utils/signalR';
 import { stores } from '../../stores';
 import { web } from '../../config.json';
 import { getUserBrief } from '../../api/user';
-import { getWebOwner, pageBrowse } from '../../api/home';
+import { getWebOwner, pageBrowse, getPostIcon, getOwnerCreateStatistics } from '../../api/home';
 import meta from '../../utils/meta';
 import { useRoute } from 'vue-router';
 import { staticSourceInit } from '../../utils/staticfile';
@@ -77,8 +77,9 @@ watch(
 
 onBeforeMount(async () => {
   meta.setTitle();
-
   staticSourceInit();
+  ownerCreateStatistics();
+  postIcon();
 });
 
 onMounted(() => {
@@ -89,6 +90,24 @@ onMounted(() => {
     Object.freeze(loginModalRef);
   }
 });
+
+const ownerCreateStatistics = async () => {
+  try {
+    let res = await getOwnerCreateStatistics();
+    if (res && res.resCode == 0) {
+      stores.owner.setStatistics(res.data);
+    }
+  } catch (error) {}
+};
+
+const postIcon = async () => {
+  try {
+    let res = await getPostIcon();
+    if (res && res.resCode == 0) {
+      stores.postIcon.setPostIcon(res.data.list);
+    }
+  } catch (error) {}
+};
 
 const webOwnerStoreInit = async () => {
   try {

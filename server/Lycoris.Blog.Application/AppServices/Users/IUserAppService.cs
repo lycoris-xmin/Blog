@@ -1,7 +1,6 @@
 ﻿using Lycoris.Blog.Application.AppServices.Users.Dtos;
 using Lycoris.Blog.Application.Shared;
 using Lycoris.Blog.Application.Shared.Dtos;
-using Microsoft.AspNetCore.Http;
 
 namespace Lycoris.Blog.Application.AppServices.Users
 {

@@ -411,7 +411,7 @@ namespace Lycoris.Blog.Application.AppServices.LeaveMessages.Impl
                 {
                     foreach (var reply in item.Redundancy!)
                     {
-                        reply.User = users!.SingleOrDefault(x => x.Id == item.User.Id) ?? new UserInfoDto()
+                        reply.User = users!.SingleOrDefault(x => x.Id == reply.User.Id) ?? new UserInfoDto()
                         {
                             Id = 0,
                             NickName = "用户已注销",
@@ -420,7 +420,7 @@ namespace Lycoris.Blog.Application.AppServices.LeaveMessages.Impl
 
                         if (reply.RepliedUser != null)
                         {
-                            reply.RepliedUser = users!.Where(x => x.Id == item.User.Id).Select(x => new LeaveMessageRepliedUserDto()
+                            reply.RepliedUser = users!.Where(x => x.Id == reply.RepliedUser.Id).Select(x => new LeaveMessageRepliedUserDto()
                             {
                                 Id = x.Id,
                                 NickName = x.NickName,
@@ -467,6 +467,7 @@ namespace Lycoris.Blog.Application.AppServices.LeaveMessages.Impl
                         select new MessageDataDto()
                         {
                             Id = message.Id,
+                            ParentId = message.ParentId,
                             Content = message.Content,
                             OriginalContent = message.OriginalContent,
                             Ip = message.Ip,
@@ -511,17 +512,15 @@ namespace Lycoris.Blog.Application.AppServices.LeaveMessages.Impl
             if (!ids.HasValue())
                 return;
 
-            var parentIds = await _message.GetAll().Where(x => ids.Contains(x.Id)).Where(x => x.ParentId > 0).Select(x => x.ParentId).ToListAsync();
-
             var sql = $"DELETE FROM {_message.TableName} WHERE Id IN ({string.Join(",", ids)});";
             await _message.ExecuteNonQueryAsync(sql);
 
-            if (parentIds.HasValue())
+            if (ids.HasValue())
             {
-                sql = $"DELETE FROM {_message.TableName} WHERE ParentId IN ({string.Join(",", parentIds)})";
+                sql = $"DELETE FROM {_message.TableName} WHERE ParentId IN ({string.Join(",", ids)})";
                 await _message.ExecuteNonQueryAsync(sql);
 
-                foreach (var item in parentIds)
+                foreach (var item in ids)
                     _scheduleQueueCache.Value.Enqueue(ScheduleTypeEnum.LeaveMessage, item.ToString());
             }
         }

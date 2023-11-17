@@ -9,7 +9,7 @@
         </popover-user-info-card>
         <span>
           {{ props.data.user.nickName }}
-          <el-tag v-if="props.data.isOwner" size="small">站长</el-tag>
+          <el-tag v-if="props.data.isOwner" size="small">博主</el-tag>
         </span>
       </div>
 

@@ -5,6 +5,9 @@
         <li v-for="item in model.list" :key="item.id">
           <talk-data :data="item" :owner="stores.owner"></talk-data>
         </li>
+        <li v-if="!model.list.length">
+          <div class="card no-talk-card">博主太懒，没有发布过说说</div>
+        </li>
       </transition-list>
     </div>
   </page-layout>
@@ -62,6 +65,11 @@ const getList = async () => {
 
     > li:last-child {
       margin-bottom: 0;
+    }
+
+    .no-talk-card {
+      font-size: 16px;
+      font-weight: 500;
     }
   }
 }

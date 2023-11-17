@@ -32,7 +32,7 @@ namespace Lycoris.Blog.Application.AppServices.Home.Impl
         /// 
         /// </summary>
         /// <returns></returns>
-        public Task<WebSettingsConfiguration?> GetWebSettingsAsync() => ApplicationConfiguration.Value.GetConfigurationAsync<WebSettingsConfiguration>(AppConfig.WebSettings);
+        public Task<WebSettingsConfiguration?> GetWebSettingsAsync() => ApplicationConfiguration.Value.GetConfigurationAsync<WebSettingsConfiguration>(AppConfig.WebSetting);
 
         /// <summary>
         /// 
@@ -70,7 +70,7 @@ namespace Lycoris.Blog.Application.AppServices.Home.Impl
         /// <typeparam name="T"></typeparam>
         /// <param name="configName"></param>
         /// <returns></returns>
-        public Task<T?> GetAboutMeAsync<T>(string configName) where T : class => ApplicationConfiguration.Value.GetConfigurationAsync<T>(configName);
+        public Task<T?> GetAboutMeAsync<T>(string configName) where T : class => _webAbout.Value.GetAboutAsync<T>(configName);
 
         /// <summary>
         /// 
@@ -114,6 +114,20 @@ namespace Lycoris.Blog.Application.AppServices.Home.Impl
         /// 
         /// </summary>
         /// <returns></returns>
+        public async Task<OwnerCreateStatisticsDto> GetOwnerCreateStatisticsAsync()
+        {
+            return new OwnerCreateStatisticsDto()
+            {
+                Post = await _provider.GetRequiredService<IRepository<Post, long>>().GetAll().Where(x => x.IsPublish == true).CountAsync(),
+                Talk = await _provider.GetRequiredService<IRepository<Talk, long>>().GetAll().CountAsync(),
+                Category = await _provider.GetRequiredService<IRepository<Category, int>>().GetAll().CountAsync()
+            };
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public async Task<WebStatisticsDto> GetWebStatisticsAsync()
         {
             return new WebStatisticsDto
@@ -151,6 +165,16 @@ namespace Lycoris.Blog.Application.AppServices.Home.Impl
             }
 
             return list;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<string>> GetPostIconAsync()
+        {
+            var config = await this.ApplicationConfiguration.Value.GetConfigurationAsync<PostSettingConfiguration>(AppConfig.PostSetting);
+            return config?.Images ?? new List<string>();
         }
     }
 }

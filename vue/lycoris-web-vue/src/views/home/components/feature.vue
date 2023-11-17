@@ -31,6 +31,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { getRecommendPostList } from '../../../api/post';
+import { stores } from '../../../stores';
 
 const carousel = ref([]);
 
@@ -56,7 +57,7 @@ const getCarousel = async () => {
   if (res && res.resCode == 0) {
     if (res.data && res.data.list && res.data.list.length) {
       carousel.value = res.data.list;
-      carousel.value.forEach(x => (x.icon = 'https://static.linhaojun.top/aurora/articles/3ec095cd9b7bd3f766166a4db14160c6.jpg'));
+      carousel.value.forEach(x => (x.icon = stores.postIcon.getRandomPostIcon()));
     } else {
       carousel.value = [
         {

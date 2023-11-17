@@ -81,6 +81,18 @@ namespace Lycoris.Blog.Server.Controllers
         }
 
         /// <summary>
+        /// 获取我创建的信息统计
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("Owner/Create/Statistics")]
+        [Produces("application/json")]
+        public async Task<DataOutput<OwnerCreateStatisticsViewModel>> OwnerCreateStatistics()
+        {
+            var dto = await _home.GetOwnerCreateStatisticsAsync();
+            return Success(dto.ToMap<OwnerCreateStatisticsViewModel>());
+        }
+
+        /// <summary>
         /// 网站相关统计信息
         /// </summary>
         /// <returns></returns>
@@ -103,6 +115,18 @@ namespace Lycoris.Blog.Server.Controllers
             // 疑问
             var dto = await _home.GetPostStatisticsAsync();
             return Success(dto.ToMapList<PostStatisticsViewModel>());
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("Post/Icon")]
+        [Produces("application/json")]
+        public async Task<ListOutput<string>> PostIcon()
+        {
+            var dto = await _home.GetPostIconAsync();
+            return Success(dto);
         }
     }
 }

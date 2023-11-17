@@ -14,7 +14,6 @@ using Lycoris.Blog.Server.Models.Configurations;
 using Lycoris.Blog.Server.Models.Shared;
 using Lycoris.Blog.Server.Shared;
 using Lycoris.Common.Extensions;
-using Lycoris.Common.Helper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Lycoris.Blog.Server.Controllers
@@ -50,7 +49,7 @@ namespace Lycoris.Blog.Server.Controllers
         [Produces("application/json")]
         public async Task<DataOutput<WebSettingsConfiguration>> WebSettings()
         {
-            var dto = await _configuration.GetConfigurationAsync<WebSettingsConfiguration>(AppConfig.WebSettings);
+            var dto = await _configuration.GetConfigurationAsync<WebSettingsConfiguration>(AppConfig.WebSetting);
             return Success(dto);
         }
 
@@ -64,7 +63,7 @@ namespace Lycoris.Blog.Server.Controllers
         [Consumes("multipart/form-data"), Produces("application/json")]
         public async Task<DataOutput<WebSettingsConfiguration>> SaveWebSettings([FromForm] SaveWebSettingsInput input, [FromServices] IFileManageAppService fileManage)
         {
-            var config = await _configuration.GetConfigurationAsync<WebSettingsConfiguration>(AppConfig.WebSettings);
+            var config = await _configuration.GetConfigurationAsync<WebSettingsConfiguration>(AppConfig.WebSetting);
 
             if (!input.WebName.IsNullOrEmpty())
                 config!.WebName = input.WebName!;
@@ -78,7 +77,7 @@ namespace Lycoris.Blog.Server.Controllers
             if (input.Avatar != null)
                 config!.DefaultAvatar = await fileManage.UploadFileAsync(input.Avatar, StaticsFilePath.Avatar);
 
-            await _configuration.SaveConfigurationAsync(AppConfig.WebSettings, config!);
+            await _configuration.SaveConfigurationAsync(AppConfig.WebSetting, config!);
             return Success(config);
         }
 
@@ -90,7 +89,7 @@ namespace Lycoris.Blog.Server.Controllers
         [Produces("application/json")]
         public async Task<DataOutput<PostSettingConfiguration>> PostSettings()
         {
-            var dto = await _configuration.GetConfigurationAsync<PostSettingConfiguration>(AppConfig.PostSettings);
+            var dto = await _configuration.GetConfigurationAsync<PostSettingConfiguration>(AppConfig.PostSetting);
             return Success(dto);
         }
 
@@ -102,7 +101,7 @@ namespace Lycoris.Blog.Server.Controllers
         [Consumes("application/json"), Produces("application/json")]
         public async Task<BaseOutput> SavePostSettings([FromBody] SavePostSettingsInput input)
         {
-            var config = await _configuration.GetConfigurationAsync<PostSettingConfiguration>(AppConfig.PostSettings)!;
+            var config = await _configuration.GetConfigurationAsync<PostSettingConfiguration>(AppConfig.PostSetting)!;
 
             config!.AutoSave = input.AutoSave!.Value;
             if (input.Second.HasValue && input.Second > 0)
@@ -110,7 +109,7 @@ namespace Lycoris.Blog.Server.Controllers
 
             config.Images = input.Images ?? new List<string>();
 
-            await _configuration.SaveConfigurationAsync(AppConfig.PostSettings, config!);
+            await _configuration.SaveConfigurationAsync(AppConfig.PostSetting, config!);
             return Success();
         }
 
@@ -122,7 +121,7 @@ namespace Lycoris.Blog.Server.Controllers
         [Produces("application/json")]
         public async Task<DataOutput<EmailSettingsConfiguration>> EmailSettings()
         {
-            var dto = await _configuration.GetConfigurationAsync<EmailSettingsConfiguration>(AppConfig.EmailSettings);
+            var dto = await _configuration.GetConfigurationAsync<EmailSettingsConfiguration>(AppConfig.EmailSetting);
             return Success(dto);
         }
 
@@ -134,7 +133,7 @@ namespace Lycoris.Blog.Server.Controllers
         [Consumes("application/json"), Produces("application/json")]
         public async Task<BaseOutput> SaveEmailSettings([FromBody] SaveEmailSettingsInput input)
         {
-            var config = await _configuration.GetConfigurationAsync<EmailSettingsConfiguration>(AppConfig.EmailSettings)!;
+            var config = await _configuration.GetConfigurationAsync<EmailSettingsConfiguration>(AppConfig.EmailSetting)!;
 
             if (!input.EmailAddress.IsNullOrEmpty())
                 config!.EmailAddress = input.EmailAddress!;
@@ -157,7 +156,7 @@ namespace Lycoris.Blog.Server.Controllers
             if (input.UseSSL.HasValue)
                 config!.UseSSL = input.UseSSL!.Value;
 
-            await _configuration.SaveConfigurationAsync(AppConfig.EmailSettings, input.ToMap<EmailSettingsConfiguration>());
+            await _configuration.SaveConfigurationAsync(AppConfig.EmailSetting, input.ToMap<EmailSettingsConfiguration>());
             return Success();
         }
 
@@ -184,7 +183,7 @@ namespace Lycoris.Blog.Server.Controllers
         [Produces("application/json")]
         public async Task<DataOutput<SeoSettingsConfiguration>> SeoSettings()
         {
-            var dto = await _configuration.GetConfigurationAsync<SeoSettingsConfiguration>(AppConfig.SeoSettings);
+            var dto = await _configuration.GetConfigurationAsync<SeoSettingsConfiguration>(AppConfig.SeoSetting);
             return Success(dto);
         }
 
@@ -196,7 +195,7 @@ namespace Lycoris.Blog.Server.Controllers
         [Consumes("application/json"), Produces("application/json")]
         public async Task<BaseOutput> SaveSeoSettings([FromBody] SaveSeoSettingsInput input)
         {
-            var config = await _configuration.GetConfigurationAsync<SeoSettingsConfiguration>(AppConfig.SeoSettings);
+            var config = await _configuration.GetConfigurationAsync<SeoSettingsConfiguration>(AppConfig.SeoSetting);
 
             if (input.Biadu != null)
             {
@@ -213,7 +212,7 @@ namespace Lycoris.Blog.Server.Controllers
                     config!.Biadu.Token = input.Biadu.Token!;
             }
 
-            await _configuration.SaveConfigurationAsync(AppConfig.SeoSettings, input.ToMap<SeoSettingsConfiguration>());
+            await _configuration.SaveConfigurationAsync(AppConfig.SeoSetting, input.ToMap<SeoSettingsConfiguration>());
             return Success();
         }
 
@@ -250,7 +249,7 @@ namespace Lycoris.Blog.Server.Controllers
         [Produces("application/json")]
         public async Task<DataOutput<SystemSettingsConfiguration>> SystemSettingsConfiguration()
         {
-            var dto = await _configuration.GetConfigurationAsync<SystemSettingsConfiguration>(AppConfig.SystemSettings);
+            var dto = await _configuration.GetConfigurationAsync<SystemSettingsConfiguration>(AppConfig.SystemSetting);
             return Success(dto);
         }
 
@@ -263,11 +262,11 @@ namespace Lycoris.Blog.Server.Controllers
         [Consumes("application/json"), Produces("application/json")]
         public async Task<BaseOutput> SaveShowdocPushConfiguration([FromBody] SaveShowdocPushConfigurationInput input)
         {
-            var config = await _configuration.GetConfigurationAsync<SystemSettingsConfiguration>(AppConfig.SystemSettings);
+            var config = await _configuration.GetConfigurationAsync<SystemSettingsConfiguration>(AppConfig.SystemSetting);
             if (config!.ShowDocHost != input.Host)
             {
                 config.ShowDocHost = input.Host!;
-                await _configuration.SaveConfigurationAsync(AppConfig.SystemSettings, config);
+                await _configuration.SaveConfigurationAsync(AppConfig.SystemSetting, config);
             }
 
             return Success();
@@ -289,12 +288,12 @@ namespace Lycoris.Blog.Server.Controllers
             else if (input.LogFile!.Value < 1 || input.LogFile!.Value > 30)
                 throw new FriendlyException("保留范围为 1 - 30 天");
 
-            var config = await _configuration.GetConfigurationAsync<SystemSettingsConfiguration>(AppConfig.SystemSettings);
+            var config = await _configuration.GetConfigurationAsync<SystemSettingsConfiguration>(AppConfig.SystemSetting);
 
             if (input.StaticFile!.Value != config!.SystemFileClear.StaticFile || input.TempFile!.Value != config!.SystemFileClear.TempFile || input.LogFile!.Value != config!.SystemFileClear.LogFile)
             {
                 config!.SystemFileClear = input.ToMap<SystemFileClearConfiguration>();
-                await _configuration.SaveConfigurationAsync(AppConfig.SystemSettings, config);
+                await _configuration.SaveConfigurationAsync(AppConfig.SystemSetting, config);
             }
 
             return Success();
@@ -318,12 +317,12 @@ namespace Lycoris.Blog.Server.Controllers
             else if (input.LeaveMessage!.Value < 0 || input.LeaveMessage!.Value > 30)
                 throw new FriendlyException("保留范围为 0 - 365 天");
 
-            var config = await _configuration.GetConfigurationAsync<SystemSettingsConfiguration>(AppConfig.SystemSettings);
+            var config = await _configuration.GetConfigurationAsync<SystemSettingsConfiguration>(AppConfig.SystemSetting);
 
             if (input.RequestLog!.Value != config!.SystemDBClear.RequestLog || input.BrowseLog!.Value != config!.SystemDBClear.BrowseLog || input.PostComment!.Value != config!.SystemDBClear.PostComment || input.LeaveMessage!.Value != config!.SystemDBClear.LeaveMessage)
             {
                 config!.SystemDBClear = input.ToMap<SystemDBClearConfiguration>();
-                await _configuration.SaveConfigurationAsync(AppConfig.SystemSettings, config);
+                await _configuration.SaveConfigurationAsync(AppConfig.SystemSetting, config);
             }
 
             return Success();
@@ -352,7 +351,7 @@ namespace Lycoris.Blog.Server.Controllers
         {
             var fileUrl = "";
 
-            if (input.ConfigName == AppConfig.PostSettings)
+            if (input.ConfigName == AppConfig.PostSetting)
                 fileUrl = await _fileManage.Value.UploadFileAsync(input.File!, "/post/carousel");
 
             return Success(fileUrl);

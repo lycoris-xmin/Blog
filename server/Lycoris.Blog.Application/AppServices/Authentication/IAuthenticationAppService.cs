@@ -56,7 +56,7 @@ namespace Lycoris.Blog.Application.AppServices.Authentication
         /// </summary>
         /// <param name="email"></param>
         /// <returns></returns>
-        Task<bool> CheckEmailUseAsync(string email);
+        Task<bool> CheckEmailUseAsync(string email, long? id = null);
 
         /// <summary>
         /// 
@@ -76,7 +76,7 @@ namespace Lycoris.Blog.Application.AppServices.Authentication
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        Task ChangePasswordAsync(ChangePasswordDto input);
+        Task<LoginDto> ChangePasswordAsync(ChangePasswordDto input);
 
         /// <summary>
         /// 
@@ -84,5 +84,12 @@ namespace Lycoris.Blog.Application.AppServices.Authentication
         /// <param name="password"></param>
         /// <returns></returns>
         Task ScreenUnLockAsync(string password);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        Task ChangeEmailAsync(string email);
     }
 }

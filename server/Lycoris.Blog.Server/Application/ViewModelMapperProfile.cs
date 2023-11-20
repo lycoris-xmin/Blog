@@ -261,6 +261,8 @@ namespace Lycoris.Blog.Server.Application
             CreateMap<OwnerCreateStatisticsDto, OwnerCreateStatisticsViewModel>();
 
             CreateMap<UpdateUserBriefInput, UserBriefDto>();
+
+            CreateMap<ChangePasswordInput, ChangePasswordDto>();
         }
 
         /// <summary>

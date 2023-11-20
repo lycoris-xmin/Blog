@@ -92,6 +92,7 @@ import { passwordRegex, emailRegex } from '../../../utils/regex';
 import { debounce } from '../../../utils/tool';
 import toast from '../../../utils/toast';
 import swal from '../../../utils/swal';
+import { getEmailHost, openQQMail } from '../../../utils/email-tool';
 
 const model = reactive({
   visible: false,
@@ -181,12 +182,10 @@ const emailCaptchaCode = async (e, actionType) => {
           toast.success(`如果收不到邮箱验证码，请使用你想注册的邮箱发送相关信息至博主邮箱：${props.owner.email}，并注明注册信息`);
         }
       }
+    } else if (res.resCode == -99 && res.data) {
+      emailCaptchaTime(e, actionType, parseInt(res.data.second));
     }
-  } catch (error) {
-    if (error.data.resCode == -99 && error.data.data) {
-      emailCaptchaTime(e, actionType, parseInt(error.data.data));
-    }
-  }
+  } catch (error) {}
 };
 
 const emailCaptchaTime = (e, type, time = 59) => {
@@ -207,7 +206,7 @@ const emailCaptchaTime = (e, type, time = 59) => {
   let captchaTime = setInterval(() => {
     if (time == 0) {
       e.target.innerText = '验证码';
-      if (type == 0) {
+      if (type == 1) {
         registerForm.emailCaptchaTime = false;
       } else {
         forgetForm.emailCaptchaTime = false;
@@ -315,7 +314,7 @@ const userRegister = debounce(async () => {
     toast.warn('密码不能为空');
     return;
   } else if (!passwordRegex(registerForm.password)) {
-    toast.warn('密码格式错误');
+    toast.warn('密码必须包含大写字母，小写字母，数字，特殊符号 `@#$%^&*`~()-+=` 中任意3项密码');
     return;
   }
 
@@ -331,37 +330,16 @@ const userRegister = debounce(async () => {
     });
     if (res && res.resCode == 0) {
       toast.success('注册成功，感谢您愿意成为本站的一员');
+      registerForm.email = '';
+      registerForm.captcha = '';
+      registerForm.password = '';
+      registerForm.confirmPassword = '';
       changeType(0);
     }
   } finally {
     model.btnLoading = false;
   }
 }, 300);
-
-const getEmailHost = email => {
-  //
-  if (email.endsWith('@163.com') || email.endsWith('@qq.com')) {
-    var arr1 = email.split('@');
-    var arr2 = arr1[1].split('.');
-    return `https://mail.${arr2[0]}.com`;
-  } else if (email.endsWith('@outlook.com')) {
-    return `https://www.outlook.com`;
-  }
-
-  return '';
-};
-
-function openQQMail() {
-  var form = document.createElement('form');
-  form.method = 'POST';
-  form.action = 'https://mail.qq.com';
-  form.style.display = 'none';
-  form.target = '_blank';
-
-  document.body.appendChild(form);
-  form.submit();
-  form.remove();
-}
 
 defineExpose({
   show,

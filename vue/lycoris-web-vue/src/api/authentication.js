@@ -48,3 +48,15 @@ export const register = ({ email, captcha, password }) => {
     password
   });
 };
+
+export const changeEmailCode = email => {
+  return request.post(`${controller}/change/email/captcha`, { email });
+};
+
+export const changeEmail = ({ email, captcha }) => {
+  return request.post(`${controller}/change/email`, { email, captcha });
+};
+
+export const changePassword = ({ oldPassword, password }) => {
+  return request.post(`${controller}/change/password`, { oldPassword, password });
+};

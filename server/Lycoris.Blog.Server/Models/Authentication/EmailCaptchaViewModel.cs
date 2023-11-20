@@ -3,18 +3,18 @@
     /// <summary>
     /// 
     /// </summary>
-    public class RegisterCaptchaViewModel
+    public class EmailCaptchaViewModel
     {
         /// <summary>
         /// 
         /// </summary>
-        public RegisterCaptchaViewModel() { }
+        public EmailCaptchaViewModel() { }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="Second"></param>
-        public RegisterCaptchaViewModel(int Second)
+        public EmailCaptchaViewModel(int Second)
         {
             this.Second = Second;
         }
@@ -22,6 +22,6 @@
         /// <summary>
         /// 
         /// </summary>
-        public int Second { get; set; }
+        public int? Second { get; set; }
     }
 }

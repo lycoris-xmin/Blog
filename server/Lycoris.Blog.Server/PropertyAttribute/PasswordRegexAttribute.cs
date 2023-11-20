@@ -1,4 +1,5 @@
-﻿using Lycoris.Blog.Server.Application.Constants;
+﻿using Lycoris.Blog.Model.Exceptions;
+using Lycoris.Blog.Server.Application.Constants;
 using Lycoris.Common.Extensions;
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
@@ -41,10 +42,7 @@ namespace Lycoris.Blog.Server.PropertyAttribute
                 return true;
 
             if (value is not string)
-            {
-                ErrorMessage = $"{ParamName}格式错误";
-                return false;
-            }
+                throw new FriendlyException($"{ParamName}格式错误");
 
             var password = (string)value;
             if (password.IsNullOrEmpty())
@@ -52,10 +50,7 @@ namespace Lycoris.Blog.Server.PropertyAttribute
 
             var regex = new Regex(_passwordRegex);
             if (!regex.IsMatch(password))
-            {
-                ErrorMessage = $"{ParamName}格式错误";
-                return false;
-            }
+                throw new FriendlyException($"{ParamName}格式错误");
 
             return true;
         }

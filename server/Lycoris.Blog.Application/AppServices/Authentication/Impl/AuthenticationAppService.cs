@@ -94,9 +94,12 @@ namespace Lycoris.Blog.Application.AppServices.Authentication.Impl
         {
             var dto = input.ToMap<LoginDto>();
 
-            var data = await _loginToken.GetAll().Where(x => x.UserId == input.Id!.Value).Where(x => x.IsManagement == isManagement).SingleOrDefaultAsync() ?? new LoginToken() { UserId = input.Id!.Value, IsManagement = isManagement };
+            var data = await _loginToken.GetAll()
+                                        .Where(x => x.UserId == input.Id!.Value)
+                                        .Where(x => x.IsManagement == isManagement)
+                                        .SingleOrDefaultAsync() ?? new LoginToken() { UserId = input.Id!.Value, IsManagement = isManagement };
 
-            if (data.Id == input.Id!.Value)
+            if (data.UserId == input.Id!.Value)
             {
                 // 数据库如果记录的缓存未过期，则删除就缓存
                 if (data.TokenExpireTime > DateTime.Now)
@@ -301,11 +304,12 @@ namespace Lycoris.Blog.Application.AppServices.Authentication.Impl
         /// 
         /// </summary>
         /// <param name="email"></param>
+        /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<bool> CheckEmailUseAsync(string email)
+        public async Task<bool> CheckEmailUseAsync(string email, long? id = null)
         {
             email = email.ToLower();
-            return await _user.GetAll().Where(x => x.Email == email).AnyAsync();
+            return await _user.GetAll().Where(x => x.Email == email).WhereIf(id.HasValue, x => x.Id != id).AnyAsync();
         }
 
         /// <summary>
@@ -320,7 +324,7 @@ namespace Lycoris.Blog.Application.AppServices.Authentication.Impl
             if (await CheckEmailUseAsync(input.Email))
                 throw new FriendlyException("邮箱已被注册");
 
-            var data = await _user.CreateAsync(new User()
+            var data = new User()
             {
                 Email = input.Email,
                 NickName = $"程序猿{RandomHelper.GetRandomString(4)}",
@@ -330,7 +334,7 @@ namespace Lycoris.Blog.Application.AppServices.Authentication.Impl
                 CreateTime = DateTime.Now,
                 GoogleAuthentication = false,
                 IsAdmin = false
-            });
+            };
 
             if (data.Email.EndsWith("@qq.com"))
                 data.Avatar = $"https://q2.qlogo.cn/headimg_dl?dst_uin={data.Email}&spec=100";
@@ -339,6 +343,8 @@ namespace Lycoris.Blog.Application.AppServices.Authentication.Impl
                 var setting = await this.ApplicationConfiguration.Value.GetConfigurationAsync<WebSettingsConfiguration>(AppConfig.WebStatistics);
                 data.Avatar = setting!.DefaultAvatar;
             }
+
+            data = await _user.CreateAsync(data);
 
             await _userLink.Value.CreateAsync(new UserLink() { Id = data.Id });
 
@@ -360,16 +366,17 @@ namespace Lycoris.Blog.Application.AppServices.Authentication.Impl
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public async Task ChangePasswordAsync(ChangePasswordDto input)
+        public async Task<LoginDto> ChangePasswordAsync(ChangePasswordDto input)
         {
             if (input.Password.IsNullOrEmpty())
                 throw new HttpStatusException(HttpStatusCode.BadRequest, "修改密码为空");
 
-            if (input.Password == input.OldPassword)
-                return;
+            var data = await _user.GetAsync(CurrentUser.Id) ?? throw new HttpStatusException(HttpStatusCode.BadRequest, $"can not find login user by id:{CurrentUser.Id}");
 
-            var data = await _user.GetAsync(CurrentUser.Id);
-            if (data!.Password != SqlPasswrodConverter.Encrypt(input.Password!))
+            if (data.Password == SqlPasswrodConverter.Encrypt(input.OldPassword!))
+                throw new FriendlyException("与原密码相同不需要修改");
+
+            if (data.Password != SqlPasswrodConverter.Encrypt(input.OldPassword!))
             {
                 // 记录错误次数
                 throw new FriendlyException("密码错误");
@@ -378,6 +385,8 @@ namespace Lycoris.Blog.Application.AppServices.Authentication.Impl
             data.Password = input.Password!;
 
             await _user.UpdateFieIdsAsync(data, x => x.Password);
+
+            return await LoginAsync(new LoginValidateDto(data.Id), true, false);
         }
 
         /// <summary>
@@ -391,6 +400,33 @@ namespace Lycoris.Blog.Application.AppServices.Authentication.Impl
 
             if (user.Password != SqlPasswrodConverter.Encrypt(password))
                 throw new FriendlyException("密码错误");
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        [Transactional]
+        public async Task ChangeEmailAsync(string email)
+        {
+            var user = await _user.GetAsync(CurrentUser.Id) ?? throw new HttpStatusException(HttpStatusCode.BadRequest, $"can not find user by id:{CurrentUser.Id}");
+
+            if (user.IsAdmin)
+                throw new FriendlyException("超级管理员帐号不允许修改");
+
+            user.Email = email;
+            await _user.UpdateFieIdsAsync(user, x => x.Email);
+
+            var data = await _loginToken.GetAll().Where(x => x.UserId == CurrentUser.Id).Where(x => x.IsManagement == false).SingleOrDefaultAsync();
+            if (data != null)
+            {
+                _cache.Value.SetLogoutState(data.Token);
+
+                data.TokenExpireTime = DateTime.Now.AddSeconds(-1);
+                data.RefreshTokenExpireTime = DateTime.Now.AddSeconds(-1);
+                await _loginToken.UpdateFieIdsAsync(data, x => x.TokenExpireTime, x => x.RefreshTokenExpireTime);
+            }
         }
     }
 }

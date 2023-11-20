@@ -14,6 +14,8 @@ const getArgs = args => {
     }
   }
 
+  title = title || '提示';
+
   return { message, title, config };
 };
 

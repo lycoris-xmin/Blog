@@ -1,4 +1,5 @@
-﻿using Lycoris.Blog.Server.Application.Constants;
+﻿using Lycoris.Blog.Model.Exceptions;
+using Lycoris.Blog.Server.Application.Constants;
 using Lycoris.Common.Extensions;
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
@@ -35,10 +36,7 @@ namespace Lycoris.Blog.Server.PropertyAttribute
                 return true;
 
             if (value is not string)
-            {
-                ErrorMessage = "邮箱格式错误";
-                return false;
-            }
+                throw new FriendlyException("邮箱格式错误");
 
             var email = (string)value;
             if (email.IsNullOrEmpty())
@@ -46,10 +44,7 @@ namespace Lycoris.Blog.Server.PropertyAttribute
 
             var regex = new Regex(_emailRegex);
             if (!regex.IsMatch(email))
-            {
-                ErrorMessage = "邮箱格式错误";
-                return false;
-            }
+                throw new FriendlyException("邮箱格式错误");
 
             return true;
         }

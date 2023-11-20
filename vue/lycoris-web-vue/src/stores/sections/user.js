@@ -102,21 +102,25 @@ export default defineStore('user', {
       localStorage.setItem(key, encryptString(getStoreState(this)));
     },
     setLogoutState() {
-      this.id = '';
-      this.nickName = '';
-      this.avatar = '';
-      this.blog = '';
-      this.qq = '';
-      this.wechat = '';
-      this.github = '';
-      this.gitee = '';
-      this.email = '';
-      this.bilibili = '';
-      this.cloudMusic = '';
-      this.isAdmin = false;
-      this.state = false;
+      try {
+        this.id = '';
+        this.nickName = '';
+        this.avatar = '';
+        this.blog = '';
+        this.qq = '';
+        this.wechat = '';
+        this.github = '';
+        this.gitee = '';
+        this.email = '';
+        this.bilibili = '';
+        this.cloudMusic = '';
+        this.isAdmin = false;
+        this.state = false;
 
-      localStorage.setItem(key, '');
+        localStorage.setItem(key, '');
+      } catch (error) {
+        debugger;
+      }
     }
   }
 });

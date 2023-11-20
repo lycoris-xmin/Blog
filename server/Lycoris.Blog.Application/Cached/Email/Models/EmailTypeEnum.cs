@@ -5,6 +5,10 @@
         /// <summary>
         /// 注册
         /// </summary>
-        Register = 0
+        Register = 0,
+        /// <summary>
+        /// 修改邮箱
+        /// </summary>
+        ChangeEmail = 1
     }
 }

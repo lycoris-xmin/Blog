@@ -36,8 +36,8 @@ export const refreshToken = async refreshToken => {
   });
 };
 
-export const ChangePassword = ({ oldPassword, password }) => {
-  return request.post(`${controller}/changepassword`, { oldPassword, password });
+export const changePassword = ({ oldPassword, password }) => {
+  return request.post(`${controller}/dashboard/changepassword`, { oldPassword, password });
 };
 
 export const screenUnLock = password => {

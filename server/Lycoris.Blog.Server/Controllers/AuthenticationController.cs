@@ -115,17 +115,17 @@ namespace Lycoris.Blog.Server.Controllers
         /// <exception cref="FriendlyException"></exception>
         [HttpPost("Captcha/Register")]
         [Consumes("application/json"), Produces("application/json")]
-        public async Task<DataOutput<RegisterCaptchaViewModel>> RegisterCaptcha([FromBody] RegisterCaptchaInputInput input)
+        public async Task<DataOutput<EmailCaptchaViewModel>> RegisterCaptcha([FromBody] RegisterCaptchaInputInput input)
         {
             var cache = _emailCache.Value.GetEmailCaptcha(input.Email!, EmailTypeEnum.Register);
             if (cache != null && cache.CaptchaExpiredTime!.Value > DateTime.Now)
             {
                 var times = (int)Math.Ceiling((cache.CaptchaExpiredTime!.Value - DateTime.Now).TotalSeconds);
-                return new DataOutput<RegisterCaptchaViewModel>()
+                return new DataOutput<EmailCaptchaViewModel>()
                 {
                     ResCode = ResCodeEnum.Friendly,
                     ResMsg = $"请{times}秒后再试",
-                    Data = new RegisterCaptchaViewModel(times)
+                    Data = new EmailCaptchaViewModel(times)
                 };
             }
 
@@ -147,7 +147,7 @@ namespace Lycoris.Blog.Server.Controllers
             // 验证码时间
             _emailCache.Value.SetEmailCaptcha(input.Email!, EmailTypeEnum.Register, new EmailCaptchaCacheModel(data.Code, data.ExpireTime!.Value));
 
-            return Success(new RegisterCaptchaViewModel());
+            return Success(new EmailCaptchaViewModel());
         }
 
         /// <summary>
@@ -178,7 +178,9 @@ namespace Lycoris.Blog.Server.Controllers
         /// 管理后台登录地址
         /// </summary>
         /// <returns></returns>
-        [HttpPost("Admin"), WebAuthentication(IsRequired = true)]
+        [HttpPost("Admin")]
+        [WebAuthentication(IsRequired = true)]
+        [Produces("application/json")]
         public async Task<DataOutput<AdminViewModel>> Admin()
         {
             if (!CurrentRequest!.User!.IsAdmin)
@@ -187,6 +189,88 @@ namespace Lycoris.Blog.Server.Controllers
             var path = await _authentication.GetAdminPathAsync();
             return Success(new AdminViewModel(path));
         }
+
+        /// <summary>
+        /// 修改密码
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpPost("ChangePassword")]
+        [WebAuthentication(IsRequired = true)]
+        [Consumes("application/json"), Produces("application/json")]
+        public async Task<DataOutput<LoginViewModel>> ChangePassword([FromBody] ChangePasswordInput input)
+        {
+            var data = input.ToMap<ChangePasswordDto>();
+            var dto = await _authentication.ChangePasswordAsync(data);
+            return Success(dto.ToMap<LoginViewModel>());
+        }
+
+        /// <summary>
+        /// 修改邮箱验证码
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpPost("Change/Email/Captcha")]
+        [WebAuthentication(IsRequired = true)]
+        [Consumes("application/json"), Produces("application/json")]
+        public async Task<DataOutput<EmailCaptchaViewModel>> ChangeEmailCaptchaCode([FromBody] ChangeEmailCaptchaCodeInput input)
+        {
+            var cache = _emailCache.Value.GetEmailCaptcha(input.Email!, EmailTypeEnum.ChangeEmail);
+            if (cache != null && cache.CaptchaExpiredTime!.Value > DateTime.Now)
+            {
+                var times = (int)Math.Ceiling((cache.CaptchaExpiredTime!.Value - DateTime.Now).TotalSeconds);
+                return new DataOutput<EmailCaptchaViewModel>()
+                {
+                    ResCode = ResCodeEnum.Friendly,
+                    ResMsg = $"请{times}秒后再试",
+                    Data = new EmailCaptchaViewModel(times)
+                };
+            }
+
+            var isUse = await _authentication.CheckEmailUseAsync(input.Email!);
+            if (isUse)
+                throw new FriendlyException("邮箱已被注册");
+
+            var data = new SendEmailCaptchaDataModel()
+            {
+                EmailAddress = input.Email!,
+                Code = RandomHelper.GetRandomString(6).ToUpper(),
+                Action = "注册",
+                ExpireTime = 5
+            };
+
+            // 发送邮件
+            await _email.Value.SendEmailCaptchaAsync(data);
+
+            // 验证码时间
+            _emailCache.Value.SetEmailCaptcha(input.Email!, EmailTypeEnum.ChangeEmail, new EmailCaptchaCacheModel(data.Code, data.ExpireTime!.Value));
+
+            return Success(new EmailCaptchaViewModel());
+        }
+
+        /// <summary>
+        /// 修改邮箱
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpPost("Change/Email")]
+        [WebAuthentication(IsRequired = true)]
+        [Consumes("application/json"), Produces("application/json")]
+        public async Task<BaseOutput> ChangeEmail([FromBody] ChangeEmailInput input)
+        {
+            if (input.Captcha!.Length != 6)
+                throw new FriendlyException("验证码错误");
+
+            var cache = _emailCache.Value.GetEmailCaptcha(input.Email!, EmailTypeEnum.ChangeEmail);
+            if (cache == null)
+                throw new FriendlyException("验证码已过期");
+            else if (cache.Code != input.Captcha)
+                throw new FriendlyException("验证码错误");
+
+            await _authentication.ChangeEmailAsync(input.Email!);
+            return Success();
+        }
+
         #endregion
 
         #region ============ 后台 ============
@@ -244,6 +328,21 @@ namespace Lycoris.Blog.Server.Controllers
         {
             var dto = await _authentication.RefreshTokenAsync(input.RefreshToken!, true);
             return Success(new RefreshTokenViewModel(dto.Token));
+        }
+
+        /// <summary>
+        /// 修改密码
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpPost("Dashboard/Change/Password")]
+        [AppAuthentication]
+        [Consumes("application/json"), Produces("application/json")]
+        public async Task<DataOutput<LoginViewModel>> DashboardChangePassword([FromBody] ChangePasswordInput input)
+        {
+            var data = input.ToMap<ChangePasswordDto>();
+            var dto = await _authentication.ChangePasswordAsync(data);
+            return Success(dto.ToMap<LoginViewModel>());
         }
 
         /// <summary>

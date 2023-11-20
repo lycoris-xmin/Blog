@@ -20,8 +20,8 @@
   "dashboardUrlPrefix": "/little/brokenstation",
   "build": {
     "esm": [
-      "https://cdn.jsdelivr.net/npm/cherry-markdown@0.8.19/+esm",
-      "https://cdn.bootcdn.net/ajax/libs/echarts/5.4.2/echarts.esm.min.js"
+      "https://cdn.jsdelivr.net/gh/lycoris-xmin/blog_fileserver/cherry-markdown/cherry-markdown.esm.js",
+      "https://cdn.bootcdn.net/ajax/libs/tesseract.js/4.0.3/tesseract.esm.min.js"
     ]
   }
 }

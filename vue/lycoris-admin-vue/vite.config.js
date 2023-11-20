@@ -68,13 +68,13 @@ export default defineConfig({
           name: '@microsoft/signalr',
           var: 'signalR',
           path: 'https://cdn.bootcdn.net/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js'
+        },
+        {
+          name: 'cherry-markdown',
+          var: 'Cherry',
+          path: 'https://cdn.jsdelivr.net/gh/lycoris-xmin/blog_fileserver/cherry-markdown/cherry-markdown.esm.js',
+          css: 'https://cdn.jsdelivr.net/gh/lycoris-xmin/blog_fileserver/cherry-markdown/cherry-markdown.css'
         }
-        // {
-        //   name: 'cherry-markdown',
-        //   var: 'Cherry',
-        //   path: 'https://cdn.jsdelivr.net/npm/cherry-markdown@0.8.19/+esm',
-        //   css: 'https://cdn.jsdelivr.net/npm/cherry-markdown@0.8.19/dist/cherry-markdown.min.css'
-        // }
       ]
     }),
     visualizer({

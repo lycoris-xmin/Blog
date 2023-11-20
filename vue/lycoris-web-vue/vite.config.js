@@ -84,13 +84,13 @@ export default defineConfig({
           name: 'echarts',
           var: 'echarts',
           path: 'https://cdn.bootcdn.net/ajax/libs/echarts/5.4.2/echarts.min.js'
+        },
+        {
+          name: 'cherry-markdown',
+          var: 'Cherry',
+          path: 'https://cdn.jsdelivr.net/gh/lycoris-xmin/blog_fileserver/cherry-markdown/cherry-markdown.esm.js',
+          css: 'https://cdn.jsdelivr.net/gh/lycoris-xmin/blog_fileserver/cherry-markdown/cherry-markdown.css'
         }
-        // {
-        //   name: 'cherry-markdown',
-        //   var: 'Cherry',
-        //   path: 'https://cdn.jsdelivr.net/npm/cherry-markdown@0.8.19/+esm',
-        //   css: 'https://cdn.jsdelivr.net/npm/cherry-markdown@0.8.19/dist/cherry-markdown.min.css'
-        // }
       ]
     }),
     visualizer({

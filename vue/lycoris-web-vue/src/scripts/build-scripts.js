@@ -17,7 +17,9 @@ async function searchDomain() {
       matches.forEach(url => {
         const match = url.match(urlPattern);
         if (match && match[1] && !match[1].includes('localhost') && !match[1].includes('lycoris.cloud') && !match[1].includes('beian.miit.gov.cn')) {
-          urls.add(match[1]);
+          if (!match[1].includes('.${')) {
+            urls.add(match[1]);
+          }
         }
       });
     }

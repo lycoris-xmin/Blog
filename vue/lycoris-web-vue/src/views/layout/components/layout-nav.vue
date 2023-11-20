@@ -81,6 +81,10 @@ import secret from '../../../utils/secret';
 import toast from '../../../utils/toast';
 import { web } from '../../../config.json';
 import { getStaticSource, setStaticSource } from '../../../utils/staticfile';
+import { useRoute, useRouter } from 'vue-router';
+
+const route = useRoute();
+const router = useRouter();
 
 const adminPath = ref('');
 
@@ -120,7 +124,7 @@ const searchPost = () => {
 };
 
 const userLogout = async () => {
-  let result = await swal.confirm('确定要退出登录状态码?', '退出确认');
+  let result = await swal.confirm('确定要退出登录吗?', '退出确认');
   if (result) {
     try {
       let res = await logout();
@@ -129,6 +133,10 @@ const userLogout = async () => {
         stores.user.setLogoutState();
         toast.success('退出登录成功');
         chatSignalR.stop();
+
+        if (route.name == 'user') {
+          router.push({ name: 'home' });
+        }
       }
     } catch (error) {}
   }

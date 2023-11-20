@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import { getPageRoutes, getkeepAliveComponents, getNavMenus } from './routes';
 import nProgress from 'nprogress';
 import { web } from '../config.json';
+import { stores } from '../stores';
 
 nProgress.configure({
   easing: 'ease',
@@ -30,7 +31,6 @@ const $router = createRouter(routerconfig);
 
 $router.beforeEach(async to => {
   nProgress.start();
-
   if (to.matched.length == 0) {
     return { name: 'notfound' };
   }
@@ -43,6 +43,10 @@ $router.beforeEach(async to => {
     } else {
       document.title = web.name;
     }
+  }
+
+  if (to.meta.autuorize && (!stores.authorize.token || !stores.user.state)) {
+    return { name: 'home' };
   }
 });
 

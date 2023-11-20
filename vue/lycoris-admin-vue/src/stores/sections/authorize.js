@@ -18,36 +18,24 @@ const decryptString = data => {
 
 export default defineStore('authorize', {
   state: () => {
-    return {
-      data: {
-        token: '',
-        refreshToken: ''
-      }
+    let data = {
+      token: '',
+      refreshToken: ''
     };
-  },
-  getters: {
-    token: state => {
-      if (state.data.token) {
-        return state.data.token;
-      }
 
-      let token = decryptString(localStorage.getItem(tokenKey));
-      if (!token) {
-        return '';
-      }
-
-      state.data.token = token;
-      return state.data.token;
-    },
-    refreshToken: state => {
-      if (state.data.refreshToken) {
-        return state.data.refreshToken;
-      }
-
-      let refreshToken = decryptString(localStorage.getItem(refreshTokenKey));
-      state.data.refreshToken = refreshToken;
-      return state.data.refreshToken;
+    try {
+      data.token = decryptString(localStorage.getItem(tokenKey));
+    } catch {
+      data.token = '';
     }
+
+    try {
+      data.refreshToken = decryptString(localStorage.getItem(refreshTokenKey));
+    } catch {
+      data.refreshToken = '';
+    }
+
+    return data;
   },
   actions: {
     /**
@@ -55,20 +43,20 @@ export default defineStore('authorize', {
      * @param {Object} authorize
      */
     setUserLoginState: function (authorize) {
-      this.data.token = authorize.token || '';
-      localStorage.setItem(tokenKey, encryptString(this.data.token));
+      this.token = authorize.token || '';
+      localStorage.setItem(tokenKey, encryptString(this.token));
 
       if (authorize.refreshToken) {
-        this.data.refreshToken = authorize.refreshToken;
-        localStorage.setItem(refreshTokenKey, encryptString(this.data.refreshToken));
+        this.refreshToken = authorize.refreshToken;
+        localStorage.setItem(refreshTokenKey, encryptString(this.refreshToken));
       }
     },
     /**
      * @function 设置用户登出
      */
     setUserLogoutState: function () {
-      this.data.token = '';
-      this.data.refreshToken = '';
+      this.token = '';
+      this.refreshToken = '';
       localStorage.removeItem(tokenKey);
       localStorage.removeItem(refreshTokenKey);
     }

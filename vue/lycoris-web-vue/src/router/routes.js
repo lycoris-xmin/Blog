@@ -38,7 +38,7 @@ const routes = [
       {
         path: '/message',
         name: 'message',
-        component: () => import('../views/leave-message/index.vue'),
+        component: () => import('../views/leavemessage/index.vue'),
         meta: {
           keepAlive: true,
           pageName: '留言',
@@ -111,8 +111,8 @@ const routes = [
         name: 'user',
         component: () => import('../views/user/index.vue'),
         meta: {
-          keepAlive: true,
-          pageName: '个人中心'
+          pageName: '个人中心',
+          autuorize: true
         }
       }
     ]
@@ -173,6 +173,8 @@ const metaChange = (data, source) => {
         data.meta[key] = source.meta[key];
       } else if (key === 'pageName' && !data.meta['title']) {
         data.meta[key] = source.meta[key];
+      } else {
+        data.meta['autuorize'] = Object.keys(source.meta).filter(x => x == 'autuorize').length > 0 ? source.meta['autuorize'] : false;
       }
     }
   }

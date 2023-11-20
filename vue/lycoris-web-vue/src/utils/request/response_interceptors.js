@@ -100,10 +100,12 @@ const error = err => {
 
     // 刷新令牌返回错误的直接返回登录页
     if (err.config.url.includes('/authentication/refresh/token')) {
+      stores.user.setLogoutState();
       return reject({}, err.response.status);
     }
 
     if (err.response.status == 401 || err.response.status == 403) {
+      stores.user.setLogoutState();
       return reject({}, err.response.status);
     }
 
@@ -150,7 +152,7 @@ const error = err => {
     );
   }
 
-  toast.warn('服务器异常', {
+  toast.warn('请求超时', {
     max: 1
   });
 

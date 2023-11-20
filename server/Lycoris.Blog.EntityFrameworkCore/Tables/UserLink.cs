@@ -18,6 +18,12 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
         public override long Id { get; set; }
 
         /// <summary>
+        /// 个人主页
+        /// </summary>
+        [TableColumn(StringLength = 100, Sensitive = true)]
+        public string Blog { get; set; } = "";
+
+        /// <summary>
         /// QQ
         /// </summary>
         [TableColumn(StringLength = 100, Sensitive = true)]

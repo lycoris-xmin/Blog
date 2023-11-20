@@ -26,6 +26,9 @@
       "other": false
     }
   },
+  "uploadAccept": {
+    "imgAccept": ".jpg,.png,.bmp,.jpeg,.gif"
+  },
   "cryptoKey": "as-Crypto-js",
   "build": {
     "esm": [

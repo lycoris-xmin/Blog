@@ -1,5 +1,5 @@
 ﻿using Lycoris.AutoMapper.Extensions;
-using Lycoris.Blog.Application.AppServices.FileManage.Impl;
+using Lycoris.Blog.Application.AppServices.FileManage;
 using Lycoris.Blog.Application.AppServices.Users;
 using Lycoris.Blog.Application.AppServices.Users.Dtos;
 using Lycoris.Blog.Application.Shared.Dtos;
@@ -71,14 +71,15 @@ namespace Lycoris.Blog.Server.Controllers
         [HttpPost("Brief/Update")]
         [WebAuthentication(IsRequired = true)]
         [Consumes("multipart/form-data"), Produces("application/json")]
-        public async Task<BaseOutput> UpdateUserBrief([FromForm] UpdateUserBriefInput input, [FromServices] Lazy<FileManageAppService> fileManage)
+        public async Task<DataOutput<UserBriefViewModel>> UpdateUserBrief([FromForm] UpdateUserBriefInput input, [FromServices] Lazy<IFileManageAppService> fileManage)
         {
             var data = input.ToMap<UserBriefDto>();
             if (input.File != null)
                 data.Avatar = await fileManage.Value.UploadFileAsync(input.File, StaticsFilePath.Avatar);
 
-            await _user.UpdateUserBrieAsync(data);
-            return Success();
+            var dto = await _user.UpdateUserBrieAsync(data);
+
+            return Success(dto.ToMap<UserBriefViewModel>());
         }
 
         #endregion
@@ -107,15 +108,15 @@ namespace Lycoris.Blog.Server.Controllers
         [HttpPost("Dashboard/Brief/Update")]
         [AppAuthentication]
         [Consumes("multipart/form-data"), Produces("application/json")]
-        public async Task<BaseOutput> UpdateDashboardUserBrief([FromForm] UpdateUserBriefInput input, [FromServices] Lazy<FileManageAppService> fileManage)
+        public async Task<DataOutput<UserBriefViewModel>> UpdateDashboardUserBrief([FromForm] UpdateUserBriefInput input, [FromServices] Lazy<IFileManageAppService> fileManage)
         {
             var data = input.ToMap<UserBriefDto>();
             if (input.File != null)
                 data.Avatar = await fileManage.Value.UploadFileAsync(input.File, StaticsFilePath.Avatar);
 
-            await _user.UpdateUserBrieAsync(data);
+            var dto = await _user.UpdateUserBrieAsync(data);
 
-            return Success();
+            return Success(dto.ToMap<UserBriefViewModel>());
         }
 
         /// <summary>

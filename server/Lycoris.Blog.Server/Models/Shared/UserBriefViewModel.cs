@@ -28,6 +28,11 @@
         /// <summary>
         /// 
         /// </summary>
+        public string? Blog { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public string? Github { get; set; }
 
         /// <summary>

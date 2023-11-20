@@ -259,6 +259,8 @@ namespace Lycoris.Blog.Server.Application
             CreateMap<EmailServiceTestInput, EmailSettingsConfiguration>();
 
             CreateMap<OwnerCreateStatisticsDto, OwnerCreateStatisticsViewModel>();
+
+            CreateMap<UpdateUserBriefInput, UserBriefDto>();
         }
 
         /// <summary>

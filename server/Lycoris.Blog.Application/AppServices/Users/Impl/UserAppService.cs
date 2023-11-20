@@ -81,6 +81,7 @@ namespace Lycoris.Blog.Application.AppServices.Users.Impl
 
             var link = await _userLink.GetAsync(dto.Id!.Value);
 
+            dto.Blog = link?.Blog;
             dto.Github = link?.Github;
             dto.WeChat = link?.WeChat;
             dto.QQ = link?.QQ;
@@ -95,10 +96,9 @@ namespace Lycoris.Blog.Application.AppServices.Users.Impl
         /// 
         /// </summary>
         /// <param name="input"></param>
-        /// <param name="file"></param>
         /// <returns></returns>
         [Transactional]
-        public async Task UpdateUserBrieAsync(UserBriefDto input)
+        public async Task<UserBriefDto> UpdateUserBrieAsync(UserBriefDto input)
         {
             // 用户
             var user = await _user.GetAsync(CurrentUser.Id) ?? throw new FriendlyException("");
@@ -119,7 +119,11 @@ namespace Lycoris.Blog.Application.AppServices.Users.Impl
             // 第三方绑定
             var userLink = await _userLink.GetAsync(CurrentUser.Id) ?? new UserLink();
             var userLinkFieIds = new List<Expression<Func<UserLink, object>>>();
-            userLink.UpdatePorpertyIf(input.QQ != null && input.QQ != userLink!.QQ, x =>
+            userLink.UpdatePorpertyIf(input.Blog != null && input.Blog != userLink!.Blog, x =>
+            {
+                userLink!.Blog = input.Blog!.Trim(); ;
+                userLinkFieIds.Add(x => x.Blog!);
+            }).UpdatePorpertyIf(input.QQ != null && input.QQ != userLink!.QQ, x =>
             {
                 userLink!.QQ = input.QQ!.Trim(); ;
                 userLinkFieIds.Add(x => x.QQ!);
@@ -148,10 +152,26 @@ namespace Lycoris.Blog.Application.AppServices.Users.Impl
             if (userLink.Id == 0)
             {
                 userLink.Id = user.Id;
-                await _userLink.CreateAsync(userLink);
+                userLink = await _userLink.CreateAsync(userLink);
             }
             else
                 await _userLink.UpdateFieIdsAsync(userLink, userLinkFieIds);
+
+            return new UserBriefDto
+            {
+                Id = user.Id,
+                NickName = user.NickName,
+                Avatar = user.Avatar,
+                Email = user.Email,
+                Blog = userLink.Blog,
+                Github = userLink.Github,
+                WeChat = userLink.WeChat,
+                QQ = userLink.QQ,
+                Gitee = userLink.Gitee,
+                CloudMusic = userLink.CloudMusic,
+                Bilibili = userLink.Bilibili,
+                IsAdmin = user.IsAdmin
+            };
         }
 
         /// <summary>

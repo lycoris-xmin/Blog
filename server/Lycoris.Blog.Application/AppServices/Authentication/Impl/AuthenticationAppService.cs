@@ -320,13 +320,10 @@ namespace Lycoris.Blog.Application.AppServices.Authentication.Impl
             if (await CheckEmailUseAsync(input.Email))
                 throw new FriendlyException("邮箱已被注册");
 
-            var setting = await this.ApplicationConfiguration.Value.GetConfigurationAsync<WebSettingsConfiguration>(AppConfig.WebStatistics);
-
             var data = await _user.CreateAsync(new User()
             {
                 Email = input.Email,
-                NickName = RandomHelper.GetRandomNickName(),
-                Avatar = setting!.DefaultAvatar,
+                NickName = $"程序猿{RandomHelper.GetRandomString(4)}",
                 Password = input.Password,
                 Status = UserStatusEnum.Audited,
                 ShowOnlineStatus = true,
@@ -334,6 +331,14 @@ namespace Lycoris.Blog.Application.AppServices.Authentication.Impl
                 GoogleAuthentication = false,
                 IsAdmin = false
             });
+
+            if (data.Email.EndsWith("@qq.com"))
+                data.Avatar = $"https://q2.qlogo.cn/headimg_dl?dst_uin={data.Email}&spec=100";
+            else
+            {
+                var setting = await this.ApplicationConfiguration.Value.GetConfigurationAsync<WebSettingsConfiguration>(AppConfig.WebStatistics);
+                data.Avatar = setting!.DefaultAvatar;
+            }
 
             await _userLink.Value.CreateAsync(new UserLink() { Id = data.Id });
 

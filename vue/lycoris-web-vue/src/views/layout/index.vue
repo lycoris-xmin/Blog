@@ -128,17 +128,20 @@ const webOwnerStoreInit = async () => {
 };
 
 const userBriefInit = async () => {
-  //
-  try {
-    let res = await getUserBrief();
-    if (res && res.resCode == 0) {
-      stores.user.setLoginState(res.data);
-      model.isAdmin = res.data.isAdmin;
-      signalR.setupSignalR('/lycoris/hub/home');
-    } else {
-      stores.user.setLogoutState();
-    }
-  } catch (error) {}
+  if (!stores.user.state) {
+    try {
+      let res = await getUserBrief();
+      if (res && res.resCode == 0) {
+        stores.user.setLoginState(res.data);
+        model.isAdmin = res.data.isAdmin;
+        signalR.setupSignalR('/lycoris/hub/home');
+      } else {
+        stores.user.setLogoutState();
+      }
+    } catch (error) {}
+  } else {
+    model.isAdmin = stores.user.isAdmin;
+  }
 };
 
 const searchPost = () => {

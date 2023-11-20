@@ -59,7 +59,7 @@
 
           <el-affix :offset="10" class="affix-width">
             <div>
-              <author :owner="stores.owner"></author>
+              <author></author>
               <topic :title="post.title" :topics="post.topics"></topic>
             </div>
           </el-affix>

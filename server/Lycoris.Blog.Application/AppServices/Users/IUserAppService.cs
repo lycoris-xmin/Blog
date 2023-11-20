@@ -24,7 +24,7 @@ namespace Lycoris.Blog.Application.AppServices.Users
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        Task UpdateUserBrieAsync(UserBriefDto input);
+        Task<UserBriefDto> UpdateUserBrieAsync(UserBriefDto input);
 
         /// <summary>
         /// 

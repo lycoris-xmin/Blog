@@ -26,7 +26,17 @@ namespace Lycoris.Blog.Server.Models.Users
         /// <summary>
         /// 
         /// </summary>
+        public string? Blog { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public string? Github { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string? Gitee { get; set; }
 
         /// <summary>
         /// 

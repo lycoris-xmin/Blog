@@ -92,8 +92,8 @@
   </page-layout>
 </template>
 
-<script setup name="post-markdown">
-import { reactive, ref, onMounted, nextTick } from 'vue';
+<script setup name="post-editor">
+import { reactive, ref, onMounted, nextTick, onBeforeUnmount } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import pageLayout from '../layout/page-layout.vue';
 import markdownContainer from '../../components/markdown-editor/index.vue';
@@ -184,6 +184,8 @@ const categoryEnums = async () => {
   } catch (error) {}
 };
 
+let autoSaveInterval = void 0;
+
 onMounted(async () => {
   try {
     await categoryEnums();
@@ -226,11 +228,17 @@ onMounted(async () => {
 
   if (model.autoSave) {
     //
-    setInterval(async () => {
+    autoSaveInterval = setInterval(async () => {
       if (model.lastSaveTime < new Date().getTime()) {
         await autoSavePost();
       }
     }, model.autoSaveSecond * 1000);
+  }
+});
+
+onBeforeUnmount(() => {
+  if (autoSaveInterval) {
+    clearInterval(autoSaveInterval);
   }
 });
 

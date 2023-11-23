@@ -41,7 +41,7 @@ namespace Lycoris.Blog.Application.AppServices.Dashboard.Impl
             {
                 Browse = await _browseLog.Value.GetAll().Where(x => x.CreateTime >= today).CountAsync(),
                 Api = await _requestLog.Value.GetAll().Where(x => x.CreateTime >= today).CountAsync(),
-                ErrorApi = await _requestLog.Value.GetAll().Where(x => x.CreateTime >= today).Where(x => x.Success == false).CountAsync()
+                UVBrowse = await _browseLog.Value.GetAll().Where(x => x.CreateTime >= today).GroupBy(x => x.ClientOrign).Select(x => 1).SumAsync(x => x)
             };
 
             var value = await ApplicationConfiguration.Value.GetConfigurationAsync<WebStatisticsConfiguration>(AppConfig.WebStatistics);

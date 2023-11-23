@@ -63,6 +63,12 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
         public string IpAddress { get; set; } = "";
 
         /// <summary>
+        /// 国家
+        /// </summary>
+        [TableColumn(StringLength = 100)]
+        public string Country { get; set; } = "";
+
+        /// <summary>
         /// 访问时间
         /// </summary>
         public DateTime CreateTime { get; set; }

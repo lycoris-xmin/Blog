@@ -20,7 +20,6 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
 
         private readonly IConfigurationRepository _configuration;
 
-
         public WebStatisticsQueueService(IConfigurationRepository configuration)
         {
             _configuration = configuration;
@@ -37,7 +36,7 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
             var model = data.ToObject<WebStatisticsQueueModel>();
             if (model == null)
             {
-                // 
+                this.JobLogger!.Error("can not find any data");
                 return;
             }
 
@@ -48,6 +47,16 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
             config!.TotalBrowse += model.Browse;
             config!.TotalMessage += model.Message;
             config!.TotalUsers += model.User;
+
+            if (!model.Country.IsNullOrEmpty())
+            {
+                config!.BrowseWordMap ??= new List<WebBrowseWordMapConfiguration>();
+                var item = config!.BrowseWordMap.SingleOrDefault(x => x.Country == model.Country);
+                if (item != null)
+                    item.Count++;
+                else
+                    config!.BrowseWordMap.Add(new WebBrowseWordMapConfiguration(model.Country!));
+            }
 
             seting!.Value = config.ToJson();
 

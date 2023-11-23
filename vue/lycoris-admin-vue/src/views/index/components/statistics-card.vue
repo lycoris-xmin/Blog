@@ -38,31 +38,31 @@ const model = reactive({
     },
     {
       key: 'api',
-      title: '今日接口调用',
+      title: '今日调用',
       icon: 'monitor',
       count: 0
     },
     {
-      key: 'errorApi',
-      title: '今日接口异常调用',
-      icon: 'warn-triangle-filled',
+      key: 'uvBrowse',
+      title: '今日访客',
+      icon: 'user',
       count: 0
     },
     {
       key: 'totalBrowse',
-      title: '网站浏览统计',
+      title: '浏览统计',
       icon: 'chrome-filled',
       count: 0
     },
     {
       key: 'message',
-      title: '网站留言统计',
+      title: '留言统计',
       icon: 'message',
       count: 0
     },
     {
       key: 'users',
-      title: '网站用户统计',
+      title: '用户统计',
       icon: 'user',
       count: 0
     }

@@ -9,7 +9,6 @@ using Lycoris.Blog.EntityFrameworkCore.Constants;
 using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
 using Lycoris.Blog.Model.Configurations;
-using Lycoris.Common.Extensions;
 using Lycoris.Common.Helper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -81,6 +80,8 @@ namespace Lycoris.Blog.Application.AppServices.Home.Impl
         {
             var repository = _provider.GetRequiredService<IRepository<BrowseLog, long>>();
 
+            var addr = IPAddressHelper.Search(CurrentRequest.RequestIP);
+
             var data = new BrowseLog()
             {
                 ClientOrign = input.ClientOrign,
@@ -89,11 +90,12 @@ namespace Lycoris.Blog.Application.AppServices.Home.Impl
                 UserAgent = CurrentRequest.UserAgent,
                 Referer = (input.Referer ?? "").TrimEnd('/').Trim(),
                 Ip = IPAddressHelper.Ipv4ToUInt32(CurrentRequest.RequestIP),
-                IpAddress = IPAddressHelper.ChangeAddress(IPAddressHelper.Search(CurrentRequest.RequestIP)),
+                Country = addr.IsPrivate ? "中国" : (addr.Country ?? ""),
+                IpAddress = IPAddressHelper.ChangeAddress(addr),
                 CreateTime = DateTime.Now
             };
 
-            var checkTime = data.CreateTime.AddMinutes(-30);
+            var checkTime = data.CreateTime.AddMinutes(1);
             var hasRecord = await repository.GetAll()
                                             .Where(x => x.CreateTime >= checkTime && x.ClientOrign == input.ClientOrign)
                                             .Where(x => x.Path == data.Path)
@@ -104,9 +106,7 @@ namespace Lycoris.Blog.Application.AppServices.Home.Impl
             if (!hasRecord)
             {
                 await repository.CreateAsync(data);
-
-                if (!data.Referer.IsNullOrEmpty())
-                    _provider.GetRequiredService<IScheduleQueueCacheService>().Enqueue(ScheduleTypeEnum.BrowseLog, new BrowseLogQueueModel(data.Path, data.Referer));
+                _provider.GetRequiredService<IScheduleQueueCacheService>().Enqueue(ScheduleTypeEnum.BrowseLog, new BrowseLogQueueModel(data.Path, data.Referer, CurrentRequest.RequestIP));
             }
         }
 

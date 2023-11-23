@@ -1,10 +1,12 @@
 ﻿using Lycoris.Blog.Model.Configurations;
 
-namespace Lycoris.Blog.Application.AppServices.StaticFiles.Dtos
+namespace Lycoris.Blog.Application.AppServices.ServerStaticFiles.Dtos
 {
     public class StaticFileDataDto
     {
         public long Id { get; set; }
+
+        public string Path { get; set; } = string.Empty;
 
         public string FileName { get; set; } = string.Empty;
 
@@ -14,15 +16,14 @@ namespace Lycoris.Blog.Application.AppServices.StaticFiles.Dtos
 
         public string RemoteUrl { get; set; } = string.Empty;
 
+        public long FileSize { get; set; }
+
         public string FileSha { get; set; } = string.Empty;
 
         public bool LocalBack { get; set; }
 
         public bool Use { get; set; }
 
-        /// <summary>
-        /// 上传时间
-        /// </summary>
         public DateTime CreateTime { get; set; }
     }
 }

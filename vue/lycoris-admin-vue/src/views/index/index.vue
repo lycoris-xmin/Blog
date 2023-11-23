@@ -3,6 +3,7 @@
     <statistics-card></statistics-card>
     <server-monitor ref="serverMonitorRef"></server-monitor>
     <web-charts ref="webChartsRef"></web-charts>
+    <div style="height: 300px"></div>
   </page-layout>
 </template>
 

@@ -33,7 +33,10 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
         {
             var model = data?.ToObject<LoginFailedRecordQueueModel>();
             if (model == null)
+            {
+                this.JobLogger!.Error("can not find any data");
                 return;
+            }
 
             var record = await _loginFailedRecord.GetAll().Where(x => x.Email == model.Email).FirstOrDefaultAsync() ?? new LoginFailedRecord() { Email = model.Email };
 

@@ -2,6 +2,7 @@
 using Lycoris.AutoMapper.Extensions;
 using Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Models;
 using Lycoris.Blog.Application.Schedule.Shared;
+using Lycoris.Blog.EntityFrameworkCore.Migrations;
 using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
 using Lycoris.Blog.Model.Global.Output;
@@ -42,30 +43,21 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
         {
             var model = data.ToObject<RequestLogQueueModel>();
             if (model == null)
-                return;
-
-            var log = await CreateRequestLogAsync(model);
-
-            await DealAccessControlAsync(log);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        private async Task<RequestLog> CreateRequestLogAsync(RequestLogQueueModel input)
-        {
-            var log = input!.ToMap<RequestLog>();
-
-            if (!input!.Ip.IsNullOrEmpty())
             {
-                log.Ip = IPAddressHelper.Ipv4ToUInt32(input.Ip);
+                this.JobLogger!.Error("can not find any data");
+                return;
+            }
 
-                if (IPAddressHelper.IsPrivateNetwork(input.Ip))
+            var log = model!.ToMap<RequestLog>();
+
+            if (!model!.Ip.IsNullOrEmpty())
+            {
+                log.Ip = IPAddressHelper.Ipv4ToUInt32(model.Ip);
+
+                if (IPAddressHelper.IsPrivateNetwork(model.Ip))
                     log.IpAddress = "局域网";
                 else
-                    log.IpAddress = IPAddressHelper.ChangeAddress(IPAddressHelper.Search(input.Ip));
+                    log.IpAddress = IPAddressHelper.ChangeAddress(IPAddressHelper.Search(model.Ip));
             }
             else
                 log.IpAddress = "未知";
@@ -78,7 +70,9 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
                 log.Success = resp != null && (resp.ResCode == ResCodeEnum.Success || resp.ResCode == ResCodeEnum.TokenExpired);
             }
 
-            return await _requestLog.CreateAsync(log);
+            log = await _requestLog.CreateAsync(log);
+
+            await DealAccessControlAsync(log);
         }
 
         /// <summary>

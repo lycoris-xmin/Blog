@@ -8,7 +8,7 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
     /// <summary>
     /// 服务监控
     /// </summary>
-    [Table("ServerMonitor")]
+    [Table("Server_Monitor")]
     [TableIndex("Time", true)]
     public class ServerMonitor : MySqlBaseEntity<int>
     {

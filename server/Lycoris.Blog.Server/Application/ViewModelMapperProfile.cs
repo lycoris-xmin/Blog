@@ -11,8 +11,8 @@ using Lycoris.Blog.Application.AppServices.Home.Dtos;
 using Lycoris.Blog.Application.AppServices.LeaveMessages.Dtos;
 using Lycoris.Blog.Application.AppServices.Posts.Dtos;
 using Lycoris.Blog.Application.AppServices.RequestLogs.Dtos;
+using Lycoris.Blog.Application.AppServices.ServerStaticFiles.Dtos;
 using Lycoris.Blog.Application.AppServices.SiteNavigations.Dtos;
-using Lycoris.Blog.Application.AppServices.StaticFiles.Dtos;
 using Lycoris.Blog.Application.AppServices.Talks.Dtos;
 using Lycoris.Blog.Application.AppServices.Users.Dtos;
 using Lycoris.Blog.Application.Shared.Dtos;
@@ -69,18 +69,22 @@ namespace Lycoris.Blog.Server.Application
 
             CreateMap<StatisticsDto, ServerStatisticsViewModel>();
 
-            CreateMap<PostQueryListInput, PostQueryFilter>().ForMember(x => x.IsPublish, opt => opt.MapFrom(src => IntChangeBool(src.IsPublish)));
+            CreateMap<PostQueryListInput, PostQueryFilter>()
+                .ForMember(x => x.IsPublish, opt => opt.MapFrom(src => IntChangeBool(src.IsPublish)));
 
             CreateMap<PostQueryDataDto, PostQueryDataViewModel>()
                 .ForMember(x => x.Comment, opt => opt.MapFrom(src => src.Comment ? 1 : 0))
                 .ForMember(x => x.IsPublish, opt => opt.MapFrom(src => src.IsPublish ? 1 : 0))
                 .ForMember(x => x.Recommend, opt => opt.MapFrom(src => src.Recommend ? 1 : 0));
 
-            CreateMap<PostInfoDto, PostInfoViewModel>().ForMember(x => x.Comment, opt => opt.MapFrom(src => src.Comment.HasValue && src.Comment.Value ? 1 : 0));
+            CreateMap<PostInfoDto, PostInfoViewModel>()
+                .ForMember(x => x.Comment, opt => opt.MapFrom(src => src.Comment.HasValue && src.Comment.Value ? 1 : 0));
 
-            CreateMap<PostSaveInput, PostSaveDto>().ForMember(x => x.Comment, opt => opt.MapFrom(src => src.Comment.HasValue && src.Comment.Value == 1));
+            CreateMap<PostSaveInput, PostSaveDto>()
+                .ForMember(x => x.Comment, opt => opt.MapFrom(src => src.Comment.HasValue && src.Comment.Value == 1));
 
-            CreateMap<CategoryDataDto, CategoryDataViewModel>().ForMember(x => x.Keyword, opt => opt.MapFrom(src => ChangeKeywordList(src.Keyword)));
+            CreateMap<CategoryDataDto, CategoryDataViewModel>()
+                .ForMember(x => x.Keyword, opt => opt.MapFrom(src => ChangeKeywordList(src.Keyword)));
 
             CreateMap<CategoryCreateInput, CreateCategoryDto>()
                 .ForMember(x => x.Keyword, opt => opt.MapFrom(src => ChangeKeyword(src.Keyword)))
@@ -120,20 +124,24 @@ namespace Lycoris.Blog.Server.Application
 
             CreateMap<MasterTalkDataDto, MasterTalkDataViewModel>();
 
-            CreateMap<TalkDataDto, TalkDataViewModel>().ForMember(x => x.CreateTime, opt => opt.MapFrom(src => ChangeTimeToChinese(src.CreateTime)));
+            CreateMap<TalkDataDto, TalkDataViewModel>()
+                .ForMember(x => x.CreateTime, opt => opt.MapFrom(src => ChangeTimeToChinese(src.CreateTime)));
 
-            CreateMap<TalkCommentDataDto, TalkCommentDataViewModel>().ForMember(x => x.CreateTime, opt => opt.MapFrom(src => ChangeTimeToChinese(src.CreateTime)));
+            CreateMap<TalkCommentDataDto, TalkCommentDataViewModel>()
+                .ForMember(x => x.CreateTime, opt => opt.MapFrom(src => ChangeTimeToChinese(src.CreateTime)));
 
             CreateMap<PostCommentListInput, PostCommentListFilter>();
 
-            CreateMap<PostCommentDataDto, PostCommentDataViewModel>().ForMember(x => x.CreateTime, opt => opt.MapFrom(src => ChangeTimeToChinese(src.CreateTime)));
+            CreateMap<PostCommentDataDto, PostCommentDataViewModel>()
+                .ForMember(x => x.CreateTime, opt => opt.MapFrom(src => ChangeTimeToChinese(src.CreateTime)));
 
             CreateMap<PublishCommentInput, CreatePostCommentDto>();
 
             CreateMap<RequestLogListInput, GetRequestLogListFilter>()
                 .ForMember(x => x.Ip, opt => opt.MapFrom(src => IPAddressHelper.Ipv4ToUInt32(src.Ip ?? "")));
 
-            CreateMap<RequestLogDataDto, RequestLogDataViewModel>().ForMember(x => x.Ip, opt => opt.MapFrom(src => IPAddressHelper.UInt32ToIpv4(src.Ip)));
+            CreateMap<RequestLogDataDto, RequestLogDataViewModel>()
+                .ForMember(x => x.Ip, opt => opt.MapFrom(src => IPAddressHelper.UInt32ToIpv4(src.Ip)));
 
             CreateMap<RequestLogInfoDto, RequestLogInfoViewModel>()
                 .ForMember(x => x.Headers, opt => opt.MapFrom(src => src.Headers.ToObject<Dictionary<string, string>>()));
@@ -162,7 +170,8 @@ namespace Lycoris.Blog.Server.Application
 
             CreateMap<PostCommentQueryDataDto, PostCommentQueryDataViewModel>();
 
-            CreateMap<WebMessageDataDto, LeaveMessageDataViewModel>().ForMember(x => x.CreateTime, opt => opt.MapFrom(src => ChangeTimeToChinese(src.CreateTime)));
+            CreateMap<WebMessageDataDto, LeaveMessageDataViewModel>()
+                .ForMember(x => x.CreateTime, opt => opt.MapFrom(src => ChangeTimeToChinese(src.CreateTime)));
 
             CreateMap<LeaveMessageRepliedUserDto, LeaveMessageRepliedUserViewModel>();
 
@@ -171,7 +180,8 @@ namespace Lycoris.Blog.Server.Application
 
             CreateMap<LeaveMessageReplyListInput, WebMessageReplyListFilter>();
 
-            CreateMap<LeaveMessageQueryListInput, MessageLsitFilter>().ForMember(x => x.Ip, opt => opt.MapFrom(src => IPAddressHelper.Ipv4ToUInt32(src.Ip ?? "")));
+            CreateMap<LeaveMessageQueryListInput, MessageLsitFilter>()
+                .ForMember(x => x.Ip, opt => opt.MapFrom(src => IPAddressHelper.Ipv4ToUInt32(src.Ip ?? "")));
 
             CreateMap<MessageDataDto, LeaveMessageQueryDataViewModel>()
                 .ForMember(x => x.Ip, opt => opt.MapFrom(src => IPAddressHelper.UInt32ToIpv4(src.Ip)))
@@ -183,11 +193,13 @@ namespace Lycoris.Blog.Server.Application
 
             CreateMap<BrowseLogListInput, BrowseLogListFilter>();
 
-            CreateMap<BrowseLogDataDto, BrowseLogDataViewModel>().ForMember(x => x.Ip, opt => opt.MapFrom(src => IPAddressHelper.UInt32ToIpv4(src.Ip)));
+            CreateMap<BrowseLogDataDto, BrowseLogDataViewModel>()
+                .ForMember(x => x.Ip, opt => opt.MapFrom(src => IPAddressHelper.UInt32ToIpv4(src.Ip)));
 
             CreateMap<BrowseRefererDataDto, BrowseRefererDataViewModel>();
 
-            CreateMap<NearlyDaysWebStatisticsDataDto, NearlyDaysWebStatisticsDataViewModel>().ForMember(x => x.Day, opt => opt.MapFrom(src => src.Day.ToString("yyyy-MM-dd")));
+            CreateMap<NearlyDaysWebStatisticsDataDto, NearlyDaysWebStatisticsDataViewModel>()
+                .ForMember(x => x.Day, opt => opt.MapFrom(src => src.Day.ToString("yyyy-MM-dd")));
 
             CreateMap<RegisterInput, RegisterDto>();
 
@@ -229,7 +241,8 @@ namespace Lycoris.Blog.Server.Application
 
             CreateMap<StaticFileListInput, StaticFileListFilter>();
 
-            CreateMap<StaticFileDataDto, StaticFileDataViewModel>();
+            CreateMap<StaticFileDataDto, StaticFileDataViewModel>()
+                .ForMember(x => x.FileSize, opt => opt.MapFrom(src => ConvertFileSize(src.FileSize)));
 
             CreateMap<WebStatisticsDto, WebStatisticsViewModel>();
 
@@ -242,7 +255,8 @@ namespace Lycoris.Blog.Server.Application
             CreateMap<AccessControlDataDto, AccessControlDataViewModel>()
                 .ForMember(x => x.Ip, opt => opt.MapFrom(src => IPAddressHelper.UInt32ToIpv4(src.Ip)));
 
-            CreateMap<AccessControlLogListInput, GetAccessControlLogListFilter>().ForMember(x => x.AccessControlId, opt => opt.MapFrom(src => src.Id ?? 0));
+            CreateMap<AccessControlLogListInput, GetAccessControlLogListFilter>()
+                .ForMember(x => x.AccessControlId, opt => opt.MapFrom(src => src.Id ?? 0));
 
             CreateMap<AccessControlLogDataDto, AccessControlLogDataViewModel>();
 
@@ -481,5 +495,30 @@ namespace Lycoris.Blog.Server.Application
         /// <param name="str"></param>
         /// <returns></returns>
         private static string? ChangeEmptyStringToNull(string? str) => str.IsNullOrEmpty() ? null : str;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fileSizeInBytes"></param>  
+        /// <returns></returns>
+        public static string ConvertFileSize(long fileSizeInBytes)
+        {
+            const long Kilobyte = 1024;
+            const long Megabyte = Kilobyte * 1024;
+            const long Gigabyte = Megabyte * 1024;
+
+            string sizeString;
+
+            if (fileSizeInBytes < Kilobyte)
+                sizeString = $"{fileSizeInBytes} B";
+            else if (fileSizeInBytes < Megabyte)
+                sizeString = $"{Math.Round((double)fileSizeInBytes / Kilobyte, 2)} KB";
+            else if (fileSizeInBytes < Gigabyte)
+                sizeString = $"{Math.Round((double)fileSizeInBytes / Megabyte, 2)} MB";
+            else
+                sizeString = $"{Math.Round((double)fileSizeInBytes / Gigabyte, 2)} GB";
+
+            return sizeString;
+        }
     }
 }

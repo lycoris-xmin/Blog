@@ -19,7 +19,7 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
     [QuartzJob("检测文件归档", Standby = true)]
     public class CheckFileUseStateJob : BaseJob
     {
-        private readonly IRepository<StaticFile, long> _staticFile;
+        private readonly IRepository<ServerStaticFile, long> _staticFile;
         private readonly IRepository<Post, long> _post;
         private readonly IRepository<Category, int> _category;
         private readonly IRepository<Configuration, string> _configuration;
@@ -28,7 +28,7 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
         private readonly Lazy<IStaticFilesCacheService> _cache;
 
         public CheckFileUseStateJob(ILycorisLoggerFactory factory,
-                                    IRepository<StaticFile, long> staticFile,
+                                    IRepository<ServerStaticFile, long> staticFile,
                                     IRepository<Post, long> post,
                                     IRepository<Category, int> category,
                                     IRepository<Configuration, string> configuration,
@@ -97,7 +97,7 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
-        private async Task<CheckResult> CheckPostUseAsync(StaticFile file)
+        private async Task<CheckResult> CheckPostUseAsync(ServerStaticFile file)
         {
             var pageIndex = 1;
             var pageSize = 20;
@@ -131,7 +131,7 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
         /// <param name="file"></param>
         /// <param name="result"></param>
         /// <returns></returns>
-        private async Task<CheckResult> CheckCategoryUseAsync(StaticFile file, CheckResult result)
+        private async Task<CheckResult> CheckCategoryUseAsync(ServerStaticFile file, CheckResult result)
         {
             if (result.Use)
                 return result;
@@ -157,7 +157,7 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
         /// <param name="file"></param>
         /// <param name="result"></param>
         /// <returns></returns>
-        private async Task<CheckResult> CheckConfigurationUseAsync(StaticFile file, CheckResult result)
+        private async Task<CheckResult> CheckConfigurationUseAsync(ServerStaticFile file, CheckResult result)
         {
             if (result.Use)
                 return result;
@@ -188,7 +188,7 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
         /// <param name="file"></param>
         /// <param name="result"></param>
         /// <returns></returns>
-        private async Task<CheckResult> CheckWebSiteAboutUseAsync(StaticFile file, CheckResult result)
+        private async Task<CheckResult> CheckWebSiteAboutUseAsync(ServerStaticFile file, CheckResult result)
         {
             if (result.Use)
                 return result;

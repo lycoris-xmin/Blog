@@ -55,6 +55,7 @@ const props = defineProps({
   height: calc(100vh - 125px);
   position: relative;
   overflow-y: auto;
+  overflow-x: hidden;
 
   .card-header {
     padding-top: 10px;

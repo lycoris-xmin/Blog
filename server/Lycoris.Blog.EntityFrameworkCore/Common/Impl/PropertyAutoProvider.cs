@@ -2,6 +2,7 @@
 using Lycoris.Blog.Common.Snowflakes;
 using Lycoris.Blog.EntityFrameworkCore.Common.Attributes;
 using Lycoris.Blog.Model.Contexts;
+using Lycoris.Common.Extensions;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Reflection;
 
@@ -51,7 +52,7 @@ namespace Lycoris.Blog.EntityFrameworkCore.Common.Impl
                 }
                 else if (item.Metadata.ClrType == typeof(DateTime))
                 {
-                    if (item.Metadata.Name.Equals("createtime", StringComparison.CurrentCultureIgnoreCase))
+                    if (item.Metadata.Name.Equals("CreateTime", StringComparison.CurrentCultureIgnoreCase))
                     {
                         if (item.CurrentValue == null || (DateTime)item.CurrentValue == DateTime.MinValue)
                             item.CurrentValue = DateTime.Now;
@@ -59,10 +60,22 @@ namespace Lycoris.Blog.EntityFrameworkCore.Common.Impl
                 }
                 else if (this.RequestContext.User?.Id > 0)
                 {
-                    if (item.Metadata.Name.Equals("createuserid", StringComparison.CurrentCultureIgnoreCase) && item.Metadata.ClrType == this.RequestContext.User!.Id.GetType())
+                    if (item.Metadata.Name.Equals("CreateUserId", StringComparison.CurrentCultureIgnoreCase) && item.Metadata.ClrType == typeof(long))
                     {
                         if (item.CurrentValue == null || (long)item.CurrentValue == 0)
                             item.CurrentValue = this.RequestContext.User?.Id ?? 0;
+                    }
+
+                    if (item.Metadata.Name.Equals("CreateNickName", StringComparison.CurrentCultureIgnoreCase) && item.Metadata.ClrType == typeof(string))
+                    {
+                        if (item.CurrentValue == null || ((string)item.CurrentValue).IsNullOrEmpty())
+                            item.CurrentValue = this.RequestContext.User?.NickName ?? "";
+                    }
+
+                    if (item.Metadata.Name.Equals("CreateAvatar", StringComparison.CurrentCultureIgnoreCase) && item.Metadata.ClrType == typeof(string))
+                    {
+                        if (item.CurrentValue == null || ((string)item.CurrentValue).IsNullOrEmpty())
+                            item.CurrentValue = this.RequestContext.User?.Avatar ?? "";
                     }
                 }
             }
@@ -78,7 +91,7 @@ namespace Lycoris.Blog.EntityFrameworkCore.Common.Impl
             {
                 if (item.Metadata.ClrType == typeof(DateTime))
                 {
-                    if (item.Metadata.Name.Equals("updatetime", StringComparison.CurrentCultureIgnoreCase))
+                    if (item.Metadata.Name.Equals("UpdateTime", StringComparison.CurrentCultureIgnoreCase))
                     {
                         if (item.CurrentValue == null || (DateTime)item.CurrentValue == DateTime.MinValue)
                             item.CurrentValue = DateTime.Now;

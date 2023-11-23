@@ -13,6 +13,11 @@
         /// <summary>
         /// 
         /// </summary>
+        public string? Path { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public string? FileName { get; set; }
 
         /// <summary>
@@ -29,6 +34,11 @@
         /// 
         /// </summary>
         public string? RemoteUrl { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string? FileSize { get; set; }
 
         /// <summary>
         /// 

@@ -20,13 +20,13 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
     public class SystemFileCleanerJob : BaseJob
     {
         private readonly IConfigurationRepository _configuration;
-        private readonly IRepository<StaticFile, long> _staticFile;
+        private readonly IRepository<ServerStaticFile, long> _staticFile;
         private readonly Lazy<IGithubService> _github;
         private readonly Lazy<IMinioService> _minio;
 
         public SystemFileCleanerJob(ILycorisLoggerFactory factory,
                                     IConfigurationRepository configuration,
-                                    IRepository<StaticFile, long> staticFile,
+                                    IRepository<ServerStaticFile, long> staticFile,
                                     Lazy<IGithubService> github,
                                     Lazy<IMinioService> minio) : base(factory.CreateLogger<SystemFileCleanerJob>())
         {
@@ -80,7 +80,7 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
 
             do
             {
-                var list = await filter.PageBy(pageIndex, pageSize).ToListAsync() ?? new List<StaticFile>();
+                var list = await filter.PageBy(pageIndex, pageSize).ToListAsync() ?? new List<ServerStaticFile>();
 
                 var deleteFiles = await RemoveGitHubFilesAsync(list);
 
@@ -106,7 +106,7 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
         /// </summary>
         /// <param name="list"></param>
         /// <returns></returns>
-        private async Task<List<StaticFile>?> RemoveGitHubFilesAsync(List<StaticFile>? list)
+        private async Task<List<ServerStaticFile>?> RemoveGitHubFilesAsync(List<ServerStaticFile>? list)
         {
             if (!list.HasValue())
                 return null;
@@ -141,7 +141,7 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
         /// </summary>
         /// <param name="list"></param>
         /// <returns></returns>
-        private async Task<List<StaticFile>?> RemoveMinioFilesAsync(List<StaticFile>? list)
+        private async Task<List<ServerStaticFile>?> RemoveMinioFilesAsync(List<ServerStaticFile>? list)
         {
             if (!list.HasValue())
                 return null;
@@ -172,7 +172,7 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
         /// </summary>
         /// <param name="list"></param>
         /// <returns></returns>
-        private List<StaticFile>? RemoveLocalFiles(List<StaticFile>? list)
+        private List<ServerStaticFile>? RemoveLocalFiles(List<ServerStaticFile>? list)
         {
             if (!list.HasValue())
                 return null;

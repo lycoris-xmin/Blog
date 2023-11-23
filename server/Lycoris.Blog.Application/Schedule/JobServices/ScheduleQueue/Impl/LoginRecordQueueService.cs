@@ -34,7 +34,10 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
         {
             var model = data?.ToObject<LoginRecordQueueModel>();
             if (model == null)
+            {
+                this.JobLogger!.Error("can not find any data");
                 return;
+            }
 
             var record = await _LoginRecord.GetAll().Where(x => x.UserId == model.UserId).FirstOrDefaultAsync();
 

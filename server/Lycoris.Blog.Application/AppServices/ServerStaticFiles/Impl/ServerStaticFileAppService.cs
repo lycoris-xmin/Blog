@@ -1,6 +1,6 @@
 ﻿using Lycoris.Autofac.Extensions;
 using Lycoris.Blog.Application.AppServices.FileManage;
-using Lycoris.Blog.Application.AppServices.StaticFiles.Dtos;
+using Lycoris.Blog.Application.AppServices.ServerStaticFiles.Dtos;
 using Lycoris.Blog.Application.Cached.StaticFiles;
 using Lycoris.Blog.Application.Schedule.Jobs;
 using Lycoris.Blog.Application.Schedule.Models;
@@ -15,20 +15,20 @@ using Lycoris.Quartz.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
-namespace Lycoris.Blog.Application.AppServices.StaticFiles.Impl
+namespace Lycoris.Blog.Application.AppServices.ServerStaticFiles.Impl
 {
     /// <summary>
     /// 
     /// </summary>
     [AutofacRegister(ServiceLifeTime.Scoped, PropertiesAutowired = true)]
-    public class StaticFileAppService : ApplicationBaseService, IStaticFileAppService
+    public class ServerStaticFileAppService : ApplicationBaseService, IServerStaticFileAppService
     {
-        private readonly IRepository<StaticFile, long> _repository;
+        private readonly IRepository<ServerStaticFile, long> _repository;
         private readonly Lazy<IStaticFilesCacheService> _cache;
         private readonly Lazy<IQuartzSchedulerCenter> _schedulerCenter;
         private readonly Lazy<IFileManageAppService> _fileManage;
 
-        public StaticFileAppService(IRepository<StaticFile, long> repository,
+        public ServerStaticFileAppService(IRepository<ServerStaticFile, long> repository,
                                     Lazy<IStaticFilesCacheService> cache,
                                     Lazy<IQuartzSchedulerCenter> schedulerCenter,
                                     Lazy<IFileManageAppService> fileManage)
@@ -62,10 +62,12 @@ namespace Lycoris.Blog.Application.AppServices.StaticFiles.Impl
                               .Select(x => new StaticFileDataDto
                               {
                                   Id = x.Id,
+                                  Path = x.Path,
                                   FileName = x.FileName,
                                   UploadChannel = x.UploadChannel,
                                   PathUrl = x.PathUrl,
                                   RemoteUrl = x.RemoteUrl,
+                                  FileSize = x.FileSie,
                                   FileSha = x.FileSha,
                                   LocalBack = x.LocalBack,
                                   Use = x.Use,

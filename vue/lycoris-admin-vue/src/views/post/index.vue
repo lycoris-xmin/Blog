@@ -264,7 +264,7 @@ const getTableList = async (autoLoading = true) => {
 
 const $create = () => {
   router.push({
-    name: 'post-markdown'
+    name: 'post-editor'
   });
 };
 
@@ -339,7 +339,7 @@ const $publish = async (index, id) => {
 
 const $update = id => {
   router.push({
-    name: 'post-markdown',
+    name: 'post-editor',
     query: {
       id: id
     }

@@ -1,7 +1,7 @@
 ﻿using Lycoris.Blog.Application.Shared.Dtos;
 using Lycoris.Blog.Model.Configurations;
 
-namespace Lycoris.Blog.Application.AppServices.StaticFiles.Dtos
+namespace Lycoris.Blog.Application.AppServices.ServerStaticFiles.Dtos
 {
     public class StaticFileListFilter : PageFilter
     {

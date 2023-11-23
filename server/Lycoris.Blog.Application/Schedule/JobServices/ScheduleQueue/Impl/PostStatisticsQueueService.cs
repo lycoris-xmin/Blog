@@ -32,11 +32,17 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
         {
             var model = data?.ToObject<PostStaticQueueModel>();
             if (model == null)
+            {
+                this.JobLogger!.Error("can not find any data");
                 return;
+            }
 
             var post = await _post.GetAsync(model.PostId);
             if (post == null)
+            {
+                this.JobLogger!.Error($"can not find post by id:{model.PostId}");
                 return;
+            }
 
             post.Statistics ??= new PostStatisticsDao();
             post.Statistics.Comment += model.StaticType == PostStaticTypeEnum.Comment ? 1 : 0;

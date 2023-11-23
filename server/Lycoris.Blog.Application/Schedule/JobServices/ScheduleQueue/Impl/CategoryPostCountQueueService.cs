@@ -37,15 +37,24 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
         {
             var categoryId = data.ToTryInt();
             if (!categoryId.HasValue || categoryId.Value <= 0)
+            {
+                this.JobLogger!.Error($"can not find category id by data:{data}");
                 return;
+            }
 
             var category = await _category.GetAsync(categoryId!.Value);
             if (category == null)
+            {
+                this.JobLogger!.Error($"can not find category by id:{categoryId}");
                 return;
+            }
 
             var count = await _post.GetAll().Where(x => x.Category == categoryId!.Value).Where(x => x.IsPublish).CountAsync();
             if (category.PostCount == count)
+            {
+                this.JobLogger!.Warn($"the number({count}) of articles in the category({category.Name}) is equal to the current number and does not need to be updated.");
                 return;
+            }
 
             category.PostCount = count;
             await _category.UpdateFieIdsAsync(category, x => x.PostCount);

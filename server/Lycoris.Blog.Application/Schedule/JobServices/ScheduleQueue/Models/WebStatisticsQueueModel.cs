@@ -16,5 +16,10 @@
         /// 
         /// </summary>
         public int User { get; set; } = 0;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string? Country { get; set; }
     }
 }

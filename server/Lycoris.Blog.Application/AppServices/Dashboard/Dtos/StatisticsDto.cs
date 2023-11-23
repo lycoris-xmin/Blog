@@ -15,7 +15,7 @@
         /// <summary>
         /// 
         /// </summary>
-        public int ErrorApi { get; set; }
+        public int UVBrowse { get; set; }
 
         /// <summary>
         /// 

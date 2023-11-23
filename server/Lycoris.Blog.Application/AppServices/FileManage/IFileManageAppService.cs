@@ -19,7 +19,7 @@ namespace Lycoris.Blog.Application.AppServices.FileManage
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        Task<StaticFile> UploadLocalToRemoteAsync(StaticFile data);
+        Task<ServerStaticFile> UploadLocalToRemoteAsync(ServerStaticFile data);
 
         /// <summary>
         /// 

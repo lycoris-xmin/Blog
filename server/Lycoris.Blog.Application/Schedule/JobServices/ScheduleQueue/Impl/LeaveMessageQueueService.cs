@@ -34,11 +34,17 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
         {
             var messageId = data.ToTryInt();
             if (!messageId.HasValue || messageId.Value <= 0)
+            {
+                this.JobLogger!.Warn($"can not find message id by data:{data}");
                 return;
+            }
 
             var message = await _message.GetAsync(messageId!.Value);
             if (message == null)
+            {
+                this.JobLogger!.Error($"can not find message by id:{messageId}");
                 return;
+            }
 
             var fieIds = new List<Expression<Func<LeaveMessage, object>>>();
 

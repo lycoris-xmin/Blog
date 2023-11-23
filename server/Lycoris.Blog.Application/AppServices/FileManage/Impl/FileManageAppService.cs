@@ -20,11 +20,11 @@ namespace Lycoris.Blog.Application.AppServices.FileManage.Impl
     [AutofacRegister(ServiceLifeTime.Scoped, PropertiesAutowired = true)]
     public class FileManageAppService : ApplicationBaseService, IFileManageAppService
     {
-        private readonly IRepository<StaticFile, long> _repository;
+        private readonly IRepository<ServerStaticFile, long> _repository;
         private readonly Lazy<IGithubService> _github;
         private readonly Lazy<IMinioService> _minio;
 
-        public FileManageAppService(IRepository<StaticFile, long> repository, Lazy<IGithubService> github, Lazy<IMinioService> minio)
+        public FileManageAppService(IRepository<ServerStaticFile, long> repository, Lazy<IGithubService> github, Lazy<IMinioService> minio)
         {
             _repository = repository;
             _github = github;
@@ -45,12 +45,13 @@ namespace Lycoris.Blog.Application.AppServices.FileManage.Impl
             {
                 var fileName = $"{Guid.NewGuid():N}{Path.GetExtension(file.FileName)}";
 
-                var data = new StaticFile()
+                var data = new ServerStaticFile()
                 {
                     Path = $"/{path.TrimStart('/').TrimEnd('/')}",
                     FileName = fileName,
                     UploadChannel = config.UploadChannel,
                     PathUrl = $"/{path.TrimStart('/').TrimEnd('/')}/{fileName}",
+                    FileSie = file.Length,
                     Use = true,
                     CreateTime = DateTime.Now
                 };
@@ -110,7 +111,7 @@ namespace Lycoris.Blog.Application.AppServices.FileManage.Impl
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        public async Task<StaticFile> UploadLocalToRemoteAsync(StaticFile data)
+        public async Task<ServerStaticFile> UploadLocalToRemoteAsync(ServerStaticFile data)
         {
             try
             {
@@ -190,7 +191,7 @@ namespace Lycoris.Blog.Application.AppServices.FileManage.Impl
         /// <param name="file"></param>
         /// <param name="data"></param>
         /// <returns></returns>
-        private async Task<StaticFile> GitHubUploadFileAsync(IFormFile file, StaticFile data)
+        private async Task<ServerStaticFile> GitHubUploadFileAsync(IFormFile file, ServerStaticFile data)
         {
             data.UploadChannel = FileUploadChannelEnum.Github;
 
@@ -208,7 +209,7 @@ namespace Lycoris.Blog.Application.AppServices.FileManage.Impl
         /// <param name="data"></param>
         /// <param name="localFilePath"></param>
         /// <returns></returns>
-        private async Task<StaticFile> GitHubUploadFileAsync(StaticFile data, string localFilePath)
+        private async Task<ServerStaticFile> GitHubUploadFileAsync(ServerStaticFile data, string localFilePath)
         {
             data.UploadChannel = FileUploadChannelEnum.Github;
 
@@ -226,7 +227,7 @@ namespace Lycoris.Blog.Application.AppServices.FileManage.Impl
         /// <param name="file"></param>
         /// <param name="data"></param>
         /// <returns></returns>
-        private async Task<StaticFile> MinioUploadFileAsync(IFormFile file, StaticFile data)
+        private async Task<ServerStaticFile> MinioUploadFileAsync(IFormFile file, ServerStaticFile data)
         {
             data.UploadChannel = FileUploadChannelEnum.Minio;
 
@@ -245,7 +246,7 @@ namespace Lycoris.Blog.Application.AppServices.FileManage.Impl
         /// <param name="data"></param>
         /// <param name="localFilePath"></param>
         /// <returns></returns>
-        private async Task<StaticFile> MinioUploadFileAsync(StaticFile data, string localFilePath)
+        private async Task<ServerStaticFile> MinioUploadFileAsync(ServerStaticFile data, string localFilePath)
         {
             data.UploadChannel = FileUploadChannelEnum.Minio;
 

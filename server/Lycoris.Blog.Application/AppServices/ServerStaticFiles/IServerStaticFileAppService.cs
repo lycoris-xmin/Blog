@@ -1,11 +1,11 @@
-﻿using Lycoris.Blog.Application.AppServices.StaticFiles.Dtos;
+﻿using Lycoris.Blog.Application.AppServices.ServerStaticFiles.Dtos;
 using Lycoris.Blog.Application.Shared;
 using Lycoris.Blog.Application.Shared.Dtos;
 using Microsoft.AspNetCore.Http;
 
-namespace Lycoris.Blog.Application.AppServices.StaticFiles
+namespace Lycoris.Blog.Application.AppServices.ServerStaticFiles
 {
-    public interface IStaticFileAppService : IApplicationBaseService
+    public interface IServerStaticFileAppService : IApplicationBaseService
     {
         /// <summary>
         /// 

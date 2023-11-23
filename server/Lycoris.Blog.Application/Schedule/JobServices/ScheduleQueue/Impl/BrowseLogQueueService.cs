@@ -6,6 +6,7 @@ using Lycoris.Blog.Application.Schedule.Shared;
 using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
 using Lycoris.Common.Extensions;
+using Lycoris.Common.Helper;
 using Microsoft.EntityFrameworkCore;
 using Quartz;
 using System.Text.RegularExpressions;
@@ -45,22 +46,34 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
         {
             var model = data?.ToObject<BrowseLogQueueModel>();
             if (model == null)
+            {
+                this.JobLogger!.Error($"can not find any data");
                 return;
+            }
 
             // 文章浏览量统计事件插入
             PushCalcPostStatisticsQueue(model);
 
-            if (model.Referer.IsNullOrEmpty())
-                return;
+            // referer 统计
+            if (!model.Referer.IsNullOrEmpty())
+            {
+                var referer = await _browseReferer.GetAll().Where(x => x.Referer == model.Referer).SingleOrDefaultAsync() ?? new BrowseReferer() { Referer = model.Referer!, Count = 0, Domain = GetUrlDomain(model.Referer!) };
 
-            var referer = await _browseReferer.GetAll().Where(x => x.Referer == model.Referer).SingleOrDefaultAsync() ?? new BrowseReferer() { Referer = model.Referer!, Count = 0, Domain = GetUrlDomain(model.Path) };
+                referer.Count++;
 
-            referer.Count++;
+                await _browseReferer.CreateOrUpdateAsync(referer, x => x.Count);
+            }
 
-            await _browseReferer.CreateOrUpdateAsync(referer, x => x.Count);
+            var queueModel = new WebStatisticsQueueModel() { Browse = 1 };
+
+            if (!model.Ip.IsNullOrEmpty())
+            {
+                var addr = IPAddressHelper.Search(model.Ip!);
+                queueModel.Country = addr.IsPrivate ? "中国" : addr.Country ?? "";
+            }
 
             // 
-            _scheduleQueue.Enqueue(ScheduleTypeEnum.WebStatistics, new WebStatisticsQueueModel() { Browse = 1 });
+            _scheduleQueue.Enqueue(ScheduleTypeEnum.WebStatistics, queueModel);
         }
 
         /// <summary>
@@ -96,7 +109,7 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
         {
             // 使用正则表达式从URL中提取http://或https://及后面的域名部分
             string pattern = @"^(https?:\/\/[^\/]+)";
-            Match match = Regex.Match(url, pattern);
+            var match = Regex.Match(url, pattern);
 
             if (match.Success)
                 return match.Groups[1].Value;

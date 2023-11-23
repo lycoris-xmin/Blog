@@ -9,12 +9,12 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
     /// <summary>
     /// 上传文件
     /// </summary>
-    [Table("StaticFile")]
+    [Table("Server_StaticFile")]
     [TableIndex("UploadChannel")]
     [TableIndex("PathUrl")]
     [TableIndex("Use")]
     [TableIndex("CreateTime")]
-    public class StaticFile : MySqlBaseEntity<long>
+    public class ServerStaticFile : MySqlBaseEntity<long>
     {
         /// <summary>
         /// 文件访问路径
@@ -51,6 +51,11 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
         /// </summary>
         [TableColumn(StringLength = 100)]
         public string FileSha { get; set; } = string.Empty;
+
+        /// <summary>
+        /// 文件大小
+        /// </summary>
+        public long FileSie { get; set; } = 0L;
 
         /// <summary>
         /// 本地备份

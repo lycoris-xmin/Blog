@@ -42,6 +42,7 @@
     <Folder Include="AppData\logs\" />
     <Folder Include="AppData\Temp\" />
     <Folder Include="wwwroot\" />
+    <Folder Include="wwwroot\about\web\" />
   </ItemGroup>
 
   <ItemGroup>

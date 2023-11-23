@@ -50,22 +50,14 @@
         <el-button type="danger" style="width: 120px" @click="downloadAll" plain :loading="model.downloadAllLoading">下载全部文件</el-button>
       </template>
 
-      <template #pathUrl="{ row }">
-        <el-popover :width="400" trigger="hover">
-          <template #reference>
-            <span class="file-name" @click="copyFileUrl(row.pathUrl)">{{ row.pathUrl }}</span>
-          </template>
-          <template #default>
-            <div class="staticfile-img-preview">
-              <el-image v-if="row.remoteUrl" :src="row.remoteUrl">
-                <template #error>
-                  <img :src="`${api.server}${row.pathUrl}`" />
-                </template>
-              </el-image>
-              <img v-else :src="`${api.server}${row.pathUrl}`" />
-            </div>
-          </template>
-        </el-popover>
+      <template #fileName="{ row }">
+        <div class="file">
+          <p class="file-name" @click="copyFileUrl(row.pathUrl)">{{ row.fileName }}</p>
+          <p class="file-info">
+            <span>{{ row.path }}</span>
+            <span>{{ row.fileSize }}</span>
+          </p>
+        </div>
       </template>
 
       <template #uploadChannel="{ value }">
@@ -83,12 +75,15 @@
         <el-tag type="warning" v-else>未使用</el-tag>
       </template>
 
-      <template #action="{ row }">
-        <el-button type="warning" plain @click="checkFileUse(row)" :loading="row.check">状态检测</el-button>
-        <el-button v-if="row.uploadChannel != model.configUploadChannel" type="success" :loading="row.syncFileToRemote" @click="syncFile(row)" plain>同步远端</el-button>
+      <template #action="{ row, index }">
+        <el-button type="info" plain @click="showFileDetail(row, index)">详情</el-button>
+        <el-button type="warning" plain @click="checkFileUse(row)" :loading="row.check">检测</el-button>
+        <el-button type="success" v-if="row.localBack && row.uploadChannel != 0 && row.uploadChannel != model.configUploadChannel" :loading="row.syncFileToRemote" @click="syncFile(row)" plain>同步远端</el-button>
         <el-button v-if="!row.localBack" type="primary" plain @click="$viewLog(row)">本地备份</el-button>
       </template>
     </lycoris-table>
+
+    <file-detail ref="fileDetailRef" :page-size="table.list.length == table.pageSize ? table.pageSize : table.list.length" :upload-channel-enum="model.uploadChannelEnum" @change-file="changeFile"></file-detail>
   </page-layout>
 </template>
 
@@ -96,6 +91,7 @@
 import { reactive, ref, onMounted, onBeforeMount, onBeforeUnmount, inject } from 'vue';
 import PageLayout from '../layout/page-layout.vue';
 import LycorisTable from '../../components/lycoris-table/index.vue';
+import fileDetail from './components/file-detail.vue';
 import { getList, checkFileUseState, syncFileToRemote, downAllFile } from '../../api/staticFile';
 import { getUploadChannelEnum, getStaticFileSettings } from '../../api/configuration';
 import { api } from '../../config.json';
@@ -106,6 +102,8 @@ import swal from '../../utils/swal';
 
 const signalR = inject('$signalR');
 const { toClipboard } = useClipboard();
+
+const fileDetailRef = ref();
 
 const model = reactive({
   loading: true,
@@ -125,7 +123,7 @@ const toolbar = reactive({
 
 const column = ref([
   {
-    column: 'pathUrl',
+    column: 'fileName',
     name: '文件名称'
   },
   {
@@ -151,7 +149,7 @@ const column = ref([
   {
     column: 'action',
     name: '操作',
-    width: '250px',
+    width: '280px',
     fixed: 'right',
     align: 'left'
   }
@@ -337,42 +335,41 @@ const syncAllFile = async () => {
   }
 
   // 请求接口
+  toast.warn('暂未开发');
+};
+
+const showFileDetail = (row, index) => {
+  fileDetailRef.value.show(row, index);
+};
+
+const changeFile = (index, callback) => {
+  callback(table.list[index]);
 };
 </script>
 
 <style lang="scss" scoped>
-.file-name {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  word-break: break-all;
-  white-space: nowrap;
-  cursor: pointer;
-  transition: all 0.3;
+.file {
+  .file-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-all;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.3;
 
-  &:hover {
-    color: var(--color-info);
+    &:hover {
+      color: var(--color-info);
+    }
   }
-}
 
-$imgMaxWidth: 500px;
+  .file-info {
+    font-size: 14px;
+    padding-top: 5px;
 
-.staticfile-img-preview {
-  position: relative;
-  max-height: $imgMaxWidth;
-  max-width: $imgMaxWidth;
-
-  :deep(img) {
-    max-height: $imgMaxWidth;
-    max-width: $imgMaxWidth;
-    object-fit: fill;
-    border-radius: 5px;
+    > span {
+      padding-right: 15px;
+      color: var(--color-dark-light);
+    }
   }
-}
-</style>
-
-<style>
-.el-popper:has(.staticfile-img-preview) {
-  height: auto !important;
-  width: auto !important;
 }
 </style>

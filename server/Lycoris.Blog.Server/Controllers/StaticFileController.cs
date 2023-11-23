@@ -1,6 +1,6 @@
 ﻿using Lycoris.AutoMapper.Extensions;
-using Lycoris.Blog.Application.AppServices.StaticFiles;
-using Lycoris.Blog.Application.AppServices.StaticFiles.Dtos;
+using Lycoris.Blog.Application.AppServices.ServerStaticFiles;
+using Lycoris.Blog.Application.AppServices.ServerStaticFiles.Dtos;
 using Lycoris.Blog.Model.Global.Output;
 using Lycoris.Blog.Server.Application.Constants;
 using Lycoris.Blog.Server.FilterAttributes;
@@ -18,13 +18,13 @@ namespace Lycoris.Blog.Server.Controllers
     [AppAuthentication]
     public class StaticFileController : BaseController
     {
-        private readonly IStaticFileAppService _staticFile;
+        private readonly IServerStaticFileAppService _staticFile;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="staticFile"></param>
-        public StaticFileController(IStaticFileAppService staticFile)
+        public StaticFileController(IServerStaticFileAppService staticFile)
         {
             _staticFile = staticFile;
         }

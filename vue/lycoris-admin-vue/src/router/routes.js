@@ -28,8 +28,8 @@ const menusRoutes = [
         }
       },
       {
-        path: `${dashboardUrlPrefix}/blog/markdown`,
-        name: 'post-markdown',
+        path: `${dashboardUrlPrefix}/post/editor`,
+        name: 'post-editor',
         component: () => import('../views/post/createorupdate.vue'),
         meta: {
           title: '文章编写',

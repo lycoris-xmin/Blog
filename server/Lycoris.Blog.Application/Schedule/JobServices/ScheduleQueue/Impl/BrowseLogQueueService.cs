@@ -23,16 +23,19 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
         public JobLogger? JobLogger { get; set; }
 
         private readonly IRepository<BrowseReferer, int> _browseReferer;
+        private readonly IRepository<BrowseWordMap, int> _browseWordMap;
         private readonly IScheduleQueueCacheService _scheduleQueue;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="browseReferer"></param>
+        /// <param name="browseWordMap"></param>
         /// <param name="scheduleQueue"></param>
-        public BrowseLogQueueService(IRepository<BrowseReferer, int> browseReferer, IScheduleQueueCacheService scheduleQueue)
+        public BrowseLogQueueService(IRepository<BrowseReferer, int> browseReferer, IRepository<BrowseWordMap, int> browseWordMap, IScheduleQueueCacheService scheduleQueue)
         {
             _browseReferer = browseReferer;
+            _browseWordMap = browseWordMap;
             _scheduleQueue = scheduleQueue;
         }
 
@@ -64,16 +67,21 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
                 await _browseReferer.CreateOrUpdateAsync(referer, x => x.Count);
             }
 
-            var queueModel = new WebStatisticsQueueModel() { Browse = 1 };
+            // 插入统计队列
+            _scheduleQueue.Enqueue(ScheduleTypeEnum.WebStatistics, new WebStatisticsQueueModel() { Browse = 1 });
 
             if (!model.Ip.IsNullOrEmpty())
             {
                 var addr = IPAddressHelper.Search(model.Ip!);
-                queueModel.Country = addr.IsPrivate ? "中国" : addr.Country ?? "";
-            }
+                var country = addr.IsPrivate ? "中国" : addr.Country ?? "";
 
-            // 
-            _scheduleQueue.Enqueue(ScheduleTypeEnum.WebStatistics, queueModel);
+                if (!country.IsNullOrEmpty())
+                {
+                    var map = await _browseWordMap.GetAll().Where(x => x.Country == country).SingleOrDefaultAsync() ?? new BrowseWordMap() { Country = country, Count = 0 };
+                    map.Count++;
+                    await _browseWordMap.CreateOrUpdateAsync(map, x => x.Count);
+                }
+            }
         }
 
         /// <summary>

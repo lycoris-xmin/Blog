@@ -1,4 +1,5 @@
-﻿using Lycoris.Blog.EntityFrameworkCore.Shared;
+﻿using Lycoris.Blog.EntityFrameworkCore.Common.Attributes;
+using Lycoris.Blog.EntityFrameworkCore.Shared;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Lycoris.Blog.EntityFrameworkCore.Tables
@@ -7,6 +8,7 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
     /// 用户浏览历史表
     /// </summary>
     [Table("User_Post_BrowseHistory")]
+    [TableIndex(new string[] { "PostId", "UserId" }, true)]
     public class UserPostBrowseHistory : MySqlBaseEntity<long>
     {
         /// <summary>

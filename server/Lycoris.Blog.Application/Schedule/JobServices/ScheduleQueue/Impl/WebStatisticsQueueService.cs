@@ -48,16 +48,6 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
             config!.TotalMessage += model.Message;
             config!.TotalUsers += model.User;
 
-            if (!model.Country.IsNullOrEmpty())
-            {
-                config!.BrowseWordMap ??= new List<WebBrowseWordMapConfiguration>();
-                var item = config!.BrowseWordMap.SingleOrDefault(x => x.Country == model.Country);
-                if (item != null)
-                    item.Count++;
-                else
-                    config!.BrowseWordMap.Add(new WebBrowseWordMapConfiguration(model.Country!));
-            }
-
             seting!.Value = config.ToJson();
 
             await _configuration.SaveConfigurationAsync(seting);

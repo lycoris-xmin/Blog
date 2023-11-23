@@ -103,7 +103,8 @@ builder.Services.AddCors(options =>
         else
             builder.AllowAnyHeader();
 
-        builder.AllowCredentials();
+        if (AppSettings.Application.Cors.Origins.HasValue())
+            builder.AllowCredentials();
     });
 });
 

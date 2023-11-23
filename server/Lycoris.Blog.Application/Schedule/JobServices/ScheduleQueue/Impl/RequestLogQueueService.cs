@@ -2,7 +2,6 @@
 using Lycoris.AutoMapper.Extensions;
 using Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Models;
 using Lycoris.Blog.Application.Schedule.Shared;
-using Lycoris.Blog.EntityFrameworkCore.Migrations;
 using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
 using Lycoris.Blog.Model.Global.Output;

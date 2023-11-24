@@ -41,12 +41,12 @@
     </div>
     <template #footer>
       <div class="footer-icon" v-show="!(model.index == 0 && props.pageSize == 1)">
-        <el-button :disabled="model.index == 0" @click="changeFile(-1)">
+        <el-button @click="changeFile(-1)">
           <el-icon>
             <component :is="'arrow-left-bold'"></component>
           </el-icon>
         </el-button>
-        <el-button :disabled="model.index + 1 == props.pageSize" @click="changeFile(1)">
+        <el-button @click="changeFile(1)">
           <el-icon>
             <component :is="'arrow-right-bold'"></component>
           </el-icon>
@@ -109,6 +109,14 @@ const close = () => {
 };
 
 const changeFile = value => {
+  if (value < 0 && model.index == 0) {
+    toast.warn('这已经是第一张了', { max: 1 });
+    return;
+  } else if (value > 0 && model.index + 1 == props.pageSize) {
+    toast.warn('这已经是最后一张了', { max: 1 });
+    return;
+  }
+
   model.index = model.index + value;
   emit('changeFile', model.index, row => setFileProperty(row));
 };

@@ -23,7 +23,7 @@ const menusRoutes = [
         name: 'post',
         component: () => import('../views/post/index.vue'),
         meta: {
-          title: '文章列表',
+          title: '文章管理',
           menu: true
         }
       },
@@ -31,10 +31,7 @@ const menusRoutes = [
         path: `${dashboardUrlPrefix}/post/editor`,
         name: 'post-editor',
         component: () => import('../views/post/createorupdate.vue'),
-        meta: {
-          title: '文章编写',
-          menu: true
-        }
+        meta: {}
       },
       {
         path: `${dashboardUrlPrefix}/blog/category`,
@@ -60,6 +57,33 @@ const menusRoutes = [
   },
   {
     isRoute: false,
+    title: '网站审核',
+    icon: 'edit-pen',
+    routes: [
+      {
+        path: `${dashboardUrlPrefix}/message`,
+        name: 'message',
+        component: () => import('../views/leavemessage/index.vue'),
+        meta: {
+          title: '留言审核',
+          keepAlive: true,
+          menu: true
+        }
+      },
+      {
+        path: `${dashboardUrlPrefix}/friendlink`,
+        name: 'friendlink',
+        component: () => import('../views/friendlink/index.vue'),
+        meta: {
+          title: '友链审核',
+          keepAlive: true,
+          menu: true
+        }
+      }
+    ]
+  },
+  {
+    isRoute: false,
     title: '网站管理',
     icon: 'coin',
     routes: [
@@ -74,31 +98,11 @@ const menusRoutes = [
         }
       },
       {
-        path: `${dashboardUrlPrefix}/message`,
-        name: 'message',
-        component: () => import('../views/leavemessage/index.vue'),
-        meta: {
-          title: '留言管理',
-          keepAlive: true,
-          menu: true
-        }
-      },
-      {
         path: `${dashboardUrlPrefix}/navigation`,
         name: 'navigation',
         component: () => import('../views/navigation/index.vue'),
         meta: {
-          title: '网站收录',
-          keepAlive: true,
-          menu: true
-        }
-      },
-      {
-        path: `${dashboardUrlPrefix}/friendlink`,
-        name: 'friendlink',
-        component: () => import('../views/friendlink/index.vue'),
-        meta: {
-          title: '友链管理',
+          title: '收录管理',
           keepAlive: true,
           menu: true
         }
@@ -108,7 +112,7 @@ const menusRoutes = [
         name: 'filemanage',
         component: () => import('../views/filemanage/index.vue'),
         meta: {
-          title: '文件管理',
+          title: '附件管理',
           keepAlive: false,
           menu: true
         }
@@ -316,14 +320,16 @@ export const getMenus = () => {
       };
 
       for (let children of item.routes) {
-        menu.routes.push({
-          name: children.meta.title,
-          path: children.path,
-          component: {
-            keepAlive: children.meta.keepAlive || false,
-            name: children.name
-          }
-        });
+        if (children.meta.menu) {
+          menu.routes.push({
+            name: children.meta.title,
+            path: children.path,
+            component: {
+              keepAlive: children.meta.keepAlive || false,
+              name: children.name
+            }
+          });
+        }
       }
 
       menus.push(menu);

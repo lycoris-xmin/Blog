@@ -97,9 +97,9 @@ const routeTo = key => {
   let opt = {
     name: ''
   };
-  if (key == 'browse' || key == 'totalBrowse') {
+  if (key == 'browse' || key == 'totalBrowse' || key == 'uvBrowse') {
     opt.name = 'statistics-browse';
-  } else if (key == 'api' || key == 'errorApi') {
+  } else if (key == 'api') {
     opt.name = 'statistics-request';
     opt.params = {
       key

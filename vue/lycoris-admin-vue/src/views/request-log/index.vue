@@ -187,23 +187,12 @@ onActivated(async () => {
   await loadList();
 });
 
-let searchKey = '';
-
 const loadList = async () => {
   //
   if (route.params?.key) {
     model.beginTime = new Date().format('yyyy-MM-dd 00:00:00');
     model.endTime = new Date().format('yyyy-MM-dd 23:59:59');
-
-    if (searchKey != route.params.key) {
-      searchKey = route.params.key;
-      model.success = searchKey == 'api' ? '' : false;
-      await getTableList();
-    } else {
-      model.success = searchKey == 'api' ? '' : false;
-    }
   } else {
-    searchKey = '';
     model.beginTime = '';
     model.endTime = '';
     model.success = '';

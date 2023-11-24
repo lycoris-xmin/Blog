@@ -349,6 +349,10 @@ defineExpose({
     position: relative;
     height: 450px;
 
+    @media (max-width: 1920px) {
+      height: 370px;
+    }
+
     .chart {
       height: 420px;
 

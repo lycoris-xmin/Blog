@@ -5,7 +5,7 @@
     </div>
     <div class="layout-menu">
       <el-scrollbar>
-        <el-menu :default-active="$route.path" :unique-opened="true">
+        <el-menu :default-active="getActivePath($route.path)" :unique-opened="true">
           <div v-for="(item, index) in props.menus" :key="item.path">
             <router-link :to="item.path" class="menu-router" v-if="item.path">
               <el-menu-item :index="item.path" :menu-path="item.path">
@@ -40,6 +40,8 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
+
 const props = defineProps({
   menus: {
     type: Array,
@@ -50,6 +52,39 @@ const props = defineProps({
     default: ''
   }
 });
+
+let menus = [];
+const allMenuPath = computed(() => {
+  if (menus.length > 0) {
+    return menus;
+  }
+
+  menus = getMenusPath(props.menus);
+
+  return menus;
+});
+
+const getActivePath = path => {
+  let item = allMenuPath.value.filter(x => path == x || path.startsWith(x));
+  return item && item.length > 0 ? item[0] : '/';
+};
+
+const getMenusPath = menuList => {
+  let result = [];
+
+  for (let item of menuList) {
+    if (item.path) {
+      result.push(item.path);
+    } else if (item.routes && item.routes.length > 0) {
+      const tmp = getMenusPath(item.routes);
+      if (tmp && tmp.length > 0) {
+        result = [...result, ...tmp];
+      }
+    }
+  }
+
+  return result;
+};
 </script>
 
 <style lang="scss" scoped>

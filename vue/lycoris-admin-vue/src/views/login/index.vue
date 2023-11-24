@@ -37,7 +37,6 @@ import { stores } from '../../stores';
 import { debounce } from '../../utils/tool';
 import toast from '../../utils/toast';
 import secret from '../../utils/secret';
-import { web } from '../../config.json';
 
 const route = useRoute();
 const router = useRouter();
@@ -65,9 +64,9 @@ const computedPassword = computed(() => {
 });
 
 onMounted(async () => {
-  if (document.referrer && !document.referrer.includes(web.ssoReferer)) {
-    return;
-  }
+  // if (document.referrer && !document.referrer.includes(web.ssoReferer)) {
+  //   return;
+  // }
   if (route.query.key) {
     let token = secret.decrypt(decodeURIComponent(route.query.key));
     if (token) {

@@ -23,7 +23,27 @@
         /// <summary>
         /// 
         /// </summary>
+        public string? ICP { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string? Description { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public DateTime? BuildTime { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string? LogoDisplay { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public IFormFile? Logo { get; set; }
 
         /// <summary>
         /// 

@@ -118,9 +118,7 @@ export default defineStore('user', {
         this.state = false;
 
         localStorage.setItem(key, '');
-      } catch (error) {
-        debugger;
-      }
+      } catch (error) {}
     }
   }
 });

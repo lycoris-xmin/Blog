@@ -31,7 +31,16 @@ namespace Lycoris.Blog.Application.AppServices.Home.Impl
         /// 
         /// </summary>
         /// <returns></returns>
-        public Task<WebSettingsConfiguration?> GetWebSettingsAsync() => ApplicationConfiguration.Value.GetConfigurationAsync<WebSettingsConfiguration>(AppConfig.WebSetting);
+        public async Task<WebSettingDto> GetWebSettingsAsync()
+        {
+            var res = new WebSettingDto();
+
+            var webSetting = await this.ApplicationConfiguration.Value.GetConfigurationAsync<WebSettingsConfiguration>(AppConfig.WebSetting);
+            res.Common = webSetting!.ToMap<WebCommonDto>();
+            res.Owner = await GetWebOwnerAsync();
+
+            return res;
+        }
 
         /// <summary>
         /// 
@@ -111,12 +120,12 @@ namespace Lycoris.Blog.Application.AppServices.Home.Impl
         }
 
         /// <summary>
-        /// 
+        /// 网站发布统计
         /// </summary>
         /// <returns></returns>
-        public async Task<OwnerCreateStatisticsDto> GetOwnerCreateStatisticsAsync()
+        public async Task<PublishStatisticsDto> GetPublishStatisticsAsync()
         {
-            return new OwnerCreateStatisticsDto()
+            return new PublishStatisticsDto()
             {
                 Post = await _provider.GetRequiredService<IRepository<Post, long>>().GetAll().Where(x => x.IsPublish == true).CountAsync(),
                 Talk = await _provider.GetRequiredService<IRepository<Talk, long>>().GetAll().CountAsync(),
@@ -125,12 +134,12 @@ namespace Lycoris.Blog.Application.AppServices.Home.Impl
         }
 
         /// <summary>
-        /// 
+        /// 网站互动统计
         /// </summary>
         /// <returns></returns>
-        public async Task<WebStatisticsDto> GetWebStatisticsAsync()
+        public async Task<InteractiveStatisticsDto> GetInteractiveStatisticsAsync()
         {
-            return new WebStatisticsDto
+            return new InteractiveStatisticsDto
             {
                 Browse = await _provider.GetRequiredService<IRepository<WebDayStatistics, int>>().GetAll().SumAsync(x => x.PVBrowse),
                 Comment = await _provider.GetRequiredService<IRepository<PostComment, long>>().GetAll().CountAsync(),
@@ -139,24 +148,24 @@ namespace Lycoris.Blog.Application.AppServices.Home.Impl
         }
 
         /// <summary>
-        /// 
+        /// 文章分类统计
         /// </summary>
         /// <returns></returns>
-        public async Task<List<PostStatisticsDto>> GetPostStatisticsAsync()
+        public async Task<List<CategoryStatisticsDto>> GetCategoryStatisticsAsync()
         {
-            var query = _provider.GetRequiredService<IRepository<Category, int>>().GetAll().Select(x => new PostStatisticsDto()
+            var query = _provider.GetRequiredService<IRepository<Category, int>>().GetAll().Select(x => new CategoryStatisticsDto()
             {
                 Id = x.Id,
                 Name = x.Name,
                 Value = x.PostCount
             });
 
-            var list = await query.ToListAsync() ?? new List<PostStatisticsDto>();
+            var list = await query.ToListAsync() ?? new List<CategoryStatisticsDto>();
 
             var count = await _provider.GetRequiredService<IRepository<Post, long>>().GetAll().Where(x => x.Category <= 0).CountAsync();
             if (count > 0)
             {
-                list.Add(new PostStatisticsDto()
+                list.Add(new CategoryStatisticsDto()
                 {
                     Id = 0,
                     Name = "未分类",
@@ -168,7 +177,7 @@ namespace Lycoris.Blog.Application.AppServices.Home.Impl
         }
 
         /// <summary>
-        /// 
+        /// 文章随机图
         /// </summary>
         /// <returns></returns>
         public async Task<List<string>> GetPostIconAsync()

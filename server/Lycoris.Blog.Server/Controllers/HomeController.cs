@@ -29,6 +29,19 @@ namespace Lycoris.Blog.Server.Controllers
         }
 
         /// <summary>
+        /// 网站设置
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("Web/Setting")]
+        [Produces("application/json")]
+        [ResponseCache(Duration = 100, Location = ResponseCacheLocation.Client)]
+        public async Task<DataOutput<WebSettingViewModel>> WebSetting()
+        {
+            var dto = await _home.GetWebSettingsAsync();
+            return Success(dto.ToMap<WebSettingViewModel>());
+        }
+
+        /// <summary>
         /// 关于本站
         /// </summary>
         /// <returns></returns>
@@ -37,7 +50,7 @@ namespace Lycoris.Blog.Server.Controllers
         public async Task<DataOutput<string>> AboutWeb() => Success(await _home.GetAboutWebAsync() ?? "");
 
         /// <summary>
-        /// 
+        /// 关于我
         /// </summary>
         /// <returns></returns>
         [HttpGet("Web/Owner")]
@@ -81,44 +94,44 @@ namespace Lycoris.Blog.Server.Controllers
         }
 
         /// <summary>
-        /// 获取我创建的信息统计
+        /// 获取创建的信息统计
         /// </summary>
         /// <returns></returns>
-        [HttpGet("Owner/Create/Statistics")]
+        [HttpGet("Publish/Statistics")]
         [Produces("application/json")]
-        public async Task<DataOutput<OwnerCreateStatisticsViewModel>> OwnerCreateStatistics()
+        public async Task<DataOutput<PublishStatisticsViewModel>> PublishStatistics()
         {
-            var dto = await _home.GetOwnerCreateStatisticsAsync();
-            return Success(dto.ToMap<OwnerCreateStatisticsViewModel>());
+            var dto = await _home.GetPublishStatisticsAsync();
+            return Success(dto.ToMap<PublishStatisticsViewModel>());
         }
 
         /// <summary>
         /// 网站相关统计信息
         /// </summary>
         /// <returns></returns>
-        [HttpGet("Web/Statistics")]
+        [HttpGet("Interactive/Statistics")]
         [Produces("application/json")]
-        public async Task<DataOutput<WebStatisticsViewModel>> WebStatistics()
+        public async Task<DataOutput<InteractiveStatisticsViewModel>> InteractiveStatistics()
         {
-            var dto = await _home.GetWebStatisticsAsync();
-            return Success(dto.ToMap<WebStatisticsViewModel>());
+            var dto = await _home.GetInteractiveStatisticsAsync();
+            return Success(dto.ToMap<InteractiveStatisticsViewModel>());
         }
 
         /// <summary>
         /// 文章相关统计信息
         /// </summary>
         /// <returns></returns>
-        [HttpGet("Post/Statistics")]
+        [HttpGet("Category/Statistics")]
         [Produces("application/json")]
-        public async Task<ListOutput<PostStatisticsViewModel>> PostStatistics()
+        public async Task<ListOutput<CategoryStatisticsViewModel>> CategoryStatistics()
         {
             // 疑问
-            var dto = await _home.GetPostStatisticsAsync();
-            return Success(dto.ToMapList<PostStatisticsViewModel>());
+            var dto = await _home.GetCategoryStatisticsAsync();
+            return Success(dto.ToMapList<CategoryStatisticsViewModel>());
         }
 
         /// <summary>
-        /// 
+        /// 文章随机图
         /// </summary>
         /// <returns></returns>
         [HttpGet("Post/Icon")]

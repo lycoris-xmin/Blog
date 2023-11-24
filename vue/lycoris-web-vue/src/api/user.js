@@ -5,7 +5,7 @@ const controller = '/lycoris/user';
 export const getUserBrief = (userId = undefined) => {
   if (userId == undefined || userId == '') {
     return request.get(`${controller}/brief`);
-  } else {
+  } else if (userId != '0') {
     return request.get(`${controller}/brief/${userId}`);
   }
 };

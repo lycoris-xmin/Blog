@@ -106,8 +106,9 @@ export const countChange = function formatCount(count) {
   return result;
 };
 
-export const isMobile = () => {
-  return navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i);
+export const isMobile = userAgent => {
+  let str = userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i);
+  return str && str.length > 0 ? true : false;
 };
 
 export const isInViewPortOfOne = el => {

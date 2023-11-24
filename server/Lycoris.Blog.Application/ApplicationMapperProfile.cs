@@ -17,6 +17,7 @@ using Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Models;
 using Lycoris.Blog.Application.SignalR.Models;
 using Lycoris.Blog.Application.SignalR.Shared.Models;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
+using Lycoris.Blog.Model.Configurations;
 using Lycoris.Blog.Model.Contexts;
 using Lycoris.Common.Extensions;
 
@@ -81,6 +82,8 @@ namespace Lycoris.Blog.Application
             CreateMap<UserLink, UserLinkDto>();
 
             CreateMap<User, UserDataDto>();
+
+            CreateMap<WebSettingsConfiguration, WebCommonDto>();
         }
 
         /// <summary>

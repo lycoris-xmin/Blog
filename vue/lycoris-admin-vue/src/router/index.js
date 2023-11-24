@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import { pageRoutes, getMenus } from './routes';
 import nProgress from 'nprogress';
 import { web } from '../config.json';
-// import { stores } from '../stores';
+import { stores } from '../stores';
 
 nProgress.configure({
   easing: 'ease',
@@ -39,6 +39,10 @@ const $router = createRouter(routerconfig);
 
 $router.beforeEach(async to => {
   nProgress.start();
+
+  if (to.path == '' || to.path == '/') {
+    return stores.authorize.token ? { name: 'dashboard' } : { name: 'login', query: to.query };
+  }
 
   if (to.matched.length == 0) {
     return { name: 'server-error', params: { code: 404 } };

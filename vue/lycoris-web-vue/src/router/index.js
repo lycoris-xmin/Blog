@@ -1,8 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import { getPageRoutes, getkeepAliveComponents, getNavMenus } from './routes';
+import { getPcPageRoutes, getPcKeepAliveComponents, getPcNavMenus } from './pc-routes';
+import { getMobilePageRoutes, getMobileKeepAliveComponents, getMobileNavMenus } from './mobile-routes';
 import nProgress from 'nprogress';
-import { web } from '../config.json';
 import { stores } from '../stores';
+import { isMobile } from '../utils/tool';
 
 nProgress.configure({
   easing: 'ease',
@@ -13,11 +14,9 @@ nProgress.configure({
   positionUsing: 'translate'
 });
 
-const routes = getPageRoutes();
-
 const routerconfig = {
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [...routes]
+  routes: []
   // scrollBehavior(to, from, savedPosition) {
   //   if (savedPosition) {
   //     return savedPosition;
@@ -27,22 +26,21 @@ const routerconfig = {
   // }
 };
 
+const mobileNavigator = isMobile(navigator.userAgent);
+if (mobileNavigator) {
+  const routes = getMobilePageRoutes();
+  routerconfig.routes = [...routes];
+} else {
+  const routes = getPcPageRoutes();
+  routerconfig.routes = [...routes];
+}
+
 const $router = createRouter(routerconfig);
 
 $router.beforeEach(async to => {
   nProgress.start();
   if (to.matched.length == 0) {
     return { name: 'notfound' };
-  }
-
-  if (!to.path.startsWith('/post')) {
-    if (to.meta.title) {
-      if (!document.title.includes(to.meta.title)) {
-        document.title = `${to.meta.title}_${web.name}`;
-      }
-    } else {
-      document.title = web.name;
-    }
   }
 
   if (to.meta.autuorize && (!stores.authorize.token || !stores.user.state)) {
@@ -56,6 +54,6 @@ $router.afterEach(() => {
 
 export const router = $router;
 
-export const keepAliveComponents = getkeepAliveComponents();
+export const keepAliveComponents = mobileNavigator ? getMobileKeepAliveComponents() : getPcKeepAliveComponents();
 
-export const navMenus = getNavMenus();
+export const navMenus = mobileNavigator ? getMobileNavMenus : getPcNavMenus();

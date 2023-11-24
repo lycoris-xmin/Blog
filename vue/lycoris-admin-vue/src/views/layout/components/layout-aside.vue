@@ -1,7 +1,7 @@
 <template>
   <el-aside class="layout-sidebar">
     <div class="layout-logo flex-center-center">
-      <a :href="props.webPath" target="_blank"><img src="/icon/logo/logo-sidebar-lycoris.png" /></a>
+      <a :href="props.webPath" target="_blank"><img src="/logo/logo-sidebar-lycoris.png" /></a>
     </div>
     <div class="layout-menu">
       <el-scrollbar>

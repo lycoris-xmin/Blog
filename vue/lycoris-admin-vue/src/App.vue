@@ -9,7 +9,7 @@
 </template>
 
 <script setup>
-import { reactive } from 'vue';
+import { onBeforeMount, reactive } from 'vue';
 import { ElConfigProvider } from 'element-plus';
 import zhCn from 'element-plus/lib/locale/lang/zh-cn';
 
@@ -22,6 +22,8 @@ const options = reactive({
     max: 3
   }
 });
+
+onBeforeMount(() => {});
 </script>
 
 <style lang="scss" scoped>

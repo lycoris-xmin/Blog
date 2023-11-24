@@ -71,8 +71,17 @@ namespace Lycoris.Blog.Server.Controllers
                 config!.WebPath = input.WebPath!;
             if (!input.AdminPath.IsNullOrEmpty())
                 config!.AdminPath = input.AdminPath!;
+            if (!input.ICP.IsNullOrEmpty())
+                config!.ICP = input.ICP!;
+            if (!input.Description.IsNullOrEmpty())
+                config!.Description = input.Description!;
             if (input.BuildTime.HasValue)
                 config!.BuildTime = input.BuildTime!.Value;
+
+            if (input.Logo != null)
+                config!.Logo = await fileManage.UploadFileAsync(input.Logo, StaticsFilePath.Logo);
+            else if (input.LogoDisplay.IsNullOrEmpty())
+                config!.Logo = "";
 
             if (input.Avatar != null)
                 config!.DefaultAvatar = await fileManage.UploadFileAsync(input.Avatar, StaticsFilePath.Avatar);

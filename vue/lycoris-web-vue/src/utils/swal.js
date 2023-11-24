@@ -19,89 +19,101 @@ const getArgs = args => {
   return { message, title, config };
 };
 
-const info = function () {
-  let { message, title, config } = getArgs(arguments);
-  title = title || '提示';
-  config = config || {};
+const info = async function () {
+  try {
+    let { message, title, config } = getArgs(arguments);
+    title = title || '提示';
+    config = config || {};
 
-  let option = {
-    type: 'info',
-    confirmButtonText: '确定',
-    draggable: true
-  };
+    let option = {
+      type: 'info',
+      confirmButtonText: '确定',
+      draggable: true
+    };
 
-  Object.assign(option, config);
+    Object.assign(option, config);
 
-  return ElMessageBox.alert(message, title, option);
+    return await ElMessageBox.alert(message, title, option);
+  } catch (error) {}
 };
 
-const success = function () {
-  let { message, title, config } = getArgs(arguments);
+const success = async function () {
+  try {
+    let { message, title, config } = getArgs(arguments);
 
-  title = title || '处理成功';
-  config = config || {};
+    title = title || '处理成功';
+    config = config || {};
 
-  let option = {
-    type: 'success',
-    confirmButtonText: '确定',
-    draggable: true
-  };
+    let option = {
+      type: 'success',
+      confirmButtonText: '确定',
+      draggable: true
+    };
 
-  Object.assign(option, config);
+    Object.assign(option, config);
 
-  return ElMessageBox.alert(message, title, option);
+    return await ElMessageBox.alert(message, title, option);
+  } catch (error) {}
 };
 
-const warn = function () {
-  let { message, title, config } = getArgs(arguments);
+const warn = async function () {
+  try {
+    let { message, title, config } = getArgs(arguments);
 
-  title = title || '警告';
-  config = config || {};
+    title = title || '警告';
+    config = config || {};
 
-  let option = {
-    type: 'warning',
-    confirmButtonText: '确定',
-    draggable: true
-  };
+    let option = {
+      type: 'warning',
+      confirmButtonText: '确定',
+      draggable: true
+    };
 
-  Object.assign(option, config);
+    Object.assign(option, config);
 
-  return ElMessageBox.alert(message, title, option);
+    return await ElMessageBox.alert(message, title, option);
+  } catch (error) {}
 };
 
-const error = function () {
-  let { message, title, config } = getArgs(arguments);
+const error = async function () {
+  try {
+    let { message, title, config } = getArgs(arguments);
 
-  title = title || '错误';
-  config = config || {};
+    title = title || '错误';
+    config = config || {};
 
-  let option = {
-    type: 'error',
-    confirmButtonText: '确定',
-    draggable: true
-  };
+    let option = {
+      type: 'error',
+      confirmButtonText: '确定',
+      draggable: true
+    };
 
-  Object.assign(option, config);
+    Object.assign(option, config);
 
-  return ElMessageBox.alert(message, title, option);
+    return await ElMessageBox.alert(message, title, option);
+  } catch (error) {}
 };
 
-const confirm = function () {
-  let { message, title, config } = getArgs(arguments);
+const confirm = async function () {
+  try {
+    let { message, title, config } = getArgs(arguments);
 
-  title = title || '警告';
-  config = config || {};
+    title = title || '警告';
+    config = config || {};
 
-  let option = {
-    type: 'warning',
-    cancelButtonText: '取消',
-    confirmButtonText: '确定',
-    draggable: true
-  };
+    let option = {
+      type: 'warning',
+      cancelButtonText: '取消',
+      confirmButtonText: '确定',
+      draggable: true
+    };
 
-  Object.assign(option, config);
+    Object.assign(option, config);
 
-  return ElMessageBox.confirm(message, title, option);
+    return await ElMessageBox.confirm(message, title, option);
+  } catch (error) {
+    return false;
+  }
 };
 
 export default {

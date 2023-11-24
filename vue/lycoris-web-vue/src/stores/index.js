@@ -8,6 +8,7 @@ import otherUserInfo from './sections/other-user-info';
 import chat from './sections/chat';
 import chatMessage from './sections/chat-message';
 import postIcon from './sections/post-icon';
+import webSetting from './sections/web-setting';
 
 export const pinia = $pinia;
 
@@ -20,5 +21,6 @@ export const stores = {
   userInfo: otherUserInfo($pinia),
   chat: chat($pinia),
   chatMessage: chatMessage($pinia),
-  postIcon: postIcon($pinia)
+  postIcon: postIcon($pinia),
+  webSetting: webSetting($pinia)
 };

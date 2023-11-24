@@ -225,7 +225,7 @@ namespace Lycoris.Blog.Server.Application
 
             CreateMap<StatisticsDto, ServerStatisticsViewModel>();
 
-            CreateMap<PostStatisticsDto, PostStatisticsViewModel>();
+            CreateMap<CategoryStatisticsDto, CategoryStatisticsViewModel>();
 
             CreateMap<SiteNavigationQueryListInput, SiteNavigationQueryFilter>();
 
@@ -244,7 +244,7 @@ namespace Lycoris.Blog.Server.Application
             CreateMap<StaticFileDataDto, StaticFileDataViewModel>()
                 .ForMember(x => x.FileSize, opt => opt.MapFrom(src => ConvertFileSize(src.FileSize)));
 
-            CreateMap<WebStatisticsDto, WebStatisticsViewModel>();
+            CreateMap<InteractiveStatisticsDto, InteractiveStatisticsViewModel>();
 
             CreateMap<SaveSystemFileClearConfigurationInput, SystemFileClearConfiguration>();
 
@@ -272,11 +272,15 @@ namespace Lycoris.Blog.Server.Application
 
             CreateMap<EmailServiceTestInput, EmailSettingsConfiguration>();
 
-            CreateMap<OwnerCreateStatisticsDto, OwnerCreateStatisticsViewModel>();
+            CreateMap<PublishStatisticsDto, PublishStatisticsViewModel>();
 
             CreateMap<UpdateUserBriefInput, UserBriefDto>();
 
             CreateMap<ChangePasswordInput, ChangePasswordDto>();
+
+            CreateMap<WebCommonDto, WebCommonViewModel>();
+
+            CreateMap<WebSettingDto, WebSettingViewModel>();
         }
 
         /// <summary>

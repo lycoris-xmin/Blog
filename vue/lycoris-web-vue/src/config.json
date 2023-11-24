@@ -1,10 +1,4 @@
 {
-  "web": {
-    "name": "程序猿的小破站",
-    "domain": "https://www.lycoris.cloud",
-    "icp": "闽ICP备20015305号",
-    "description": "网站描述,网站描述网站描述网站描述网站描述网站描述网站描述网站描述网站描述网站描述网站描述网站描述网站描述"
-  },
   "api": {
     "server": "http://localhost:8019/api",
     "timeout": 15000,

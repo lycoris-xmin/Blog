@@ -18,7 +18,22 @@
         /// <summary>
         /// 
         /// </summary>
-        public string AdminPath { get; set; } = "http://127.0.0.1:5174/little/brokenstation/login";
+        public string AdminPath { get; set; } = "http://127.0.0.1:5174";
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Logo { get; set; } = "";
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string ICP { get; set; } = "";
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Description { get; set; } = "";
 
         /// <summary>
         /// 

@@ -4,6 +4,10 @@ import { uuid } from '../utils/tool';
 const controller = '/lycoris/home';
 const orignFlagKey = 'l-z-orign';
 
+export const getWebSetting = () => {
+  return request.get(`${controller}/web/setting`);
+};
+
 export const getWebOwner = () => {
   return request.get(`${controller}/web/owner`);
 };
@@ -43,16 +47,16 @@ export const pageBrowse = (path, data) => {
   );
 };
 
-export const getOwnerCreateStatistics = () => {
-  return request.get(`${controller}/owner/create/statistics`);
+export const getpublishStatistics = () => {
+  return request.get(`${controller}/publish/statistics`);
 };
 
-export const getWebStatistics = () => {
-  return request.get(`${controller}/web/statistics`);
+export const getInteractiveStatistics = () => {
+  return request.get(`${controller}/interactive/statistics`);
 };
 
-export const getPostStatistics = () => {
-  return request.get(`${controller}/post/statistics`);
+export const getCategoryStatistics = () => {
+  return request.get(`${controller}/category/statistics`);
 };
 
 export const getPostIcon = () => {

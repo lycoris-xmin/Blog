@@ -2,8 +2,12 @@
   <el-popover :placement="props.placement" :width="props.width" :trigger="props.trigger" @before-enter="beforeEnter" :persistent="props.persistent">
     <template #reference> <slot name="reference"></slot> </template>
 
-    <div class="flex-center-center popover-user--info">
-      <el-image class="avatar" :src="model.avatar" lazy> </el-image>
+    <div class="flex-center-center popover-user--info" v-if="props.userId && props.userId != '0'">
+      <el-image class="avatar" :src="model.avatar" lazy>
+        <template #error>
+          <img :src="stores.webSetting.defaultAvatar" />
+        </template>
+      </el-image>
       <span class="name">{{ model.nickName }}</span>
       <div class="flex-center-center platform">
         <div v-if="model.github">
@@ -48,6 +52,7 @@
         </div>
       </slot>
     </div>
+    <div v-else></div>
   </el-popover>
 </template>
 
@@ -130,14 +135,14 @@ const beforeEnter = async () => {
 
 const getUserInfoBySotre = () => {
   if (props.isOwner) {
-    model.nickName = stores.owner.nickName;
-    model.avatar = stores.owner.avatar;
-    model.email = stores.owner.email;
-    model.qq = stores.owner.qq;
-    model.wechat = stores.owner.wechat;
-    model.github = stores.owner.github;
-    model.bilibili = stores.owner.bilibili;
-    model.music = stores.owner.music;
+    model.nickName = stores.webSettings.owner.nickName;
+    model.avatar = stores.webSettings.owner.avatar;
+    model.email = stores.webSettings.owner.email;
+    model.qq = stores.webSettings.owner.qq;
+    model.wechat = stores.webSettings.owner.wechat;
+    model.github = stores.webSettings.owner.github;
+    model.bilibili = stores.webSettings.owner.bilibili;
+    model.music = stores.webSettings.owner.music;
     return true;
   }
 

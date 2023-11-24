@@ -6,8 +6,8 @@ export const getWebSettings = () => {
   return request.get(`${controller}/web`);
 };
 
-export const saveWebSettings = ({ webName, webPath, adminPath, buildTime, avatar }) => {
-  return request.post(`${controller}/web`, { webName, webPath, adminPath, buildTime, avatar }, true);
+export const saveWebSettings = ({ webName, webPath, adminPath, logo, logoDisplay, favicon, icp, buildTime, avatar, description }) => {
+  return request.post(`${controller}/web`, { webName, webPath, logo, logoDisplay, adminPath, favicon, icp, description, buildTime, avatar }, true);
 };
 
 export const getPostSettings = () => {

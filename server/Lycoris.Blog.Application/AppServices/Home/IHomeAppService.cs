@@ -1,31 +1,30 @@
 ﻿using Lycoris.Blog.Application.AppServices.Home.Dtos;
 using Lycoris.Blog.Application.Shared;
-using Lycoris.Blog.Model.Configurations;
 
 namespace Lycoris.Blog.Application.AppServices.Home
 {
     public interface IHomeAppService : IApplicationBaseService
     {
         /// <summary>
-        /// 
+        /// 网站配置信息
         /// </summary>
         /// <returns></returns>
-        Task<WebSettingsConfiguration?> GetWebSettingsAsync();
+        Task<WebSettingDto> GetWebSettingsAsync();
 
         /// <summary>
-        /// 
+        /// 站长信息
         /// </summary>
         /// <returns></returns>
         Task<WebOwnerDto> GetWebOwnerAsync();
 
         /// <summary>
-        /// 
+        /// 关于本站
         /// </summary>
         /// <returns></returns>
         Task<string> GetAboutWebAsync();
 
         /// <summary>
-        /// 
+        /// 关于我
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="configName"></param>
@@ -40,25 +39,25 @@ namespace Lycoris.Blog.Application.AppServices.Home
         Task WebBrowseRecordAsync(WebBrowseRecordDto input);
 
         /// <summary>
-        /// 
+        /// 网站发布统计
         /// </summary>
         /// <returns></returns>
-        Task<OwnerCreateStatisticsDto> GetOwnerCreateStatisticsAsync();
+        Task<PublishStatisticsDto> GetPublishStatisticsAsync();
 
         /// <summary>
-        /// 
+        /// 网站互动统计
         /// </summary>
         /// <returns></returns>
-        Task<WebStatisticsDto> GetWebStatisticsAsync();
+        Task<InteractiveStatisticsDto> GetInteractiveStatisticsAsync();
 
         /// <summary>
-        /// 
+        /// 文章分类统计
         /// </summary>
         /// <returns></returns>
-        Task<List<PostStatisticsDto>> GetPostStatisticsAsync();
+        Task<List<CategoryStatisticsDto>> GetCategoryStatisticsAsync();
 
         /// <summary>
-        /// 
+        /// 文章随机图
         /// </summary>
         /// <returns></returns>
         Task<List<string>> GetPostIconAsync();

@@ -93,7 +93,7 @@ import PageLayout from '../layout/page-layout.vue';
 import LycorisTable from '../../components/lycoris-table/index.vue';
 import fileDetail from './components/file-detail.vue';
 import { getList, checkFileUseState, syncFileToRemote, downAllFile } from '../../api/staticFile';
-import { getUploadChannelEnum, getStaticFileSettings } from '../../api/configuration';
+import { getUploadChannelEnum, getUploadSetting } from '../../api/configuration';
 import { api } from '../../config.json';
 import { setStaticSource } from '../../utils/staticfile';
 import toast from '../../utils/toast';
@@ -196,7 +196,7 @@ const getEnum = async () => {
 
 const getConfigUploadChannel = async () => {
   try {
-    let res = await getStaticFileSettings();
+    let res = await getUploadSetting();
     if (res && res.resCode == 0) {
       model.configUploadChannel = res.data.uploadChannel;
     }

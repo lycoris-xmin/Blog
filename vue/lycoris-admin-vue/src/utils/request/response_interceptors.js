@@ -86,7 +86,10 @@ const success = (resp, service) => {
 
     if (!isRefreshing) {
       isRefreshing = true;
+      console.log('--------------- refresh ---------------');
+      console.log('isRefreshing = ' + isRefreshing);
       console.log(resp.config);
+      console.log('--------------- refresh ---------------');
       return refreshToken(service)
         .then(res => {
           if (res.data.resCode != 0) {

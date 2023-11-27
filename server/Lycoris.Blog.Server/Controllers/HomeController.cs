@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Lycoris.Blog.Server.Controllers
 {
     /// <summary>
-    /// 
+    /// 网站首页
     /// </summary>
     [Route($"{HostConstant.RoutePrefix}/Home")]
     public class HomeController : BaseController
@@ -34,7 +34,7 @@ namespace Lycoris.Blog.Server.Controllers
         /// <returns></returns>
         [HttpGet("Web/Setting")]
         [Produces("application/json")]
-        [ResponseCache(Duration = 100, Location = ResponseCacheLocation.Client)]
+        [ResponseCache(Duration = 60000, Location = ResponseCacheLocation.Client)]
         public async Task<DataOutput<WebSettingViewModel>> WebSetting()
         {
             var dto = await _home.GetWebSettingsAsync();
@@ -47,14 +47,16 @@ namespace Lycoris.Blog.Server.Controllers
         /// <returns></returns>
         [HttpGet("About/Web")]
         [Produces("application/json")]
+        [ResponseCache(Duration = 3600, Location = ResponseCacheLocation.Client)]
         public async Task<DataOutput<string>> AboutWeb() => Success(await _home.GetAboutWebAsync() ?? "");
 
         /// <summary>
-        /// 关于我
+        /// 站长信息
         /// </summary>
         /// <returns></returns>
         [HttpGet("Web/Owner")]
         [Produces("application/json")]
+        [ResponseCache(Duration = 3600, Location = ResponseCacheLocation.Client)]
         public async Task<DataOutput<WebOwnerViewModel>> WebOnwer()
         {
             var dto = await _home.GetWebOwnerAsync();
@@ -67,6 +69,7 @@ namespace Lycoris.Blog.Server.Controllers
         /// <returns></returns>
         [HttpGet("About/Me")]
         [Produces("application/json")]
+        [ResponseCache(Duration = 3600, Location = ResponseCacheLocation.Client)]
         public async Task<DataOutput<AboutMeViewModel>> AboutMe()
         {
             var res = new AboutMeViewModel();
@@ -99,6 +102,7 @@ namespace Lycoris.Blog.Server.Controllers
         /// <returns></returns>
         [HttpGet("Publish/Statistics")]
         [Produces("application/json")]
+        [ResponseCache(Duration = 3600, Location = ResponseCacheLocation.Client)]
         public async Task<DataOutput<PublishStatisticsViewModel>> PublishStatistics()
         {
             var dto = await _home.GetPublishStatisticsAsync();
@@ -136,6 +140,7 @@ namespace Lycoris.Blog.Server.Controllers
         /// <returns></returns>
         [HttpGet("Post/Icon")]
         [Produces("application/json")]
+        [ResponseCache(Duration = 3600, Location = ResponseCacheLocation.Client)]
         public async Task<ListOutput<string>> PostIcon()
         {
             var dto = await _home.GetPostIconAsync();

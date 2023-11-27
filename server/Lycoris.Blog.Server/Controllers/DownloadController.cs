@@ -7,13 +7,13 @@ using Microsoft.AspNetCore.StaticFiles;
 namespace Lycoris.Blog.Server.Controllers
 {
     /// <summary>
-    /// 
+    /// 下载
     /// </summary>
     [Route($"{HostConstant.RoutePrefix}/Download")]
     public class DownloadController : BaseController
     {
         /// <summary>
-        /// 
+        /// 临时文件下载
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>

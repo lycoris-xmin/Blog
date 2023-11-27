@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Lycoris.Blog.Server.Controllers
 {
     /// <summary>
-    /// 
+    /// 访问管控
     /// </summary>
     [Route($"{HostConstant.RoutePrefix}/AccessControl")]
     [AppAuthentication]

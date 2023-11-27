@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Lycoris.Blog.Server.Controllers
 {
     /// <summary>
-    /// 
+    /// 说说
     /// </summary>
     [Route($"{HostConstant.RoutePrefix}/Talk")]
     public class TalkController : BaseController
@@ -36,6 +36,7 @@ namespace Lycoris.Blog.Server.Controllers
         /// <returns></returns>
         [HttpGet("List")]
         [Produces("application/json")]
+        [ResponseCache(Duration = 3600, Location = ResponseCacheLocation.Client)]
         public async Task<PageOutput<TalkDataViewModel>> TalkList([FromQuery] PageInput input)
         {
             var dto = await _talk.GetTalkListAsync(input.PageIndex!.Value, input.PageSize!.Value);

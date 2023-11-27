@@ -41,7 +41,7 @@ import PageLayout from '../layout/page-layout.vue';
 import LycorisTable from '../../components/lycoris-table/index.vue';
 import accessControlCreate from './components/access-control-create.vue';
 import accessControlLog from './components/access-control-log.vue';
-import { getList, deleteAccessControl } from '../../api/accesscontrol';
+import { getList, deleteAccessControl } from '../../api/accessControl';
 import toast from '../../utils/toast';
 import swal from '../../utils/swal';
 

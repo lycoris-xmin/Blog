@@ -98,7 +98,7 @@ import { useRoute, useRouter } from 'vue-router';
 import pageLayout from '../layout/page-layout.vue';
 import markdownContainer from '../../components/markdown-editor/index.vue';
 import { getPostInfo, uploadMarkdownPicture, savePost } from '../../api/post';
-import { getPostSettings } from '../../api/configuration';
+import { getPostSetting } from '../../api/configuration';
 import { getCategoryEnums } from '../../api/category';
 import toast from '../../utils/toast';
 import swal from '../../utils/swal';
@@ -243,7 +243,7 @@ onBeforeUnmount(() => {
 });
 
 const getSettings = async () => {
-  let res = await getPostSettings();
+  let res = await getPostSetting();
   if (res && res.resCode == 0) {
     //
     model.autoSave = res.data.autoSave;

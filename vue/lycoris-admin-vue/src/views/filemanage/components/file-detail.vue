@@ -46,6 +46,7 @@
             <component :is="'arrow-left-bold'"></component>
           </el-icon>
         </el-button>
+        <span class="file-index">{{ model.index + 1 }}</span>
         <el-button @click="changeFile(1)">
           <el-icon>
             <component :is="'arrow-right-bold'"></component>
@@ -186,5 +187,9 @@ defineExpose({
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.file-index {
+  padding: 0 20px;
 }
 </style>

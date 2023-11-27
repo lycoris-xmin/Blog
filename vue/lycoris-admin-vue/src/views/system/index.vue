@@ -1,13 +1,14 @@
 <template>
   <page-layout :loading="laoding">
     <el-tabs tab-position="top" class="system-setting">
-      <el-tab-pane v-for="item in model.tabs" :label="item.title" :key="item.value">
-        <web-settings v-if="item.value == 'webSettings'" :value="0" @tab-complete="complete"></web-settings>
-        <post-settings v-if="item.value == 'postSettings'" :value="1" @tab-complete="complete"></post-settings>
-        <email-settings v-if="item.value == 'emailSettings'" :value="2" @tab-complete="complete"></email-settings>
-        <staticfile-settings v-if="item.value == 'fileUploadSettings'" :value="3" @tab-complete="complete"></staticfile-settings>
-        <seo-settings v-if="item.value == 'seoSettings'" :value="4" @tab-complete="complete"></seo-settings>
-        <system-settings v-if="item.value == 'systemSettings'" :value="5" @tab-complete="complete"></system-settings>
+      <el-tab-pane v-for="(item, index) in model.tabs" :label="item.title" :key="item.value">
+        <web-setting v-if="item.value == 'webSetting'" :value="index" @tab-complete="complete"></web-setting>
+        <post-setting v-else-if="item.value == 'PostSetting'" :value="index" @tab-complete="complete"></post-setting>
+        <message-setting v-else-if="item.value == 'messageSetting'" :value="index" @tab-complete="complete"></message-setting>
+        <email-setting v-else-if="item.value == 'emailSetting'" :value="index" @tab-complete="complete"></email-setting>
+        <upload-setting v-else-if="item.value == 'fileUploadSetting'" :value="index" @tab-complete="complete"></upload-setting>
+        <seo-setting v-else-if="item.value == 'seoSetting'" :value="index" @tab-complete="complete"></seo-setting>
+        <system-setting v-else :value="index" @tab-complete="complete"></system-setting>
       </el-tab-pane>
     </el-tabs>
   </page-layout>
@@ -16,44 +17,50 @@
 <script setup name="settings">
 import { reactive, computed } from 'vue';
 import PageLayout from '../layout/page-layout.vue';
-import webSettings from './components/web-settings.vue';
-import postSettings from './components/post-settings.vue';
-import emailSettings from './components/email-settings.vue';
-import staticfileSettings from './components/staticfile-settings.vue';
-import seoSettings from './components/seo-settings.vue';
-import systemSettings from './components/system-settings.vue';
+import webSetting from './components/web-setting.vue';
+import postSetting from './components/post-setting.vue';
+import messageSetting from './components/message-setting.vue';
+import emailSetting from './components/email-setting.vue';
+import uploadSetting from './components/upload-setting.vue';
+import seoSetting from './components/seo-setting.vue';
+import systemSetting from './components/system-setting.vue';
 
 const model = reactive({
   active: 'webSettings',
   tabs: [
     {
       title: '网站设置',
-      value: 'webSettings',
+      value: 'webSetting',
       loading: true
     },
     {
-      title: '博客设置',
-      value: 'postSettings',
+      title: '文章设置',
+      value: 'PostSetting',
       loading: true
     },
     {
-      title: '邮件服务',
-      value: 'emailSettings',
+      title: '留言设置',
+      value: 'messageSetting',
       loading: true
     },
     {
-      title: '静态文件设置',
-      value: 'fileUploadSettings',
+      title: '邮件设置',
+      value: 'emailSetting',
+      loading: true
+    },
+    {
+      title: '上传设置',
+      value: 'fileUploadSetting',
       loading: true
     },
     {
       title: 'SEO设置',
-      value: 'seoSettings',
+      value: 'seoSetting',
       loading: true
     },
     {
       title: '系统设置',
-      value: 'systemSettings',
+      value: 'systemSetting',
       loading: true
     }
   ],
@@ -97,63 +104,47 @@ const complete = index => {
 </style>
 
 <style lang="scss">
-.system-setting {
-  .card-group {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 500px));
-    grid-gap: 15px;
-    padding: 10px;
+.tab-panel-container {
+  padding-top: 18px;
 
-    .card-group-cell {
-      padding: 10px;
-    }
+  .harf-body {
+    width: 35%;
 
-    .form-group {
-      margin-bottom: 18px;
+    .form-panel {
+      margin-bottom: 35px;
+      grid-gap: 20px;
 
-      .form-text {
-        margin-bottom: 8px;
-        line-height: 22px;
-        font-size: var(--el-form-label-font-size);
-        color: var(--el-text-color-regular);
-      }
-    }
-  }
-
-  .card {
-    border: 1px solid var(--color-secondary);
-    border-radius: 10px;
-    box-shadow: 0 0 6px 5px var(--color-secondary);
-    padding: 10px;
-
-    .el-collapse {
-      border: 0;
-
-      .el-collapse-item__header {
-        border: 0;
-      }
-
-      .el-collapse-item__wrap {
-        border: 0;
-      }
-    }
-
-    .card-title {
-      padding-left: 15px;
-
-      > span {
+      .header {
+        margin-bottom: 15px;
         font-size: 18px;
-        font-weight: 500;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--color-secondary);
+
+        .title-info-text {
+          color: var(--color-danger);
+          padding-left: 15px;
+
+          &::before {
+            content: '*';
+            color: var(--color-danger);
+          }
+        }
       }
-    }
 
-    .card-body {
-      padding: 10px 15px;
+      &.in-line {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        justify-content: start;
+        align-items: center;
 
-      .input-remind {
-        color: var(--color-danger);
-        margin: 0;
-        padding-bottom: 10px;
+        .header:first-child {
+          grid-column-start: 1;
+          grid-column-end: 3;
+        }
+      }
+
+      .el-select {
+        width: 100%;
       }
     }
   }

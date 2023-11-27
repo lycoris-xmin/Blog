@@ -19,7 +19,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Lycoris.Blog.Server.Controllers
 {
     /// <summary>
-    /// 
+    /// 系统设置
     /// </summary>
     [Route($"{HostConstant.RoutePrefix}/Configuration"), AppAuthentication]
     public class ConfigurationController : BaseController
@@ -47,7 +47,7 @@ namespace Lycoris.Blog.Server.Controllers
         /// <returns></returns>
         [HttpGet("Web")]
         [Produces("application/json")]
-        public async Task<DataOutput<WebSettingsConfiguration>> WebSettings()
+        public async Task<DataOutput<WebSettingsConfiguration>> WebSetting()
         {
             var dto = await _configuration.GetConfigurationAsync<WebSettingsConfiguration>(AppConfig.WebSetting);
             return Success(dto);
@@ -61,7 +61,7 @@ namespace Lycoris.Blog.Server.Controllers
         /// <returns></returns>
         [HttpPost("Web")]
         [Consumes("multipart/form-data"), Produces("application/json")]
-        public async Task<DataOutput<WebSettingsConfiguration>> SaveWebSettings([FromForm] SaveWebSettingsInput input, [FromServices] IFileManageAppService fileManage)
+        public async Task<DataOutput<WebSettingsConfiguration>> SaveWebSetting([FromForm] SaveWebSettingInput input, [FromServices] IFileManageAppService fileManage)
         {
             var config = await _configuration.GetConfigurationAsync<WebSettingsConfiguration>(AppConfig.WebSetting);
 
@@ -91,34 +91,74 @@ namespace Lycoris.Blog.Server.Controllers
         }
 
         /// <summary>
-        /// 获取博客相关设置
+        /// 获取文章设置
         /// </summary>
         /// <returns></returns>
         [HttpGet("Post")]
         [Produces("application/json")]
-        public async Task<DataOutput<PostSettingConfiguration>> PostSettings()
+        public async Task<DataOutput<PostSettingConfiguration>> PostSetting()
         {
             var dto = await _configuration.GetConfigurationAsync<PostSettingConfiguration>(AppConfig.PostSetting);
             return Success(dto);
         }
 
         /// <summary>
-        /// 保存博客相关设置
+        /// 保存文章设置
         /// </summary>
         /// <returns></returns>
         [HttpPost("Post")]
         [Consumes("application/json"), Produces("application/json")]
-        public async Task<BaseOutput> SavePostSettings([FromBody] SavePostSettingsInput input)
+        public async Task<BaseOutput> SavePostSetting([FromBody] SavePostSettingInput input)
         {
             var config = await _configuration.GetConfigurationAsync<PostSettingConfiguration>(AppConfig.PostSetting)!;
 
             config!.AutoSave = input.AutoSave!.Value;
+
             if (input.Second.HasValue && input.Second > 0)
                 config.Second = input.Second!.Value;
 
             config.Images = input.Images ?? new List<string>();
 
+            if (input.CommentFrequencySecond.HasValue)
+                config.CommentFrequencySecond = input.CommentFrequencySecond!.Value;
+
             await _configuration.SaveConfigurationAsync(AppConfig.PostSetting, config!);
+            return Success();
+        }
+
+        /// <summary>
+        /// 获取留言设置
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("Message")]
+        [Produces("application/json")]
+        public async Task<DataOutput<MessageSettingConfiguration>> MessageSetting()
+        {
+            var dto = await _configuration.GetConfigurationAsync<MessageSettingConfiguration>(AppConfig.MessageSetting);
+            return Success(dto);
+        }
+
+        /// <summary>
+        /// 保存留言设置
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("Message")]
+        [Consumes("application/json"), Produces("application/json")]
+        public async Task<BaseOutput> MessageSetting([FromBody] SaveMessageSettingInput input)
+        {
+            if (input.MessageRemind.HasValue() || input.FrequencySecond.HasValue)
+            {
+                var config = await _configuration.GetConfigurationAsync<MessageSettingConfiguration>(AppConfig.MessageSetting)!;
+
+                if (input.MessageRemind.HasValue())
+                    config!.MessageRemind = input.MessageRemind!;
+
+                if (input.FrequencySecond.HasValue)
+                    config!.FrequencySecond = input.FrequencySecond!.Value;
+
+                await _configuration.SaveConfigurationAsync(AppConfig.MessageSetting, config!);
+            }
+
             return Success();
         }
 
@@ -128,7 +168,7 @@ namespace Lycoris.Blog.Server.Controllers
         /// <returns></returns>
         [HttpGet("Email")]
         [Produces("application/json")]
-        public async Task<DataOutput<EmailSettingsConfiguration>> EmailSettings()
+        public async Task<DataOutput<EmailSettingsConfiguration>> EmailSetting()
         {
             var dto = await _configuration.GetConfigurationAsync<EmailSettingsConfiguration>(AppConfig.EmailSetting);
             return Success(dto);
@@ -140,7 +180,7 @@ namespace Lycoris.Blog.Server.Controllers
         /// <returns></returns>
         [HttpPost("Email")]
         [Consumes("application/json"), Produces("application/json")]
-        public async Task<BaseOutput> SaveEmailSettings([FromBody] SaveEmailSettingsInput input)
+        public async Task<BaseOutput> SaveEmailSetting([FromBody] SaveEmailSettingInput input)
         {
             var config = await _configuration.GetConfigurationAsync<EmailSettingsConfiguration>(AppConfig.EmailSetting)!;
 
@@ -190,7 +230,7 @@ namespace Lycoris.Blog.Server.Controllers
         /// <returns></returns>
         [HttpGet("Seo")]
         [Produces("application/json")]
-        public async Task<DataOutput<SeoSettingsConfiguration>> SeoSettings()
+        public async Task<DataOutput<SeoSettingsConfiguration>> SeoSetting()
         {
             var dto = await _configuration.GetConfigurationAsync<SeoSettingsConfiguration>(AppConfig.SeoSetting);
             return Success(dto);
@@ -202,7 +242,7 @@ namespace Lycoris.Blog.Server.Controllers
         /// <returns></returns>
         [HttpPost("Seo")]
         [Consumes("application/json"), Produces("application/json")]
-        public async Task<BaseOutput> SaveSeoSettings([FromBody] SaveSeoSettingsInput input)
+        public async Task<BaseOutput> SaveSeoSetting([FromBody] SaveSeoSettingInput input)
         {
             var config = await _configuration.GetConfigurationAsync<SeoSettingsConfiguration>(AppConfig.SeoSetting);
 
@@ -229,11 +269,11 @@ namespace Lycoris.Blog.Server.Controllers
         /// 获取文件存储服务设置
         /// </summary>
         /// <returns></returns>
-        [HttpGet("StaticFile")]
+        [HttpGet("Upload")]
         [Produces("application/json")]
-        public async Task<DataOutput<StaticFileConfiguration>> StaticFileSettings()
+        public async Task<DataOutput<UploadConfiguration>> UploadSetting()
         {
-            var dto = await _configuration.GetConfigurationAsync<StaticFileConfiguration>(AppConfig.StaticFile);
+            var dto = await _configuration.GetConfigurationAsync<UploadConfiguration>(AppConfig.Upload);
             return Success(dto);
         }
 
@@ -241,12 +281,12 @@ namespace Lycoris.Blog.Server.Controllers
         /// 保存文件存储服务设置
         /// </summary>
         /// <returns></returns>
-        [HttpPost("StaticFile")]
+        [HttpPost("Upload")]
         [Consumes("application/json"), Produces("application/json")]
-        public async Task<BaseOutput> SaveStaticFileSettings([FromBody] SaveStaticFileSettingsInput input)
+        public async Task<BaseOutput> SaveStaticFileSetting([FromBody] SaveUploadSettingInput input)
         {
-            var config = CheckStaticFileSettings(input);
-            await _configuration.SaveConfigurationAsync(AppConfig.StaticFile, config);
+            var config = CheckStaticFileSetting(input);
+            await _configuration.SaveConfigurationAsync(AppConfig.Upload, config);
             return Success();
         }
 
@@ -358,10 +398,12 @@ namespace Lycoris.Blog.Server.Controllers
         [Consumes("multipart/form-data"), Produces("application/json")]
         public async Task<DataOutput<string>> Upload([FromForm] ConfigurationUploadInput input)
         {
-            var fileUrl = "";
+            string? fileUrl;
 
             if (input.ConfigName == AppConfig.PostSetting)
                 fileUrl = await _fileManage.Value.UploadFileAsync(input.File!, "/post/carousel");
+            else
+                throw new FriendlyException("上传失败", $"unknown config name:{input.ConfigName}");
 
             return Success(fileUrl);
         }
@@ -385,7 +427,7 @@ namespace Lycoris.Blog.Server.Controllers
         /// <param name="input"></param>
         /// <returns></returns>
         /// <exception cref="HttpStatusException"></exception>
-        private static StaticFileConfiguration CheckStaticFileSettings(SaveStaticFileSettingsInput input)
+        private static UploadConfiguration CheckStaticFileSetting(SaveUploadSettingInput input)
         {
             try
             {
@@ -413,7 +455,7 @@ namespace Lycoris.Blog.Server.Controllers
                         break;
                 }
 
-                return input.ToMap<StaticFileConfiguration>();
+                return input.ToMap<UploadConfiguration>();
             }
             catch (HttpStatusException)
             {

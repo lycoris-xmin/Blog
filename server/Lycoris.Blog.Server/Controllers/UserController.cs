@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Lycoris.Blog.Server.Controllers
 {
     /// <summary>
-    /// 
+    /// 用户管理
     /// </summary>
     [Route($"{HostConstant.RoutePrefix}/User")]
     public class UserController : BaseController

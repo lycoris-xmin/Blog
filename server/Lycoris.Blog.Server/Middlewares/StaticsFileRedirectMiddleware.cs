@@ -78,11 +78,11 @@ namespace Lycoris.Blog.Server.Middlewares
         /// 
         /// </summary>
         /// <returns></returns>
-        private async Task<StaticFileConfiguration?> GetConfigurationAsync()
+        private async Task<UploadConfiguration?> GetConfigurationAsync()
         {
             using var scope = _serviceProvider.CreateScope();
             var repository = scope.ServiceProvider.GetRequiredService<IConfigurationRepository>();
-            return await repository.GetConfigurationAsync<StaticFileConfiguration>(AppConfig.StaticFile);
+            return await repository.GetConfigurationAsync<UploadConfiguration>(AppConfig.Upload);
         }
     }
 }

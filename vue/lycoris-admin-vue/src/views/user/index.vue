@@ -182,7 +182,7 @@ const handleComplete = data => {
   justify-content: center;
   align-items: center;
 
-  $img-size: 70px;
+  $img-size: 55px;
   :deep(.el-image) {
     height: $img-size;
     width: $img-size;

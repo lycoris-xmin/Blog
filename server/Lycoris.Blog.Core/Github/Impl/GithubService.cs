@@ -98,15 +98,15 @@ namespace Lycoris.Blog.Core.Github.Impl
         {
             if (GithubConfiguration == null)
             {
-                var config = await _configuration.GetConfigurationAsync<StaticFileConfiguration>(AppConfig.StaticFile) ?? throw new FriendlyException("");
+                var config = await _configuration.GetConfigurationAsync<UploadConfiguration>(AppConfig.Upload) ?? throw new FriendlyException("");
 
                 if (config.Github == null)
-                    throw new FriendlyException("");
+                    throw new FriendlyException("上传失败", "can not find github upload configuration");
 
                 if (config.Github.AccessToken.IsNullOrEmpty())
-                    throw new FriendlyException("");
+                    throw new FriendlyException("上传失败", "github accesstoken not set");
                 else if (config.Github.RepositoryUrl.IsNullOrEmpty())
-                    throw new FriendlyException("");
+                    throw new FriendlyException("上传失败", "github repository url not set");
 
                 GithubConfiguration = config.Github;
             }

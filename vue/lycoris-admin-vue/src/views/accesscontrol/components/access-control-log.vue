@@ -25,7 +25,7 @@
 <script setup>
 import { reactive, ref } from 'vue';
 import lycorisTable from '../../../components/lycoris-table/index.vue';
-import { getAccessControlLogList } from '../../../api/accesscontrol';
+import { getAccessControlLogList } from '../../../api/accessControl';
 
 const model = reactive({
   visible: false,

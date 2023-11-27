@@ -16,7 +16,7 @@ using System.Net;
 namespace Lycoris.Blog.Server.Controllers
 {
     /// <summary>
-    /// 
+    /// 友链管理
     /// </summary>
     [Route($"{HostConstant.RoutePrefix}/FriendLink")]
     public class FriendLinkController : BaseController

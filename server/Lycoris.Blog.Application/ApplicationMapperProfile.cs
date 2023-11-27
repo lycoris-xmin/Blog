@@ -5,14 +5,12 @@ using Lycoris.Blog.Application.AppServices.Categorys.Dtos;
 using Lycoris.Blog.Application.AppServices.Chat.Dtos;
 using Lycoris.Blog.Application.AppServices.FriendLinks.Dtos;
 using Lycoris.Blog.Application.AppServices.Home.Dtos;
-using Lycoris.Blog.Application.AppServices.LoginFailedRecords.Dtos;
 using Lycoris.Blog.Application.AppServices.Posts.Dtos;
 using Lycoris.Blog.Application.AppServices.RequestLogs.Dtos;
 using Lycoris.Blog.Application.AppServices.SiteNavigations.Dtos;
 using Lycoris.Blog.Application.AppServices.Talks.Dtos;
 using Lycoris.Blog.Application.AppServices.Users.Dtos;
 using Lycoris.Blog.Application.Cached.Authentication.Models;
-using Lycoris.Blog.Application.Cached.LoginFailedRecord.Models;
 using Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Models;
 using Lycoris.Blog.Application.SignalR.Models;
 using Lycoris.Blog.Application.SignalR.Shared.Models;
@@ -64,8 +62,6 @@ namespace Lycoris.Blog.Application
             CreateMap<SiteNavigation, SiteNavigationQueryDataDto>();
 
             CreateMap<User, WebOwnerDto>();
-
-            CreateMap<LoginFailedRecordDto, LoginFailedRecordCacheModel>();
 
             CreateMap<SignalRConnection, SignalRConnectionModel>();
 

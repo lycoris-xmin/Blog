@@ -37,7 +37,7 @@
         /// <summary>
         /// 用户登录记录
         /// </summary>
-        UserLoginRecord = 5,
+        LoginRecord = 5,
         /// <summary>
         /// 帐号登录失败记录
         /// </summary>

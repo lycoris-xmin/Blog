@@ -42,6 +42,12 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
         public DateTime LoginTime { get; set; }
 
         /// <summary>
+        /// 登录状态
+        /// </summary>
+        [TableColumn(DefaultValue = true)]
+        public bool Success { get; set; }
+
+        /// <summary>
         /// 登录备注
         /// </summary>
         [TableColumn(StringLength = 255, Required = false)]

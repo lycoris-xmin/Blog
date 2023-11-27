@@ -7,7 +7,7 @@ using Lycoris.Blog.Model.Configurations;
 using Lycoris.Blog.Model.Exceptions;
 using Lycoris.Common.Extensions;
 using Microsoft.EntityFrameworkCore;
-using Minio;
+using Minio.DataModel.Args;
 using Minio.Exceptions;
 
 namespace Lycoris.Blog.Core.Minio.Impl
@@ -168,12 +168,12 @@ namespace Lycoris.Blog.Core.Minio.Impl
         /// <returns></returns>
         private async Task<MinioConfiguration> GetMinioConfigurationAsync()
         {
-            var data = await _congiguration.GetAll().Where(x => x.Id == AppConfig.StaticFile).SingleOrDefaultAsync();
+            var data = await _congiguration.GetAll().Where(x => x.Id == AppConfig.Upload).SingleOrDefaultAsync();
 
             if (data == null || data.Value.IsNullOrEmpty())
-                throw new ArgumentNullException($"can not find setting with '{AppConfig.StaticFile}'");
+                throw new ArgumentNullException($"can not find setting with '{AppConfig.Upload}'");
 
-            var config = data.Value!.ToObject<StaticFileConfiguration>();
+            var config = data.Value!.ToObject<UploadConfiguration>();
 
             if (config == null || config.UploadChannel != FileUploadChannelEnum.Minio || config.Minio.MinioEndpoint.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(config));

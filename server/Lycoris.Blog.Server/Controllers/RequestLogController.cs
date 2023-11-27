@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Lycoris.Blog.Server.Controllers
 {
     /// <summary>
-    /// 
+    /// 请求日志
     /// </summary>
     [Route($"{HostConstant.RoutePrefix}/RequestLog"), AppAuthentication]
     public class RequestLogController : BaseController

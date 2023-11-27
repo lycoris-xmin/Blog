@@ -17,7 +17,7 @@ using System.Net;
 namespace Lycoris.Blog.Server.Controllers
 {
     /// <summary>
-    /// 
+    /// 博客文章
     /// </summary>
     [Route($"{HostConstant.RoutePrefix}/Post")]
     public class PostController : BaseController

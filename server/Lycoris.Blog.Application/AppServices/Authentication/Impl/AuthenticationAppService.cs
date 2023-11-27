@@ -72,7 +72,10 @@ namespace Lycoris.Blog.Application.AppServices.Authentication.Impl
             var data = await _user.GetAsync(x => x.Email == email) ?? throw new FriendlyException("帐号或密码错误", $"not find user with email:{email}");
 
             if (data.Password != SqlPasswrodConverter.Encrypt(password))
+            {
+                _scheduleQueueCache.Value.Enqueue(ScheduleTypeEnum.LoginRecord, new LoginRecordQueueModel(data.Id, CurrentRequest, false, "密码核验失败"));
                 throw new FriendlyException("帐号或密码错误", $"email:{email} password verification failed");
+            }
             else if (data.Status == UserStatusEnum.Defalut)
                 throw new FriendlyException("帐号还未通过审核", $"email:{email} has not been approved");
             else if (data.Status == UserStatusEnum.Black)
@@ -123,6 +126,9 @@ namespace Lycoris.Blog.Application.AppServices.Authentication.Impl
 
             // 设置登录令牌缓存
             _cache.Value.SetLoginState(dto.Token, dto.ToMap<LoginUserCacheModel>());
+
+            // 登录记录
+            _scheduleQueueCache.Value.Enqueue(ScheduleTypeEnum.LoginRecord, new LoginRecordQueueModel(input.Id!.Value, CurrentRequest));
 
             return dto;
         }
@@ -224,25 +230,34 @@ namespace Lycoris.Blog.Application.AppServices.Authentication.Impl
         /// <exception cref="HttpStatusException"></exception>
         public async Task<LoginDto> DashboardSSOLoginAsync()
         {
-            var user = await _user.GetAsync(CurrentUser!.Id) ?? throw new HttpStatusException(HttpStatusCode.Unauthorized, "");
+            var user = await _user.GetAsync(CurrentUser!.Id) ?? throw new HttpStatusException(HttpStatusCode.Unauthorized, $"can not find user by id：{CurrentUser!.Id}");
+
+            LoginDto? dto = null;
 
             var data = await _loginToken.GetAsync(x => x.UserId == user!.Id && x.IsManagement == true);
+
             if (data == null || data.RefreshTokenExpireTime <= DateTime.Now)
-                return await LoginAsync(user.ToMap<LoginValidateDto>(), data?.Remember ?? true, true);
-
-            if (data.TokenExpireTime <= DateTime.Now)
-                return await RefreshTokenAsync(data.RefreshToken, true);
-
-            return new LoginDto()
+                dto = await LoginAsync(user.ToMap<LoginValidateDto>(), data?.Remember ?? true, true);
+            else if (data.TokenExpireTime <= DateTime.Now)
+                dto = await RefreshTokenAsync(data.RefreshToken, true);
+            else
             {
-                Id = user.Id,
-                NickName = user.NickName,
-                Avatar = user.Avatar,
-                IsAdmin = user.IsAdmin,
-                Token = data.Token,
-                TokenExpireTime = data.TokenExpireTime,
-                RefreshToken = data.RefreshToken
-            };
+                dto = new LoginDto()
+                {
+                    Id = user.Id,
+                    NickName = user.NickName,
+                    Avatar = user.Avatar,
+                    IsAdmin = user.IsAdmin,
+                    Token = data!.Token,
+                    TokenExpireTime = data.TokenExpireTime,
+                    RefreshToken = data.RefreshToken
+                };
+            }
+
+            // 登录记录
+            _scheduleQueueCache.Value.Enqueue(ScheduleTypeEnum.LoginRecord, new LoginRecordQueueModel(CurrentUser.Id, CurrentRequest, "SSO登录"));
+
+            return dto;
         }
 
         /// <summary>

@@ -23,21 +23,24 @@ namespace Lycoris.Blog.Server.Application
             {
                 operation.Security = new List<OpenApiSecurityRequirement>()
                 {
-                        new OpenApiSecurityRequirement
+                    new OpenApiSecurityRequirement
+                    {
                         {
+                            new OpenApiSecurityScheme
                             {
-                                new OpenApiSecurityScheme
+                                Reference = new OpenApiReference
                                 {
-                                    Reference = new OpenApiReference
-                                    {
-                                        Type = ReferenceType.SecurityScheme,
-                                        Id = "ApiKey"
-                                    }
-                                },
-                                new List<string>()
-                            }
+                                    Type = ReferenceType.SecurityScheme,
+                                    Id = "ApiKey"
+                                }
+                            },
+                            new List<string>()
                         }
+                    }
                 };
+
+                operation.Responses.Add("401", new OpenApiResponse { Description = "Unauthorized" });
+                operation.Responses.Add("403", new OpenApiResponse { Description = "Forbidden" });
             }
             else
             {

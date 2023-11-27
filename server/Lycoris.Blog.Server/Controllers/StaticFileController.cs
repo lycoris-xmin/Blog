@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Lycoris.Blog.Server.Controllers
 {
     /// <summary>
-    /// 
+    /// 文件管理
     /// </summary>
     [Route($"{HostConstant.RoutePrefix}/StaticFile")]
     [AppAuthentication]

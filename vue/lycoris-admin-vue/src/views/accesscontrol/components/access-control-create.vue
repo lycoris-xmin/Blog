@@ -17,7 +17,7 @@
 
 <script setup>
 import { reactive } from 'vue';
-import { createAccessControl } from '../../../api/accesscontrol';
+import { createAccessControl } from '../../../api/accessControl';
 import { ipRegex } from '../../../utils/regex';
 import toast from '../../../utils/toast';
 

@@ -275,7 +275,7 @@ namespace Lycoris.Blog.Server.Controllers
 
         #region ============ 后台 ============
         /// <summary>
-        /// 
+        /// 前台跳转后台登录
         /// </summary>
         /// <returns></returns>
         [HttpPost("SSO/Login")]

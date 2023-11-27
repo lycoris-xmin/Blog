@@ -2,19 +2,19 @@ import request from '../utils/request';
 
 const controller = '/configuration';
 
-export const getWebSettings = () => {
+export const getWebSetting = () => {
   return request.get(`${controller}/web`);
 };
 
-export const saveWebSettings = ({ webName, webPath, adminPath, logo, logoDisplay, favicon, icp, buildTime, avatar, description }) => {
+export const saveWebSetting = ({ webName, webPath, adminPath, logo, logoDisplay, favicon, icp, buildTime, avatar, description }) => {
   return request.post(`${controller}/web`, { webName, webPath, logo, logoDisplay, adminPath, favicon, icp, description, buildTime, avatar }, true);
 };
 
-export const getPostSettings = () => {
+export const getPostSetting = () => {
   return request.get(`${controller}/post`);
 };
 
-export const savePostSettings = ({ autoSave, second, images }) => {
+export const savePostSetting = ({ autoSave, second, images }) => {
   return request.post(`${controller}/post`, {
     autoSave,
     second,
@@ -22,11 +22,11 @@ export const savePostSettings = ({ autoSave, second, images }) => {
   });
 };
 
-export const getEmailSettings = () => {
+export const getEmailSetting = () => {
   return request.get(`${controller}/email`);
 };
 
-export const saveEmailSettings = ({ emailAddress, emailUser, stmpServer, stmpPort, emailPassword, emailSignature, useSSL }) => {
+export const saveEmailSetting = ({ emailAddress, emailUser, stmpServer, stmpPort, emailPassword, emailSignature, useSSL }) => {
   return request.post(`${controller}/email`, { emailAddress, emailUser, stmpServer, stmpPort, emailPassword, emailSignature, useSSL });
 };
 
@@ -34,31 +34,31 @@ export const sendTestEmail = ({ emailAddress, emailUser, stmpServer, stmpPort, e
   return request.post(`${controller}/email/test`, { emailAddress, emailUser, stmpServer, stmpPort, emailPassword, emailSignature, useSSL, testEmail });
 };
 
-export const getStaticFileSettings = () => {
-  return request.get(`${controller}/staticFile`);
+export const getUploadSetting = () => {
+  return request.get(`${controller}/upload`);
 };
 
-export const saveStaticFileSettings = data => {
-  return request.post(`${controller}/staticFile`, data);
+export const saveUploadSetting = data => {
+  return request.post(`${controller}/upload`, data);
 };
 
 export const getUploadChannelEnum = () => {
   return request.get(`${controller}/fileUpload/channel`);
 };
 
-export const getSeoSettings = () => {
+export const getSeoSetting = () => {
   return request.get(`${controller}/seo`);
 };
 
-export const saveSeoSettings = data => {
+export const saveSeoSetting = data => {
   return request.post(`${controller}/seo`, data);
 };
 
-export const getSystemSettings = () => {
+export const getSystemSetting = () => {
   return request.get(`${controller}/systemsettings`);
 };
 
-export const saveShowdocSettings = host => {
+export const saveShowdocSetting = host => {
   return request.post(`${controller}/systemsettings/showdoc`, {
     host
   });

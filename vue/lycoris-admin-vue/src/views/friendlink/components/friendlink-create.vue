@@ -26,7 +26,7 @@
 <script setup>
 import { reactive, ref } from 'vue';
 import { createFriendLink } from '../../../api/friend-link.js';
-import { urlRegex } from '../../../utils/regex';
+import { urlValidator } from '../../../utils/formValidator';
 import toast from '../../../utils/toast';
 
 const formRef = ref();
@@ -53,7 +53,7 @@ const model = reactive({
         trigger: 'blur'
       },
       {
-        validator: checkUrl,
+        validator: urlValidator,
         trigger: 'blur'
       }
     ],
@@ -64,7 +64,7 @@ const model = reactive({
         trigger: 'blur'
       },
       {
-        validator: checkUrl,
+        validator: urlValidator,
         trigger: 'blur'
       }
     ]
@@ -98,14 +98,6 @@ const submit = async () => {
     model.btnLoading = false;
   }
 };
-
-function checkUrl(rule, value, callback) {
-  if (!urlRegex(value)) {
-    callback(new Error('请输入正确的链接地址'));
-  } else {
-    callback();
-  }
-}
 
 defineExpose({
   show,

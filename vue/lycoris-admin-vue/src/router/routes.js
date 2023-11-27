@@ -44,9 +44,9 @@ const menusRoutes = [
         }
       },
       {
-        path: `${dashboardUrlPrefix}/blog/comment`,
+        path: `${dashboardUrlPrefix}/blog/postComment`,
         name: 'comment',
-        component: () => import('../views/comment/index.vue'),
+        component: () => import('../views/postComment/index.vue'),
         meta: {
           title: '文章评论',
           keepAlive: true,
@@ -63,7 +63,7 @@ const menusRoutes = [
       {
         path: `${dashboardUrlPrefix}/message`,
         name: 'message',
-        component: () => import('../views/leavemessage/index.vue'),
+        component: () => import('../views/message/index.vue'),
         meta: {
           title: '留言审核',
           keepAlive: true,
@@ -73,7 +73,7 @@ const menusRoutes = [
       {
         path: `${dashboardUrlPrefix}/friendlink`,
         name: 'friendlink',
-        component: () => import('../views/friendlink/index.vue'),
+        component: () => import('../views/friendLink/index.vue'),
         meta: {
           title: '友链审核',
           keepAlive: true,
@@ -110,7 +110,7 @@ const menusRoutes = [
       {
         path: `${dashboardUrlPrefix}/file`,
         name: 'filemanage',
-        component: () => import('../views/filemanage/index.vue'),
+        component: () => import('../views/fileManage/index.vue'),
         meta: {
           title: '附件管理',
           keepAlive: false,
@@ -127,7 +127,7 @@ const menusRoutes = [
       {
         path: `${dashboardUrlPrefix}/log/request`,
         name: 'statistics-request',
-        component: () => import('../views/request-log/index.vue'),
+        component: () => import('../views/requestLog/index.vue'),
         meta: {
           title: '请求日志',
           keepAlive: true,
@@ -137,7 +137,7 @@ const menusRoutes = [
       {
         path: `${dashboardUrlPrefix}/log/browse`,
         name: 'statistics-browse',
-        component: () => import('../views/browse-log/index.vue'),
+        component: () => import('../views/browseLog/index.vue'),
         meta: {
           title: '浏览日志',
           keepAlive: true,
@@ -147,7 +147,7 @@ const menusRoutes = [
       {
         path: `${dashboardUrlPrefix}/referer/statistics`,
         name: 'statistics-referer',
-        component: () => import('../views/referer-statistics/index.vue'),
+        component: () => import('../views/refererStatistics/index.vue'),
         meta: {
           title: '来源统计',
           keepAlive: true,
@@ -165,7 +165,7 @@ const menusRoutes = [
         isRoute: true,
         path: `${dashboardUrlPrefix}/about/web`,
         name: 'about-web',
-        component: () => import('../views/about-web/index.vue'),
+        component: () => import('../views/aboutWeb/index.vue'),
         meta: {
           title: '关于本站',
           keepAlive: true,
@@ -177,7 +177,7 @@ const menusRoutes = [
         isRoute: true,
         path: `${dashboardUrlPrefix}/about/me`,
         name: 'about-me',
-        component: () => import('../views/about-me/index.vue'),
+        component: () => import('../views/aboutMe/index.vue'),
         meta: {
           title: '关于我',
           keepAlive: true,
@@ -206,7 +206,7 @@ const menusRoutes = [
         isRoute: true,
         path: `${dashboardUrlPrefix}/access/control`,
         name: 'accesscontrol',
-        component: () => import('../views/accesscontrol/index.vue'),
+        component: () => import('../views/accessControl/index.vue'),
         meta: {
           title: '访问管控',
           keepAlive: true,

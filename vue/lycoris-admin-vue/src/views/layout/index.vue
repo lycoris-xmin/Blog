@@ -44,7 +44,7 @@ import { menus } from '../../router';
 import SignalRHelper from '../../utils/signalR';
 import { refreshToken } from '../../api/authentication';
 import { getUserBrief } from '../../api/user';
-import { getWebSettings } from '../../api/configuration';
+import { getWebSetting } from '../../api/configuration';
 import { stores } from '../../stores';
 import { debounce } from '../../utils/tool';
 
@@ -132,7 +132,7 @@ onUnmounted(async () => {
 });
 
 const getWebPath = async () => {
-  let res = await getWebSettings();
+  let res = await getWebSetting();
   if (res && res.resCode == 0) {
     model.webPath = res.data.webPath;
   }

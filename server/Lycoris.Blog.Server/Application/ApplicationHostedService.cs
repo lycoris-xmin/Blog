@@ -1,4 +1,6 @@
-﻿using Lycoris.Blog.Common;
+﻿using Lycoris.Blog.Application.AppServices.FreezeUsers;
+using Lycoris.Blog.Application.Cached.Authentication;
+using Lycoris.Blog.Common;
 using Lycoris.Blog.EntityFrameworkCore.Contexts;
 using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
@@ -59,8 +61,13 @@ namespace Lycoris.Blog.Server.Application
             // 
             await ApplicationContextInitAsync(scope.ServiceProvider);
 
+            //
+            await FreeUserInitAsync(scope.ServiceProvider);
+
+            // 脱敏工具初始化
             await SensitiveWordStoreInitAsync();
 
+            // 启动调度任务
             await _scheduler.StartScheduleAsync();
             await _scheduler.ManualRunNonStandbyJobsAsync();
         }
@@ -140,6 +147,22 @@ namespace Lycoris.Blog.Server.Application
             var repo = provider.GetRequiredService<IRepository<AccessControl, int>>();
             var ipList = await repo.GetAll().Select(x => x.Ip).ToListAsync();
             _applicationContext.AccessControl.AddRange(ipList.Select(x => IPAddressHelper.UInt32ToIpv4(x)).ToList());
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="provider"></param>
+        /// <returns></returns>
+        private static async Task FreeUserInitAsync(IServiceProvider provider)
+        {
+            var service = provider.GetRequiredService<IFreezeUserAppService>();
+            var freeUsers = await service.GetFreeUserListAsync();
+            if (freeUsers.HasValue())
+            {
+                var cache = provider.GetRequiredService<IAuthenticationCacheService>();
+                freeUsers.ForEach(x => cache.SetFreezeUser(x.Id, x.FreeEndTime));
+            }
         }
 
         /// <summary>

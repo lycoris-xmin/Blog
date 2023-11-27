@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Lycoris.Blog.Server.Controllers
 {
     /// <summary>
-    /// 
+    /// 即时聊天
     /// </summary>
     [Route($"{HostConstant.RoutePrefix}/Chat"), WebAuthentication(IsRequired = true)]
     public class ChatController : BaseController

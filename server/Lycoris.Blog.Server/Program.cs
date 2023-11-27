@@ -24,6 +24,7 @@ using Serilog;
 using Serilog.Events;
 using System.IO.Compression;
 using System.Reflection;
+using Unchase.Swashbuckle.AspNetCore.Extensions.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -178,6 +179,7 @@ builder.Services.AddResponseCompression(options =>
 if (AppSettings.IsDebugger)
 {
     builder.Services.AddEndpointsApiExplorer();
+
     builder.Services.AddSwaggerGen(opt =>
     {
         opt.OperationFilter<SwaggerOperationFilter>();
@@ -196,9 +198,18 @@ if (AppSettings.IsDebugger)
 
         // 注释文档
         var source = Assembly.GetEntryAssembly()?.GetName().Name?.Replace(".Server", "");
-        opt.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{source}.Server.xml"));
+        opt.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{source}.Server.xml"), true);
         opt.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{source}.Model.xml"));
+
+        opt.AddEnumsWithValuesFixFilters(opt =>
+        {
+            opt.IncludeDescriptions = true;
+            opt.IncludeXEnumRemarks = true;
+            opt.DescriptionSource = DescriptionSources.DescriptionAttributesThenXmlComments;
+        });
     });
+
+    builder.Services.AddSwaggerGenNewtonsoftSupport();
 }
 
 // 添加程序启动任务

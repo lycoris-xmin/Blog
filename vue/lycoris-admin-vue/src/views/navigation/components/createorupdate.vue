@@ -25,8 +25,8 @@
 <script setup>
 import { reactive, ref } from 'vue';
 import { createSiteNavigation, updateSiteNavigation } from '../../../api/navigation';
+import { urlValidator } from '../../../utils/formValidator';
 import toast from '../../../utils/toast';
-import { urlRegex } from '../../../utils/regex';
 
 const formRef = ref();
 
@@ -53,14 +53,7 @@ const model = reactive({
         trigger: 'blur'
       },
       {
-        validator: (rule, value, callback) => {
-          //
-          if (urlRegex(value)) {
-            return callback();
-          }
-
-          callback(new Error('请填写正确的网站地址'));
-        },
+        validator: urlValidator,
         trigger: 'blur'
       }
     ],

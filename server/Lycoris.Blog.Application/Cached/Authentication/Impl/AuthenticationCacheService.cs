@@ -114,5 +114,38 @@ namespace Lycoris.Blog.Application.Cached.Authentication.Impl
         /// <returns></returns>
         private static string GetTokenKey(string token) => $"Authentication:{token}";
         #endregion
+
+        #region MyRegion
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public bool GetFreezeUser(long id)
+        {
+            var cache = _memoryCache.Value.GetMemory<DateTime>(GetFreezeUserCodeKey(id));
+            return cache != DateTime.MinValue && cache > DateTime.Now;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="freeTime"></param>
+        public void SetFreezeUser(long id, DateTime freeTime)
+        {
+            if (freeTime <= DateTime.Now)
+                return;
+
+            _memoryCache.Value.CreateMemory(GetFreezeUserCodeKey(id), freeTime);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        private static string GetFreezeUserCodeKey(long id) => $"Login:FreezeUser:{id}";
+        #endregion
     }
 }

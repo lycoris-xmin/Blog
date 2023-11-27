@@ -4,11 +4,12 @@ using Lycoris.Blog.Application.AppServices.Authentication.Dtos;
 using Lycoris.Blog.Application.AppServices.BrowseLogs.Dtos;
 using Lycoris.Blog.Application.AppServices.Categorys.Dtos;
 using Lycoris.Blog.Application.AppServices.Chat.Dtos;
-using Lycoris.Blog.Application.AppServices.Comment.Dtos;
 using Lycoris.Blog.Application.AppServices.Dashboard.Dtos;
 using Lycoris.Blog.Application.AppServices.FriendLinks.Dtos;
 using Lycoris.Blog.Application.AppServices.Home.Dtos;
-using Lycoris.Blog.Application.AppServices.LeaveMessages.Dtos;
+using Lycoris.Blog.Application.AppServices.LoginRecords.Dtos;
+using Lycoris.Blog.Application.AppServices.Message.Dtos;
+using Lycoris.Blog.Application.AppServices.PostComments.Dtos;
 using Lycoris.Blog.Application.AppServices.Posts.Dtos;
 using Lycoris.Blog.Application.AppServices.RequestLogs.Dtos;
 using Lycoris.Blog.Application.AppServices.ServerStaticFiles.Dtos;
@@ -30,6 +31,7 @@ using Lycoris.Blog.Server.Models.Dashboard;
 using Lycoris.Blog.Server.Models.FriendLinks;
 using Lycoris.Blog.Server.Models.Home;
 using Lycoris.Blog.Server.Models.LeaveMessages;
+using Lycoris.Blog.Server.Models.LoginRecords;
 using Lycoris.Blog.Server.Models.Posts;
 using Lycoris.Blog.Server.Models.RequestLogs;
 using Lycoris.Blog.Server.Models.Shared;
@@ -106,11 +108,11 @@ namespace Lycoris.Blog.Server.Application
                 .ForMember(x => x.Tags, opt => opt.MapFrom(src => ChangeBlogTags(src.Tags, null)))
                 .ForMember(x => x.PublishTime, opt => opt.MapFrom(src => src.PublishTime.ToString("yyyy-MM-dd")));
 
-            CreateMap<SaveWebSettingsInput, WebSettingsConfiguration>();
+            CreateMap<SaveWebSettingInput, WebSettingsConfiguration>();
 
-            CreateMap<SaveEmailSettingsInput, EmailSettingsConfiguration>();
+            CreateMap<SaveEmailSettingInput, EmailSettingsConfiguration>();
 
-            CreateMap<SaveSeoSettingsInput, SeoSettingsConfiguration>();
+            CreateMap<SaveSeoSettingInput, SeoSettingsConfiguration>();
 
             CreateMap<BaiduSeoSettings, BaiduSeoConfiguration>();
 
@@ -118,7 +120,7 @@ namespace Lycoris.Blog.Server.Application
 
             CreateMap<HomeCategoryDataDto, CategoryHeaderDataViewModel>();
 
-            CreateMap<SaveStaticFileSettingsInput, StaticFileConfiguration>();
+            CreateMap<SaveUploadSettingInput, UploadConfiguration>();
 
             CreateMap<PostRecommendDataDto, PostRecommendDataViewModel>();
 
@@ -146,7 +148,7 @@ namespace Lycoris.Blog.Server.Application
             CreateMap<RequestLogInfoDto, RequestLogInfoViewModel>()
                 .ForMember(x => x.Headers, opt => opt.MapFrom(src => src.Headers.ToObject<Dictionary<string, string>>()));
 
-            CreateMap<SavePostSettingsInput, PostSettingConfiguration>()
+            CreateMap<SavePostSettingInput, PostSettingConfiguration>()
                 .ForMember(x => x.Second, opt => opt.MapFrom(src => src.Second ?? 0))
                 .ForMember(x => x.Images, opt => opt.MapFrom(src => src.Images ?? new List<string>()));
 
@@ -170,20 +172,20 @@ namespace Lycoris.Blog.Server.Application
 
             CreateMap<PostCommentQueryDataDto, PostCommentQueryDataViewModel>();
 
-            CreateMap<WebMessageDataDto, LeaveMessageDataViewModel>()
+            CreateMap<WebMessageDataDto, MessageDataViewModel>()
                 .ForMember(x => x.CreateTime, opt => opt.MapFrom(src => ChangeTimeToChinese(src.CreateTime)));
 
             CreateMap<LeaveMessageRepliedUserDto, LeaveMessageRepliedUserViewModel>();
 
-            CreateMap<WebMessageReplyDataDto, LeaveMessageReplyDataViewModel>()
+            CreateMap<WebMessageReplyDataDto, MessageReplyDataViewModel>()
                 .ForMember(x => x.CreateTime, opt => opt.MapFrom(src => ChangeTimeToChinese(src.CreateTime)));
 
-            CreateMap<LeaveMessageReplyListInput, WebMessageReplyListFilter>();
+            CreateMap<MessageReplyListInput, WebMessageReplyListFilter>();
 
-            CreateMap<LeaveMessageQueryListInput, MessageLsitFilter>()
+            CreateMap<MessageQueryListInput, MessageLsitFilter>()
                 .ForMember(x => x.Ip, opt => opt.MapFrom(src => IPAddressHelper.Ipv4ToUInt32(src.Ip ?? "")));
 
-            CreateMap<MessageDataDto, LeaveMessageQueryDataViewModel>()
+            CreateMap<MessageDataDto, MessageQueryDataViewModel>()
                 .ForMember(x => x.Ip, opt => opt.MapFrom(src => IPAddressHelper.UInt32ToIpv4(src.Ip)))
                 .ForMember(x => x.OriginalContent, opt => opt.MapFrom(src => src.OriginalContent.IsNullOrEmpty() ? null : src.OriginalContent));
 
@@ -281,6 +283,8 @@ namespace Lycoris.Blog.Server.Application
             CreateMap<WebCommonDto, WebCommonViewModel>();
 
             CreateMap<WebSettingDto, WebSettingViewModel>();
+
+            CreateMap<LoginRecordDataDto, LoginRecordDataViewModel>();
         }
 
         /// <summary>

@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Lycoris.Blog.Server.Controllers
 {
     /// <summary>
-    /// 
+    /// 网站收录
     /// </summary>
     [Route($"{HostConstant.RoutePrefix}/SiteNavigation")]
     public class SiteNavigationController : BaseController

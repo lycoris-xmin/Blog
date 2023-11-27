@@ -2,7 +2,7 @@
 using Lycoris.Blog.Model.Configurations;
 using Lycoris.Common.Extensions;
 using Microsoft.AspNetCore.Http;
-using Minio;
+using Minio.DataModel.Args;
 
 namespace Lycoris.Blog.Core.Minio.DataModel
 {

@@ -56,5 +56,19 @@ namespace Lycoris.Blog.Application.Cached.Authentication
         /// <param name="configure"></param>
         /// <returns></returns>
         void UpdateLoginState(string token, Action<LoginUserCacheModel> configure);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        bool GetFreezeUser(long id);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="freeTime"></param>
+        void SetFreezeUser(long id, DateTime freeTime);
     }
 }

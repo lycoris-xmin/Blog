@@ -15,7 +15,7 @@ using System.Net;
 namespace Lycoris.Blog.Server.Controllers
 {
     /// <summary>
-    /// 
+    /// 关于
     /// </summary>
     [Route($"{HostConstant.RoutePrefix}/WebSite"), AppAuthentication]
     public class WebSiteController : BaseController

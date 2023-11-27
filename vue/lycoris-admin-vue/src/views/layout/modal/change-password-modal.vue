@@ -1,14 +1,14 @@
 <template>
-  <el-dialog v-model="model.dialogVisible" title="修改密码" width="500px" :close-on-click-modal="false">
+  <el-dialog v-model="model.visible" title="修改密码" width="500px" :close-on-click-modal="false">
     <el-form label-position="left" label-width="80" ref="formRef" :model="form" :rules="fromRules" @submit.prevent>
       <el-form-item label="旧密码">
-        <el-input v-model="form.oldPassword" type="password" autocomplete="off" />
+        <el-input v-model="form.oldPassword" type="password" placeholder="未设置过登录密码，可不填" show-password autocomplete="off" />
       </el-form-item>
       <el-form-item label="密码" prop="password">
-        <el-input v-model="form.password" type="password" autocomplete="off" />
+        <el-input v-model="form.password" type="password" show-password autocomplete="off" />
       </el-form-item>
       <el-form-item label="密码确认" prop="confirmPassword">
-        <el-input v-model="form.confirmPassword" type="password" autocomplete="off" />
+        <el-input v-model="form.confirmPassword" type="password" show-password autocomplete="off" />
       </el-form-item>
     </el-form>
     <template #footer>
@@ -22,46 +22,14 @@
 
 <script setup>
 import { reactive, ref } from 'vue';
-import { passwordRegex } from '../../../utils/regex';
+import { changePassword } from '../../../api/authentication';
+import { passwordValidator, passwordConfirmValidator } from '../../../utils/formValidator';
 import toast from '../../../utils/toast';
 
 const formRef = ref();
 
-const passwordValidator = function (rule, value, callback) {
-  if (value == '') {
-    callback(new Error('密码不能为空'));
-    return;
-  }
-
-  if (!passwordRegex(value)) {
-    callback(new Error('密码必须包含大写字母，小写字母，数字，特殊符号 `@#$%^&*`~()-+=` 中任意3项密码'));
-    return;
-  }
-
-  callback();
-};
-
-const passwordConfirmValidator = function (rule, value, callback) {
-  if (value == '') {
-    callback(new Error('密码不能为空'));
-    return;
-  }
-
-  if (!passwordRegex(value)) {
-    callback(new Error('密码必须包含大写字母，小写字母，数字，特殊符号 `@#$%^&*`~()-+=` 中任意3项密码'));
-    return;
-  }
-
-  if (value != model.form.password) {
-    callback(new Error('两次输入的密码不一致'));
-    return;
-  }
-
-  callback();
-};
-
 const model = reactive({
-  dialogVisible: false
+  visible: false
 });
 
 const form = reactive({
@@ -79,23 +47,32 @@ const fromRules = reactive({
   ],
   confirmPassword: [
     {
-      validator: passwordConfirmValidator,
+      validator: (rule, value, callback) => passwordConfirmValidator(form.password, rule, value, callback),
       trigger: 'blur'
     }
   ]
 });
 
-const submit = function () {
-  toast.success('修改成功');
-  formRef.value.validate(valid => {
-    if (valid) {
-      console.log(form);
+const submit = async () => {
+  try {
+    let result = await formRef.value.validate();
+    if (result) {
+      //
+      let res = await changePassword({ ...form });
+      if (res && res.resCode == 0) {
+        toast.success('修改成功');
+        close();
+        return;
+      }
     }
-  });
+  } catch (error) {
+    //
+    console.log(1);
+  }
 };
 
 const close = function () {
-  model.dialogVisible = false;
+  model.visible = false;
   setTimeout(() => {
     formRef.value.resetFields();
   }, 500);
@@ -103,7 +80,7 @@ const close = function () {
 
 defineExpose({
   show: () => {
-    model.dialogVisible = true;
+    model.visible = true;
   },
   close
 });
@@ -111,7 +88,7 @@ defineExpose({
 
 <style lang="scss" scoped>
 :deep(.el-form-item) {
-  margin-bottom: 25px;
+  margin-bottom: 30px;
 }
 
 :deep(.el-form-item:last-child) {

@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Lycoris.Blog.Server.Controllers
 {
     /// <summary>
-    /// 
+    /// 仪表盘
     /// </summary>
     [Route($"{HostConstant.RoutePrefix}/Dashboard"), AppAuthentication]
     public class DashboardController : BaseController
@@ -27,7 +27,7 @@ namespace Lycoris.Blog.Server.Controllers
         }
 
         /// <summary>
-        /// 
+        /// 网站数据统计
         /// </summary>
         /// <returns></returns>
         [HttpGet("Web/Statistics")]
@@ -39,7 +39,7 @@ namespace Lycoris.Blog.Server.Controllers
         }
 
         /// <summary>
-        /// 
+        /// 网站近期互动数据统计列表
         /// </summary>
         /// <returns></returns>
         [HttpGet("NearlyDays/Web/Statistics")]

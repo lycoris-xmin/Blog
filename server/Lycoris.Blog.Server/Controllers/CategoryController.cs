@@ -17,7 +17,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Lycoris.Blog.Server.Controllers
 {
     /// <summary>
-    /// 
+    /// 文章分类
     /// </summary>
     [Route($"{HostConstant.RoutePrefix}/Category")]
     public class CategoryController : BaseController

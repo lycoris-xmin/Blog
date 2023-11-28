@@ -9,7 +9,10 @@
           <div class="card-title">网站概况</div>
           <div class="web-info">
             <div class="flex-center-center">
-              <span>{{ countChange(model.info.browse) }}</span>
+              <span v-if="!model.info.loading">{{ countChange(model.info.browse) }}</span>
+              <el-icon class="loading-icon" :size="20" v-else>
+                <component :is="'loading'"></component>
+              </el-icon>
               <el-tooltip effect="dark" content="浏览统计" placement="bottom">
                 <el-icon :size="24">
                   <component :is="'chrome-filled'"></component>
@@ -17,7 +20,10 @@
               </el-tooltip>
             </div>
             <div class="flex-center-center">
-              <span>{{ countChange(model.info.comment) }}</span>
+              <span v-if="!model.info.loading">{{ countChange(model.info.comment) }}</span>
+              <el-icon class="loading-icon" :size="20" v-else>
+                <component :is="'loading'"></component>
+              </el-icon>
               <el-tooltip effect="dark" content="评论统计" placement="bottom">
                 <el-icon :size="24">
                   <component :is="'comment'"></component>
@@ -25,7 +31,10 @@
               </el-tooltip>
             </div>
             <div class="flex-center-center">
-              <span>{{ countChange(model.info.message) }}</span>
+              <span v-if="!model.info.loading">{{ countChange(model.info.message) }}</span>
+              <el-icon class="loading-icon" :size="20" v-else>
+                <component :is="'loading'"></component>
+              </el-icon>
               <el-tooltip effect="dark" content="留言统计" placement="bottom">
                 <el-icon :size="24">
                   <component :is="'message'"></component>
@@ -70,9 +79,10 @@ const markdown = ref();
 
 const model = reactive({
   info: {
-    browse: 100000,
-    comment: 100,
-    message: 10000000
+    browse: 0,
+    comment: 0,
+    message: 0,
+    loading: false
   },
   runTime: {
     day: 0,
@@ -147,11 +157,16 @@ const aboutwebInit = async () => {
 
 const interactiveStatisticsInit = async () => {
   //
-  let res = await getInteractiveStatistics();
-  if (res && res.resCode == 0) {
-    model.info.browse = res.data.browse || 0;
-    model.info.comment = res.data.comment || 0;
-    model.info.message = res.data.message || 0;
+  model.info.loading = true;
+  try {
+    let res = await getInteractiveStatistics();
+    if (res && res.resCode == 0) {
+      model.info.browse = res.data.browse || 0;
+      model.info.comment = res.data.comment || 0;
+      model.info.message = res.data.message || 0;
+    }
+  } finally {
+    model.info.loading = false;
   }
 };
 
@@ -246,6 +261,20 @@ const echartsInit = data => {
 
             @media (max-width: 1440px) {
               max-width: 70px;
+            }
+          }
+
+          .loading-icon {
+            margin-bottom: 5px;
+            animation: el-icon-rotate 4s linear infinite;
+          }
+
+          @keyframes el-icon-rotate {
+            from {
+              transform: rotate(0deg);
+            }
+            to {
+              transform: rotate(360deg);
             }
           }
 

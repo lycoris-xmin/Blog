@@ -10,7 +10,7 @@ namespace Lycoris.Blog.Application.AppServices.LoginTokens
         /// <param name="userId"></param>
         /// <param name="expiredTime"></param>
         /// <returns></returns>
-        string GenereateToken(long userId, DateTime expiredTime, bool isAdmin = false);
+        string GenereateToken(long userId, DateTime expiredTime, bool isAdmin);
 
         /// <summary>
         /// 

@@ -22,7 +22,7 @@
       </div>
       <div class="flex-end-center">
         <span class="ip">{{ props.data.ipAddress == '未知' || props.data.ipAddress == '局域网' ? webSettings.privateIpAddress : props.data.ipAddress }}</span>
-        <el-tooltip effect="dark" :content="`他/她 使用 ${userAgentName(props.data.agentFlag)} 发布了这条评论`" placement="top">
+        <el-tooltip effect="dark" :content="`他/她 使用 ${userAgentName(props.data.agentFlag)} 发布了这条留言`" placement="top">
           <el-image class="agent" :src="userAgentIcon(props.data.agentFlag)" lazy></el-image>
         </el-tooltip>
       </div>
@@ -130,6 +130,14 @@ const props = defineProps({
   data: {
     type: Object,
     required: true
+  },
+  frequency: {
+    type: Number,
+    required: true
+  },
+  lastPublish: {
+    type: Number,
+    required: true
   }
 });
 
@@ -215,14 +223,14 @@ const clear = () => {
 };
 
 const replidHeightcalc = () => {
-  if (!model.showMoreList) {
-    nextTick(() => {
+  nextTick(() => {
+    if (!model.showMoreList) {
       model.defaultHeight = `${redundancyRef.value.scrollHeight}px`;
       model.replidHeight = model.defaultHeight;
-    });
-  } else {
-    model.replidHeight = `${redundancyRef.value.scrollHeight}px`;
-  }
+    } else {
+      model.replidHeight = `${redundancyRef.value.scrollHeight}px`;
+    }
+  });
 };
 
 const replyMessage = async () => {
@@ -236,10 +244,20 @@ const replyMessage = async () => {
       return;
     }
 
+    if (!stores.user.isAdmin) {
+      let now = new Date().getTime();
+      const lastTime = props.lastPublish + props.frequency;
+      if (lastTime > now) {
+        let time = Math.ceil((lastTime - now) / 1000);
+        toast.warn(`留言发布有时间限制,请${time.toFixed(0)}秒后再发布留言`);
+        return;
+      }
+    }
+
     try {
       let res = await publishReplyMessage(model.replyId || props.data.id, model.content);
       if (res && res.resCode == 0) {
-        if (model.showMoreList) {
+        if (reply.list.length > 0) {
           if (reply.list.length >= reply.pageSize) {
             reply.list.pop();
           }
@@ -251,11 +269,12 @@ const replyMessage = async () => {
 
         clear();
 
-        if (!model.showMoreList) {
-          model.showReply = false;
-        } else if (reply.pageIndex != 1) {
+        if (reply.pageIndex != 1) {
           reply.pageIndex = 1;
         }
+
+        console.log(model.showMoreList);
+        console.log(replidList);
       }
     } catch (error) {
       if (error && error.statusCode == 401) {

@@ -35,7 +35,7 @@
       </div>
     </div>
     <div class="action flex-end-center">
-      <span>{{ props.data.createTime }}</span>
+      <span>回复于 {{ props.data.createTime }}</span>
       <div class="ip">{{ props.data.ipAddress == '未知' || props.data.ipAddress == '局域网' ? webSettings.privateIpAddress : props.data.ipAddress }}</div>
       <div class="flex-center-center" style="gap: 8px" @click="showReply">
         <el-icon>
@@ -68,7 +68,7 @@ const showReply = () => {
 
 <style lang="scss" scoped>
 .redundancy-box {
-  padding: 4px 8px;
+  padding: 0 8px 15px 8px;
 
   .redundancy-body {
     display: flex;
@@ -133,6 +133,7 @@ const showReply = () => {
   }
 
   .action {
+    padding-top: 15px;
     font-size: 14px;
     color: var(--color-dark-light);
     gap: 15px;

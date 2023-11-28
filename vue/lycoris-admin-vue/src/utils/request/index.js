@@ -85,6 +85,7 @@ const post = async (url, data, fileUpload = false, config = void 0) => {
 };
 
 export default {
+  axios,
   get,
   post
 };

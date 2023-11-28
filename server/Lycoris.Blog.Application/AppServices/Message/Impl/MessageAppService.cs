@@ -1,13 +1,16 @@
 ﻿using Lycoris.Autofac.Extensions;
+using Lycoris.AutoMapper.Extensions;
 using Lycoris.Blog.Application.AppServices.Message.Dtos;
 using Lycoris.Blog.Application.Cached.ScheduleQueue;
 using Lycoris.Blog.Application.Cached.ScheduleQueue.Models;
 using Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Models;
 using Lycoris.Blog.Application.Shared.Dtos;
 using Lycoris.Blog.Application.Shared.Impl;
+using Lycoris.Blog.EntityFrameworkCore.Constants;
 using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
 using Lycoris.Blog.EntityFrameworkCore.Tables.Enums;
+using Lycoris.Blog.Model.Configurations;
 using Lycoris.Blog.Model.Exceptions;
 using Lycoris.Common.Extensions;
 using Lycoris.Common.Helper;
@@ -38,6 +41,16 @@ namespace Lycoris.Blog.Application.AppServices.Message.Impl
         }
 
         #region ======== 博客网站 ========
+        /// <summary>
+        /// 获取留言配置
+        /// </summary>
+        /// <returns></returns>
+        public async Task<MessageConfigurationDto> GetConfigurationAsync()
+        {
+            var config = await this.ApplicationConfiguration.Value.GetConfigurationAsync<MessageSettingConfiguration>(AppConfig.MessageSetting);
+            return config?.ToMap<MessageConfigurationDto>() ?? new MessageConfigurationDto();
+        }
+
         /// <summary>
         /// 获取一级留言列表
         /// </summary>
@@ -188,6 +201,8 @@ namespace Lycoris.Blog.Application.AppServices.Message.Impl
                 CreateTime = DateTime.Now
             };
 
+            await CheckMessageFrequencyAsync(data.CreateTime);
+
             if (data.Content != content)
                 data.OriginalContent = content;
 
@@ -222,10 +237,9 @@ namespace Lycoris.Blog.Application.AppServices.Message.Impl
         /// <exception cref="FriendlyException"></exception>
         public async Task<WebMessageReplyDataDto> PublishReplyMessageAsync(int messageId, string content)
         {
-            var message = await _message.GetAsync(messageId);
-            if (message == null)
-                throw new FriendlyException("");
-            else if (message.Status == LeaveMessageStatusEnum.Violation)
+            var message = await _message.GetAsync(messageId) ?? throw new FriendlyException("当前留言已删除，无法回复", $"can not find message by id:{messageId}");
+
+            if (message.Status == LeaveMessageStatusEnum.Violation)
                 throw new FriendlyException("该留言已违规，暂时无法回复");
             else if (message.Status == LeaveMessageStatusEnum.UserDelete)
                 throw new FriendlyException("该留言已被用户自己删除，无法回复");
@@ -243,6 +257,8 @@ namespace Lycoris.Blog.Application.AppServices.Message.Impl
                 CreateUserId = CurrentUser!.Id,
                 CreateTime = DateTime.Now
             };
+
+            await CheckMessageFrequencyAsync(data.CreateTime);
 
             if (data.Content != content)
                 data.OriginalContent = content;
@@ -437,6 +453,26 @@ namespace Lycoris.Blog.Application.AppServices.Message.Impl
             }
 
             return list;
+        }
+
+        /// <summary>
+        /// 限制留言发布频率
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="FriendlyException"></exception>
+        private async Task CheckMessageFrequencyAsync(DateTime createTime)
+        {
+            if (this.CurrentUser.IsAdmin)
+                return;
+
+            var config = await this.ApplicationConfiguration.Value.GetConfigurationAsync<MessageSettingConfiguration>(AppConfig.MessageSetting);
+            if (config!.FrequencySecond > 0)
+            {
+                var time = createTime.AddSeconds(-config!.FrequencySecond);
+                var lastPublish = await _message.GetAll().Where(x => x.CreateUserId == CurrentUser.Id).Where(x => x.CreateTime >= time).Select(x => x.CreateTime).FirstOrDefaultAsync();
+                if (lastPublish != DateTime.MinValue && lastPublish > time)
+                    throw new FriendlyException($"留言发布有时间限制,请{(int)Math.Ceiling((lastPublish - time).TotalSeconds)}秒后再发布留言");
+            }
         }
         #endregion
 

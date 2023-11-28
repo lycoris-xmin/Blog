@@ -1,6 +1,10 @@
 import request from '../utils/request';
 const controller = '/lycoris/message';
 
+export const getConfiguration = () => {
+  return request.get(`${controller}/configuration`);
+};
+
 export const getMessageList = ({ pageIndex, pageSize }) => {
   return request.get(`${controller}/list`, {
     pageIndex,

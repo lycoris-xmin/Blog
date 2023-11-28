@@ -2,7 +2,22 @@
   <page-layout title="友情链接" icon="connection">
     <div class="friend-container card">
       <div>
-        <p>友情链接申请的一些说明</p>
+        <el-descriptions title="本站信息（单击可直接复制至剪切板）" :column="1" border>
+          <el-descriptions-item label-class-name="el-des-label" label="网站名称">
+            <span class="des" @click="copy(stores.webSetting.webName)">{{ stores.webSetting.webName }}</span>
+          </el-descriptions-item>
+          <el-descriptions-item label-class-name="el-des-label" label="网站链接">
+            <span class="des" @click="copy(domain)">{{ domain }}</span>
+          </el-descriptions-item>
+          <el-descriptions-item label-class-name="el-des-label" label="头像链接">
+            <span class="des" @click="copy(stores.owner.avatar.startsWith('http') ? stores.owner.avatar : `${domain}${stores.owner.avatar}`)">
+              {{ stores.owner.avatar.startsWith('http') ? stores.owner.avatar : `${domain}${stores.owner.avatar}` }}
+            </span>
+          </el-descriptions-item>
+          <el-descriptions-item label-class-name="el-des-label" label="网站介绍">
+            <span class="des" @click="copy(stores.webSetting.description)">{{ stores.webSetting.description }}</span>
+          </el-descriptions-item>
+        </el-descriptions>
       </div>
       <el-divider content-position="right">
         <div class="flex-center-center">
@@ -46,9 +61,14 @@ import friendApply from './components/friend-apply-modal.vue';
 import { getFriendLinkList } from '@/api/friendLink';
 import { stores } from '@/stores';
 import toast from '@/utils/toast';
+import { debounce } from '@/utils/tool';
+import useClipboard from 'vue-clipboard3';
+
+const { toClipboard } = useClipboard();
 
 const friendApplyRef = ref();
 const loginModalRef = inject('$loginModal');
+const domain = inject('$domain');
 
 const model = reactive({
   list: []
@@ -88,6 +108,13 @@ const friendLinkApply = () => {
     friendApplyRef.value.show();
   }
 };
+
+const copy = debounce(async content => {
+  try {
+    await toClipboard(content);
+    toast.info(`复制成功，感谢您的添加`);
+  } catch (error) {}
+}, 200);
 </script>
 
 <style lang="scss" scoped>
@@ -95,6 +122,16 @@ const friendLinkApply = () => {
   width: 100%;
   padding: 20px;
   min-height: calc(100vh - 305px);
+
+  span.des {
+    color: var(--color-dark);
+    cursor: pointer;
+    transition: all 0.4s;
+
+    &:hover {
+      color: var(--color-purple);
+    }
+  }
 
   span.apply {
     font-size: 18px;
@@ -203,5 +240,12 @@ const friendLinkApply = () => {
     box-shadow: 0 0.625rem 1.875rem -0.9375rem rgba(0, 0, 0, 0.1);
     border: 1px solid var(--color-secondary);
   }
+}
+</style>
+
+<style lang="scss">
+.el-des-label {
+  text-align: center;
+  min-width: 100px;
 }
 </style>

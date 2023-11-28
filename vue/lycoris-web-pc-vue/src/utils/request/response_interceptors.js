@@ -100,11 +100,13 @@ const error = err => {
 
     // 刷新令牌返回错误的直接返回登录页
     if (err.config.url.includes('/authentication/refresh/token')) {
+      stores.authorize.setUserLogoutState();
       stores.user.setLogoutState();
       return reject({}, err.response.status);
     }
 
     if (err.response.status == 401 || err.response.status == 403) {
+      stores.authorize.setUserLogoutState();
       stores.user.setLogoutState();
       return reject({}, err.response.status);
     }

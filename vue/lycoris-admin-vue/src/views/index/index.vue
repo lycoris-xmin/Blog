@@ -3,7 +3,7 @@
     <statistics-card></statistics-card>
     <server-monitor ref="serverMonitorRef"></server-monitor>
     <web-charts ref="webChartsRef"></web-charts>
-    <div style="height: 300px"></div>
+    <world-map></world-map>
   </page-layout>
 </template>
 
@@ -13,6 +13,7 @@ import pageLayout from '../layout/page-layout.vue';
 import statisticsCard from './components/statistics-card.vue';
 import serverMonitor from './components/server-monitor.vue';
 import webCharts from './components/web-charts.vue';
+import worldMap from './components/world-map.vue';
 
 const serverMonitorRef = ref();
 const webChartsRef = ref();

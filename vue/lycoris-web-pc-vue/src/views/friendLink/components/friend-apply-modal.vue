@@ -1,23 +1,5 @@
 <template>
   <el-dialog class="friend-link-dialog" v-model="model.visible" title="友链申请" width="650px" :before-close="handleClose">
-    <el-descriptions title="本站信息（单击可直接复制至剪切板）" :column="1" border>
-      <el-descriptions-item label-class-name="el-des-label" label="网站名称">
-        <span class="des" @click="copy(stores.webSetting.webName)">{{ stores.webSetting.webName }}</span>
-      </el-descriptions-item>
-      <el-descriptions-item label-class-name="el-des-label" label="网站链接">
-        <span class="des" @click="copy(domain)">{{ domain }}</span>
-      </el-descriptions-item>
-      <el-descriptions-item label-class-name="el-des-label" label="头像链接">
-        <span class="des" @click="copy(stores.owner.avatar.startsWith('http') ? stores.owner.avatar : `${domain}${stores.owner.avatar}`)">
-          {{ stores.owner.avatar.startsWith('http') ? stores.owner.avatar : `${domain}${stores.owner.avatar}` }}
-        </span>
-      </el-descriptions-item>
-      <el-descriptions-item label-class-name="el-des-label" label="网站介绍">
-        <span class="des" @click="copy(stores.webSetting.description)">{{ stores.webSetting.description }}</span>
-      </el-descriptions-item>
-    </el-descriptions>
-    <el-divider />
-
     <p style="color: var(--color-danger); margin-bottom: 10px">由于展示需要，带*的字段为必填项，感谢各位大佬的支持</p>
 
     <el-form ref="formRef" label-position="top" :model="form" :rules="model.rules" status-icon>
@@ -44,17 +26,11 @@
 </template>
 
 <script setup>
-import { reactive, ref, inject } from 'vue';
-import useClipboard from 'vue-clipboard3';
+import { reactive, ref } from 'vue';
+
 import { friendLinkApply } from '@/api/friendLink';
 import { urlValidator } from '@/utils/formValidator';
 import toast from '@/utils/toast';
-import { stores } from '@/stores';
-import { debounce } from '@/utils/tool';
-
-const { toClipboard } = useClipboard();
-
-const domain = inject('$domain');
 
 const formRef = ref();
 
@@ -135,29 +111,10 @@ const submit = async () => {
   }
 };
 
-const copy = debounce(async content => {
-  try {
-    await toClipboard(content);
-    toast.info(`复制成功，感谢您的添加`);
-  } catch (error) {}
-}, 200);
-
 defineExpose({
   show
 });
 </script>
-
-<style lang="scss" scoped>
-span.des {
-  color: var(--color-dark);
-  cursor: pointer;
-  transition: all 0.4s;
-
-  &:hover {
-    color: var(--color-purple);
-  }
-}
-</style>
 
 <style lang="scss">
 .friend-link-dialog {
@@ -167,11 +124,6 @@ span.des {
 
     @media (max-width: 1920px) {
       max-height: 550px;
-    }
-
-    .el-des-label {
-      text-align: center;
-      min-width: 100px;
     }
   }
 }

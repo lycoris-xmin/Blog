@@ -1,10 +1,15 @@
 import request from '../utils/request';
+import { stores } from '../stores';
 
 const controller = '/lycoris/user';
 
 export const getUserBrief = (userId = undefined) => {
   if (userId == undefined || userId == '') {
-    return request.get(`${controller}/brief`);
+    if (stores.authorize.token) {
+      return request.get(`${controller}/brief`);
+    } else {
+      return new Promise.reject('');
+    }
   } else if (userId != '0') {
     return request.get(`${controller}/brief/${userId}`);
   }

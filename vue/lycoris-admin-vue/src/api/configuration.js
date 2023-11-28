@@ -22,6 +22,17 @@ export const savePostSetting = ({ autoSave, second, images }) => {
   });
 };
 
+export const getMessageSetting = () => {
+  return request.get(`${controller}/message`);
+};
+
+export const saveMessageSetting = ({ messageRemind, frequencySecond }) => {
+  return request.post(`${controller}/message`, {
+    messageRemind,
+    frequencySecond
+  });
+};
+
 export const getEmailSetting = () => {
   return request.get(`${controller}/email`);
 };

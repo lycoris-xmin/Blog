@@ -110,12 +110,12 @@ namespace Lycoris.Blog.Application.AppServices.Authentication.Impl
             }
 
             // 生成访问令牌
-            data.TokenExpireTime = DateTime.Now.AddSeconds(30);
-            data.Token = _loginTokenService.Value.GenereateToken(input.Id.Value, data.TokenExpireTime);
+            data.TokenExpireTime = DateTime.Now.AddMinutes(20);
+            data.Token = _loginTokenService.Value.GenereateToken(input.Id.Value, data.TokenExpireTime, dto.IsAdmin ?? false);
 
             // 生成刷新令牌
             data.RefreshTokenExpireTime = DateTime.Now.AddDays(remember ? 15 : 1);
-            data.RefreshToken = _loginTokenService.Value.GenereateToken(input.Id.Value, data.RefreshTokenExpireTime);
+            data.RefreshToken = _loginTokenService.Value.GenereateToken(input.Id.Value, data.RefreshTokenExpireTime, dto.IsAdmin ?? false);
 
             // 插入数据库
             await _loginToken.CreateOrUpdateAsync(data);
@@ -197,8 +197,8 @@ namespace Lycoris.Blog.Application.AppServices.Authentication.Impl
                 _cache.Value.SetLogoutState(data.Token);
 
             // 生成访问令牌
-            data.TokenExpireTime = DateTime.Now.AddMinutes(31);
-            data.Token = _loginTokenService.Value.GenereateToken(userId.Value, data.TokenExpireTime);
+            data.TokenExpireTime = DateTime.Now.AddMinutes(20);
+            data.Token = _loginTokenService.Value.GenereateToken(userId.Value, data.TokenExpireTime, cache!.IsAdmin ?? false);
 
             // 刷新刷新令牌的过期时间
             if (data.RefreshTokenExpireTime.AddHours(-12) < DateTime.Now)

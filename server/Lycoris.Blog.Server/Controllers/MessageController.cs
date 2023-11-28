@@ -5,7 +5,7 @@ using Lycoris.Blog.Model.Global.Input;
 using Lycoris.Blog.Model.Global.Output;
 using Lycoris.Blog.Server.Application.Constants;
 using Lycoris.Blog.Server.FilterAttributes;
-using Lycoris.Blog.Server.Models.LeaveMessages;
+using Lycoris.Blog.Server.Models.Message;
 using Lycoris.Blog.Server.Models.Shared;
 using Lycoris.Blog.Server.Shared;
 using Microsoft.AspNetCore.Mvc;
@@ -31,13 +31,26 @@ namespace Lycoris.Blog.Server.Controllers
 
         #region ======== 博客网站 ========
         /// <summary>
+        /// 留言设置
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("Configuration")]
+        [ResponseCache(Duration = 3600, Location = ResponseCacheLocation.Client)]
+        [Produces("application/json")]
+        public async Task<DataOutput<MessageConfigurationViewModel>> Configuration()
+        {
+            var dto = await _message.GetConfigurationAsync();
+            return Success(dto.ToMap<MessageConfigurationViewModel>());
+        }
+
+        /// <summary>
         /// 网站留言列表
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpGet("List")]
         [Produces("application/json")]
-        public async Task<PageOutput<MessageDataViewModel>> LeaveMessageList([FromQuery] PageInput input)
+        public async Task<PageOutput<MessageDataViewModel>> MessageList([FromQuery] PageInput input)
         {
             var dto = await _message.GetWebMessageListAsync(input.PageIndex!.Value, input.PageSize!.Value);
             return Success(dto.Count, dto.List.ToMapList<MessageDataViewModel>());
@@ -50,7 +63,7 @@ namespace Lycoris.Blog.Server.Controllers
         /// <returns></returns>
         [HttpGet("Reply/List")]
         [Produces("application/json")]
-        public async Task<ListOutput<MessageReplyDataViewModel>> LeaveMessageReplyList([FromQuery] MessageReplyListInput input)
+        public async Task<ListOutput<MessageReplyDataViewModel>> MessageReplyList([FromQuery] MessageReplyListInput input)
         {
             var dto = await _message.GetWebMessageReplyListAsync(input.ToMap<WebMessageReplyListFilter>());
             return Success(dto.ToMapList<MessageReplyDataViewModel>());
@@ -64,7 +77,7 @@ namespace Lycoris.Blog.Server.Controllers
         [HttpPost("Publish")]
         [WebAuthentication(IsRequired = true)]
         [Consumes("application/json"), Produces("application/json")]
-        public async Task<DataOutput<MessageDataViewModel>> PublishLeaveMessage([FromBody] PublishLeaveMessageInput input)
+        public async Task<DataOutput<MessageDataViewModel>> PublishMessage([FromBody] PublishLeaveMessageInput input)
         {
             var dto = await _message.PublishMessageAsync(input.Content!);
             return Success(dto.ToMap<MessageDataViewModel>());

@@ -4,7 +4,7 @@ talks
     <div class="message-container">
       <div class="card message-premise">
         <h2>留言提醒</h2>
-        <p v-for="(item, index) in webSettings.premise" :key="index">{{ index + 1 }}、{{ item }}</p>
+        <p v-for="(item, index) in model.premise" :key="index">{{ index + 1 }}、{{ item }}</p>
       </div>
       <div class="card publich-message">
         <el-input v-model="model.content" type="textarea" placeholder="发布你的留言" :autosize="{ minRows: 4, maxRows: 6 }" maxlength="100" show-word-limit></el-input>
@@ -16,7 +16,7 @@ talks
       <div class="message-ul">
         <transition-list tag="ul" :style="{ height: model.dataLoading ? '450px' : 'auto' }">
           <li v-for="item in model.list" :key="item.id" class="card">
-            <message-data :data="item" :key="item.id" @reply="replyMessage" @updateRedundancy="updateRedundancy"></message-data>
+            <message-data :data="item" :frequency="model.frequency" :last-publish="model.lastPublish" :key="item.id" @reply="replyMessage" @updateRedundancy="updateRedundancy"></message-data>
           </li>
 
           <li style="padding: 0" :class="{ card: model.count == 0 }">
@@ -36,12 +36,12 @@ talks
 </template>
 
 <script setup name="message">
-import { reactive, onMounted, inject, watch } from 'vue';
+import { reactive, onMounted, inject, watch, onBeforeMount } from 'vue';
 import pageLayout from '../layout/page-layout.vue';
 import transitionList from '@/components/transitions/list-transition.vue';
 import messageData from './components/message-data.vue';
 import loadingLine from '@/components/loadings/loading-line.vue';
-import { getMessageList, publishMessage } from '@/api/message';
+import { getConfiguration, getMessageList, publishMessage } from '@/api/message';
 import { stores } from '@/stores';
 import toast from '@/utils/toast';
 import { scrollPageTop } from '@/utils/tool';
@@ -50,16 +50,32 @@ import { webSettings } from '@/config.json';
 const loginModalRef = inject('$loginModal');
 
 const model = reactive({
+  premise: [],
+  frequency: 0,
   count: 0,
   list: [],
   pageIndex: 1,
   pageSize: 10,
   content: '',
   publishLoading: false,
-  dataLoading: false
+  dataLoading: false,
+  lastPublish: 0
 });
 
 const emit = defineEmits(['loading', 'browse']);
+
+onBeforeMount(async () => {
+  try {
+    let res = await getConfiguration();
+    if (res && res.resCode == 0) {
+      //
+      model.premise = res.data.messageRemind && res.data.messageRemind.length > 0 ? res.data.messageRemind : webSettings.premise;
+      model.frequency = typeof res.data.frequencySecond == 'number' ? res.data.frequencySecond * 1000 : 0;
+    }
+  } catch (error) {
+    model.premise = webSettings.premise;
+  }
+});
 
 onMounted(async () => {
   await getList();
@@ -88,6 +104,16 @@ const publish = async () => {
       return;
     }
 
+    let now = new Date().getTime();
+    if (!stores.user.isAdmin) {
+      const lastTime = model.lastPublish + model.frequency;
+      if (lastTime > now) {
+        let time = Math.ceil((lastTime - now) / 1000);
+        toast.warn(`留言发布有时间限制,请${time.toFixed(0)}秒后再发布留言`);
+        return;
+      }
+    }
+
     model.publishLoading = true;
 
     let res = await publishMessage(model.content);
@@ -103,6 +129,8 @@ const publish = async () => {
       model.list.unshift(res.data);
       model.count++;
       model.content = '';
+
+      model.lastPublish = now;
     }
   } catch (error) {
     if (error && error.statusCode == 401) {
@@ -130,6 +158,8 @@ const replyMessage = (id, redundancy, done) => {
       break;
     }
   }
+
+  model.lastPublish = new Date().getTime();
 
   done();
 };

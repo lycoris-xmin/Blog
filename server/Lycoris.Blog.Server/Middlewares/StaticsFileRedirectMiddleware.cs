@@ -51,7 +51,7 @@ namespace Lycoris.Blog.Server.Middlewares
             }
 
             var config = await GetConfigurationAsync();
-            if (config == null || config.UploadChannel == FileUploadChannelEnum.Local || config.LoadFileSrc == LoadFileSrcEnum.Local)
+            if (config == null || config.UploadChannel == FileUploadChannelEnum.Local)
             {
                 await _next.Invoke(context);
                 return;

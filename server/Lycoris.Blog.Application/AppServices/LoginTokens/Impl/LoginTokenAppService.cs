@@ -19,7 +19,7 @@ namespace Lycoris.Blog.Application.AppServices.LoginTokens.Impl
         /// <param name="isAdmin"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public string GenereateToken(long userId, DateTime expiredTime, bool isAdmin = false)
+        public string GenereateToken(long userId, DateTime expiredTime, bool isAdmin)
         {
             if (userId <= 0)
                 throw new ArgumentOutOfRangeException(nameof(userId));

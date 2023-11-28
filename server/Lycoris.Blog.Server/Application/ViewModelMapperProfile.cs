@@ -30,8 +30,8 @@ using Lycoris.Blog.Server.Models.Configurations;
 using Lycoris.Blog.Server.Models.Dashboard;
 using Lycoris.Blog.Server.Models.FriendLinks;
 using Lycoris.Blog.Server.Models.Home;
-using Lycoris.Blog.Server.Models.LeaveMessages;
 using Lycoris.Blog.Server.Models.LoginRecords;
+using Lycoris.Blog.Server.Models.Message;
 using Lycoris.Blog.Server.Models.Posts;
 using Lycoris.Blog.Server.Models.RequestLogs;
 using Lycoris.Blog.Server.Models.Shared;
@@ -285,6 +285,8 @@ namespace Lycoris.Blog.Server.Application
             CreateMap<WebSettingDto, WebSettingViewModel>();
 
             CreateMap<LoginRecordDataDto, LoginRecordDataViewModel>();
+
+            CreateMap<MessageConfigurationDto, MessageConfigurationViewModel>();
         }
 
         /// <summary>
@@ -457,27 +459,27 @@ namespace Lycoris.Blog.Server.Application
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="dateTime"></param>
+        /// <param name="time"></param>
         /// <returns></returns>
-        private static string ChangeTimeToChinese(DateTime dateTime)
+        private static string ChangeTimeToChinese(DateTime? time)
         {
-            var now = DateTime.Now;
-            if (dateTime.AddMinutes(5) >= now)
+            if (!time.HasValue)
+                return "好久之前";
+
+            var timespan = DateTime.Now - time!.Value;
+
+            if (timespan.TotalMinutes < 5)
                 return "刚刚";
-            else if (dateTime.AddHours(1) > now)
-                return $"{(int)Math.Ceiling((now - dateTime).TotalMinutes)}分钟之前";
-            else if (dateTime.ToString("yyyy-MM-dd") == now.ToString("yyyy-MM-dd"))
-                return dateTime.ToString("HH:mm:ss");
+            else if (timespan.TotalMinutes < 60)
+                return $"{(int)Math.Ceiling(timespan.TotalMinutes)}分钟前";
+            else if (timespan.TotalHours <= 2)
+                return $"{(int)Math.Ceiling(timespan.TotalHours)}小时前";
+            else if (time!.Value.Date == DateTime.Now.Date)
+                return $"{time:HH:mm:ss}";
+            else if (time!.Value.Year == DateTime.Now.Year)
+                return $"{time:MM-dd}";
             else
-            {
-                var days = (int)Math.Ceiling((now - dateTime).TotalDays);
-                if (days <= 7)
-                    return $"{days}天前";
-                else if (dateTime.Year == now.Year)
-                    return dateTime.ToString("MM-dd");
-                else
-                    return dateTime.ToString("yyyy-MM-dd");
-            }
+                return $"{time:yyyy-MM-dd}";
         }
 
         /// <summary>

@@ -16,7 +16,7 @@
     <layout-footer></layout-footer>
 
     <search-modal ref="searchModalRef"></search-modal>
-    <login-modal v-if="!stores.user.state" ref="loginModalRef" :owner="stores.owner" @refresh-user-brief="userBriefInit"></login-modal>
+    <login-modal v-if="!stores.user.state" ref="loginModalRef" @refresh-user-brief="userBriefInit"></login-modal>
     <!-- <chat-modal v-if="stores.user.state" ref="chatModalRef"></chat-modal> -->
     <transition-fade>
       <loading-line :loading="model.loading" v-if="model.loading" style="height: 100vh; width: 100vw; position: fixed"></loading-line>

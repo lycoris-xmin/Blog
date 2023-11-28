@@ -16,6 +16,14 @@ const getArgs = args => {
 
   title = title || '提示';
 
+  if (!config['close-on-click-modal']) {
+    config['close-on-click-modal'] = true;
+  }
+
+  if (!config['close-on-press-escape']) {
+    config['close-on-press-escape'] = true;
+  }
+
   return { message, title, config };
 };
 

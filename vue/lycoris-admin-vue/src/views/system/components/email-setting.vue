@@ -18,10 +18,10 @@
           </el-select>
         </el-form-item>
         <el-form-item label="发件箱地址">
-          <el-input v-model="model.emailAddress"></el-input>
+          <el-input v-model="model.emailAddress" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="发件箱授权码">
-          <el-input v-model="model.emailPassword" type="password" show-password></el-input>
+          <el-input v-model="model.emailPassword" type="password" show-password autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="邮件署名">
           <el-input v-model="model.emailSignature"></el-input>

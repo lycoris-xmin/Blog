@@ -127,14 +127,6 @@ const forgetForm = reactive({
   emailCaptchaTime: false
 });
 
-const props = defineProps({
-  owner: {
-    type: Object,
-    required: true,
-    default: void 0
-  }
-});
-
 const computedEmail = computed(() => {
   return model.focus.email || form.email.length;
 });
@@ -168,18 +160,18 @@ const emailCaptchaCode = async (e, actionType) => {
       emailCaptchaTime(e, actionType);
 
       if (actionType == 2) {
-        toast.success(`如果收不到邮箱验证码，请使用你注册的邮箱发送相关信息至博主邮箱：${props.owner.email}，核实完身份，将手动为您重置密码`);
+        toast.success(`如果收不到邮箱验证码，请使用你注册的邮箱发送相关信息至博主邮箱：${stores.owner.email}，核实完身份，将手动为您重置密码`);
       } else {
         const emailHost = getEmailHost(registerForm.email);
         if (emailHost) {
-          await swal.success(`如果收不到邮箱验证码，请使用你想注册的邮箱发送相关信息至博主邮箱：${props.owner.email}，并注明注册信息`, '发送成功');
+          await swal.success(`如果收不到邮箱验证码，请使用你想注册的邮箱发送相关信息至博主邮箱：${stores.owner.email}，并注明注册信息`, '发送成功');
           if (emailHost.includes('https://mail.qq.com')) {
             openQQMail();
           } else {
             window.open(emailHost);
           }
         } else {
-          toast.success(`如果收不到邮箱验证码，请使用你想注册的邮箱发送相关信息至博主邮箱：${props.owner.email}，并注明注册信息`);
+          toast.success(`如果收不到邮箱验证码，请使用你想注册的邮箱发送相关信息至博主邮箱：${stores.owner.email}，并注明注册信息`);
         }
       }
     } else if (res.resCode == -99 && res.data) {

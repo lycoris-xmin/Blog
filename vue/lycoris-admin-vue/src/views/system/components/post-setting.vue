@@ -230,13 +230,4 @@ const submit = async () => {
     }
   }
 }
-
-.submit {
-  margin-top: 20px;
-  text-align: left;
-
-  .el-button {
-    width: 120px;
-  }
-}
 </style>

@@ -1,5 +1,4 @@
-﻿using Lycoris.Blog.EntityFrameworkCore.Common.Attributes;
-using Lycoris.Blog.EntityFrameworkCore.Shared;
+﻿using Lycoris.Blog.EntityFrameworkCore.Shared;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 

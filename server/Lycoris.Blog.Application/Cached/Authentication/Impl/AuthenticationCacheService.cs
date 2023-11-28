@@ -2,6 +2,7 @@
 using Lycoris.Blog.Application.AppServices.Authentication.Dtos;
 using Lycoris.Blog.Application.Cached.Authentication.Models;
 using Lycoris.Blog.Common.Cache;
+using Lycoris.Common.Extensions;
 
 namespace Lycoris.Blog.Application.Cached.Authentication.Impl
 {
@@ -78,7 +79,14 @@ namespace Lycoris.Blog.Application.Cached.Authentication.Impl
         /// </summary>
         /// <param name="token"></param>
         /// <param name="input"></param>
-        public void SetLoginState(string token, LoginUserCacheModel input) => _memoryCache.Value.CreateMemory(GetTokenKey(token), input, input.TokenExpireTime);
+        public void SetLoginState(string token, LoginUserCacheModel input)
+        {
+            _memoryCache.Value.CreateMemory(GetTokenKey(token), input, input.TokenExpireTime);
+            Console.WriteLine("---------------------------------------------------------------------- SetLoginState ----------------------------------------------------------------------");
+            Console.WriteLine(token);
+            Console.WriteLine(input.ToJson());
+            Console.WriteLine("---------------------------------------------------------------------- SetLoginState ----------------------------------------------------------------------");
+        }
 
         /// <summary>
         /// 

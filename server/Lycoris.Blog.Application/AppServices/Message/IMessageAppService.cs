@@ -8,6 +8,12 @@ namespace Lycoris.Blog.Application.AppServices.Message
     {
         #region ======== 博客网站 ========
         /// <summary>
+        /// 获取留言配置
+        /// </summary>
+        /// <returns></returns>
+        Task<MessageConfigurationDto> GetConfigurationAsync();
+
+        /// <summary>
         /// 获取一级留言列表
         /// </summary>
         /// <param name="pageIndex"></param>

@@ -5,6 +5,7 @@ using Lycoris.Blog.Application.AppServices.Categorys.Dtos;
 using Lycoris.Blog.Application.AppServices.Chat.Dtos;
 using Lycoris.Blog.Application.AppServices.FriendLinks.Dtos;
 using Lycoris.Blog.Application.AppServices.Home.Dtos;
+using Lycoris.Blog.Application.AppServices.Message.Dtos;
 using Lycoris.Blog.Application.AppServices.Posts.Dtos;
 using Lycoris.Blog.Application.AppServices.RequestLogs.Dtos;
 using Lycoris.Blog.Application.AppServices.SiteNavigations.Dtos;
@@ -80,6 +81,8 @@ namespace Lycoris.Blog.Application
             CreateMap<User, UserDataDto>();
 
             CreateMap<WebSettingsConfiguration, WebCommonDto>();
+
+            CreateMap<MessageSettingConfiguration, MessageConfigurationDto>();
         }
 
         /// <summary>

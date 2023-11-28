@@ -54,8 +54,12 @@
             </div>
             <template #dropdown>
               <el-dropdown-menu class="user-options">
-                <a v-if="props.isAdmin && adminPath" :href="adminPath" target="_blank"><el-dropdown-item>管理后台</el-dropdown-item></a>
-                <el-dropdown-item><router-link :to="{ name: 'user' }">个人中心</router-link></el-dropdown-item>
+                <a v-if="stores.user.isAdmin && adminPath" :href="adminPath" target="_blank">
+                  <el-dropdown-item>管理后台</el-dropdown-item>
+                </a>
+                <el-dropdown-item>
+                  <router-link :to="{ name: 'user' }">个人中心</router-link>
+                </el-dropdown-item>
                 <!-- <el-dropdown-item @click="userMessage">
                   <span v-if="stores.chat.totalUnreadMessage == 0">消息中心</span>
                   <el-badge :value="stores.chat.totalUnreadMessage" v-else> 消息中心 </el-badge>
@@ -72,7 +76,7 @@
 </template>
 
 <script setup>
-import { inject, ref, watch } from 'vue';
+import { inject, onMounted, ref, watch } from 'vue';
 import { navMenus } from '@/router';
 import { getAdmin, logout } from '@/api/authentication';
 import { stores } from '@/stores';
@@ -89,21 +93,10 @@ const adminPath = ref('');
 
 const chatSignalR = inject('$chat-signalR');
 
-const props = defineProps({
-  isAdmin: {
-    type: Boolean,
-    default: false
-  },
-  messageBardge: {
-    type: Number,
-    default: 0
-  }
-});
-
 const emit = defineEmits(['login', 'search', 'userMessage']);
 
 watch(
-  () => props.isAdmin,
+  () => stores.user.isAdmin,
   async value => {
     if (value) {
       let res = await getAdmin();
@@ -113,6 +106,13 @@ watch(
     }
   }
 );
+
+onMounted(async () => {
+  let res = await getAdmin();
+  if (res && res.resCode == 0 && res.data) {
+    adminPath.value = `${res.data.path}?key=${encodeURIComponent(secret.encrypt(stores.authorize.token))}`;
+  }
+});
 
 const userLogin = () => {
   emit('login');
@@ -125,19 +125,23 @@ const searchPost = () => {
 const userLogout = async () => {
   let result = await swal.confirm('确定要退出登录吗?', '退出确认');
   if (result) {
-    try {
-      let res = await logout();
-      if (res && res.resCode == 0) {
+    let res = await logout();
+    if (res && res.resCode == 0) {
+      try {
         stores.authorize.setUserLogoutState();
         stores.user.setLogoutState();
-        toast.success('退出登录成功');
-        chatSignalR.stop();
-
-        if (route.name == 'user') {
-          router.push({ name: 'home' });
-        }
+      } catch (error) {
+        console.log(error);
+        debugger;
       }
-    } catch (error) {}
+
+      toast.success('退出登录成功');
+      chatSignalR.stop();
+
+      if (route.name == 'user') {
+        router.push({ name: 'home' });
+      }
+    }
   }
 };
 
@@ -146,17 +150,20 @@ const userLogout = async () => {
 // };
 
 const changeStaticSource = async () => {
-  let value = getStaticSource();
+  let value = getStaticSource(),
+    result = false;
 
   if (value == 'cdn') {
     setStaticSource('local');
-    await swal.success('CDN可能存在失效，部分文件可能无法加载，可切换至本地仓库', '切换至本地仓库');
+    result = await swal.success('CDN可能存在失效，部分文件可能无法加载，可切换至本地仓库', '切换至本地仓库');
   } else {
     setStaticSource('cdn');
-    await swal.success('本地仓库带宽较小，加载比较缓慢，可切换远端仓库提高加载速度', '切换至远端仓库');
+    result = await swal.success('本地仓库带宽较小，加载比较缓慢，可切换远端仓库提高加载速度', '切换至远端仓库');
   }
 
-  location.reload();
+  if (result) {
+    location.reload();
+  }
 };
 </script>
 

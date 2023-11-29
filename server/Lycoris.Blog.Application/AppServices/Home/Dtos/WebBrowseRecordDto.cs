@@ -4,7 +4,7 @@
     {
         public string ClientOrign { get; set; } = string.Empty;
 
-        public string Path { get; set; } = string.Empty;
+        public string Route { get; set; } = string.Empty;
 
         public string PageName { get; set; } = string.Empty;
 

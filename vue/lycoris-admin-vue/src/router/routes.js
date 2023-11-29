@@ -121,7 +121,7 @@ const menusRoutes = [
   },
   {
     isRoute: false,
-    title: '网站日志',
+    title: '网站统计',
     icon: 'pie-chart',
     routes: [
       {
@@ -129,7 +129,7 @@ const menusRoutes = [
         name: 'statistics-request',
         component: () => import('../views/requestLog/index.vue'),
         meta: {
-          title: '请求日志',
+          title: '请求统计',
           keepAlive: true,
           menu: true
         }
@@ -139,17 +139,17 @@ const menusRoutes = [
         name: 'statistics-browse',
         component: () => import('../views/browseLog/index.vue'),
         meta: {
-          title: '浏览日志',
+          title: '浏览统计',
           keepAlive: true,
           menu: true
         }
       },
       {
-        path: `${dashboardUrlPrefix}/referer/statistics`,
-        name: 'statistics-referer',
-        component: () => import('../views/refererStatistics/index.vue'),
+        path: `${dashboardUrlPrefix}/web/statistics`,
+        name: 'web-statistics',
+        component: () => import('../views/webStatistics/index.vue'),
         meta: {
-          title: '来源统计',
+          title: '网站统计',
           keepAlive: true,
           menu: true
         }

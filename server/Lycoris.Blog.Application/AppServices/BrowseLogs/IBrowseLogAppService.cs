@@ -19,20 +19,5 @@ namespace Lycoris.Blog.Application.AppServices.BrowseLogs
         /// <param name="ids"></param>
         /// <returns></returns>
         Task DeleteAsync(params long[] ids);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="pageIndex"></param>
-        /// <param name="pageSize"></param>
-        /// <returns></returns>
-        Task<PageResultDto<BrowseRefererDataDto>> GetRefererListAsync(int pageIndex, int pageSize);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="ids"></param>
-        /// <returns></returns>
-        Task DeleteRefererAsync(params long[] ids);
     }
 }

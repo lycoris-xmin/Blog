@@ -9,7 +9,7 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
     /// 网站浏览日志表
     /// </summary>
     [Table("Log_Browse")]
-    [TableIndex("Path")]
+    [TableIndex("Route")]
     [TableIndex("Ip")]
     [TableIndex("Referer")]
     [TableIndex(new[] { "CreateTime", "ClientOrign" })]
@@ -31,7 +31,7 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
         /// 访问页面地址
         /// </summary>
         [TableColumn(StringLength = 255)]
-        public string Path { get; set; } = "";
+        public string Route { get; set; } = "";
 
         /// <summary>
         /// 访问页面名称
@@ -83,12 +83,12 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
         /// 
         /// </summary>
         /// <returns></returns>
-        public string GenerateOrignBrowse() => GenerateOrignBrowse(this.Path, this.Referer, this.Ip);
+        public string GenerateOrignBrowse() => GenerateOrignBrowse(this.Route, this.Referer, this.Ip);
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        public static string GenerateOrignBrowse(string path, string? referer, uint ip) => SecretHelper.SHA1Encrypt($"{path}{referer ?? ""}{ip}");
+        public static string GenerateOrignBrowse(string route, string? referer, uint ip) => SecretHelper.SHA1Encrypt($"{route}{referer ?? ""}{ip}");
     }
 }

@@ -199,7 +199,7 @@ const loadList = async () => {
     model.beginTime = beginTime;
     model.endTime = endTime;
   } else {
-    if (model.beginTime == '' && model.endTime == '') {
+    if (model.beginTime == '' && model.endTime == '' && table.list.length > 0) {
       return;
     }
 

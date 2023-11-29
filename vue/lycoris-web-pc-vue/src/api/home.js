@@ -34,7 +34,7 @@ export const pageBrowse = (path, data) => {
   return request.post(
     `${controller}/web/browse/record`,
     {
-      path: path,
+      route: path,
       ...data,
       clientOrign: orignFlag
     },

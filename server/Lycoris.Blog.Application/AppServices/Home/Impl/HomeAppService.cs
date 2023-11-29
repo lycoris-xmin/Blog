@@ -94,7 +94,7 @@ namespace Lycoris.Blog.Application.AppServices.Home.Impl
             var data = new BrowseLog()
             {
                 ClientOrign = input.ClientOrign,
-                Path = (input.Path != "/" ? input.Path.TrimEnd('/') : input.Path).Trim(),
+                Route = (input.Route != "/" ? input.Route.TrimEnd('/') : input.Route).Trim(),
                 PageName = input.PageName,
                 UserAgent = CurrentRequest.UserAgent,
                 Referer = (input.Referer ?? "").TrimEnd('/').Trim(),
@@ -107,7 +107,7 @@ namespace Lycoris.Blog.Application.AppServices.Home.Impl
             var checkTime = data.CreateTime.AddMinutes(1);
             var hasRecord = await repository.GetAll()
                                             .Where(x => x.CreateTime >= checkTime && x.ClientOrign == input.ClientOrign)
-                                            .Where(x => x.Path == data.Path)
+                                            .Where(x => x.Route == data.Route)
                                             .Where(x => x.UserAgent == data.UserAgent)
                                             .Where(x => x.Ip == data.Ip)
                                             .AnyAsync();
@@ -115,7 +115,7 @@ namespace Lycoris.Blog.Application.AppServices.Home.Impl
             if (!hasRecord)
             {
                 await repository.CreateAsync(data);
-                _provider.GetRequiredService<IScheduleQueueCacheService>().Enqueue(ScheduleTypeEnum.BrowseLog, new BrowseLogQueueModel(data.Path, data.Referer, CurrentRequest.RequestIP));
+                _provider.GetRequiredService<IScheduleQueueCacheService>().Enqueue(ScheduleTypeEnum.BrowseLog, new BrowseLogQueueModel(data.Route, data.PageName, data.UserAgent, data.Referer, CurrentRequest.RequestIP));
             }
         }
 

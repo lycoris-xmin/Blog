@@ -8,7 +8,7 @@ namespace Lycoris.Blog.Application.AppServices.BrowseLogs.Dtos
 
         public DateTime? EndTime { get; set; }
 
-        public string? Path { get; set; }
+        public string? Route { get; set; }
 
         public uint? Ip { get; set; }
 

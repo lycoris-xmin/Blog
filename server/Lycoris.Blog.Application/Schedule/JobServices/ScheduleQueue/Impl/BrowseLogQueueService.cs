@@ -22,8 +22,9 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
         public IJobExecutionContext? JobContext { get; set; }
         public JobLogger? JobLogger { get; set; }
 
-        private readonly IRepository<BrowseReferer, int> _browseReferer;
-        private readonly IRepository<BrowseWordMap, int> _browseWordMap;
+        private readonly IRepository<BrowseWorldMap, int> _browseWordMap;
+        private readonly IRepository<BrowseStatistics, int> _browseStatistics;
+        private readonly IRepository<RefererStatistics, int> _refererStatistics;
         private readonly IScheduleQueueCacheService _scheduleQueue;
 
         /// <summary>
@@ -31,11 +32,17 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
         /// </summary>
         /// <param name="browseReferer"></param>
         /// <param name="browseWordMap"></param>
+        /// <param name="browseStatistics"></param>
+        /// <param name="refererStatistics"></param>
         /// <param name="scheduleQueue"></param>
-        public BrowseLogQueueService(IRepository<BrowseReferer, int> browseReferer, IRepository<BrowseWordMap, int> browseWordMap, IScheduleQueueCacheService scheduleQueue)
+        public BrowseLogQueueService(IRepository<BrowseWorldMap, int> browseWordMap,
+                                     IRepository<BrowseStatistics, int> browseStatistics,
+                                     IRepository<RefererStatistics, int> refererStatistics,
+                                     IScheduleQueueCacheService scheduleQueue)
         {
-            _browseReferer = browseReferer;
             _browseWordMap = browseWordMap;
+            _browseStatistics = browseStatistics;
+            _refererStatistics = refererStatistics;
             _scheduleQueue = scheduleQueue;
         }
 
@@ -57,31 +64,17 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
             // 文章浏览量统计事件插入
             PushCalcPostStatisticsQueue(model);
 
-            // referer 统计
-            if (!model.Referer.IsNullOrEmpty())
-            {
-                var referer = await _browseReferer.GetAll().Where(x => x.Referer == model.Referer).SingleOrDefaultAsync() ?? new BrowseReferer() { Referer = model.Referer!, Count = 0, Domain = GetUrlDomain(model.Referer!) };
+            // 浏览分布处理
+            await HandleBrowseMapAsync(model);
 
-                referer.Count++;
+            // 网站浏览统计
+            await HandlerBrowseStatisticsAsync(model);
 
-                await _browseReferer.CreateOrUpdateAsync(referer, x => x.Count);
-            }
+            // 来源域名统计
+            await HandleRefererStatisticsAsync(model);
 
-            // 插入统计队列
-            _scheduleQueue.Enqueue(ScheduleTypeEnum.WebStatistics, new WebStatisticsQueueModel() { Browse = 1 });
-
-            if (!model.Ip.IsNullOrEmpty())
-            {
-                var addr = IPAddressHelper.Search(model.Ip!);
-                var country = addr.IsPrivate ? "中国" : addr.Country ?? "";
-
-                if (!country.IsNullOrEmpty())
-                {
-                    var map = await _browseWordMap.GetAll().Where(x => x.Country == country).SingleOrDefaultAsync() ?? new BrowseWordMap() { Country = country, Count = 0 };
-                    map.Count++;
-                    await _browseWordMap.CreateOrUpdateAsync(map, x => x.Count);
-                }
-            }
+            // 插入网站总互动统计队列
+            _scheduleQueue.Enqueue(ScheduleTypeEnum.WebStatistics, new WebStatisticsQueueModel() { Browse = 1, UserAgent = model.UserAgent });
         }
 
         /// <summary>
@@ -109,14 +102,79 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
         }
 
         /// <summary>
-        /// 
+        /// 浏览分布处理
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        private async Task HandleBrowseMapAsync(BrowseLogQueueModel model)
+        {
+            if (!model.Ip.IsNullOrEmpty())
+            {
+                var addr = IPAddressHelper.Search(model.Ip!);
+                var country = addr.IsPrivate ? "中国" : addr.Country ?? "";
+
+                if (!country.IsNullOrEmpty())
+                {
+                    var map = await _browseWordMap.GetAll().Where(x => x.Country == country).SingleOrDefaultAsync() ?? new BrowseWorldMap() { Country = country, Count = 0 };
+                    if (map.Count < int.MaxValue)
+                    {
+                        map.Count++;
+                        await _browseWordMap.CreateOrUpdateAsync(map, x => x.Count);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 网站浏览统计
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        private async Task HandlerBrowseStatisticsAsync(BrowseLogQueueModel model)
+        {
+            try
+            {
+                var data = await _browseStatistics.GetAll().Where(x => x.Route == model.Path).SingleOrDefaultAsync() ?? new BrowseStatistics() { Route = model.Path, PageName = model.PageName, Count = 0 };
+                data.Count++;
+                await _browseStatistics.CreateOrUpdateAsync(data, x => x.Count);
+            }
+            catch (Exception ex)
+            {
+                this.JobLogger!.Error("handle browse statistics failed", ex);
+            }
+        }
+
+        /// <summary>
+        /// 来源域名统计
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        private async Task HandleRefererStatisticsAsync(BrowseLogQueueModel model)
+        {
+            try
+            {
+                if (model.Referer.IsNullOrEmpty())
+                    return;
+
+                var domain = GetUrlDomain(model.Referer!);
+                var data = await _refererStatistics.GetAll().Where(x => x.Domain == domain).SingleOrDefaultAsync() ?? new RefererStatistics() { Referer = model.Referer!, Domain = domain, Count = 0 };
+                data.Count++;
+                await _refererStatistics.CreateOrUpdateAsync(data, x => x.Count);
+            }
+            catch (Exception ex)
+            {
+                this.JobLogger!.Error("handle referer statistics failed", ex);
+            }
+        }
+
+        /// <summary>
+        /// 使用正则表达式从URL中提取http://或https://及后面的域名部分
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>
         private static string GetUrlDomain(string url)
         {
-            // 使用正则表达式从URL中提取http://或https://及后面的域名部分
-            string pattern = @"^(https?:\/\/[^\/]+)";
+            var pattern = @"^(https?:\/\/[^\/]+)";
             var match = Regex.Match(url, pattern);
 
             if (match.Success)

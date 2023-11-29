@@ -9,7 +9,7 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
     /// <summary>
     /// 网站日数据统计表
     /// </summary>
-    [Table("Web_Day_Statistics")]
+    [Table("Statistics_Web_Day")]
     [TableIndex("Day", true)]
     public class WebDayStatistics : MySqlBaseEntity<int>
     {

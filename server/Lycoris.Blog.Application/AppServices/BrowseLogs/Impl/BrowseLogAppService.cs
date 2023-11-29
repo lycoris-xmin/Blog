@@ -16,12 +16,10 @@ namespace Lycoris.Blog.Application.AppServices.BrowseLogs.Impl
     public class BrowseLogAppService : ApplicationBaseService, IBrowseLogAppService
     {
         private readonly IRepository<BrowseLog, long> _browseLog;
-        private readonly IRepository<BrowseReferer, int> _browseReferer;
 
-        public BrowseLogAppService(IRepository<BrowseLog, long> browseLog, IRepository<BrowseReferer, int> browseReferer)
+        public BrowseLogAppService(IRepository<BrowseLog, long> browseLog)
         {
             _browseLog = browseLog;
-            _browseReferer = browseReferer;
         }
 
         /// <summary>
@@ -34,7 +32,7 @@ namespace Lycoris.Blog.Application.AppServices.BrowseLogs.Impl
             var filter = _browseLog.GetAll()
                                    .WhereIf(input.BeginTime.HasValue, x => x.CreateTime >= input.BeginTime!.Value)
                                    .WhereIf(input.EndTime.HasValue, x => x.CreateTime <= input.EndTime!.Value)
-                                   .WhereIf(!input.Path.IsNullOrEmpty(), x => x.Path == input.Path)
+                                   .WhereIf(!input.Route.IsNullOrEmpty(), x => x.Route == input.Route)
                                    .WhereIf(input.Ip.HasValue, x => x.Ip == input.Ip!.Value)
                                    .WhereIf(!input.Referer.IsNullOrEmpty(), x => x.Referer == input.Referer);
 
@@ -47,7 +45,7 @@ namespace Lycoris.Blog.Application.AppServices.BrowseLogs.Impl
                               .Select(x => new BrowseLogDataDto()
                               {
                                   Id = x.Id,
-                                  Path = x.Path,
+                                  Route = x.Route,
                                   PageName = x.PageName,
                                   UserAgent = x.UserAgent,
                                   Ip = x.Ip,
@@ -73,47 +71,6 @@ namespace Lycoris.Blog.Application.AppServices.BrowseLogs.Impl
 
             var sql = $"DELETE FROM {_browseLog.TableName} WHERE Id IN ({string.Join(",", ids)})";
             await _browseLog.ExecuteNonQueryAsync(sql);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="pageIndex"></param>
-        /// <param name="pageSize"></param>
-        /// <returns></returns>
-        public async Task<PageResultDto<BrowseRefererDataDto>> GetRefererListAsync(int pageIndex, int pageSize)
-        {
-            var filter = _browseReferer.GetAll();
-            var count = await filter.CountAsync();
-            if (count == 0 || !CheckPageFilter(pageIndex, pageSize, count))
-                return new PageResultDto<BrowseRefererDataDto>(count);
-
-            var query = filter.OrderByDescending(x => x.Count)
-                              .PageBy(pageIndex, pageSize)
-                              .Select(x => new BrowseRefererDataDto()
-                              {
-                                  Id = x.Id,
-                                  Domain = x.Domain,
-                                  Referer = x.Referer,
-                                  Count = x.Count
-                              });
-
-            var list = await query.ToListAsync();
-            return new PageResultDto<BrowseRefererDataDto>(count, list);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="ids"></param>
-        /// <returns></returns>
-        public async Task DeleteRefererAsync(params long[] ids)
-        {
-            if (!ids.HasValue())
-                return;
-
-            var sql = $"DELETE FROM {_browseReferer.TableName} WHERE Id IN ({string.Join(",", ids)})";
-            await _browseReferer.ExecuteNonQueryAsync(sql);
         }
     }
 }

@@ -18,7 +18,7 @@ namespace Lycoris.Blog.Server.Models.Home
         /// 
         /// </summary>
         [Required]
-        public string? Path { get; set; }
+        public string? Route { get; set; }
 
         /// <summary>
         /// 

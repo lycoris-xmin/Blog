@@ -13,7 +13,7 @@
         /// <summary>
         /// 
         /// </summary>
-        public string? Path { get; set; }
+        public string? Route { get; set; }
 
         /// <summary>
         /// 

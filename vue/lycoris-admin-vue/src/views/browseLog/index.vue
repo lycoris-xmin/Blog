@@ -76,18 +76,18 @@ const model = reactive({
 const column = ref([
   {
     column: 'pageName',
-    name: '受访页面',
+    name: '访问页面',
     width: '300px',
     overflow: true
   },
   {
-    column: 'path',
-    name: '受访地址',
+    column: 'route',
+    name: '访问路由',
     overflow: true
   },
   {
     column: 'referer',
-    name: '跳转来源',
+    name: '来源域名',
     overflow: true
   },
   {

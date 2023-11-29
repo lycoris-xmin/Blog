@@ -55,31 +55,5 @@ namespace Lycoris.Blog.Server.Controllers
             await _browseLog.DeleteAsync(input.Ids!);
             return Success();
         }
-
-        /// <summary>
-        /// 查询跳转来源列表
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        [HttpGet("Referer/Query/List")]
-        [Produces("application/json")]
-        public async Task<PageOutput<BrowseRefererDataViewModel>> RefererList([FromQuery] PageInput input)
-        {
-            var dto = await _browseLog.GetRefererListAsync(input.PageIndex!.Value, input.PageSize!.Value);
-            return Success(dto.Count, dto.List.ToMapList<BrowseRefererDataViewModel>());
-        }
-
-        /// <summary>
-        /// 删除跳转来源
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        [HttpPost("Referer/Delete")]
-        [Consumes("application/json"), Produces("application/json")]
-        public async Task<BaseOutput> DeleteReferer([FromBody] SingleIdArrayInput<long> input)
-        {
-            await _browseLog.DeleteRefererAsync(input.Ids!);
-            return Success();
-        }
     }
 }

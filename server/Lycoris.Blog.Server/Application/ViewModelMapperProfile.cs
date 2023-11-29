@@ -16,6 +16,7 @@ using Lycoris.Blog.Application.AppServices.ServerStaticFiles.Dtos;
 using Lycoris.Blog.Application.AppServices.SiteNavigations.Dtos;
 using Lycoris.Blog.Application.AppServices.Talks.Dtos;
 using Lycoris.Blog.Application.AppServices.Users.Dtos;
+using Lycoris.Blog.Application.AppServices.WebStatistics.Dtos;
 using Lycoris.Blog.Application.Shared.Dtos;
 using Lycoris.Blog.Application.SignalR.Models;
 using Lycoris.Blog.Model.Configurations;
@@ -39,6 +40,7 @@ using Lycoris.Blog.Server.Models.SiteNavigations;
 using Lycoris.Blog.Server.Models.StaticFiles;
 using Lycoris.Blog.Server.Models.Talks;
 using Lycoris.Blog.Server.Models.Users;
+using Lycoris.Blog.Server.Models.WebStatistics;
 using Lycoris.Common.Extensions;
 using Lycoris.Common.Helper;
 using System.Text;
@@ -287,6 +289,8 @@ namespace Lycoris.Blog.Server.Application
             CreateMap<LoginRecordDataDto, LoginRecordDataViewModel>();
 
             CreateMap<MessageConfigurationDto, MessageConfigurationViewModel>();
+
+            CreateMap<WorldBrowseMapDataDto, WorldMapDataViewModel>();
         }
 
         /// <summary>

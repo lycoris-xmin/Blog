@@ -12,6 +12,8 @@ namespace Lycoris.Blog.Application
     {
         public override void ModuleRegister(LycorisModuleBuilder builder)
         {
+
+
             // 为当前程序集注册一个AOP拦截器
             builder.InterceptedBy<TransactionalInterceptor>();
         }

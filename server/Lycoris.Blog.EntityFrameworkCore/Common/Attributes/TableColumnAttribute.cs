@@ -56,5 +56,15 @@
         /// 密码加密
         /// </summary>
         public bool SqlPassword { get; set; } = false;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public int Precision { get; set; } = 0;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public int Scale { get; set; } = 0;
     }
 }

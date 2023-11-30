@@ -1,5 +1,5 @@
 <template>
-  <transition-group name="transitiongroupfade" :tag="props.tag || 'ul'" class="transition-container">
+  <transition-group :name="props.name" :tag="props.tag || 'ul'" class="transition-container">
     <slot></slot>
   </transition-group>
 </template>
@@ -9,6 +9,10 @@ const props = defineProps({
   tag: {
     type: String,
     default: 'ul'
+  },
+  name: {
+    type: String,
+    default: 'transitiongroupfade'
   }
 });
 </script>

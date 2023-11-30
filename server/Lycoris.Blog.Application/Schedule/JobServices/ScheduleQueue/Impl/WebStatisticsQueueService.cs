@@ -6,8 +6,6 @@ using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.Model.Configurations;
 using Lycoris.Common.Extensions;
 using Quartz;
-using System;
-using static Org.BouncyCastle.Math.EC.ECCurve;
 
 namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
 {
@@ -100,7 +98,7 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
                 return;
             }
 
-            config.BrowserStatistics.Add(new CommonStatisticsConfiguration()
+            config.OSStatistics.Add(new CommonStatisticsConfiguration()
             {
                 Name = hepler.OS,
                 Count = 1,

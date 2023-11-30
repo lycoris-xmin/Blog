@@ -9,6 +9,7 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
     /// </summary>
     [Table("Statistics_Browse")]
     [TableIndex("Route", true)]
+    [TableIndex("Count")]
     public class BrowseStatistics : MySqlBaseEntity<int>
     {
         /// <summary>

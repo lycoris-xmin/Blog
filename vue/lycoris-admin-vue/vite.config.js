@@ -9,6 +9,7 @@ import cssnano from 'cssnano';
 import { terser } from 'rollup-plugin-terser';
 import { visualizer } from 'rollup-plugin-visualizer';
 import VueSetupExtend from 'vite-plugin-vue-setup-extend';
+import viteCompression from 'vite-plugin-compression';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -62,7 +63,7 @@ export default defineConfig({
         {
           name: 'echarts',
           var: 'echarts',
-          path: 'https://cdn.bootcdn.net/ajax/libs/echarts/5.4.2/echarts.esm.min.js'
+          path: 'https://cdn.bootcdn.net/ajax/libs/echarts/5.4.3/echarts.min.js'
         },
         {
           name: '@microsoft/signalr',
@@ -83,7 +84,8 @@ export default defineConfig({
       emitFile: false,
       filename: 'visualizer.html',
       open: false
-    })
+    }),
+    viteCompression()
   ],
   resolve: {
     alias: {

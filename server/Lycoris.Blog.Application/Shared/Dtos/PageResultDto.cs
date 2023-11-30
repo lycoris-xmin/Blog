@@ -16,7 +16,7 @@
             this.List = List ?? new List<T>();
         }
 
-        public PageResultDto(int Count, T Summary, List<T>? List = null)
+        public PageResultDto(int Count, T? Summary, List<T>? List = null)
         {
             this.Count = Count;
             this.Summary = Summary;

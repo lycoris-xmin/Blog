@@ -1,7 +1,7 @@
 <template>
   <div class="common-layout">
     <el-container class="layout-container">
-      <layout-aside :menus="model.menus" :web-path="model.webPath"></layout-aside>
+      <layout-aside :menus="model.menus" :web-path="webPath"></layout-aside>
       <el-container>
         <el-header class="layout-header">
           <div class="layout-header-lef flex-center-center">
@@ -61,9 +61,12 @@ const enableScreenLock = false;
 const model = reactive({
   showDrawer: false,
   slide: 'fold',
-  menus: menus,
-  webPath: ''
+  menus: menus
 });
+
+const webPath = ref('');
+
+provide('$webPath', webPath);
 
 const keepAliveCompoents = computed(() => {
   let compoents = [];
@@ -134,7 +137,7 @@ onUnmounted(async () => {
 const getWebPath = async () => {
   let res = await getWebSetting();
   if (res && res.resCode == 0) {
-    model.webPath = res.data.webPath;
+    webPath.value = res.data.webPath;
   }
 };
 
@@ -247,14 +250,6 @@ $layout-header-h: 64px;
         .view-body {
           overflow: hidden;
           height: 100%;
-
-          .router_animate-enter-active {
-            animation: slideInRight 0.5s;
-          }
-
-          .router_animate-leave-active {
-            animation: slideOutLeft 0.3s;
-          }
         }
       }
     }
@@ -268,5 +263,21 @@ body {
     font-weight: 600;
     letter-spacing: 1.5px;
   }
+}
+
+.router_animate-enter-active {
+  animation: slideInRight 0.5s;
+}
+
+.router_animate-leave-active {
+  animation: slideOutLeft 0.3s;
+}
+
+.fade-active {
+  animation: fadeIn 0.5s;
+}
+
+.fade-leave-active {
+  animation: fadeOut 0.3s;
 }
 </style>

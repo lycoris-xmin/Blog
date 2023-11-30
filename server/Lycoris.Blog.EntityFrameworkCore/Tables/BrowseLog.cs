@@ -71,6 +71,7 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
         /// <summary>
         /// 访问时间
         /// </summary>
+        [TableColumn(Precision = 6)]
         public DateTime CreateTime { get; set; }
 
         /// <summary>

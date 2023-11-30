@@ -291,6 +291,10 @@ namespace Lycoris.Blog.Server.Application
             CreateMap<MessageConfigurationDto, MessageConfigurationViewModel>();
 
             CreateMap<WorldBrowseMapDataDto, WorldMapDataViewModel>();
+
+            CreateMap<BrowseStatisticsDataDto, BrowseStatisticsDataViewModel>();
+
+            CreateMap<RefererStatisticsDataDto, RefererStatisticsDataViewModel>();
         }
 
         /// <summary>

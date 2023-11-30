@@ -49,6 +49,7 @@
     "url-regex": "^5.0.0",
     "vite": "^4.1.4",
     "vite-plugin-cdn-import": "^0.3.5",
+    "vite-plugin-compression": "^0.5.1",
     "vite-plugin-purgecss": "^0.2.12",
     "vite-plugin-vue-setup-extend": "^0.4.0"
   }

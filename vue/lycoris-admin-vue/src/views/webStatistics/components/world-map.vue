@@ -1,8 +1,11 @@
 <template>
-  <div class="map-panel" :class="{ more: !model.showWorldMap }">
-    <div class="world-map border" v-show="model.showWorldMap">
-      <div id="echart-world-map"></div>
+  <div class="world-map-container" :class="{ 'hide-world-map': !model.showWorldMap }">
+    <div class="world-map flex-center-center">
+      <div class="border">
+        <div id="echart-world-map"></div>
+      </div>
     </div>
+
     <div class="map-list-panel">
       <div class="map-header border-bottom">
         <div class="flex-start-center">
@@ -11,8 +14,8 @@
           </el-icon>
           <span class="title"> 浏览地区排行 </span>
         </div>
-        <div class="flex-start-center more" @click="model.showWorldMap = !model.showWorldMap">
-          <small>{{ model.showWorldMap ? '查看更多' : '返回' }}</small>
+        <div class="flex-start-center more" @click="handleMoreList">
+          <el-button link>{{ model.showWorldMap ? '查看更多' : '返回' }}</el-button>
           <el-icon :size="14">
             <component :is="'d-arrow-right'"></component>
           </el-icon>
@@ -26,7 +29,7 @@
           </div>
           <div class="map-value flex-center-center">
             <div class="border-right border-dark">
-              <span>{{ item.count }}</span>
+              <span>{{ model.showWorldMap ? item.count : item.count }}</span>
             </div>
             <div class="percent border-left border-dark">
               <div class="process-bar" :style="{ width: `${item.percent}%` }"></div>
@@ -36,6 +39,7 @@
         </li>
       </ul>
     </div>
+
     <loading-line v-if="model.loading" :show-text="true" text="浏览地区分布数据加载中..."></loading-line>
   </div>
 </template>
@@ -51,7 +55,9 @@ import toast from '@/utils/toast';
 const model = reactive({
   worldMapList: [],
   showWorldMap: true,
-  loading: true
+  loading: true,
+  mapPanelwidth: 0,
+  worldMapWidth: 0
 });
 
 const echartModel = {
@@ -121,7 +127,6 @@ onMounted(async () => {
     }
 
     const total = mapList.map(x => x.count).reduce((total, value) => total + value);
-    console.log(mapList);
 
     model.worldMapList = mapList.map(x => {
       return {
@@ -207,41 +212,67 @@ const changeCountry = country => {
 
   return country;
 };
+
+const handleMoreList = () => {
+  model.showWorldMap = !model.showWorldMap;
+};
 </script>
 
 <style lang="scss" scoped>
-.map-panel {
-  position: relative;
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  grid-gap: 20px;
-  grid-template-rows: 800px;
-  padding: 20px 0;
+.world-map-container {
+  --wold-map-height: 800px;
+  --world-map-width: 1400px;
+  min-height: var(--wold-map-height);
+  padding: 40px 0;
 
-  &.more {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto;
+  @media (max-width: 1920px) {
+    --wold-map-height: 550px;
+    --world-map-width: 1000px;
+  }
+
+  &.hide-world-map {
+    .world-map {
+      width: 0px;
+
+      #echart-world-map {
+        display: none;
+      }
+    }
+
+    .map-list-panel {
+      margin-left: 0px;
+      height: 100%;
+    }
   }
 
   .world-map {
+    position: absolute;
+    left: 0;
+    top: 0;
     height: 100%;
-    width: 100%;
-    padding: 10px;
-    border-radius: 5px;
+    width: var(--world-map-width);
+    transition: width 0.75s cubic-bezier(0.22, 0.61, 0.36, 1);
+
+    .border {
+      position: relative;
+      border-radius: 5px;
+    }
 
     #echart-world-map {
-      height: 100%;
-      width: 100%;
+      height: var(--wold-map-height);
+      width: var(--world-map-width);
     }
   }
 
   .map-list-panel {
     position: relative;
-    height: 100%;
-    width: 100%;
+    margin-left: var(--world-map-width);
+    padding-left: 20px;
+    height: var(--wold-map-height);
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    transition: margin-left 0.75s cubic-bezier(0.22, 0.61, 0.36, 1);
 
     .map-header {
       display: flex;
@@ -258,6 +289,14 @@ const changeCountry = country => {
         cursor: pointer;
         transition: all 0.4;
 
+        .el-button {
+          color: var(--color-dark);
+
+          &:hover {
+            color: var(--color-info);
+          }
+        }
+
         &:hover {
           color: var(--color-info);
         }
@@ -266,6 +305,7 @@ const changeCountry = country => {
 
     .list-body {
       overflow: hidden;
+
       .map-item {
         display: flex;
         justify-content: space-between;
@@ -284,51 +324,7 @@ const changeCountry = country => {
             white-space: nowrap;
           }
         }
-
-        .map-value {
-          width: 150px;
-
-          div {
-            &:first-child {
-              width: 100px;
-              padding-right: 5px;
-              text-align: right;
-            }
-
-            &:last-child {
-              width: 150px;
-              padding-left: 5px;
-              text-align: left;
-            }
-          }
-
-          .percent {
-            position: relative;
-
-            .process-bar {
-              position: absolute;
-              margin: 0;
-              padding: 0;
-              left: 0;
-              top: 0;
-              height: 100%;
-              background-color: var(--color-info-light);
-              border: 0;
-              opacity: 0.6;
-            }
-
-            &::after {
-              content: '%';
-            }
-          }
-        }
       }
-    }
-
-    .more-footer {
-      flex-shrink: 1;
-      height: 35px;
-      text-align: center;
     }
   }
 }

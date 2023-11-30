@@ -1,5 +1,6 @@
 ﻿using Lycoris.Blog.Common;
 using Lycoris.Blog.EntityFrameworkCore.Common.Attributes;
+using Lycoris.Blog.EntityFrameworkCore.Constants;
 using Lycoris.Blog.EntityFrameworkCore.Shared;
 using Lycoris.Common.Extensions;
 using Microsoft.EntityFrameworkCore;
@@ -109,6 +110,13 @@ namespace Lycoris.Blog.EntityFrameworkCore.Common.Impl
             // 映射数据库列类型
             if (!column.ColumnType.IsNullOrEmpty())
                 propertyBuilder.HasColumnType(column.ColumnType);
+            else if (p.PropertyType == typeof(DateTime) || p.PropertyType == typeof(DateTime?))
+                propertyBuilder.HasColumnType(MySqlType.DATETIME);
+
+            if (column.Precision > 0 && column.Scale > 0)
+                propertyBuilder.HasPrecision(column.Precision, column.Scale);
+            else if (column.Precision > 0)
+                propertyBuilder.HasPrecision(column.Precision);
 
             // 字符串长度限制
             if (column.StringLength > 0 && p.PropertyType == typeof(string))

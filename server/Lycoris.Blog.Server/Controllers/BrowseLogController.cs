@@ -1,7 +1,6 @@
 ﻿using Lycoris.AutoMapper.Extensions;
 using Lycoris.Blog.Application.AppServices.BrowseLogs;
 using Lycoris.Blog.Application.AppServices.BrowseLogs.Dtos;
-using Lycoris.Blog.Model.Global.Input;
 using Lycoris.Blog.Model.Global.Output;
 using Lycoris.Blog.Server.Application.Constants;
 using Lycoris.Blog.Server.FilterAttributes;

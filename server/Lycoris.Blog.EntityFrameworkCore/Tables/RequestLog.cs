@@ -90,6 +90,7 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
         /// <summary>
         /// 请求时间
         /// </summary>
+        [TableColumn(Precision = 6)]
         public DateTime CreateTime { get; set; }
 
         /// <summary>

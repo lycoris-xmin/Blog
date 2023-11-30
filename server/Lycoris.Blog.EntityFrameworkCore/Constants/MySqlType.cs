@@ -29,5 +29,10 @@
         /// 
         /// </summary>
         public const string DATE = "DATE";
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public const string DATETIME = "DATETIME";
     }
 }

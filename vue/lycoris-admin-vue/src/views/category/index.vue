@@ -45,7 +45,7 @@
 
 <script setup name="category">
 import { reactive, ref, onMounted } from 'vue';
-import PageLayout from '../layout/page-layout.vue';
+import pageLayout from '../layout/page-layout.vue';
 import LycorisTable from '../../components/lycoris-table/index.vue';
 import createorupdate from './components/createorupdate.vue';
 import { getList, deleteCategory } from '../../api/category';

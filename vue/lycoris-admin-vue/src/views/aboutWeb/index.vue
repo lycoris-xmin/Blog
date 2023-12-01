@@ -8,7 +8,7 @@
 
 <script setup name="about-web">
 import { ref, onMounted } from 'vue';
-import PageLayout from '../layout/page-layout.vue';
+import pageLayout from '../layout/page-layout.vue';
 import singleMarkdownPage from '../../components/single-markdown-page/index.vue';
 import { getAboutWeb, saveAboutWeb, uploadFile } from '../../api/website';
 import toast from '../../utils/toast';

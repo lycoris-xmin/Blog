@@ -241,7 +241,9 @@ const handleMoreList = () => {
 
     .map-list-panel {
       margin-left: 0px;
-      height: 100%;
+      .list-body {
+        overflow-y: auto;
+      }
     }
   }
 

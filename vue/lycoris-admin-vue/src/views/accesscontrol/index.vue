@@ -37,7 +37,7 @@
 
 <script setup name="access-control">
 import { reactive, ref, onMounted } from 'vue';
-import PageLayout from '../layout/page-layout.vue';
+import pageLayout from '../layout/page-layout.vue';
 import LycorisTable from '../../components/lycoris-table/index.vue';
 import accessControlCreate from './components/access-control-create.vue';
 import accessControlLog from './components/access-control-log.vue';

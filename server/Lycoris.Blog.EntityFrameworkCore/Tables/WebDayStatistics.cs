@@ -38,5 +38,15 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
         /// 异常请求Api数量
         /// </summary>
         public int ErrorApi { get; set; }
+
+        /// <summary>
+        /// 新增用户数
+        /// </summary>
+        public int User { get; set; }
+
+        /// <summary>
+        /// 新增留言数
+        /// </summary>
+        public int Message { get; set; }
     }
 }

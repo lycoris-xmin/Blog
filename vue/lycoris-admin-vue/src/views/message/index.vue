@@ -74,7 +74,7 @@
 
 <script setup name="message">
 import { reactive, ref, onMounted } from 'vue';
-import PageLayout from '../layout/page-layout.vue';
+import pageLayout from '../layout/page-layout.vue';
 import LycorisTable from '../../components/lycoris-table/index.vue';
 import auditMessage from './components/message-audit.vue';
 import { getList, deleteMessage } from '../../api/message';

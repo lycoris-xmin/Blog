@@ -1,6 +1,8 @@
 ﻿using Lycoris.AutoMapper.Extensions;
 using Lycoris.Blog.Application.AppServices.WebStatistics;
-using Lycoris.Blog.Model.Global.Input;
+using Lycoris.Blog.EntityFrameworkCore.Constants;
+using Lycoris.Blog.EntityFrameworkCore.Repositories;
+using Lycoris.Blog.Model.Configurations;
 using Lycoris.Blog.Model.Global.Output;
 using Lycoris.Blog.Server.Application.Constants;
 using Lycoris.Blog.Server.FilterAttributes;
@@ -26,6 +28,19 @@ namespace Lycoris.Blog.Server.Controllers
         public WebStatisticsController(IWebStatisticsAppService webStatistics)
         {
             _webStatistics = webStatistics;
+        }
+
+
+        /// <summary>
+        /// 浏览分布数据统计
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("WorldMap/List")]
+        [Produces("application/json")]
+        public async Task<ListOutput<WorldMapDataViewModel>> WorldMapList()
+        {
+            var dto = await _webStatistics.GetWorldBrowseMapListAsync();
+            return Success(dto.ToMapList<WorldMapDataViewModel>());
         }
 
         /// <summary>
@@ -55,15 +70,24 @@ namespace Lycoris.Blog.Server.Controllers
         }
 
         /// <summary>
-        /// 浏览分布数据统计
+        /// 
         /// </summary>
+        /// <param name="configuration"></param>
         /// <returns></returns>
-        [HttpGet("WorldMap/List")]
+        [HttpGet("UserAgent/List")]
         [Produces("application/json")]
-        public async Task<ListOutput<WorldMapDataViewModel>> WorldMapList()
+        public async Task<DataOutput<UserAgentStatisticsViewModel>> UserAgentStatisticsList([FromServices] IConfigurationRepository configuration)
         {
-            var dto = await _webStatistics.GetWorldBrowseMapListAsync();
-            return Success(dto.ToMapList<WorldMapDataViewModel>());
+            var config = await configuration.GetConfigurationAsync<WebStatisticsConfiguration>(AppConfig.WebStatistics);
+
+            var ouput = new UserAgentStatisticsViewModel()
+            {
+                BrowseClient = config!.BrowserStatistics ?? new List<CommonStatisticsConfiguration>(),
+                OS = config!.OSStatistics ?? new List<CommonStatisticsConfiguration>(),
+                Device = config!.DeviceStatistics ?? new List<CommonStatisticsConfiguration>()
+            };
+
+            return Success(ouput);
         }
     }
 }

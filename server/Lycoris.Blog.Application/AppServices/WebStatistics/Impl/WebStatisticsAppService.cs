@@ -32,7 +32,7 @@ namespace Lycoris.Blog.Application.AppServices.WebStatistics.Impl
         /// <returns></returns>
         public async Task<PageResultDto<BrowseStatisticsDataDto>> GetBrowseStatisticsListAsync(int pageIndex, int pageSize, bool sum)
         {
-            var filter = _browseStatistics.GetAll();
+            var filter = _browseStatistics.GetAll().Where(x => x.Count > 0);
             var count = await filter.CountAsync();
             if (count == 0 || !CheckPageFilter(pageIndex, pageSize, count))
                 return new PageResultDto<BrowseStatisticsDataDto>(count);
@@ -69,7 +69,7 @@ namespace Lycoris.Blog.Application.AppServices.WebStatistics.Impl
         /// <returns></returns>
         public async Task<PageResultDto<RefererStatisticsDataDto>> GetRefererStatisticsListAsync(int pageIndex, int pageSize, bool sum)
         {
-            var filter = _refererStatistics.GetAll();
+            var filter = _refererStatistics.GetAll().Where(x => x.Count > 0);
             var count = await filter.CountAsync();
             if (count == 0 || !CheckPageFilter(pageIndex, pageSize, count))
                 return new PageResultDto<RefererStatisticsDataDto>(count);

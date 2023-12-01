@@ -131,7 +131,7 @@ const serverMonitorLineInit = () => {
         return Math.ceil(value.max / 10.0) * 10;
       },
       minInterval: 1,
-      maxInterval: 5
+      maxInterval: 10
     },
     series: charts.serverMonitor.legendData.map(x => {
       return {
@@ -194,23 +194,7 @@ const requestMonitorLineInit = () => {
     },
     yAxis: {
       minInterval: 1,
-      min: 0,
-      max: function (value) {
-        if (isNaN(value.max)) {
-          return 100;
-        }
-        if (value.max < 5) {
-          return 5;
-        } else if (value.max < 10) {
-          return 10;
-        } else if (value.max < 50) {
-          return value.max + 5;
-        } else if (value.max < 100) {
-          return value.max + 10;
-        } else {
-          return value.max + 100;
-        }
-      }
+      min: 5
     },
     series: charts.requestMonitor.legendData.map(x => {
       return {
@@ -350,7 +334,7 @@ defineExpose({
     height: 450px;
 
     @media (max-width: 1920px) {
-      height: 370px;
+      height: 350px;
     }
 
     .chart {

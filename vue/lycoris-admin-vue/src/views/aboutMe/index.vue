@@ -25,7 +25,7 @@
 
 <script setup name="about-web">
 import { onMounted, reactive, ref } from 'vue';
-import PageLayout from '../layout/page-layout.vue';
+import pageLayout from '../layout/page-layout.vue';
 import transitionList from '../../components/transitions/list-transition.vue';
 import infoTab from './components/info-tab.vue';
 import skillTab from './components/skill-tab/index.vue';

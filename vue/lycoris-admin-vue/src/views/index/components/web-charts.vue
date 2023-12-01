@@ -123,23 +123,7 @@ const browseStatisticsLineInit = () => {
     },
     yAxis: {
       minInterval: 1,
-      min: 0,
-      max: function (value) {
-        if (isNaN(value.max)) {
-          return 100;
-        }
-        if (value.max < 5) {
-          return 5;
-        } else if (value.max < 10) {
-          return 10;
-        } else if (value.max < 50) {
-          return value.max + 5;
-        } else if (value.max < 100) {
-          return value.max + 10;
-        } else {
-          return value.max + 100;
-        }
-      }
+      min: 0
     },
     series: charts.browseStatistics.legendData.map((x, index) => {
       return {
@@ -198,23 +182,7 @@ const apiStatisticsLineInit = () => {
     },
     yAxis: {
       minInterval: 1,
-      min: 0,
-      max: function (value) {
-        if (isNaN(value.max)) {
-          return 100;
-        }
-        if (value.max < 5) {
-          return 5;
-        } else if (value.max < 10) {
-          return 10;
-        } else if (value.max < 50) {
-          return value.max + 5;
-        } else if (value.max < 100) {
-          return value.max + 10;
-        } else {
-          return value.max + 100;
-        }
-      }
+      min: 0
     },
     series: charts.apiStatistics.legendData.map((x, index) => {
       return {
@@ -275,6 +243,10 @@ defineExpose({
   > div {
     position: relative;
     height: 450px;
+
+    @media (max-width: 1920px) {
+      height: 350px;
+    }
 
     .chart {
       height: 420px;

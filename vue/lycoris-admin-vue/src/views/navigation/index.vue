@@ -50,7 +50,7 @@
 
 <script setup name="navigation">
 import { reactive, ref, onMounted } from 'vue';
-import PageLayout from '../layout/page-layout.vue';
+import pageLayout from '../layout/page-layout.vue';
 import LycorisTable from '../../components/lycoris-table/index.vue';
 import createOrUpdate from './components/createorupdate.vue';
 import { getList, getGroupOptions, deleteSiteNavigation } from '../../api/navigation';

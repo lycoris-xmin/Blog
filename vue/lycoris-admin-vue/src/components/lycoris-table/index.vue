@@ -66,6 +66,7 @@
 
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue';
+import { debounce } from '../../utils/tool';
 
 const lycorisTableRef = ref();
 const table = ref();
@@ -177,9 +178,11 @@ const column = computed(() => {
   return column;
 });
 
+let lastPageIndex = 1;
+
 watch(pageIndex, (val, oldVale) => {
   if (val != oldVale) {
-    emit('pageChange', pageIndex);
+    pageChange(pageIndex);
   }
 });
 
@@ -197,6 +200,13 @@ onMounted(() => {
   let index = parseInt(props.pageIndex);
   pageIndex.value = isNaN(index) ? 1 : index;
 });
+
+const pageChange = debounce(index => {
+  if (lastPageIndex != index) {
+    emit('pageChange', index);
+    lastPageIndex = index;
+  }
+}, 500);
 
 const handleSelectionChange = rows => {
   emit('update:selected', rows);
@@ -222,9 +232,14 @@ const $search = e => {
   emit('toolbar-search', e);
 };
 
+const setPageIndex = index => {
+  pageIndex.value = index;
+};
+
 defineExpose({
   getSelectionRows,
   clearSelection,
+  setPageIndex,
   loading
 });
 </script>

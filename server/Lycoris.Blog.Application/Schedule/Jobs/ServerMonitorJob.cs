@@ -29,13 +29,7 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
         private readonly Lazy<IRepository<RequestLog, long>> _requestLog;
         private readonly Lazy<IRepository<BrowseLog, long>> _browseLog;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="factory"></param>
-        /// <param name="monitorContext"></param>
-        /// <param name="hubContext"></param>
-        /// <param name="serverMonitor"></param>
+
         public ServerMonitorJob(ILycorisLoggerFactory factory,
                                 AppMonitorContext monitorContext,
                                 IHubContext<DashboardHub> hubContext,
@@ -69,6 +63,8 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
                 if (requestMonitor.HasValue())
                     await _hubContext.Clients.Clients(_monitorContext.ConnectionIds).SendAsync("requestMonitor", requestMonitor);
             }
+
+            await WebToDayHourStatisticsHandlerAsync();
         }
 
         /// <summary>
@@ -180,6 +176,37 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
                 _monitorContext.Request.RemoveAt(0);
 
             return _monitorContext.Request.ToMapList<RequestMonitorModel>();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        private async Task WebToDayHourStatisticsHandlerAsync()
+        {
+            try
+            {
+                var startTime = _monitorContext.HourStatistics.LastTime ?? DateTime.Now.AddHours(-1);
+
+                if (startTime.AddHours(1) > DateTime.Now)
+                    return;
+
+                var endTime = startTime.AddHours(1);
+
+                _monitorContext.HourStatistics.PVBrowse += await _browseLog.Value.GetAll().Where(x => x.CreateTime >= startTime && x.CreateTime < endTime).CountAsync();
+                _monitorContext.HourStatistics.UVBrowse += await _browseLog.Value.GetAll().Where(x => x.CreateTime >= startTime && x.CreateTime < endTime).GroupBy(x => x.ClientOrign).Select(x => 1).SumAsync(x => x);
+
+                var requestCount = await _requestLog.Value.GetAll().Where(x => x.CreateTime >= startTime && x.CreateTime < endTime).CountAsync();
+                var totalElapsedMilliseconds = await _requestLog.Value.GetAll().Where(x => x.CreateTime >= startTime && x.CreateTime < endTime).SumAsync(x => x.ElapsedMilliseconds);
+
+                _monitorContext.HourStatistics.ElapsedMilliseconds = (int)Math.Ceiling((double)totalElapsedMilliseconds / requestCount);
+
+                _monitorContext.HourStatistics.LastTime = endTime;
+            }
+            catch (Exception ex)
+            {
+                this.JobLogger.Error("handle web today hour statistics failed", ex);
+            }
         }
     }
 }

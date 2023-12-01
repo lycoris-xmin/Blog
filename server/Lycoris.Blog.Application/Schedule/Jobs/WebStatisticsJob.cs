@@ -16,15 +16,21 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
     public class WebStatisticsJob : BaseJob
     {
         private readonly IRepository<WebDayStatistics, int> _webDayStatistics;
+        private readonly IRepository<User, long> _user;
+        private readonly IRepository<LeaveMessage, int> _message;
         private readonly IRepository<RequestLog, long> _requestLog;
         private readonly IRepository<BrowseLog, long> _browseLog;
 
         public WebStatisticsJob(ILycorisLoggerFactory factory,
                                 IRepository<WebDayStatistics, int> webDayStatistics,
+                                IRepository<User, long> user,
+                                IRepository<LeaveMessage, int> message,
                                 IRepository<RequestLog, long> requestLog,
                                 IRepository<BrowseLog, long> browseLog) : base(factory.CreateLogger<WebStatisticsJob>())
         {
             _webDayStatistics = webDayStatistics;
+            _user = user;
+            _message = message;
             _requestLog = requestLog;
             _browseLog = browseLog;
         }
@@ -58,6 +64,8 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
                 toDayData.ErrorApi = await _requestLog.GetAll().Where(x => x.CreateTime >= beginDate && x.CreateTime < endDate).Where(x => x.Success == false).CountAsync();
                 toDayData.PVBrowse = await _browseLog.GetAll().Where(x => x.CreateTime >= beginDate && x.CreateTime < endDate).CountAsync();
                 toDayData.UVBrowse = await _browseLog.GetAll().Where(x => x.CreateTime >= beginDate && x.CreateTime < endDate).GroupBy(x => x.ClientOrign).Select(x => 1).SumAsync(x => x);
+                toDayData.User = await _user.GetAll().Where(x => x.CreateTime >= beginDate && x.CreateTime < endDate).CountAsync();
+                toDayData.Message = await _message.GetAll().Where(x => x.CreateTime >= beginDate && x.CreateTime < endDate).CountAsync();
 
                 await _webDayStatistics.CreateOrUpdateAsync(toDayData);
 

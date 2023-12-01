@@ -89,7 +89,7 @@
 
 <script setup name="filemanage">
 import { reactive, ref, onMounted, onBeforeMount, onBeforeUnmount, inject } from 'vue';
-import PageLayout from '../layout/page-layout.vue';
+import pageLayout from '../layout/page-layout.vue';
 import LycorisTable from '../../components/lycoris-table/index.vue';
 import fileDetail from './components/file-detail.vue';
 import { getList, checkFileUseState, syncFileToRemote, downAllFile } from '../../api/staticFile';

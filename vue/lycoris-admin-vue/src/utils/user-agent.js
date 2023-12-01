@@ -1,103 +1,103 @@
 const uaRegex = [
   {
     client: '猎豹浏览器',
-    clientIcon: '/icon/ua/liebao.png',
+    clientIcon: '/icon/browser/liebao.png',
     value: /LBBROWSER/,
     enum: 6
   },
   {
     client: 'QQ浏览器',
-    clientIcon: '/icon/ua/qq.png',
+    clientIcon: '/icon/browser/qq.png',
     value: / QQBrowser /,
     enum: 5
   },
   {
     client: '百度浏览器',
-    clientIcon: '/icon/ua/baidu.png',
+    clientIcon: '/icon/browser/baidu.png',
     value: /BIDUBrowser|baidubrowser|BaiduHD/,
     enum: 4
   },
   {
     client: 'UC浏览器',
-    clientIcon: '/icon/ua/uc.png',
+    clientIcon: '/icon/browser/uc.png',
     value: /UBrowser|UCBrowser|UCWEB/,
     enum: 3
   },
   {
     client: '小米浏览器',
-    clientIcon: '/icon/ua/android.png',
+    clientIcon: '/icon/browser/android.png',
     value: /MiuiBrowser/,
     enum: 11
   },
   {
     client: '微信',
-    clientIcon: '/icon/ua/android.png',
+    clientIcon: '/icon/browser/android.png',
     value: /MicroMessenger/,
     enum: 12
   },
   {
     client: '手机QQ',
-    clientIcon: '/icon/ua/qq.png',
+    clientIcon: '/icon/browser/qq.png',
     value: /Mobile\/\w{5,}\sQQ\/(\d+[.\d]+)/,
     enum: 13
   },
   {
     client: '手机百度',
-    clientIcon: '/icon/ua/baidu.png',
+    clientIcon: '/icon/browser/baidu.png',
     value: /baiduboxapp/,
     enum: 14
   },
   {
     client: '火狐浏览器',
-    clientIcon: '/icon/ua/firefox.png',
+    clientIcon: '/icon/browser/firefox.png',
     value: /Firefox/,
     enum: 7
   },
   {
     client: '360安全浏览器',
-    clientIcon: '/icon/ua/360.png',
+    clientIcon: '/icon/browser/360.png',
     value: /360SE/,
     enum: 8
   },
   {
     client: '360极速浏览器',
-    clientIcon: '/icon/ua/360.png',
+    clientIcon: '/icon/browser/360.png',
     value: /360EE/,
     enum: 9
   },
   {
     client: 'Opera',
-    clientIcon: '/icon/ua/opera.png',
+    clientIcon: '/icon/browser/opera.png',
     value: /Opera|OPR\/(\d+[.\d]+)/,
     enum: 10
   },
   {
     client: 'Edge',
-    clientIcon: '/icon/ua/edge.png',
+    clientIcon: '/icon/browser/edge.png',
     value: /Edg/,
     enum: 0
   },
   {
     client: '安卓浏览器',
-    clientIcon: '/icon/ua/android.png',
+    clientIcon: '/icon/browser/android.png',
     value: /Android.*Mobile\sSafari|Android\/(\d[.\d]+)\sRelease\/(\d[.\d]+)\sBrowser\/AppleWebKit(\d[.\d]+)/i,
     enum: 16
   },
   {
     client: 'IE浏览器',
-    clientIcon: '/icon/ua/ie.png',
+    clientIcon: '/icon/browser/ie.png',
     value: /Trident|MSIE/,
     enum: 15
   },
   {
     client: '谷歌浏览器',
-    clientIcon: '/icon/ua/chrome.png',
+    clientIcon: '/icon/browser/chrome.png',
     value: /Chrome|CriOS/,
     enum: 1
   },
   {
     client: 'Safari',
-    clientIcon: '/icon/ua/safari.png',
+    clientIcon: '/icon/browser/safari.png',
     value: /Version[|/]([\w.]+)(\s\w.+)?\s?Safari|like\sGecko\)\sMobile\/\w{3,}$/,
     enum: 2
   }
@@ -117,7 +117,7 @@ export const getUserAgent = ua => {
 
 export const getUserAgentIcon = ua => {
   let item = getUserAgent(ua);
-  return item?.clientIcon || '/icon/ua/edge.png';
+  return item?.clientIcon || '/icon/browser/edge.png';
 };
 
 export const getUserAgentEnum = ua => {

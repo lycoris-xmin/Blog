@@ -27,6 +27,11 @@ namespace Lycoris.Blog.Model.Contexts
         /// 
         /// </summary>
         public List<RequestMonitorContext> Request { get; set; } = new List<RequestMonitorContext>();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public HourStatisticsMonitorContext HourStatistics { get; set; } = new HourStatisticsMonitorContext();
     }
 
     /// <summary>
@@ -105,5 +110,31 @@ namespace Lycoris.Blog.Model.Contexts
         /// 
         /// </summary>
         public int UV { get; set; }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class HourStatisticsMonitorContext
+    {
+        /// <summary>
+        /// 浏览量(PV)
+        /// </summary>
+        public int PVBrowse { get; set; }
+
+        /// <summary>
+        /// 访客数(UV)
+        /// </summary>
+        public int UVBrowse { get; set; }
+
+        /// <summary>
+        /// 平均响应时间
+        /// </summary>
+        public int ElapsedMilliseconds { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public DateTime? LastTime { get; set; }
     }
 }

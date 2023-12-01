@@ -16,7 +16,7 @@
 
 <script setup name="settings">
 import { reactive, computed } from 'vue';
-import PageLayout from '../layout/page-layout.vue';
+import pageLayout from '../layout/page-layout.vue';
 import webSetting from './components/web-setting.vue';
 import postSetting from './components/post-setting.vue';
 import messageSetting from './components/message-setting.vue';

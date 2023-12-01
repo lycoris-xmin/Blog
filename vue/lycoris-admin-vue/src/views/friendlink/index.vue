@@ -65,7 +65,7 @@
 
 <script setup name="friendlink">
 import { reactive, ref, onMounted } from 'vue';
-import PageLayout from '../layout/page-layout.vue';
+import pageLayout from '../layout/page-layout.vue';
 import LycorisTable from '../../components/lycoris-table/index.vue';
 import friendlinkCreate from './components/friendlink-create.vue';
 import friendlinkAudit from './components/friendlink-audit.vue';

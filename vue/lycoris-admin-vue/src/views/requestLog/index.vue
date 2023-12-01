@@ -91,7 +91,7 @@
 
 <script setup name="statistics-request">
 import { reactive, ref, onMounted, onActivated } from 'vue';
-import PageLayout from '../layout/page-layout.vue';
+import pageLayout from '../layout/page-layout.vue';
 import LycorisTable from '../../components/lycoris-table/index.vue';
 import detailView from './components/detail-view.vue';
 import { getList, deleteLog, setAccessControl } from '../../api/requestLog';

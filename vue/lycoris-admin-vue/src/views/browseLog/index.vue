@@ -50,7 +50,7 @@
 
 <script setup name="statistics-brows">
 import { reactive, ref, onMounted } from 'vue';
-import PageLayout from '../layout/page-layout.vue';
+import pageLayout from '../layout/page-layout.vue';
 import LycorisTable from '../../components/lycoris-table/index.vue';
 import { getList, deleteLog } from '../../api/browse-log';
 import { getUserAgentIcon } from '../../utils/user-agent';

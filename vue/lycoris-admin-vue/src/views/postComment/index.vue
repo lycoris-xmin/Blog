@@ -57,7 +57,7 @@
 
 <script setup name="comment">
 import { ref, reactive, onMounted } from 'vue';
-import PageLayout from '../layout/page-layout.vue';
+import pageLayout from '../layout/page-layout.vue';
 import LycorisTable from '../../components/lycoris-table/index.vue';
 import { getCommentList, deleteComment } from '../../api/postComment';
 import toast from '../../utils/toast';

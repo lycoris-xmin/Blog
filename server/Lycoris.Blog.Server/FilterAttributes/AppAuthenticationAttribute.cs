@@ -48,8 +48,6 @@ namespace Lycoris.Blog.Server.FilterAttributes
             };
 
             request.TokenExpireTime = data.TokenExpireTime;
-
-            await Task.CompletedTask;
         }
     }
 }

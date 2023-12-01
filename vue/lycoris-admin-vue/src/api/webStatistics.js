@@ -2,6 +2,10 @@ import request from '../utils/request';
 
 const controller = '/WebStatistics';
 
+export const getWorldMapList = () => {
+  return request.get(`${controller}/worldmap/list`);
+};
+
 export const getBrowseStatisticsList = ({ pageIndex, pageSize, sum }) => {
   let data = {
     pageIndex,
@@ -30,6 +34,6 @@ export const getRefererStatisticsList = ({ pageIndex, pageSize, sum }) => {
   return request.get(`${controller}/referer/list`, data);
 };
 
-export const getWorldMapList = () => {
-  return request.get(`${controller}/worldmap/list`);
+export const getUserAgentStatisticsList = () => {
+  return request.get(`${controller}/useragent/list`);
 };

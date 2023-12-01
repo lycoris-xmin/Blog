@@ -178,7 +178,7 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
             var match = Regex.Match(url, pattern);
 
             if (match.Success)
-                return match.Groups[1].Value;
+                return match.Groups[1].Value.Replace("https://", "").Replace("http://", "");
 
             return string.Empty;
         }

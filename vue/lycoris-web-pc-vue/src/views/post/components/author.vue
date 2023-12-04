@@ -80,6 +80,10 @@ const copy = async (content, isemail = false) => {
   .avatar {
     padding: 15px;
     width: 100%;
+
+    .el-image {
+      border: 1px solid var(--color-secondary);
+    }
   }
 
   .el-image {

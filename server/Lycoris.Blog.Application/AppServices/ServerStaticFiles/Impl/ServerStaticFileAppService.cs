@@ -91,9 +91,18 @@ namespace Lycoris.Blog.Application.AppServices.ServerStaticFiles.Impl
             if (_cache.Value.GetStaticFileUse(data.FileName))
                 return;
 
-            await _schedulerCenter.Value.AddOnceJobAsync<CheckFileUseStateJob>(id.ToString());
+            try
+            {
+                await _schedulerCenter.Value.AddOnceJobAsync<CheckFileUseStateJob>(id.ToString());
+                _cache.Value.SetStaticFileUse(data.FileName);
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Contains("job name") && ex.Message.Contains("already exists"))
+                    throw new FriendlyException("无法同时执行太多检测任务，请稍候再试");
 
-            _cache.Value.SetStaticFileUse(data.FileName);
+                throw;
+            }
         }
 
         /// <summary>

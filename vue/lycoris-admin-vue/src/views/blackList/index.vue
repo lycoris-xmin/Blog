@@ -35,7 +35,7 @@
   </page-layout>
 </template>
 
-<script setup name="access-control">
+<script setup name="black-list">
 import { reactive, ref, onMounted } from 'vue';
 import pageLayout from '../layout/page-layout.vue';
 import LycorisTable from '../../components/lycoris-table/index.vue';

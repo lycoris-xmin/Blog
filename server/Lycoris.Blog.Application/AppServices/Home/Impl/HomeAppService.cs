@@ -141,7 +141,7 @@ namespace Lycoris.Blog.Application.AppServices.Home.Impl
         {
             return new InteractiveStatisticsDto
             {
-                Browse = await _provider.GetRequiredService<IRepository<WebDayStatistics, int>>().GetAll().SumAsync(x => x.PVBrowse),
+                Browse = await _provider.GetRequiredService<IRepository<WebDayStatistics, DateTime>>().GetAll().SumAsync(x => x.PVBrowse),
                 Comment = await _provider.GetRequiredService<IRepository<PostComment, long>>().GetAll().CountAsync(),
                 Message = await _provider.GetRequiredService<IRepository<LeaveMessage, int>>().GetAll().CountAsync()
             };

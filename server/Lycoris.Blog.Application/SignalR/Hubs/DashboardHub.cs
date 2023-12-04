@@ -11,6 +11,9 @@ namespace Lycoris.Blog.Application.SignalR.Hubs
     /// </summary>
     public class DashboardHub : Hub
     {
+        public const string ServerMonitorGroup = "ServerMonitor";
+        public const string HourStatisticsMonitorGroup = "HourStatisticsMonitor";
+
         private readonly ISignalRService _signalRService;
         private readonly AppMonitorContext _serverMonitor;
 
@@ -51,10 +54,16 @@ namespace Lycoris.Blog.Application.SignalR.Hubs
             }
 
             // 
-            if (_serverMonitor.ConnectionIds.Contains(Context.ConnectionId))
+            if (_serverMonitor.ServerMonitorConnectionIds.Contains(Context.ConnectionId))
             {
-                _serverMonitor.ConnectionIds.Remove(Context.ConnectionId);
-                await Groups.RemoveFromGroupAsync("ServerMonitor", Context.ConnectionId);
+                _serverMonitor.ServerMonitorConnectionIds.Remove(Context.ConnectionId);
+                await Groups.RemoveFromGroupAsync(ServerMonitorGroup, Context.ConnectionId);
+            }
+
+            if (_serverMonitor.HourStatisticsConnectionIds.Contains(Context.ConnectionId))
+            {
+                _serverMonitor.HourStatisticsConnectionIds.Remove(Context.ConnectionId);
+                await Groups.RemoveFromGroupAsync(HourStatisticsMonitorGroup, Context.ConnectionId);
             }
 
             await base.OnDisconnectedAsync(exception);
@@ -94,11 +103,33 @@ namespace Lycoris.Blog.Application.SignalR.Hubs
         /// 
         /// </summary>
         /// <returns></returns>
-        [HubMethodName("connectServerMonitor")]
-        public Task ServerMonitor()
+        [HubMethodName("ConnectServerMonitor")]
+        public Task ConnectServerMonitor()
         {
-            _serverMonitor.ConnectionIds.Add(Context.ConnectionId);
-            return Task.CompletedTask;
+            _serverMonitor.ServerMonitorConnectionIds.Add(Context.ConnectionId);
+            return Groups.AddToGroupAsync(Context.ConnectionId, ServerMonitorGroup);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [HubMethodName("ConnectHourStatisticsMonitor")]
+        public Task ConnectHourStatisticsMonitor()
+        {
+            _serverMonitor.HourStatisticsConnectionIds.Add(Context.ConnectionId);
+            return Groups.AddToGroupAsync(Context.ConnectionId, HourStatisticsMonitorGroup);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [HubMethodName("DisConnectHourStatisticsMonitor")]
+        public Task DisConnectHourStatisticsMonitor()
+        {
+            _serverMonitor.HourStatisticsConnectionIds.Remove(Context.ConnectionId);
+            return Groups.RemoveFromGroupAsync(Context.ConnectionId, HourStatisticsMonitorGroup);
         }
     }
 }

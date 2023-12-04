@@ -1,7 +1,7 @@
 <template>
   <div class="page" :class="{ 'global-gray': model.grayWebSite, 'page-overflow': model.loading }">
     <div class="banner"></div>
-    <layout-nav :is-admin="model.isAdmin" @search="searchPost" @login="userLogin" @user-message="userMessage"></layout-nav>
+    <layout-nav @search="searchPost" @login="userLogin" @user-message="userMessage"></layout-nav>
 
     <div class="page-body">
       <router-view v-slot="{ Component }">
@@ -58,8 +58,7 @@ provide('$domain', domain);
 
 const model = reactive({
   loading: true,
-  grayWebSite: false,
-  isAdmin: false
+  grayWebSite: false
 });
 
 const closeModalPath = ['/server/error', '/server/notfound', '/about/me'];
@@ -113,14 +112,11 @@ const userBriefInit = async () => {
       let res = await getUserBrief();
       if (res && res.resCode == 0) {
         stores.user.setLoginState(res.data);
-        model.isAdmin = res.data.isAdmin;
         signalR.setupSignalR('/lycoris/hub/home');
       } else {
         stores.user.setLogoutState();
       }
     } catch (error) {}
-  } else {
-    model.isAdmin = stores.user.isAdmin;
   }
 };
 

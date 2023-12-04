@@ -330,7 +330,7 @@ const saveDbClear = async () => {
     box-shadow: 0 0 6px 5px var(--color-secondary);
     padding: 10px;
 
-    .el-collapse {
+    :deep(.el-collapse) {
       border: 0;
 
       .el-collapse-item__header {

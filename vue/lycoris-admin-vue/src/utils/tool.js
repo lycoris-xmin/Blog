@@ -123,3 +123,68 @@ export const isInViewPort = element => {
   const { top, right, bottom, left } = element.getBoundingClientRect();
   return top >= 0 && left >= 0 && right <= viewWidth && bottom <= viewHeight;
 };
+
+export const animateNumber = el => {
+  const that = {
+    el: el,
+    currentNumber: 0,
+    _increment: 0,
+    _targetNumber: 0,
+    minStep: void 0,
+    complete: void 0
+  };
+
+  that.paly = (duration = 2000, targetNumber, sourceNumber) => {
+    if (sourceNumber == undefined && that.sourceNumberHandle && typeof that.sourceNumberHandle == 'function') {
+      that.currentNumber = that.sourceNumberHandle(that.el);
+      that.currentNumber = parseFloat(that.currentNumber);
+      that.currentNumber = isNaN(that.currentNumber) ? 0 : that.currentNumber;
+    } else {
+      that.currentNumber = sourceNumber == undefined || 0;
+    }
+
+    if (that.targetNumberHandle && typeof that.targetNumberHandle == 'function') {
+      that._targetNumber = that.targetNumberHandle(that.el);
+      that._targetNumber = parseFloat(that._targetNumber);
+      that._targetNumber = isNaN(that._targetNumber) ? 0 : that._targetNumber;
+    } else {
+      that.currentNumber = targetNumber;
+    }
+
+    if (that.currentNumber < that._targetNumber) {
+      // 计算每一帧的增量
+      that._increment = (that._targetNumber - that.currentNumber) / (duration / 16);
+
+      if (that.minStep && that.minStep > that._increment) {
+        that._increment = that.minStep;
+      }
+
+      // 启动动画
+      animateNumber();
+    }
+  };
+
+  that.sourceNumberHandle = function () {
+    return parseFloat(that.el.innerText);
+  };
+
+  that.targetNumberHandle = void 0;
+
+  // 创建动画函数
+  function animateNumber() {
+    // 更新当前数字
+    that.currentNumber += that._increment;
+
+    // 更新显示的数字
+    that.el.textContent = Math.floor(that.currentNumber);
+
+    // 如果当前数字小于目标数字，则继续动画
+    if (that.currentNumber < that._targetNumber) {
+      requestAnimationFrame(animateNumber);
+    } else if (that.complete && typeof that.complete == 'function') {
+      that.complete();
+    }
+  }
+
+  return that;
+};

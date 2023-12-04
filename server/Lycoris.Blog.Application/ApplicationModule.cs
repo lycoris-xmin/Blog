@@ -28,7 +28,7 @@ namespace Lycoris.Blog.Application
             .AddQuartzSchedulerJob<ScheduleQueueJob>()
             .AddQuartzSchedulerJob<DBCleanerJob>()
             .AddQuartzSchedulerJob<WebStatisticsJob>()
-            .AddQuartzSchedulerJob<ServerMonitorJob>()
+            .AddQuartzSchedulerJob<AppMonitorJob>()
             .AddQuartzSchedulerJob<SystemFileCleanerJob>()
             .AddQuartzSchedulerJob<CheckFileUseStateJob>()
             .AddQuartzSchedulerJob<BackupFileJob>();

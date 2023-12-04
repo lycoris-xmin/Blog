@@ -8,7 +8,7 @@
         </li>
         <li class="li-value" v-for="item in props.browserList" :key="item.name">
           <div class="flex-start-center">
-            <el-image class="li-icon" :src="`/icon/browser/${item.icon}`" lazy></el-image>
+            <img class="li-icon" :src="`/icon/browser/${item.icon}`" />
             <p>{{ item.name }}</p>
           </div>
           <div class="map-value flex-end-center">
@@ -42,7 +42,7 @@
         </li>
         <li class="li-value" v-for="item in props.osList" :key="item.name">
           <div class="flex-start-center">
-            <el-image class="li-icon" :src="`/icon/os/${item.icon}`" lazy></el-image>
+            <img class="li-icon" :src="`/icon/os/${item.icon}`" />
             <p>{{ item.name }}</p>
           </div>
           <div class="map-value flex-end-center">
@@ -76,7 +76,7 @@
         </li>
         <li class="li-value" v-for="item in props.deviceList" :key="item.name">
           <div class="browser flex-start-center">
-            <el-image class="li-icon" :src="`/icon/device/${item.icon}`" lazy></el-image>
+            <img class="li-icon" :src="`/icon/device/${item.icon}`" />
             <p>{{ item.name }}</p>
           </div>
           <div class="map-value flex-end-center">
@@ -168,8 +168,12 @@ const showMorePanel = panel => {
     }
 
     ul {
-      height: 35px * 6;
+      height: 35px * 11;
       overflow: hidden;
+
+      @media (max-width: 1920px) {
+        height: 35px * 6;
+      }
 
       li {
         display: flex;
@@ -184,11 +188,17 @@ const showMorePanel = panel => {
       cursor: default;
       padding-bottom: 10px;
 
-      > p:last-child {
-        padding-right: 70px;
+      > p {
+        font-size: 16px;
+        font-weight: 600;
+        letter-spacing: 1.5px;
 
-        @media (max-width: 1920px) {
-          padding-right: 50px;
+        &:last-child {
+          padding-right: 70px;
+
+          @media (max-width: 1920px) {
+            padding-right: 50px;
+          }
         }
       }
     }

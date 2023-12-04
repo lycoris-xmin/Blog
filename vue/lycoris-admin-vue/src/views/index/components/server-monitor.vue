@@ -17,6 +17,7 @@
 import { reactive, onMounted, onUnmounted, inject } from 'vue';
 import * as echarts from 'echarts';
 import loadingLine from '../../../components/loadings/loading-line.vue';
+import signalrConfig from '../../../constants/SignalR';
 
 const signalR = inject('$signalR');
 
@@ -57,7 +58,8 @@ onMounted(() => {
   serverMonitorLineInit();
   requestMonitorLineInit();
 
-  signalR.connectdHadler(subscribeMonitor);
+  signalR.connectdHadler(() => signalR.invoke(signalrConfig.CONNECT.SERVER_MONITOR));
+  subscribeMonitor();
 });
 
 onUnmounted(() => {
@@ -212,17 +214,14 @@ const requestMonitorLineInit = () => {
 };
 
 const subscribeMonitor = () => {
-  signalR.invoke('connectServerMonitor');
-  signalR.reconnectedHanlder(() => signalR.invoke('connectServerMonitor'));
-
-  signalR.subscribe('serverMonitor', list => {
+  signalR.subscribe(signalrConfig.SUBSCRIBE.SERVER_MONITOR, list => {
     if (model.serverMonitorChartLoading) {
       model.serverMonitorChartLoading = false;
     }
     refreshServerMonitor(list);
   });
 
-  signalR.subscribe('requestMonitor', list => {
+  signalR.subscribe(signalrConfig.SUBSCRIBE.REQUEST_MONITOR, list => {
     if (model.requestMonitorChartLoading) {
       model.requestMonitorChartLoading = false;
     }
@@ -322,7 +321,7 @@ defineExpose({
   grid-gap: 20px;
 
   @media (max-width: 1920px) {
-    grid-gap: 10px;
+    grid-gap: 0px;
   }
 
   @media (max-width: 1440px) {

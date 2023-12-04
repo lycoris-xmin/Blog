@@ -145,7 +145,7 @@ namespace Lycoris.Blog.Server.Middlewares
             if (!CheckAllowMethod(context))
             {
                 response = "request method invalid";
-                context.Response.StatusCode = 415;
+                context.Response.StatusCode = 400;
                 _logger.Error($"invalid request - {(context.Request.Path.HasValue ? context.Request.Path.Value : "/")} - {response}", traceId);
                 result = false;
             }

@@ -20,22 +20,29 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
     /// 
     /// </summary>
     [DisallowConcurrentExecution]
+    [PersistJobDataAfterExecution]
     [QuartzJob("服务监控", Trigger = QuartzTriggerEnum.SIMPLE, IntervalSecond = 5)]
-    public class ServerMonitorJob : BaseJob
+    public class AppMonitorJob : BaseJob
     {
         private readonly AppMonitorContext _monitorContext;
         private readonly IHubContext<DashboardHub> _hubContext;
         private readonly Lazy<IRepository<ServerMonitor, int>> _serverMonitor;
         private readonly Lazy<IRepository<RequestLog, long>> _requestLog;
         private readonly Lazy<IRepository<BrowseLog, long>> _browseLog;
+        private readonly Lazy<IRepository<WebDayStatistics, DateTime>> _webDayStatistics;
+        private readonly Lazy<IRepository<PostComment, long>> _postComment;
+        private readonly Lazy<IRepository<LeaveMessage, int>> _leaveMessage;
 
 
-        public ServerMonitorJob(ILycorisLoggerFactory factory,
+        public AppMonitorJob(ILycorisLoggerFactory factory,
                                 AppMonitorContext monitorContext,
                                 IHubContext<DashboardHub> hubContext,
                                 Lazy<IRepository<ServerMonitor, int>> serverMonitor,
                                 Lazy<IRepository<RequestLog, long>> requestLog,
-                                Lazy<IRepository<BrowseLog, long>> browseLog) : base(factory.CreateLogger<ServerMonitorJob>())
+                                Lazy<IRepository<BrowseLog, long>> browseLog,
+                                Lazy<IRepository<WebDayStatistics, DateTime>> webDayStatistics,
+                                Lazy<IRepository<PostComment, long>> postComment,
+                                Lazy<IRepository<LeaveMessage, int>> leaveMessage) : base(factory.CreateLogger<AppMonitorJob>())
         {
             _monitorContext = monitorContext;
             _monitorContext.Server.MnitorCount ??= 0;
@@ -43,6 +50,9 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
             _serverMonitor = serverMonitor;
             _requestLog = requestLog;
             _browseLog = browseLog;
+            _webDayStatistics = webDayStatistics;
+            _postComment = postComment;
+            _leaveMessage = leaveMessage;
         }
 
         /// <summary>
@@ -55,16 +65,18 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
             var serverMonitor = await ServerMonitorHandlerAsync();
             var requestMonitor = await RequestMonitorHandlerAsync();
 
-            if (_monitorContext.ConnectionIds.HasValue())
+            if (_monitorContext.ServerMonitorConnectionIds.HasValue())
             {
                 if (serverMonitor.HasValue())
-                    await _hubContext.Clients.Clients(_monitorContext.ConnectionIds).SendAsync("serverMonitor", serverMonitor);
+                    await _hubContext.Clients.Group(DashboardHub.ServerMonitorGroup).SendAsync("ServerMonitor", serverMonitor);
 
                 if (requestMonitor.HasValue())
-                    await _hubContext.Clients.Clients(_monitorContext.ConnectionIds).SendAsync("requestMonitor", requestMonitor);
+                    await _hubContext.Clients.Group(DashboardHub.ServerMonitorGroup).SendAsync("RequestMonitor", requestMonitor);
             }
 
-            await WebToDayHourStatisticsHandlerAsync();
+            var hourStatisticsMonitor = await WebToDayHourStatisticsHandlerAsync();
+            if (hourStatisticsMonitor != null && _monitorContext.HourStatisticsConnectionIds.HasValue())
+                await _hubContext.Clients.Group(DashboardHub.HourStatisticsMonitorGroup).SendAsync("HourStatisticsMonitor", hourStatisticsMonitor);
         }
 
         /// <summary>
@@ -182,31 +194,96 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
         /// 
         /// </summary>
         /// <returns></returns>
-        private async Task WebToDayHourStatisticsHandlerAsync()
+        private async Task<HourStatisticsSignalRModel?> WebToDayHourStatisticsHandlerAsync()
         {
             try
             {
-                var startTime = _monitorContext.HourStatistics.LastTime ?? DateTime.Now.AddHours(-1);
+                var startTime = _monitorContext.HourStatistics.LastTime ?? DateTime.Now.AddMinutes(-5);
 
-                if (startTime.AddHours(1) > DateTime.Now)
-                    return;
+                if (startTime.AddMinutes(5) > DateTime.Now)
+                    return _monitorContext.HourStatistics.ToMap<HourStatisticsSignalRModel>();
 
-                var endTime = startTime.AddHours(1);
+                var endTime = startTime.AddMinutes(5);
+                var yesterday = DateTime.Now.Date.AddDays(-1);
+                var today = DateTime.Now.Date;
 
-                _monitorContext.HourStatistics.PVBrowse += await _browseLog.Value.GetAll().Where(x => x.CreateTime >= startTime && x.CreateTime < endTime).CountAsync();
-                _monitorContext.HourStatistics.UVBrowse += await _browseLog.Value.GetAll().Where(x => x.CreateTime >= startTime && x.CreateTime < endTime).GroupBy(x => x.ClientOrign).Select(x => 1).SumAsync(x => x);
+                var yesterdayStatistics = this.Context.GetJobDataMap<WebDayStatistics>("WebDayStatistics");
+                if (yesterdayStatistics == null || yesterdayStatistics.Id != yesterday)
+                {
+                    yesterdayStatistics = await _webDayStatistics.Value.GetAsync(yesterday) ?? new WebDayStatistics() { Id = DateTime.MinValue };
 
-                var requestCount = await _requestLog.Value.GetAll().Where(x => x.CreateTime >= startTime && x.CreateTime < endTime).CountAsync();
-                var totalElapsedMilliseconds = await _requestLog.Value.GetAll().Where(x => x.CreateTime >= startTime && x.CreateTime < endTime).SumAsync(x => x.ElapsedMilliseconds);
+                    if (yesterdayStatistics.Id != DateTime.MinValue)
+                        this.Context.AddJobDataMap("WebDayStatistics", yesterdayStatistics);
+                }
 
-                _monitorContext.HourStatistics.ElapsedMilliseconds = (int)Math.Ceiling((double)totalElapsedMilliseconds / requestCount);
+                // 浏览量计算
+                {
+                    _monitorContext.HourStatistics.PVBrowse = await _browseLog.Value.GetAll().Where(x => x.CreateTime >= today).CountAsync();
+                    // 与昨日计算百分比
+                    _monitorContext.HourStatistics.PVBrowsePercent = CalcHourStatisticsPercent(yesterdayStatistics.PVBrowse, _monitorContext.HourStatistics.PVBrowse);
+                }
+
+
+                // 访客计算
+                {
+                    _monitorContext.HourStatistics.OnlineUsers = await _browseLog.Value.GetAll().Where(x => x.CreateTime >= startTime && x.CreateTime < endTime).GroupBy(x => x.ClientOrign).CountAsync();
+                    _monitorContext.HourStatistics.UVBrowse = await _browseLog.Value.GetAll().Where(x => x.CreateTime >= today).GroupBy(x => x.ClientOrign).CountAsync();
+                    // 与昨日计算百分比
+                    _monitorContext.HourStatistics.UVBrowsePercent = CalcHourStatisticsPercent(yesterdayStatistics.UVBrowse, _monitorContext.HourStatistics.UVBrowse);
+                }
+
+
+                // 评论、留言计算
+                {
+                    _monitorContext.HourStatistics.CommentMessage = await _postComment.Value.GetAll().Where(x => x.CreateTime >= today).CountAsync();
+                    // 与昨日计算百分比
+                    _monitorContext.HourStatistics.CommentMessagePercent = CalcHourStatisticsPercent(yesterdayStatistics.CommentMessage, _monitorContext.HourStatistics.PVBrowse);
+                }
+
+
+                // 平均响应耗时
+                {
+                    var requestStartTime = DateTime.Now.Date;
+                    var requestCount = await _requestLog.Value.GetAll().Where(x => x.CreateTime >= requestStartTime && x.CreateTime < endTime).CountAsync();
+                    if (requestCount > 0)
+                    {
+                        var totalElapsedMilliseconds = await _requestLog.Value.GetAll().Where(x => x.CreateTime >= requestStartTime && x.CreateTime < endTime).SumAsync(x => x.ElapsedMilliseconds);
+
+                        var oldElapsedMilliseconds = _monitorContext.HourStatistics.ElapsedMilliseconds;
+                        _monitorContext.HourStatistics.ElapsedMilliseconds = (int)Math.Ceiling((double)totalElapsedMilliseconds / requestCount);
+                        _monitorContext.HourStatistics.ElapsedMillisecondsDifference = oldElapsedMilliseconds > 0 ? oldElapsedMilliseconds - _monitorContext.HourStatistics.ElapsedMilliseconds : 0;
+                    }
+                }
 
                 _monitorContext.HourStatistics.LastTime = endTime;
+
+                return _monitorContext.HourStatistics.ToMap<HourStatisticsSignalRModel>();
             }
             catch (Exception ex)
             {
                 this.JobLogger.Error("handle web today hour statistics failed", ex);
+                return null;
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="old"></param>
+        /// <param name="new"></param>
+        /// <returns></returns>
+        private static double CalcHourStatisticsPercent(int old, int @new)
+        {
+            if (old == 0 && @new == 0)
+                return 0d;
+            else if (old == 0)
+                return 100d;
+            else if (@new == 0)
+                return -100d;
+
+            var val = @new - old;
+            var percent = Math.Ceiling((Math.Abs(val) / (double)old) * 10000d) / 100;
+            return val > 0 ? percent : -percent;
         }
     }
 }

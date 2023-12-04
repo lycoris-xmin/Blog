@@ -2,6 +2,7 @@
 using Lycoris.Blog.EntityFrameworkCore.Constants;
 using Lycoris.Blog.EntityFrameworkCore.Shared;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Lycoris.Blog.EntityFrameworkCore.Tables
@@ -10,14 +11,14 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
     /// 网站日数据统计表
     /// </summary>
     [Table("Statistics_Web_Day")]
-    [TableIndex("Day", true)]
-    public class WebDayStatistics : MySqlBaseEntity<int>
+    public class WebDayStatistics : MySqlBaseEntity<DateTime>
     {
         /// <summary>
         /// 统计时间
         /// </summary>
+        [Key]
         [TableColumn(ColumnType = MySqlType.DATE)]
-        public DateTime Day { get; set; }
+        public override DateTime Id { get; set; }
 
         /// <summary>
         /// 浏览量(PV)
@@ -47,6 +48,6 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
         /// <summary>
         /// 新增留言数
         /// </summary>
-        public int Message { get; set; }
+        public int CommentMessage { get; set; }
     }
 }

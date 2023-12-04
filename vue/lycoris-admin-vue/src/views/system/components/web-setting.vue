@@ -30,7 +30,7 @@
           <el-input v-model="model.icp"></el-input>
         </el-form-item>
         <el-form-item label="网站描述">
-          <el-input v-model="model.description" type="textarea" :autosize="{ minRows: 4 }" maxlength="300" show-word-limit></el-input>
+          <el-input v-model="model.description" type="textarea" :autosize="{ minRows: 8 }" maxlength="300" show-word-limit></el-input>
         </el-form-item>
         <el-form-item label="网站建立时间">
           <el-date-picker class="date" v-model="model.buildTime" type="date" placeholder="网站建立时间" format="YYYY-MM-DD" />
@@ -111,7 +111,6 @@ const handleRemove = type => {
 };
 
 const submit = async () => {
-  debugger;
   model.loading = true;
 
   try {

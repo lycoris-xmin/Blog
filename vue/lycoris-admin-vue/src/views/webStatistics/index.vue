@@ -1,5 +1,6 @@
 <template>
-  <page-layout :loading="model.modelloading">
+  <page-layout :loading="false">
+    <home-statistics class="map-item" @rote-to-page="routeToPage"></home-statistics>
     <world-map class="map-item"></world-map>
     <transition name="router_animate" mode="out-in">
       <div v-if="!model.showMore">
@@ -81,7 +82,7 @@
 
             <li class="other-li panel-item" v-for="item in model.userAgent.browseClient" :key="item.name">
               <div class="flex-start-center">
-                <el-image class="li-icon" :src="`/icon/browser/${item.icon}`" lazy></el-image>
+                <img class="li-icon" :src="`/icon/browser/${item.icon}`" />
                 <p>{{ item.name }}</p>
               </div>
               <div class="map-value flex-end-center">
@@ -103,7 +104,7 @@
 
             <li class="other-li panel-item" v-for="item in model.userAgent.os" :key="item.name">
               <div class="flex-start-center">
-                <el-image class="li-icon" :src="`/icon/os/${item.icon}`" lazy></el-image>
+                <img class="li-icon" :src="`/icon/os/${item.icon}`" />
                 <p>{{ item.name }}</p>
               </div>
               <div class="map-value flex-end-center">
@@ -125,7 +126,7 @@
 
             <li class="other-li panel-item" v-for="item in model.userAgent.device" :key="item.name">
               <div class="flex-start-center">
-                <el-image class="li-icon" :src="`/icon/device/${item.icon}`" lazy></el-image>
+                <img class="li-icon" :src="`/icon/device/${item.icon}`" />
                 <p>{{ item.name }}</p>
               </div>
               <div class="map-value flex-end-center">
@@ -171,8 +172,9 @@
 </template>
 
 <script setup name="web-statistics">
-import { onMounted, reactive, ref, inject, onActivated, onDeactivated } from 'vue';
+import { onMounted, reactive, ref, inject } from 'vue';
 import pageLayout from '../layout/page-layout.vue';
+import homeStatistics from './components/home-statistics.vue';
 import worldMap from './components/world-map.vue';
 import browseStatistics from './components/browse-statistics.vue';
 import otherStatistics from './components/other-statistics.vue';
@@ -191,7 +193,6 @@ const panelKey = {
 const webPath = ref(inject('$webPath'));
 
 const model = reactive({
-  loading: false,
   showMore: false,
   showPanel: 'browse',
   panelMenu: [
@@ -253,14 +254,6 @@ onMounted(() => {
   getRefererMapList(true);
 
   getUserAgentMapList();
-});
-
-onActivated(() => {
-  // signalr 监听
-});
-
-onDeactivated(() => {
-  // signalr 移除监听
 });
 
 const getBrowseMapList = async (first = false) => {
@@ -580,22 +573,16 @@ const pageChange = debounce((key, index) => {
     }
 
     .li-icon {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 20px;
-      min-width: 20px;
-
-      img {
-        height: 20px;
-        width: 20px;
-        object-fit: cover;
-      }
+      height: 20px;
+      width: 20px;
+      object-fit: cover;
     }
   }
 
   .fotter-more {
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     padding: 10px;
     height: var(--panel-footer-height);
 

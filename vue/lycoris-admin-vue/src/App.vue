@@ -19,7 +19,7 @@ const options = reactive({
     autoInsertSpace: true
   },
   message: {
-    max: 3
+    max: 5
   }
 });
 

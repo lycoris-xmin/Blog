@@ -27,7 +27,7 @@
             <img class="border" :src="`/flags/${item.flag}.png`" />
             <p>{{ item.country }}</p>
           </div>
-          <div class="map-value flex-center-center">
+          <div class="map-value flex-end-center">
             <div class="border-right border-dark">
               <span>{{ model.showWorldMap ? item.count : item.count }}</span>
             </div>

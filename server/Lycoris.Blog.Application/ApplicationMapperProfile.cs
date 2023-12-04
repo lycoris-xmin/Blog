@@ -83,6 +83,10 @@ namespace Lycoris.Blog.Application
             CreateMap<WebSettingsConfiguration, WebCommonDto>();
 
             CreateMap<MessageSettingConfiguration, MessageConfigurationDto>();
+
+            CreateMap<HourStatisticsMonitorContext, HourStatisticsSignalRModel>()
+                .ForMember(x => x.PVBrowsePercent, opt => opt.MapFrom(src => src.PVBrowsePercent.ToString("0.00")))
+                .ForMember(x => x.UVBrowsePercent, opt => opt.MapFrom(src => src.UVBrowsePercent.ToString("0.00")));
         }
 
         /// <summary>

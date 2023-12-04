@@ -16,3 +16,12 @@
 .dialog-footer button:first-child {
   margin-right: 10px;
 }
+
+@keyframes el-icon-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

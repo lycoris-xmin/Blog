@@ -169,8 +169,14 @@ const showMorePanel = panel => {
         }
       }
 
-      span:last-child {
-        padding-right: 80px;
+      span {
+        font-size: 16px;
+        font-weight: 600;
+        letter-spacing: 1.5px;
+
+        &:last-child {
+          padding-right: 80px;
+        }
       }
     }
   }

@@ -7,9 +7,9 @@ const menusRoutes = [
     name: 'dashboard',
     component: () => import('../views/index/index.vue'),
     meta: {
-      title: '首页',
+      title: '仪表盘',
       keepAlive: true,
-      icon: 'element-plus',
+      icon: 'monitor',
       menu: true
     }
   },
@@ -158,6 +158,35 @@ const menusRoutes = [
   },
   {
     isRoute: false,
+    title: '访问管控',
+    icon: 'map-location',
+    routes: [
+      {
+        isRoute: true,
+        path: `${dashboardUrlPrefix}/access`,
+        name: 'access',
+        component: () => import('../views/access/index.vue'),
+        meta: {
+          title: '异常访问',
+          keepAlive: true,
+          menu: true
+        }
+      },
+      {
+        isRoute: true,
+        path: `${dashboardUrlPrefix}/blackList`,
+        name: 'black-list',
+        component: () => import('../views/blackList/index.vue'),
+        meta: {
+          title: 'IP黑名单',
+          keepAlive: true,
+          menu: true
+        }
+      }
+    ]
+  },
+  {
+    isRoute: false,
     title: '关 于',
     icon: 'connection',
     routes: [
@@ -198,17 +227,6 @@ const menusRoutes = [
         component: () => import('../views/user/index.vue'),
         meta: {
           title: '用户管理',
-          keepAlive: true,
-          menu: true
-        }
-      },
-      {
-        isRoute: true,
-        path: `${dashboardUrlPrefix}/access/control`,
-        name: 'accesscontrol',
-        component: () => import('../views/accessControl/index.vue'),
-        meta: {
-          title: '访问管控',
           keepAlive: true,
           menu: true
         }

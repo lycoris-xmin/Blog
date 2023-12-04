@@ -74,7 +74,7 @@ onMounted(async () => {
     grid-template-columns: 200px auto;
 
     .tabs {
-      padding: 10px;
+      padding: 10px 25px 10px 10px;
       border-right: 1px solid var(--color-secondary);
       li {
         list-style: none;

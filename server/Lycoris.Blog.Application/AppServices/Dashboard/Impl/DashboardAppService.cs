@@ -13,7 +13,7 @@ namespace Lycoris.Blog.Application.AppServices.Dashboard.Impl
     [AutofacRegister(ServiceLifeTime.Scoped, PropertiesAutowired = true)]
     public class DashboardAppService : ApplicationBaseService, IDashboardAppService
     {
-        private readonly IRepository<WebDayStatistics, int> _webStatistics;
+        private readonly IRepository<WebDayStatistics, DateTime> _webStatistics;
         private readonly Lazy<IRepository<RequestLog, long>> _requestLog;
         private readonly Lazy<IRepository<BrowseLog, long>> _browseLog;
 
@@ -23,7 +23,7 @@ namespace Lycoris.Blog.Application.AppServices.Dashboard.Impl
         /// <param name="webStatistics"></param>
         /// <param name="requestLog"></param>
         /// <param name="browseLog"></param>
-        public DashboardAppService(IRepository<WebDayStatistics, int> webStatistics, Lazy<IRepository<RequestLog, long>> requestLog, Lazy<IRepository<BrowseLog, long>> browseLog)
+        public DashboardAppService(IRepository<WebDayStatistics, DateTime> webStatistics, Lazy<IRepository<RequestLog, long>> requestLog, Lazy<IRepository<BrowseLog, long>> browseLog)
         {
             _webStatistics = webStatistics;
             _requestLog = requestLog;
@@ -64,11 +64,11 @@ namespace Lycoris.Blog.Application.AppServices.Dashboard.Impl
             for (int i = 0; i < 7; i++)
                 dayArray[i] = startTime.AddDays(i);
 
-            var filter = _webStatistics.GetAll().Where(x => x.Day >= dayArray[0] && x.Day <= dayArray[6]);
+            var filter = _webStatistics.GetAll().Where(x => x.Id >= dayArray[0] && x.Id <= dayArray[6]);
 
             var query = filter.Select(x => new NearlyDaysWebStatisticsDataDto()
             {
-                Day = x.Day,
+                Day = x.Id,
                 PVBrowse = x.PVBrowse,
                 UVBrowse = x.UVBrowse,
                 Api = x.Api,

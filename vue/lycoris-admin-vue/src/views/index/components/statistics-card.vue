@@ -183,15 +183,6 @@ const routeTo = key => {
           }
         }
 
-        @keyframes el-icon-rotate {
-          from {
-            transform: rotate(0deg);
-          }
-          to {
-            transform: rotate(360deg);
-          }
-        }
-
         :deep(.el-statistic__number) {
           transition: all 0.4s;
           font-weight: 600;

@@ -36,32 +36,52 @@ export default class {
         }
       }
 
-      if (this._reconnectedCallback.length > 0) {
-        for (let item of this._reconnectedCallback) {
-          item();
-        }
+      for (let callback of this._connectdCallback) {
+        callback();
       }
     });
 
     for (let callback of this._connectdCallback) {
       callback();
     }
+
+    if (this._subscribeHandler.length > 0) {
+      for (let item of this._subscribeHandler) {
+        this.hubConnection.on(item.eventName, item.callback);
+        item.subscribe = true;
+      }
+    }
   }
 
   subscribe(eventName, callback) {
-    if (!this.hubConnection) {
-      console.error('signalR disconnect');
-      return;
+    // 记录监听
+    let data = {
+      eventName,
+      callback,
+      subscribe: false
+    };
+
+    let index = this._subscribeHandler.findIndex(x => x.eventName == data.eventName);
+    if (this._subscribeHandler.findIndex(x => x.eventName == data.eventName) == -1) {
+      this._subscribeHandler.push();
     }
 
-    this.hubConnection.on(eventName, callback);
+    if (!this.hubConnection) {
+      if (index == -1) {
+        this._subscribeHandler.push(data);
+      } else {
+        this._subscribeHandler[index].subscribe = false;
+      }
 
-    // 记录监听
-    if (this._subscribeHandler.findIndex(x => x.eventName == eventName) == -1) {
-      this._subscribeHandler.push({
-        eventName,
-        callback
-      });
+      return;
+    } else {
+      this.hubConnection.on(eventName, callback);
+      if (index == -1) {
+        data.subscribe = true;
+        this._subscribeHandler.push(data);
+      } else if (!this._subscribeHandler[index].subscribe) {
+        this._subscribeHandler[index].subscribe = true;
+      }
     }
   }
 
@@ -71,11 +91,10 @@ export default class {
       return;
     }
 
-    this.hubConnection.off(eventName);
-
     let index = this._subscribeHandler.findIndex(x => x.eventName == eventName);
     if (index > -1) {
       this._subscribeHandler.splice(index, 1);
+      this.hubConnection.off(eventName);
     }
   }
 
@@ -94,12 +113,6 @@ export default class {
     }
 
     await this.hubConnection.stop();
-  }
-
-  _reconnectedCallback = [];
-
-  reconnectedHanlder(callback) {
-    this._reconnectedCallback.push(callback);
   }
 
   _connectdCallback = [];

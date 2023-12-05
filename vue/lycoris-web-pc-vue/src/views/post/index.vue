@@ -51,9 +51,8 @@
 
             <pagination :id="$route.params.postid"></pagination>
 
-            <div class="card" :class="{ 'flex-center-center': !post.comment }">
+            <div class="card" v-if="post.comment">
               <comment v-if="post.comment" :id="$route.params.postid"></comment>
-              <span v-else style="padding: 30px; font-size: 24px; letter-spacing: 3px">文章暂未开放评论功能</span>
             </div>
           </div>
 

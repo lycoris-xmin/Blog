@@ -28,7 +28,7 @@
         /// <summary>
         /// 
         /// </summary>
-        public int TotalMessage { get; set; }
+        public int TotalCommentMessage { get; set; }
 
         /// <summary>
         /// 

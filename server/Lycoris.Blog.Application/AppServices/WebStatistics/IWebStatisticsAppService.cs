@@ -9,6 +9,18 @@ namespace Lycoris.Blog.Application.AppServices.WebStatistics
         /// <summary>
         /// 
         /// </summary>
+        /// <returns></returns>
+        Task<WebToDayStatisticsDto> GetWebToDayStatisticsAsync();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        Task<List<WorldBrowseMapDataDto>> GetWorldBrowseMapListAsync();
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="pageIndex"></param>
         /// <param name="pageSize"></param>
         /// <param name="sum"></param>
@@ -23,11 +35,5 @@ namespace Lycoris.Blog.Application.AppServices.WebStatistics
         /// <param name="sum"></param>
         /// <returns></returns>
         Task<PageResultDto<RefererStatisticsDataDto>> GetRefererStatisticsListAsync(int pageIndex, int pageSize, bool sum);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        Task<List<WorldBrowseMapDataDto>> GetWorldBrowseMapListAsync();
     }
 }

@@ -1,7 +1,7 @@
 <template>
   <div class="common-layout">
     <el-container class="layout-container">
-      <layout-aside :menus="model.menus" :web-path="webPath"></layout-aside>
+      <layout-aside :menus="model.menus" :web-path="stores.webSetting.webPath"></layout-aside>
       <el-container>
         <el-header class="layout-header">
           <div class="layout-header-lef flex-center-center">
@@ -44,7 +44,6 @@ import { menus } from '../../router';
 import SignalRHelper from '../../utils/signalR';
 import { refreshToken } from '../../api/authentication';
 import { getUserBrief } from '../../api/user';
-import { getWebSetting } from '../../api/configuration';
 import { stores } from '../../stores';
 import { debounce } from '../../utils/tool';
 
@@ -63,10 +62,6 @@ const model = reactive({
   slide: 'fold',
   menus: menus
 });
-
-const webPath = ref('');
-
-provide('$webPath', webPath);
 
 const keepAliveCompoents = computed(() => {
   let compoents = [];
@@ -107,8 +102,6 @@ onMounted(async () => {
       screenLock.timer = setInterval(checkLossOfActivityTo, 10000);
     }
 
-    await getWebPath();
-
     await signalR.setupSignalR('/hub/dashboard');
 
     subscribeAuthroization();
@@ -133,13 +126,6 @@ onUnmounted(async () => {
 
   await signalR.stop();
 });
-
-const getWebPath = async () => {
-  let res = await getWebSetting();
-  if (res && res.resCode == 0) {
-    webPath.value = res.data.webPath;
-  }
-};
 
 const showDrawer = () => {
   model.showDrawer = true;

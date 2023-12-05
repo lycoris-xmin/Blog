@@ -38,7 +38,7 @@ export const publishPost = id => {
 };
 
 export const setPostComment = data => {
-  return request.post(`${controller}/postComment`, data);
+  return request.post(`${controller}/comment`, data);
 };
 
 export const setPostRecommend = data => {

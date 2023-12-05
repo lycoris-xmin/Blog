@@ -10,12 +10,12 @@
       <div class="page-footer-item">
         <a class="icp flex-center-center" href="https://beian.miit.gov.cn/" target="_blank">
           <img src="/icon/gongan.png" />
-          <span>{{ web.icp }}</span>
+          <span>{{ stores.webSetting.icp }}</span>
         </a>
       </div>
 
       <div class="page-footer-item">
-        <router-link to="/">{{ web.name }} - {{ stores.owner?.nickName }}</router-link>
+        <router-link to="/">{{ stores.webSetting.webName }} - {{ stores.owner?.nickName }}</router-link>
       </div>
 
       <div class="page-footer-item">
@@ -32,7 +32,6 @@
 <script setup>
 import loadingLine from '../loadings/loading-line.vue';
 import { stores } from '../../stores';
-import { web } from '../../config.json';
 
 const props = defineProps({
   loading: {

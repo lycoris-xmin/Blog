@@ -10,8 +10,10 @@
           </ul>
         </div>
         <div class="tabpanels">
-          <user-info v-show="model.tabActive == 'user-info'"></user-info>
-          <user-safe v-show="model.tabActive == 'user-safe'"></user-safe>
+          <transition name="fade" mode="out-in">
+            <user-info v-if="model.tabActive == 'user-info'"></user-info>
+            <user-safe v-else-if="model.tabActive == 'user-safe'"></user-safe>
+          </transition>
         </div>
       </div>
     </div>

@@ -10,7 +10,7 @@
         /// <summary>
         /// 
         /// </summary>
-        public int Message { get; set; } = 0;
+        public int CommentMessage { get; set; } = 0;
 
         /// <summary>
         /// 

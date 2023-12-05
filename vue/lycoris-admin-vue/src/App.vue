@@ -12,6 +12,8 @@
 import { onBeforeMount, reactive } from 'vue';
 import { ElConfigProvider } from 'element-plus';
 import zhCn from 'element-plus/lib/locale/lang/zh-cn';
+import { getWebSetting } from './api/configuration';
+import { stores } from './stores';
 
 const options = reactive({
   locale: zhCn,
@@ -23,7 +25,18 @@ const options = reactive({
   }
 });
 
-onBeforeMount(() => {});
+onBeforeMount(() => {
+  webSetting();
+});
+
+const webSetting = async () => {
+  if (stores.authorize.token) {
+    let res = await getWebSetting();
+    if (res && res.resCode == 0) {
+      stores.webSetting.setData(res.data);
+    }
+  }
+};
 </script>
 
 <style lang="scss" scoped>

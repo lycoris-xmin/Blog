@@ -48,8 +48,8 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
             if (config!.TotalBrowse < int.MaxValue)
                 config!.TotalBrowse += model.Browse;
 
-            if (config!.TotalMessage < int.MaxValue)
-                config!.TotalMessage += model.Message;
+            if (config!.TotalCommentMessage < int.MaxValue)
+                config!.TotalCommentMessage += model.CommentMessage;
 
             if (config!.TotalUsers < int.MaxValue)
                 config!.TotalUsers += model.User;

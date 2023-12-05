@@ -156,3 +156,28 @@ a {
 .el-dropdown .el-tooltip__trigger:focus-visible {
   outline: unset;
 }
+
+@keyframes el-icon-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.router_animate-enter-active {
+  animation: slideInRight 0.5s;
+}
+
+.router_animate-leave-active {
+  animation: slideOutLeft 0.3s;
+}
+
+.fade-active {
+  animation: fadeIn 0.5s;
+}
+
+.fade-leave-active {
+  animation: fadeOut 0.3s;
+}

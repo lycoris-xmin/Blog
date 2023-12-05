@@ -44,15 +44,26 @@
         </div>
       </template>
 
-      <template #title="{ value, row: { id, type, info } }">
+      <template #title="{ value, row: { id, type, info, browseCount, commentCount } }">
         <div class="post">
           <div class="title">
-            <a :href="`${web.domain}/post/${id}`" target="_blank">
+            <a :href="`${stores.webSetting.webPath.trimEnd('/')}/post/${id}`" target="_blank">
               <span class="badge" :class="{ 'badge-purple': type == 0, 'badge-info': type == 1 }">{{ type == 0 ? '原创' : '转载' }}</span>
               <span>{{ value }}</span>
             </a>
           </div>
           <div class="info">{{ info }}...</div>
+          <div class="statistics">
+            <el-icon>
+              <component :is="'reading'"></component>
+            </el-icon>
+            <span>{{ countChange(browseCount) }}</span>
+            <span class="divider">/</span>
+            <el-icon>
+              <component :is="'message'"></component>
+            </el-icon>
+            <span>{{ countChange(commentCount) }}</span>
+          </div>
         </div>
       </template>
 
@@ -85,14 +96,6 @@
         <el-tag class="cell-tag" :type="value == 1 ? 'success' : 'warning'">{{ value == 1 ? '发布' : '草稿' }}</el-tag>
       </template>
 
-      <template #browseCount="{ value }">
-        <el-statistic :value="value" :class="{ 'el-statistic-has-value': value > 0 }" :formatter="countChange" />
-      </template>
-
-      <template #commentCount="{ value }">
-        <el-statistic :value="value" :class="{ 'el-statistic-has-value': value > 0 }" :formatter="countChange" />
-      </template>
-
       <template #action="{ index, row }">
         <el-popconfirm title="确定要发布该文章吗?" @confirm="$publish(index, row.id)" v-if="row.isPublish == 0">
           <template #reference>
@@ -120,7 +123,6 @@ import { getCategoryEnums } from '../../api/category';
 import { stores } from '../../stores';
 import toast from '../../utils/toast';
 import { countChange } from '../../utils/tool';
-import { web } from '../../config.json';
 
 const router = useRouter();
 const formRef = ref();
@@ -153,7 +155,7 @@ const column = ref([
   {
     column: 'categoryName',
     name: '文章分类',
-    width: '150px',
+    width: '200px',
     overflow: true
   },
   {
@@ -173,18 +175,6 @@ const column = ref([
     name: '状态',
     align: 'center',
     width: '80px'
-  },
-  {
-    column: 'browseCount',
-    name: '浏览量',
-    align: 'center',
-    width: '120px'
-  },
-  {
-    column: 'commentCount',
-    name: '评论量',
-    align: 'center',
-    width: '120px'
   },
   {
     column: 'action',
@@ -403,6 +393,10 @@ const $delete = async (index, row) => {
     a:hover {
       color: var(--color-info);
     }
+
+    span.badge {
+      font-size: 12px;
+    }
   }
 
   .info {
@@ -413,18 +407,24 @@ const $delete = async (index, row) => {
     display: -webkit-box;
     -webkit-line-clamp: 3; // 显示几行
     -webkit-box-orient: vertical;
+    height: 70px;
   }
-}
 
-.el-statistic-has-value {
-  :deep(.el-statistic__number) {
-    color: var(--color-success) !important;
-  }
-}
+  .statistics {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    font-size: 14px;
+    color: var(--color-dark-light);
+    padding-top: 5px;
 
-:deep(.el-statistic) {
-  .el-statistic__number {
-    color: var(--color-danger);
+    .el-icon {
+      margin-right: 5px;
+    }
+
+    .divider {
+      padding: 0 10px;
+    }
   }
 }
 

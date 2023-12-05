@@ -1,4 +1,6 @@
 ﻿using Lycoris.Autofac.Extensions;
+using Lycoris.Blog.Application.Cached.ScheduleQueue;
+using Lycoris.Blog.Application.Cached.ScheduleQueue.Models;
 using Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Models;
 using Lycoris.Blog.Application.Schedule.Shared;
 using Lycoris.Blog.EntityFrameworkCore.Repositories;
@@ -17,15 +19,12 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
 
 
         private readonly IRepository<Post, long> _post;
+        private readonly Lazy<IScheduleQueueCacheService> _scheduleQueueCache;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="post"></param>
-        /// <param name="postStatistics"></param>
-        public PostStatisticsQueueService(IRepository<Post, long> post)
+        public PostStatisticsQueueService(IRepository<Post, long> post, Lazy<IScheduleQueueCacheService> scheduleQueueCache)
         {
             _post = post;
+            _scheduleQueueCache = scheduleQueueCache;
         }
 
         public async Task JobDoWorkAsync(string? data, DateTime? time)
@@ -49,6 +48,9 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
             post.Statistics.Browse += model.StaticType == PostStaticTypeEnum.Browse ? 1 : 0;
 
             await _post.UpdateFieIdsAsync(post, x => x.Statistics);
+
+            if (model.StaticType == PostStaticTypeEnum.Comment)
+                _scheduleQueueCache.Value.Enqueue(ScheduleTypeEnum.WebStatistics, new WebStatisticsQueueModel() { CommentMessage = 1 });
         }
     }
 }

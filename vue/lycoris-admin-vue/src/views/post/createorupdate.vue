@@ -81,9 +81,9 @@
               </div>
             </el-form>
             <div class="btn-group flex-center-center">
-              <el-button type="primary" @click="submitSave(false)" plain>保存为草稿</el-button>
-              <el-button type="success" @click="submitSave(true)" plain>文章发布</el-button>
-              <el-button type="info" @click="toPostPage" plain>返回</el-button>
+              <el-button type="primary" :loading="model.buttonLoading == 'draft'" :disabled="model.buttonLoading != '' && model.buttonLoading != 'draft'" @click="submitSave(false)" plain>保存为草稿</el-button>
+              <el-button type="success" :loading="model.buttonLoading == 'publish'" :disabled="model.buttonLoading != '' && model.buttonLoading != 'publish'" @click="submitSave(true)" plain>文章发布</el-button>
+              <el-button type="info" :disabled="model.buttonLoading != ''" @click="toPostPage" plain>返回</el-button>
             </div>
           </div>
         </div>
@@ -119,7 +119,8 @@ const model = reactive({
   tagValue: '',
   tagInputVisible: false,
   isModify: false,
-  lastSaveTime: 0
+  lastSaveTime: 0,
+  buttonLoading: ''
 });
 
 const form = reactive({
@@ -370,20 +371,28 @@ const submitSave = async (publish, redirect = true) => {
       }
     }
 
-    let res = await savePost(data);
-    if (res && res.resCode == 0) {
-      toast.success(publish ? '发布成功' : '保存成功');
-      if (redirect) {
-        setTimeout(() => {
-          toPostPage();
-        }, 500);
-      } else {
-        postInfo = data;
-      }
+    model.buttonLoading = publish ? 'publish' : 'draft';
+    markdown.value.showLoading('正在提交,请稍候...');
 
-      if (model.autoSave) {
-        model.lastSaveTime = new Date().addSeconds(model.autoSaveSecond * 1000).getTime();
+    try {
+      let res = await savePost(data);
+      if (res && res.resCode == 0) {
+        toast.success(publish ? '发布成功' : '保存成功');
+        if (redirect) {
+          setTimeout(() => {
+            toPostPage();
+          }, 500);
+        } else {
+          postInfo = data;
+        }
+
+        if (model.autoSave) {
+          model.lastSaveTime = new Date().addSeconds(model.autoSaveSecond * 1000).getTime();
+        }
       }
+    } finally {
+      markdown.value.hideLoading();
+      model.buttonLoading = '';
     }
   }
 };

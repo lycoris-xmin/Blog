@@ -1,6 +1,9 @@
-﻿namespace Lycoris.Blog.Application.SignalR.Models
+﻿namespace Lycoris.Blog.Server.Models.WebStatistics
 {
-    public class HourStatisticsSignalRModel
+    /// <summary>
+    /// 
+    /// </summary>
+    public class WebToDayStatisticsViewModel
     {
         /// <summary>
         /// 

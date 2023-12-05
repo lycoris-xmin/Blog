@@ -2,17 +2,17 @@
   <div style="padding: 20px 0">
     <div class="title flex-start-center">
       <p class="domain flex-start-center">
-        <img :src="`${model.webDomain}/favicon.ico`" />
-        <span @click="roteToPage">{{ model.webDomain }}</span>
+        <img :src="`${stores.webSetting.webPath}/favicon.ico`" />
+        <span @click="roteToPage">{{ stores.webSetting.webPath }}</span>
       </p>
       <p class="today">{{ new Date().format('yyyy-MM-dd') }}</p>
       <p class="online flex-start-center">
-        <span class="icon" :class="{ online: model.onlineUsers > 0 }"></span>
+        <span class="icon" :class="{ success: model.onlineUsers > 0 }"></span>
         当前浏览
-        <el-icon class="loading-icon" v-if="model.signalRLoading">
+        <el-icon class="loading-icon" v-if="model.todayLoading">
           <component :is="'loading'"></component>
         </el-icon>
-        <span class="number" v-else>{{ model.onlineUsers }}</span>
+        <span class="number" v-show="!model.todayLoading">{{ model.onlineUsers }}</span>
         人
       </p>
     </div>
@@ -20,10 +20,10 @@
       <div class="count-statistics">
         <div class="flex-start-center">
           <div class="count flex-center-center">
-            <el-icon class="loading-icon" v-if="model.signalRLoading">
+            <el-icon class="loading-icon" v-if="model.todayLoading">
               <component :is="'loading'"></component>
             </el-icon>
-            <span v-else class="number" :data-number="model.pvBrowse">0</span>
+            <span v-show="!model.todayLoading" class="number" :data-number="model.pvBrowse">0</span>
           </div>
           <p>
             <span class="lable"> 浏览量 </span>
@@ -35,10 +35,10 @@
         </div>
         <div class="flex-start-center">
           <div class="count flex-center-center">
-            <el-icon class="loading-icon" v-if="model.signalRLoading">
+            <el-icon class="loading-icon" v-if="model.todayLoading">
               <component :is="'loading'"></component>
             </el-icon>
-            <span v-else class="number" :data-number="model.uvBrowse">0</span>
+            <span v-show="!model.todayLoading" class="number" :data-number="model.uvBrowse">0</span>
           </div>
           <p>
             <span class="lable">访客</span>
@@ -50,10 +50,10 @@
         </div>
         <div class="flex-start-center">
           <div class="count flex-center-center">
-            <el-icon class="loading-icon" v-if="model.signalRLoading">
+            <el-icon class="loading-icon" v-if="model.todayLoading">
               <component :is="'loading'"></component>
             </el-icon>
-            <span v-else class="number" :data-number="model.commentMessage">0</span>
+            <span v-show="!model.todayLoading" class="number" :data-number="model.commentMessage">0</span>
           </div>
           <p>
             <span class="lable">评论、留言</span>
@@ -65,10 +65,10 @@
         </div>
         <div class="flex-start-center">
           <label class="count flex-center-center">
-            <el-icon class="loading-icon" v-if="model.signalRLoading">
+            <el-icon class="loading-icon" v-if="model.todayLoading">
               <component :is="'loading'"></component>
             </el-icon>
-            <span v-else :class="{ warning: model.elapsedMilliseconds > 1500, danger: model.elapsedMilliseconds > 5000 }">
+            <span v-show="!model.todayLoading" :class="{ warning: model.elapsedMilliseconds > 1500, danger: model.elapsedMilliseconds > 5000 }">
               <span class="number" :data-number="model.elapsedMilliseconds">0</span>
               <small style="font-size: 14px; color: var(--color-dark)">ms</small>
             </span>
@@ -89,18 +89,15 @@
 </template>
 
 <script setup>
-import { onMounted, onUnmounted, reactive, inject, nextTick } from 'vue';
+import { onMounted, reactive, nextTick } from 'vue';
 import loadingLine from '../../../components/loadings/loading-line.vue';
-import { getWebSetting } from '../../../api/configuration';
-import signalrConfig from '../../../constants/SignalR';
+import { getTodayStatistics } from '../../../api/webStatistics';
 import { animateNumber } from '../../../utils/tool';
-
-const signalR = inject('$signalR');
+import { stores } from '../../../stores';
 
 const model = reactive({
   loading: true,
-  signalRLoading: true,
-  webDomain: '',
+  todayLoading: true,
   onlineUsers: 0,
   pvBrowse: 0,
   pvBrowsePercent: 0,
@@ -117,55 +114,55 @@ const emit = defineEmits(['roteToPage']);
 const animateNumberArray = [];
 
 onMounted(async () => {
-  signalR.connectdHadler(() => signalR.invoke(signalrConfig.CONNECT.HOUR_STATISTICS_MONITOR));
-  signalR.subscribe(signalrConfig.SUBSCRIBE.HOUR_STATISTICS_MONITOR, data => {
-    if (model.signalRLoading) {
-      model.signalRLoading = false;
+  const interval = setInterval(() => {
+    if (stores.webSetting.webPath) {
+      model.loading = false;
+      clearInterval(interval);
+      return;
     }
+  }, 50);
 
-    nextTick(() => {
-      if (animateNumberArray.length == 0) {
-        var numberEl = document.querySelectorAll('span.number');
-        for (let item of [...numberEl]) {
-          const animate = animateNumber(item);
-          animate.minStep = 1;
-          animate.targetNumberHandle = el => {
-            return parseFloat(el.getAttribute('data-number') || 0);
-          };
-          animateNumberArray.push(animate);
-        }
+  nextTick(() => {
+    if (animateNumberArray.length == 0) {
+      var numberEl = document.querySelectorAll('span.number');
+      for (let item of [...numberEl]) {
+        const animate = animateNumber(item);
+        animate.minStep = 1;
+        animate.targetNumberHandle = el => {
+          return parseFloat(el.getAttribute('data-number') || 0);
+        };
+        animateNumberArray.push(animate);
       }
-    });
-
-    model.onlineUsers = data.onlineUsers;
-    model.pvBrowse = data.pvBrowse;
-    model.pvBrowsePercent = data.pvBrowsePercent.toFixed(2);
-    model.uvBrowse = data.uvBrowse;
-    model.uvBrowsePercent = data.uvBrowsePercent.toFixed(2);
-    model.elapsedMilliseconds = data.elapsedMilliseconds;
-    model.elapsedMillisecondsDifference = data.elapsedMillisecondsDifference;
-
-    nextTick(() => {
-      if (animateNumberArray && animateNumberArray.length > 0) {
-        animateNumberArray.forEach(x => x.paly(1500));
-      }
-    });
+    }
   });
 
-  try {
-    let res = await getWebSetting();
-    if (res && res.resCode == 0) {
-      model.webDomain = res.data.webPath;
-    }
-  } finally {
-    model.loading = false;
-  }
+  getStatistics();
 });
 
-onUnmounted(() => {
-  signalR.connectdHadler(() => signalR.invoke(signalrConfig.DISCONNECT.HOUR_STATISTICS_MONITOR));
-  signalR.unsubscribe(signalrConfig.SUBSCRIBE.HOUR_STATISTICS_MONITOR);
-});
+const getStatistics = async () => {
+  try {
+    let res = await getTodayStatistics();
+    if (res && res.resCode == 0) {
+      model.onlineUsers = res.data.onlineUsers;
+      model.pvBrowse = res.data.pvBrowse;
+      model.pvBrowsePercent = res.data.pvBrowsePercent.toFixed(2);
+      model.uvBrowse = res.data.uvBrowse;
+      model.uvBrowsePercent = res.data.uvBrowsePercent.toFixed(2);
+      model.commentMessage = res.data.commentMessage;
+      model.commentMessagePercent = res.data.commentMessagePercent;
+      model.elapsedMilliseconds = res.data.elapsedMilliseconds;
+      model.elapsedMillisecondsDifference = res.data.elapsedMillisecondsDifference;
+
+      nextTick(() => {
+        if (animateNumberArray && animateNumberArray.length > 0) {
+          animateNumberArray.forEach(x => x.paly(1000));
+        }
+      });
+    }
+  } finally {
+    model.todayLoading = false;
+  }
+};
 
 const roteToPage = () => {
   emit('roteToPage', model.webDomain);
@@ -213,7 +210,7 @@ const roteToPage = () => {
       margin-right: 10px;
       background-color: var(--color-danger);
 
-      &.online {
+      &.success {
         background-color: var(--color-success);
       }
     }

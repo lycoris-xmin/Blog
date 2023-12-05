@@ -50,7 +50,7 @@ $router.beforeEach(async to => {
 
   if (!['login', 'server-error', 'screen-lock', 'resume'].includes(to.name)) {
     if (!document.title.includes('管理后台')) {
-      document.title = `管理后台_${web.name}`;
+      document.title = `管理后台_${stores.webSetting.webName}`;
     }
 
     // if (stores.authorize.token && stores.screenLock.checkLossOfActivity()) {
@@ -58,9 +58,9 @@ $router.beforeEach(async to => {
     // }
   } else {
     if (to.meta.title) {
-      document.title = `${to.meta.title}_${web.name}`;
+      document.title = `${to.meta.title}_${stores.webSetting.webName}`;
     } else {
-      document.title = web.name;
+      document.title = stores.webSetting.webName;
     }
   }
 });

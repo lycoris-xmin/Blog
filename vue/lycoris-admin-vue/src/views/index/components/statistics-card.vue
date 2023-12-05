@@ -55,13 +55,13 @@ const model = reactive({
       count: 0
     },
     {
-      key: 'message',
+      key: 'totalCommentMessage',
       title: '留言统计',
       icon: 'message',
       count: 0
     },
     {
-      key: 'users',
+      key: 'totalUsers',
       title: '用户统计',
       icon: 'user',
       count: 0

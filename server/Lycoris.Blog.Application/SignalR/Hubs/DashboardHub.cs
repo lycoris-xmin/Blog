@@ -109,27 +109,5 @@ namespace Lycoris.Blog.Application.SignalR.Hubs
             _serverMonitor.ServerMonitorConnectionIds.Add(Context.ConnectionId);
             return Groups.AddToGroupAsync(Context.ConnectionId, ServerMonitorGroup);
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        [HubMethodName("ConnectHourStatisticsMonitor")]
-        public Task ConnectHourStatisticsMonitor()
-        {
-            _serverMonitor.HourStatisticsConnectionIds.Add(Context.ConnectionId);
-            return Groups.AddToGroupAsync(Context.ConnectionId, HourStatisticsMonitorGroup);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        [HubMethodName("DisConnectHourStatisticsMonitor")]
-        public Task DisConnectHourStatisticsMonitor()
-        {
-            _serverMonitor.HourStatisticsConnectionIds.Remove(Context.ConnectionId);
-            return Groups.RemoveFromGroupAsync(Context.ConnectionId, HourStatisticsMonitorGroup);
-        }
     }
 }

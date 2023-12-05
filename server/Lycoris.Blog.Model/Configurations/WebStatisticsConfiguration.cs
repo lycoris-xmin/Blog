@@ -13,7 +13,7 @@
         /// <summary>
         /// 
         /// </summary>
-        public int TotalMessage { get; set; } = 0;
+        public int TotalCommentMessage { get; set; } = 0;
 
         /// <summary>
         /// 

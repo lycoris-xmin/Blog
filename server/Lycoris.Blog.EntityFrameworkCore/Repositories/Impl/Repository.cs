@@ -753,6 +753,8 @@ namespace Lycoris.Blog.EntityFrameworkCore.Repositories.Impl
                 return Create(data);
             else if ((type == typeof(string) || type == typeof(Guid)) && (data.Id == null || data.Id.ToString().IsNullOrEmpty()))
                 return Create(data);
+            else if (data.RowVersion == null)
+                return Create(data);
 
             Update(data);
             return data;
@@ -770,6 +772,8 @@ namespace Lycoris.Blog.EntityFrameworkCore.Repositories.Impl
             if ((type == typeof(int) || type == typeof(long)) && (data.Id == null || data.Id.ToString() == "0"))
                 return Create(data);
             else if ((type == typeof(string) || type == typeof(Guid)) && (data.Id == null || data.Id.ToString().IsNullOrEmpty()))
+                return Create(data);
+            else if (data.RowVersion == null)
                 return Create(data);
 
             UpdateFieIds(data, fieIds);
@@ -789,6 +793,8 @@ namespace Lycoris.Blog.EntityFrameworkCore.Repositories.Impl
                 return Create(data);
             else if ((type == typeof(string) || type == typeof(Guid)) && (data.Id == null || data.Id.ToString().IsNullOrEmpty()))
                 return Create(data);
+            else if (data.RowVersion == null)
+                return Create(data);
 
             UpdateFieIds(data, fieIds);
             return data;
@@ -805,6 +811,8 @@ namespace Lycoris.Blog.EntityFrameworkCore.Repositories.Impl
             if ((type == typeof(int) || type == typeof(long)) && (data.Id == null || data.Id.ToString() == "0"))
                 return await CreateAsync(data);
             else if ((type == typeof(string) || type == typeof(Guid)) && (data.Id == null || data.Id.ToString().IsNullOrEmpty()))
+                return await CreateAsync(data);
+            else if (data.RowVersion == null)
                 return await CreateAsync(data);
 
             await UpdateAsync(data);
@@ -824,6 +832,8 @@ namespace Lycoris.Blog.EntityFrameworkCore.Repositories.Impl
                 return await CreateAsync(data);
             else if ((type == typeof(string) || type == typeof(Guid)) && (data.Id == null || data.Id.ToString().IsNullOrEmpty()))
                 return await CreateAsync(data);
+            else if (data.RowVersion == null)
+                return await CreateAsync(data);
 
             await UpdateFieIdsAsync(data, fieIds);
             return data;
@@ -841,6 +851,8 @@ namespace Lycoris.Blog.EntityFrameworkCore.Repositories.Impl
             if ((type == typeof(int) || type == typeof(long)) && (data.Id == null || data.Id.ToString() == "0"))
                 return await CreateAsync(data);
             else if ((type == typeof(string) || type == typeof(Guid)) && (data.Id == null || data.Id.ToString().IsNullOrEmpty()))
+                return await CreateAsync(data);
+            else if (data.RowVersion == null)
                 return await CreateAsync(data);
 
             await UpdateFieIdsAsync(data, fieIds);

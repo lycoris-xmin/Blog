@@ -47,7 +47,7 @@ namespace Lycoris.Blog.Application.AppServices.Dashboard.Impl
             var value = await ApplicationConfiguration.Value.GetConfigurationAsync<WebStatisticsConfiguration>(AppConfig.WebStatistics);
 
             dto.TotalBrowse = value?.TotalBrowse ?? 0;
-            dto.TotalMessage = value?.TotalMessage ?? 0;
+            dto.TotalCommentMessage = value?.TotalCommentMessage ?? 0;
             dto.TotalUsers = value?.TotalUsers ?? 0;
 
             return dto;

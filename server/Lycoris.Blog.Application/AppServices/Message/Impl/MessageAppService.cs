@@ -208,7 +208,7 @@ namespace Lycoris.Blog.Application.AppServices.Message.Impl
 
             data = await _message.CreateAsync(data);
 
-            _scheduleQueueCache.Value.Enqueue(ScheduleTypeEnum.WebStatistics, new WebStatisticsQueueModel() { Message = 1 });
+            _scheduleQueueCache.Value.Enqueue(ScheduleTypeEnum.WebStatistics, new WebStatisticsQueueModel() { CommentMessage = 1 });
 
             return new WebMessageDataDto()
             {

@@ -1,6 +1,6 @@
 <template>
   <page-layout :loading="false">
-    <home-statistics class="map-item" @rote-to-page="routeToPage"></home-statistics>
+    <today-statistics class="map-item" @rote-to-page="routeToPage"></today-statistics>
     <world-map class="map-item"></world-map>
     <transition name="router_animate" mode="out-in">
       <div v-if="!model.showMore">
@@ -172,14 +172,15 @@
 </template>
 
 <script setup name="web-statistics">
-import { onMounted, reactive, ref, inject } from 'vue';
+import { onMounted, reactive } from 'vue';
 import pageLayout from '../layout/page-layout.vue';
-import homeStatistics from './components/home-statistics.vue';
+import todayStatistics from './components/today-statistics.vue';
 import worldMap from './components/world-map.vue';
 import browseStatistics from './components/browse-statistics.vue';
 import otherStatistics from './components/other-statistics.vue';
 import loadingLine from '@/components/loadings/loading-line.vue';
 import { getBrowseStatisticsList, getRefererStatisticsList, getUserAgentStatisticsList } from '@/api/webStatistics';
+import { stores } from '../../stores';
 import { debounce } from '../../utils/tool';
 
 const panelKey = {
@@ -189,8 +190,6 @@ const panelKey = {
   OS: 'os',
   DEVICE: 'device'
 };
-
-const webPath = ref(inject('$webPath'));
 
 const model = reactive({
   showMore: false,
@@ -380,7 +379,7 @@ const routeToPage = path => {
   if (path.startsWith('http')) {
     window.open(path);
   } else {
-    const url = `${webPath.value}${path}`;
+    const url = `${stores.webSetting.webPath}${path}`;
     window.open(url);
   }
 };
@@ -421,7 +420,8 @@ const pageChange = debounce((key, index) => {
 
   .panel-menu {
     > li {
-      padding: 10px;
+      padding: 10px 30px 10px 10px;
+
       > p {
         text-align: center;
         width: 100%;

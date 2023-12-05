@@ -149,6 +149,7 @@ const browse = data => {
       if (!Object.keys(data).includes('pageName')) {
         data.pageName = route.meta.pageName;
       }
+
       pageBrowse(route.fullPath, {
         ...data,
         referer: document.referrer

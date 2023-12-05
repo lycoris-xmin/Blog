@@ -11,6 +11,7 @@ using Lycoris.Blog.Application.AppServices.RequestLogs.Dtos;
 using Lycoris.Blog.Application.AppServices.SiteNavigations.Dtos;
 using Lycoris.Blog.Application.AppServices.Talks.Dtos;
 using Lycoris.Blog.Application.AppServices.Users.Dtos;
+using Lycoris.Blog.Application.AppServices.WebStatistics.Dtos;
 using Lycoris.Blog.Application.Cached.Authentication.Models;
 using Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Models;
 using Lycoris.Blog.Application.SignalR.Models;
@@ -84,7 +85,7 @@ namespace Lycoris.Blog.Application
 
             CreateMap<MessageSettingConfiguration, MessageConfigurationDto>();
 
-            CreateMap<HourStatisticsMonitorContext, HourStatisticsSignalRModel>()
+            CreateMap<HourStatisticsMonitorContext, WebToDayStatisticsDto>()
                 .ForMember(x => x.PVBrowsePercent, opt => opt.MapFrom(src => src.PVBrowsePercent.ToString("0.00")))
                 .ForMember(x => x.UVBrowsePercent, opt => opt.MapFrom(src => src.UVBrowsePercent.ToString("0.00")));
         }

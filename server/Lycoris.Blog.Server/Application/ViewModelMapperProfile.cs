@@ -295,6 +295,8 @@ namespace Lycoris.Blog.Server.Application
             CreateMap<BrowseStatisticsDataDto, BrowseStatisticsDataViewModel>();
 
             CreateMap<RefererStatisticsDataDto, RefererStatisticsDataViewModel>();
+
+            CreateMap<WebToDayStatisticsDto, WebToDayStatisticsViewModel>();
         }
 
         /// <summary>

@@ -30,6 +30,17 @@ namespace Lycoris.Blog.Server.Controllers
             _webStatistics = webStatistics;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("Today")]
+        [Produces("application/json")]
+        public async Task<DataOutput<WebToDayStatisticsViewModel>> WebToDayStatistics()
+        {
+            var dto = await _webStatistics.GetWebToDayStatisticsAsync();
+            return Success(dto.ToMap<WebToDayStatisticsViewModel>());
+        }
 
         /// <summary>
         /// 浏览分布数据统计

@@ -38,7 +38,7 @@
       :list="table.list"
       :count="table.count"
       :loading="table.loading"
-      :toolbar="toolbar"
+      :toolbar="{ delete: true, search: true }"
       @page-change="handleCurrentChange"
       @toolbar-delete="$delete"
       @toolbar-search="$search"
@@ -84,11 +84,6 @@ import toast from '../../utils/toast';
 const tableRef = ref();
 const auditModalRef = ref();
 
-const toolbar = reactive({
-  delete: true,
-  search: true
-});
-
 const model = reactive({
   loading: true,
   beginTime: '',
@@ -98,7 +93,7 @@ const model = reactive({
   status: ''
 });
 
-const column = ref([
+const column = [
   {
     column: 'content',
     name: '留言内容'
@@ -136,7 +131,7 @@ const column = ref([
     align: 'center',
     width: '120px'
   }
-]);
+];
 
 const table = reactive({
   count: 0,
@@ -147,8 +142,6 @@ const table = reactive({
 });
 
 onMounted(async () => {
-  Object.freeze(toolbar);
-  Object.freeze(column);
   await getTableList();
   model.loading = false;
 });

@@ -1,7 +1,7 @@
 import request from '../utils/request';
 import { stores } from '../stores';
 
-const controller = '/lycoris/user';
+const controller = '/user';
 
 export const getUserBrief = (userId = undefined) => {
   if (userId == undefined || userId == '') {

@@ -9,7 +9,7 @@ namespace Lycoris.Blog.Application.AppServices.FreezeUsers
         /// 
         /// </summary>
         /// <returns></returns>
-        Task<List<FreezeUser>> GetFreeUserListAsync();
+        Task<List<FreezeUser>> GetFreezeUserListAsync();
 
         /// <summary>
         /// 
@@ -17,6 +17,6 @@ namespace Lycoris.Blog.Application.AppServices.FreezeUsers
         /// <param name="id"></param>
         /// <param name="failedCount"></param>
         /// <returns></returns>
-        Task SetFreeUserAsync(long id, int failedCount);
+        Task SetFreezeUserAsync(long id, int failedCount);
     }
 }

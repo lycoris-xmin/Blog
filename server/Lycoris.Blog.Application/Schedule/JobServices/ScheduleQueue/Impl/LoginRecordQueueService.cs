@@ -65,7 +65,7 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
             if (failedCount >= 3)
             {
                 // 设置禁止登录缓存
-                await _freeUser.Value.SetFreeUserAsync(model.UserId, failedCount);
+                await _freeUser.Value.SetFreezeUserAsync(model.UserId, failedCount);
             }
         }
     }

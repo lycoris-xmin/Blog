@@ -11,6 +11,7 @@ module.exports = {
     // 关闭文件多单词检测
     'vue/multi-word-component-names': 'off',
     'no-empty': 'off'
+
     // 'no-unused-vars': 'warn'
   }
 };

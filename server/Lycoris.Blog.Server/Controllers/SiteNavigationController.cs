@@ -1,6 +1,7 @@
 ﻿using Lycoris.AutoMapper.Extensions;
 using Lycoris.Blog.Application.AppServices.SiteNavigations;
 using Lycoris.Blog.Application.AppServices.SiteNavigations.Dtos;
+using Lycoris.Blog.Model.Exceptions;
 using Lycoris.Blog.Model.Global.Output;
 using Lycoris.Blog.Server.Application.Constants;
 using Lycoris.Blog.Server.FilterAttributes;
@@ -28,6 +29,18 @@ namespace Lycoris.Blog.Server.Controllers
             _siteNavigation = siteNavigation;
         }
 
+        /// <summary>
+        /// 网站收录分组枚举
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("Enum/Group")]
+        [Produces("application/json")]
+        public async Task<ListOutput<EnumsViewModel<int>>> GroupEnum()
+        {
+            var dto = await _siteNavigation.GetSiteNavigationGroupListAsync();
+            return Success(dto.ToMapList<EnumsViewModel<int>>());
+        }
+
         #region ======== 博客网站 ========
         /// <summary>
         /// 网站收录列表
@@ -35,9 +48,12 @@ namespace Lycoris.Blog.Server.Controllers
         /// <returns></returns>
         [HttpGet("List")]
         [Produces("application/json")]
-        public async Task<ListOutput<SiteNavigationDataViewModel>> SiteNavigationList()
+        public async Task<ListOutput<SiteNavigationDataViewModel>> SiteNavigationList([FromQuery] int? groupId)
         {
-            var dto = await _siteNavigation.GetSiteNavigationListAsync();
+            if (groupId.HasValue && groupId.Value <= 0)
+                throw new HttpStatusException(System.Net.HttpStatusCode.BadRequest, "");
+
+            var dto = await _siteNavigation.GetSiteNavigationListAsync(groupId!.Value);
             return Success(dto.ToMapList<SiteNavigationDataViewModel>());
         }
         #endregion
@@ -100,19 +116,6 @@ namespace Lycoris.Blog.Server.Controllers
         {
             await _siteNavigation.DeleteAsync(input.Id!.Value);
             return Success();
-        }
-
-        /// <summary>
-        /// 网站收录分组枚举
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet("Enum/Group")]
-        [AppAuthentication]
-        [Consumes("application/json"), Produces("application/json")]
-        public async Task<ListOutput<EnumsViewModel<string>>> GroupEnum()
-        {
-            var dto = await _siteNavigation.GetSiteNavigationGroupAsync();
-            return Success(dto.ToMapList<EnumsViewModel<string>>());
         }
         #endregion
     }

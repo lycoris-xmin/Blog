@@ -97,22 +97,25 @@ const emit = defineEmits(['login', 'search', 'userMessage']);
 
 watch(
   () => stores.user.isAdmin,
-  async value => {
+  value => {
     if (value) {
-      let res = await getAdmin();
-      if (res && res.resCode == 0 && res.data) {
-        adminPath.value = `${res.data.path}?key=${encodeURIComponent(secret.encrypt(stores.authorize.token))}`;
-      }
+      getAdminPath();
     }
   }
 );
 
-onMounted(async () => {
-  let res = await getAdmin();
-  if (res && res.resCode == 0 && res.data) {
-    adminPath.value = `${res.data.path}?key=${encodeURIComponent(secret.encrypt(stores.authorize.token))}`;
-  }
+onMounted(() => {
+  getAdminPath();
 });
+
+const getAdminPath = async () => {
+  if (stores.authorize.token && stores.authorize.tokenExpireTime > new Date().getTime()) {
+    let res = await getAdmin();
+    if (res && res.resCode == 0 && res.data) {
+      adminPath.value = `${res.data.path}?key=${encodeURIComponent(secret.encrypt(stores.authorize.token))}`;
+    }
+  }
+};
 
 const userLogin = () => {
   emit('login');

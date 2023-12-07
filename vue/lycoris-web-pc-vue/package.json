@@ -14,6 +14,7 @@
     "@microsoft/signalr": "^7.0.7",
     "@wangeditor/editor": "5.1.23",
     "@wangeditor/editor-for-vue": "5.1.12",
+    "aieditor": "^1.0.0-beta.8",
     "animate.css": "^4.1.1",
     "axios": "^1.3.4",
     "cherry-markdown": "^0.8.19",

@@ -1,4 +1,7 @@
-﻿namespace Lycoris.Blog.Application.AppServices.LoginRecords.Dtos
+﻿using Lycoris.Blog.Application.Common;
+using Lycoris.Common.Extensions;
+
+namespace Lycoris.Blog.Application.AppServices.LoginRecords.Dtos
 {
     public class LoginRecordDataDto
     {
@@ -13,5 +16,10 @@
         public bool Success { get; set; }
 
         public string? Remark { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public UserAgentInfo? UserAgentInfo { get => !this.UserAgent.IsNullOrEmpty() ? new UserAgentInfo(this.UserAgent!) : null; }
     }
 }

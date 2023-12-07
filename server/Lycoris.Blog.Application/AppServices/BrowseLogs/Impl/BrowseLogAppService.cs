@@ -47,7 +47,6 @@ namespace Lycoris.Blog.Application.AppServices.BrowseLogs.Impl
                                   Id = x.Id,
                                   Route = x.Route,
                                   PageName = x.PageName,
-                                  UserAgent = x.UserAgent,
                                   Ip = x.Ip,
                                   IpAddress = x.IpAddress,
                                   Referer = x.Referer,

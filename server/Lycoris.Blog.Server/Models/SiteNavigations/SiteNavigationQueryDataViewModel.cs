@@ -18,12 +18,17 @@
         /// <summary>
         /// 
         /// </summary>
-        public string? Domain { get; set; }
+        public string? Url { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
-        public string? Group { get; set; }
+        public int? GroupId { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string? GroupName { get; set; }
 
         /// <summary>
         /// 
@@ -33,6 +38,6 @@
         /// <summary>
         /// 
         /// </summary>
-        public DateTime CreateTime { get; set; }
+        public DateTime? CreateTime { get; set; }
     }
 }

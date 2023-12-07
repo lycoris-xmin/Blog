@@ -1,5 +1,82 @@
-import toast from '../../utils/toast';
-import { stores } from '../../stores';
+import axios from 'axios';
+import { api } from '../config.json';
+import { stores } from '../stores';
+import toast from './toast';
+
+const service = axios.create({
+  baseURL: `${api.server}${api.routePrefix}`,
+  timeout: api.timeout,
+  withCredentials: true
+});
+
+const handleRequestReject = err => {
+  if (err.statusCode == 200 && err.data) {
+    if (err.data.resCode == -99) {
+      toast.warn(err.data.resMsg);
+    }
+  }
+};
+
+const get = async (url, data, config = void 0) => {
+  const _config = {
+    method: 'get',
+    url: url,
+    headers: {
+      'X-Real-Request': new Date().getTime()
+    }
+  };
+
+  if (config) {
+    Object.assign(_config, config);
+  }
+
+  if (stores.authorize.token && (!('X-Real-User' in _config.headers) || !_config.headers['X-Real-User'])) {
+    _config.headers['X-Real-User'] = stores.authorize.token;
+  }
+
+  if (data) {
+    _config.params = data;
+  }
+
+  let resp = await service(_config).catch(err => {
+    handleRequestReject(err);
+    throw err;
+  });
+
+  return resp ? resp.data : {};
+};
+
+const post = async (url, data, fileUpload = false, config = void 0) => {
+  if (!config) {
+    config = {};
+  }
+
+  if (!config.headers) {
+    config.headers = {};
+  }
+
+  config.headers['X-Real-Request'] = new Date().getTime();
+
+  if (stores.authorize.token && (!('X-Real-User' in config.headers) || !config.headers['X-Real-User'])) {
+    config.headers['X-Real-User'] = stores.authorize.token;
+  }
+
+  let resp = void 0;
+
+  if (fileUpload) {
+    resp = await service.postForm(url, data, config).catch(err => {
+      handleRequestReject(err);
+      throw err;
+    });
+  } else {
+    resp = await service.post(url, data, config).catch(err => {
+      handleRequestReject(err);
+      throw err;
+    });
+  }
+
+  return resp ? resp.data : {};
+};
 
 const reject = (data, statusCode = 200) => {
   return Promise.reject({
@@ -27,7 +104,22 @@ const refreshToken = service => {
 let isRefreshing = false; // 标记是否正在刷新令牌
 let refreshSubscribers = []; // 用于存储等待刷新的请求
 
-const success = (resp, service) => {
+function handleRefreshSubscribers() {
+  const interval = setInterval(() => {
+    if (refreshSubscribers.length == 0) {
+      setTimeout(() => {
+        clearInterval(interval);
+      }, 5000);
+    } else {
+      const item = refreshSubscribers.shift();
+      item(stores.authorize.token);
+    }
+  }, 100);
+}
+
+service.interceptors.response.use(responseSuccessInterceptor, responseErrorInterceptor);
+
+function responseSuccessInterceptor(resp) {
   if (!resp.data) {
     return reject({
       resCode: -99,
@@ -51,7 +143,11 @@ const success = (resp, service) => {
   }
 
   if (resp.data.resCode == -21) {
-    const originalRequest = resp.config;
+    if (resp.config.url.includes('/authentication/sso/login')) {
+      return Promise.resolve(resp);
+    }
+
+    const originalRequest = { ...resp.config };
 
     if (!isRefreshing) {
       isRefreshing = true;
@@ -62,21 +158,21 @@ const success = (resp, service) => {
           }
 
           stores.authorize.setUserLoginState(res.data.data);
-          originalRequest.headers['X-Real-User'] = res.data.data.token;
+          originalRequest.headers['X-Real-User'] = stores.authorize.token;
 
           if (refreshSubscribers && refreshSubscribers.length) {
-            refreshSubscribers.forEach(subscriber => subscriber(res.data.data.token));
+            handleRefreshSubscribers();
           }
 
           return service(originalRequest);
         })
         .catch(err => {
-          stores.authorize.setUserLogoutState();
           return reject(err, err?.statusCode);
         })
         .finally(() => {
-          isRefreshing = false;
-          refreshSubscribers = [];
+          setTimeout(() => {
+            isRefreshing = false;
+          }, 3000);
         });
     } else {
       // 已经在刷新令牌，将原始请求加入等待队列
@@ -90,9 +186,9 @@ const success = (resp, service) => {
   }
 
   return Promise.resolve(resp);
-};
+}
 
-const error = err => {
+function responseErrorInterceptor(err) {
   if (err && err.response) {
     if (err.config.headers['X-Response-Interceptors']) {
       return Promise.reject(err);
@@ -166,9 +262,10 @@ const error = err => {
     },
     0
   );
-};
+}
 
 export default {
-  success,
-  error
+  axios,
+  get,
+  post
 };

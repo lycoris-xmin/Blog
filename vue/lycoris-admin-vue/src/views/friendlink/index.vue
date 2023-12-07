@@ -80,7 +80,7 @@ const model = reactive({
   status: ''
 });
 
-const column = ref([
+const column = [
   {
     column: 'icon',
     name: '网站头像',
@@ -117,7 +117,7 @@ const column = ref([
     width: '170px',
     align: 'center'
   }
-]);
+];
 
 const table = reactive({
   count: 0,

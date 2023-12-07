@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { pageRoutes, getMenus } from './routes';
 import nProgress from 'nprogress';
-import { web } from '../config.json';
 import { stores } from '../stores';
 
 nProgress.configure({
@@ -48,20 +47,16 @@ $router.beforeEach(async to => {
     return { name: 'server-error', params: { code: 404 } };
   }
 
-  if (!['login', 'server-error', 'screen-lock', 'resume'].includes(to.name)) {
-    if (!document.title.includes('管理后台')) {
-      document.title = `管理后台_${stores.webSetting.webName}`;
-    }
+  if (stores.webSetting.webName) {
+    document.title = `${to.meta.title}_${stores.webSetting.webName}`;
+  } else {
+    document.title = `${to.meta.title}_网站管理后台`;
+  }
 
+  if (!['login', 'server-error', 'screen-lock', 'resume'].includes(to.name)) {
     // if (stores.authorize.token && stores.screenLock.checkLossOfActivity()) {
     //   return { name: 'screen-lock', query: { path: to.path } };
     // }
-  } else {
-    if (to.meta.title) {
-      document.title = `${to.meta.title}_${stores.webSetting.webName}`;
-    } else {
-      document.title = stores.webSetting.webName;
-    }
   }
 });
 

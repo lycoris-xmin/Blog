@@ -6,6 +6,8 @@
 
         public string? Domain { get; set; }
 
-        public string? Group { get; set; }
+        public int? Group { get; set; }
+
+        public string? GroupName { get; set; }
     }
 }

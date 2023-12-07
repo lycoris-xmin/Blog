@@ -1,8 +1,7 @@
 import { defineStore } from 'pinia';
 import secret from '../../utils/secret';
 
-const tokenKey = 'v-t-ek',
-  refreshTokenKey = 'v-k-rt';
+const dataKey = 'v-user';
 
 const encryptString = data => {
   return secret.encrypt(JSON.stringify(data));
@@ -20,20 +19,26 @@ export default defineStore('authorize', {
   state: () => {
     let data = {
       token: '',
-      refreshToken: ''
+      tokenExpireTime: 0,
+      refreshToken: '',
+      refreshTokenExpireTime: 0
     };
 
     try {
-      data.token = decryptString(localStorage.getItem(tokenKey));
-    } catch {
-      data.token = '';
-    }
+      const value = decryptString(localStorage.getItem(dataKey));
+      if (value && Object.keys(value).length == 4) {
+        const now = new Date().getTime();
+        if (now < value.refreshTokenExpireTime) {
+          data.refreshToken = value.refreshToken;
+          data.refreshTokenExpireTime = value.refreshTokenExpireTime;
 
-    try {
-      data.refreshToken = decryptString(localStorage.getItem(refreshTokenKey));
-    } catch {
-      data.refreshToken = '';
-    }
+          if (now < value.tokenExpireTime) {
+            data.token = value.token;
+            data.tokenExpireTime = value.tokenExpireTime;
+          }
+        }
+      }
+    } catch {}
 
     return data;
   },
@@ -43,22 +48,42 @@ export default defineStore('authorize', {
      * @param {Object} authorize
      */
     setUserLoginState: function (authorize) {
-      this.token = authorize.token || '';
-      localStorage.setItem(tokenKey, encryptString(this.token));
+      if (authorize.token) {
+        this.token = authorize.token;
+      }
+
+      if (authorize.tokenExpireTime) {
+        this.tokenExpireTime = new Date(authorize.tokenExpireTime).getTime();
+      }
 
       if (authorize.refreshToken) {
         this.refreshToken = authorize.refreshToken;
-        localStorage.setItem(refreshTokenKey, encryptString(this.refreshToken));
       }
+
+      if (authorize.refreshTokenExpireTime) {
+        this.refreshTokenExpireTime = new Date(authorize.refreshTokenExpireTime).getTime();
+      }
+
+      localStorage.setItem(
+        dataKey,
+        encryptString({
+          token: this.token,
+          tokenExpireTime: this.tokenExpireTime,
+          refreshToken: this.refreshToken,
+          refreshTokenExpireTime: this.refreshTokenExpireTime
+        })
+      );
     },
     /**
      * @function 设置用户登出
      */
     setUserLogoutState: function () {
       this.token = '';
+      this.tokenExpireTime = 0;
       this.refreshToken = '';
-      localStorage.removeItem(tokenKey);
-      localStorage.removeItem(refreshTokenKey);
+      this.refreshTokenExpireTime = 0;
+
+      localStorage.removeItem(dataKey);
     }
   }
 });

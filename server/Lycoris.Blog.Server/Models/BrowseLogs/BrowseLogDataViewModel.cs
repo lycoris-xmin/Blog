@@ -23,11 +23,6 @@
         /// <summary>
         /// 
         /// </summary>
-        public string? UserAgent { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
         public string? Ip { get; set; }
 
         /// <summary>

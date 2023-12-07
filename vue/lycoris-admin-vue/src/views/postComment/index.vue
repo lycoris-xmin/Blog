@@ -56,7 +56,7 @@
 </template>
 
 <script setup name="comment">
-import { ref, reactive, onMounted } from 'vue';
+import { reactive, onMounted } from 'vue';
 import pageLayout from '../layout/page-layout.vue';
 import LycorisTable from '../../components/lycoris-table/index.vue';
 import { getCommentList, deleteComment } from '../../api/postComment';
@@ -72,7 +72,7 @@ const model = reactive({
   originalContent: ''
 });
 
-const column = ref([
+const column = [
   {
     column: 'title',
     name: '文章标题',
@@ -104,7 +104,7 @@ const column = ref([
     width: 200,
     fixed: 'right'
   }
-]);
+];
 
 const table = reactive({
   count: 0,
@@ -115,7 +115,6 @@ const table = reactive({
 });
 
 onMounted(async () => {
-  Object.freeze(column);
   await getTableList();
   model.loading = false;
 });

@@ -31,7 +31,7 @@ const menusRoutes = [
         path: `${dashboardUrlPrefix}/post/editor`,
         name: 'post-editor',
         component: () => import('../views/post/createorupdate.vue'),
-        meta: {}
+        meta: { title: '文章编辑' }
       },
       {
         path: `${dashboardUrlPrefix}/blog/category`,
@@ -84,7 +84,7 @@ const menusRoutes = [
   },
   {
     isRoute: false,
-    title: '网站管理',
+    title: '页面管理',
     icon: 'coin',
     routes: [
       {
@@ -92,7 +92,7 @@ const menusRoutes = [
         name: 'talks',
         component: () => import('../views/talks/index.vue'),
         meta: {
-          title: '说说管理',
+          title: '网站说说',
           keepAlive: true,
           menu: true
         }
@@ -102,94 +102,11 @@ const menusRoutes = [
         name: 'navigation',
         component: () => import('../views/navigation/index.vue'),
         meta: {
-          title: '收录管理',
+          title: '网站收录',
           keepAlive: true,
           menu: true
         }
       },
-      {
-        path: `${dashboardUrlPrefix}/file`,
-        name: 'filemanage',
-        component: () => import('../views/fileManage/index.vue'),
-        meta: {
-          title: '附件管理',
-          keepAlive: false,
-          menu: true
-        }
-      }
-    ]
-  },
-  {
-    isRoute: false,
-    title: '网站统计',
-    icon: 'pie-chart',
-    routes: [
-      {
-        path: `${dashboardUrlPrefix}/log/request`,
-        name: 'statistics-request',
-        component: () => import('../views/requestLog/index.vue'),
-        meta: {
-          title: '请求统计',
-          keepAlive: true,
-          menu: true
-        }
-      },
-      {
-        path: `${dashboardUrlPrefix}/log/browse`,
-        name: 'statistics-browse',
-        component: () => import('../views/browseLog/index.vue'),
-        meta: {
-          title: '浏览统计',
-          keepAlive: true,
-          menu: true
-        }
-      },
-      {
-        path: `${dashboardUrlPrefix}/web/statistics`,
-        name: 'web-statistics',
-        component: () => import('../views/webStatistics/index.vue'),
-        meta: {
-          title: '网站统计',
-          keepAlive: true,
-          menu: true
-        }
-      }
-    ]
-  },
-  {
-    isRoute: false,
-    title: '访问管控',
-    icon: 'map-location',
-    routes: [
-      {
-        isRoute: true,
-        path: `${dashboardUrlPrefix}/access`,
-        name: 'access',
-        component: () => import('../views/access/index.vue'),
-        meta: {
-          title: '异常访问',
-          keepAlive: true,
-          menu: true
-        }
-      },
-      {
-        isRoute: true,
-        path: `${dashboardUrlPrefix}/blackList`,
-        name: 'black-list',
-        component: () => import('../views/blackList/index.vue'),
-        meta: {
-          title: 'IP黑名单',
-          keepAlive: true,
-          menu: true
-        }
-      }
-    ]
-  },
-  {
-    isRoute: false,
-    title: '关 于',
-    icon: 'connection',
-    routes: [
       {
         isRoute: true,
         path: `${dashboardUrlPrefix}/about/web`,
@@ -218,6 +135,33 @@ const menusRoutes = [
   },
   {
     isRoute: false,
+    title: '日志管理',
+    icon: 'setting',
+    routes: [
+      {
+        path: `${dashboardUrlPrefix}/log/request`,
+        name: 'statistics-request',
+        component: () => import('../views/requestLog/index.vue'),
+        meta: {
+          title: '请求日志',
+          keepAlive: true,
+          menu: true
+        }
+      },
+      {
+        path: `${dashboardUrlPrefix}/log/browse`,
+        name: 'statistics-browse',
+        component: () => import('../views/browseLog/index.vue'),
+        meta: {
+          title: '浏览日志',
+          keepAlive: true,
+          menu: true
+        }
+      }
+    ]
+  },
+  {
+    isRoute: false,
     title: '系统管理',
     icon: 'setting',
     routes: [
@@ -227,6 +171,37 @@ const menusRoutes = [
         component: () => import('../views/user/index.vue'),
         meta: {
           title: '用户管理',
+          keepAlive: true,
+          menu: true
+        }
+      },
+      {
+        path: `${dashboardUrlPrefix}/file`,
+        name: 'filemanage',
+        component: () => import('../views/fileManage/index.vue'),
+        meta: {
+          title: '附件管理',
+          keepAlive: false,
+          menu: true
+        }
+      },
+      {
+        isRoute: true,
+        path: `${dashboardUrlPrefix}/accesscontrol`,
+        name: 'access-control',
+        component: () => import('../views/accessControl/index.vue'),
+        meta: {
+          title: '访问管控',
+          keepAlive: true,
+          menu: true
+        }
+      },
+      {
+        path: `${dashboardUrlPrefix}/web/statistics`,
+        name: 'web-statistics',
+        component: () => import('../views/webStatistics/index.vue'),
+        meta: {
+          title: '网站统计',
           keepAlive: true,
           menu: true
         }

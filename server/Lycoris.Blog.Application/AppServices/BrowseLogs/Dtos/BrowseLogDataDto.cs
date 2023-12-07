@@ -8,8 +8,6 @@
 
         public string? PageName { get; set; }
 
-        public string? UserAgent { get; set; }
-
         public uint? Ip { get; set; }
 
         public string? IpAddress { get; set; }

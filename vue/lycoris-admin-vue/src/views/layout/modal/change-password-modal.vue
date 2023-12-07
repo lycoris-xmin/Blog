@@ -65,10 +65,7 @@ const submit = async () => {
         return;
       }
     }
-  } catch (error) {
-    //
-    console.log(1);
-  }
+  } catch (error) {}
 };
 
 const close = function () {

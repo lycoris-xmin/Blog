@@ -35,7 +35,7 @@ namespace Lycoris.Blog.Server.Controllers
         /// <returns></returns>
         [HttpGet("List")]
         [Produces("application/json")]
-        public async Task<PageOutput<LoginRecordDataViewModel>> List([FromBody] PageInput input)
+        public async Task<PageOutput<LoginRecordDataViewModel>> List([FromQuery] PageInput input)
         {
             var dto = await _loginRecord.GetListAsync(input.PageIndex!.Value, input.PageSize!.Value);
             return Success(dto.Count, dto.List.ToMapList<LoginRecordDataViewModel>());

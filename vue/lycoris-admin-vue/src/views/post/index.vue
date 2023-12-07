@@ -33,7 +33,7 @@
       :list="table.list"
       :count="table.count"
       :loading="table.loading"
-      :toolbar="toolbar"
+      :toolbar="{ search: true, create: true }"
       @page-change="handleCurrentChange"
       @toolbar-create="$create"
       @toolbar-search="$search"
@@ -127,11 +127,6 @@ import { countChange } from '../../utils/tool';
 const router = useRouter();
 const formRef = ref();
 
-const toolbar = reactive({
-  search: true,
-  create: true
-});
-
 const model = reactive({
   loading: true,
   commentSwitchLoading: [],
@@ -142,7 +137,7 @@ const model = reactive({
   isPublish: null
 });
 
-const column = ref([
+const column = [
   {
     column: 'icon',
     name: '封面图',
@@ -183,7 +178,7 @@ const column = ref([
     align: 'center',
     fixed: 'right'
   }
-]);
+];
 
 const table = reactive({
   count: 0,
@@ -194,8 +189,6 @@ const table = reactive({
 });
 
 onMounted(async () => {
-  Object.freeze(toolbar);
-  Object.freeze(column);
   getCategory();
   await getTableList(false);
   model.loading = false;

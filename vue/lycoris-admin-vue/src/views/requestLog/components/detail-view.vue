@@ -52,7 +52,7 @@
         <div class="request-flex-item border-bottom flex-start-center">
           <div class="flex-item-title w-100">响应体</div>
           <div class="flex-item-value" style="width: 100%; overflow: auto">
-            <pre v-html="syntaxHighlight(model.response)"></pre>
+            <pre v-html="syntaxHighlight(model.response)" :class="{ error: model.exception }"></pre>
           </div>
         </div>
         <div class="request-flex-item border-bottom flex-start-center" v-show="model.exception">
@@ -61,10 +61,14 @@
             {{ model.exception || '' }}
           </div>
         </div>
-        <div class="request-flex-item border-bottom flex-start-center" v-show="model.stackTrace">
+        <div class="request-flex-item border-bottom flex-start-center" v-show="model.stackTrace && model.stackTrace.length > 0">
           <div class="flex-item-title w-100">错误堆栈</div>
           <div class="flex-item-value" style="width: 100%; overflow: auto">
-            {{ model.stackTrace || '' }}
+            <ul>
+              <li v-for="(item, index) in model.stackTrace" :key="index">
+                {{ item }}
+              </li>
+            </ul>
           </div>
         </div>
       </div>
@@ -90,7 +94,7 @@ const model = reactive({
   ip: '',
   ipAddress: '',
   exception: '',
-  stackTrace: '',
+  stackTrace: [],
   createTime: ''
 });
 
@@ -140,8 +144,9 @@ const show = async row => {
 
     if (result.headers && Object.keys(result.headers).length > 0) {
       for (let item in result.headers) {
+        const capitalized = item.charAt(0).toUpperCase() + item.slice(1);
         model.headers.push({
-          key: item,
+          key: capitalized,
           value: result.headers[item]
         });
       }
@@ -156,8 +161,15 @@ const show = async row => {
     model.statusCode = result.statusCode;
     model.params = result.params;
     model.response = result.response;
+
     model.exception = result.exception;
-    model.stackTrace = result.stackTrace;
+    if (result.stackTrace) {
+      const list = result.stackTrace.split('\r\n');
+      list.forEach(x => (x = x.trim()));
+      model.stackTrace = list;
+    } else {
+      model.stackTrace = [];
+    }
   }
 
   model.dialogVisible = true;
@@ -236,6 +248,13 @@ defineExpose({
         color: var(--color-dark);
         padding: 10px;
         overflow: hidden;
+
+        pre.error {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          word-break: break-all;
+          white-space: inherit;
+        }
       }
     }
 

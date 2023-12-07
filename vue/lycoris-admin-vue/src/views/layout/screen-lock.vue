@@ -99,19 +99,12 @@ const ownerInit = async () => {
   }
 };
 
-const tokenCheck = async () => {
+const tokenCheck = () => {
   console.log('检查令牌');
   if (document.visibilityState === 'visible' && model.display) {
     // 当前页面为展示窗口
     // 验证令牌有效期
-    let res = await refreshToken(stores.authorize.refreshToken);
-    if (res && res.resCode == 0) {
-      stores.authorize.setUserLoginState(res.data);
-    }
-
-    console.log('检查令牌执行');
-  } else {
-    console.log('检查令牌不执行');
+    refreshToken();
   }
 };
 </script>

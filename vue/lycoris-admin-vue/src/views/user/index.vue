@@ -12,7 +12,6 @@
     </div>
 
     <lycoris-table
-      ref="tableRef"
       :column="column"
       :page-index="table.pageIndex"
       :table-height="'calc(100vh - 385px)'"
@@ -71,7 +70,7 @@ const model = reactive({
   email: ''
 });
 
-const column = ref([
+const column = [
   {
     column: 'avatar',
     name: '用户头像',
@@ -104,7 +103,7 @@ const column = ref([
     fixed: 'right',
     align: 'left'
   }
-]);
+];
 
 const table = reactive({
   count: 0,
@@ -115,7 +114,6 @@ const table = reactive({
 });
 
 onMounted(async () => {
-  Object.freeze(column);
   await getTableList();
   model.loading = false;
 });

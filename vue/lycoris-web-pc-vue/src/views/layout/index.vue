@@ -75,11 +75,17 @@ watch(
   }
 );
 
-onBeforeMount(async () => {
+onBeforeMount(() => {
   staticSourceInit();
   publishStatisticsInit();
   postIcon();
-  await userBriefInit();
+  userBriefInit();
+});
+
+onMounted(async () => {
+  if (!loginModalRef.value) {
+    Object.freeze(loginModalRef);
+  }
 });
 
 const publishStatisticsInit = async () => {
@@ -100,14 +106,8 @@ const postIcon = async () => {
   } catch (error) {}
 };
 
-onMounted(async () => {
-  if (!loginModalRef.value) {
-    Object.freeze(loginModalRef);
-  }
-});
-
 const userBriefInit = async () => {
-  if (!stores.user.state) {
+  if (!stores.user.state && stores.authorize.token && stores.authorize.tokenExpireTime > new Date().getTime()) {
     try {
       let res = await getUserBrief();
       if (res && res.resCode == 0) {

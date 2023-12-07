@@ -139,14 +139,8 @@ const subscribeAuthroization = () => {
 };
 
 const subscribeRefreshToken = () => {
-  signalR.subscribe('refreshToken', async () => {
-    let res = await refreshToken(stores.authorize.refreshToken);
-    if (res && res.resCode == 0) {
-      stores.authorize.setUserLoginState(res.data.token);
-    } else {
-      signalR.stop();
-      stores.authorize.setUserLogoutState();
-    }
+  signalR.subscribe('refreshToken', () => {
+    refreshToken();
   });
 };
 

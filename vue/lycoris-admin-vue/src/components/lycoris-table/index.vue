@@ -182,7 +182,7 @@ let lastPageIndex = 1;
 
 watch(pageIndex, (val, oldVale) => {
   if (val != oldVale) {
-    pageChange(pageIndex);
+    pageChange(val);
   }
 });
 
@@ -206,7 +206,7 @@ const pageChange = debounce(index => {
     emit('pageChange', index);
     lastPageIndex = index;
   }
-}, 500);
+}, 100);
 
 const handleSelectionChange = rows => {
   emit('update:selected', rows);
@@ -277,7 +277,7 @@ defineExpose({
 
       .el-tag {
         .el-tag__content {
-          font-size: 16px;
+          font-size: 14px;
         }
       }
     }

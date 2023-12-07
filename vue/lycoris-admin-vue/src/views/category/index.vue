@@ -8,7 +8,7 @@
       :list="table.list"
       :count="table.count"
       :loading="table.loading"
-      :toolbar="toolbar"
+      :toolbar="{ search: true, create: true }"
       @page-change="handleCurrentChange"
       @toolbar-create="$create"
       @toolbar-search="$search"
@@ -54,12 +54,7 @@ import toast from '../../utils/toast';
 const modal = ref();
 const loading = ref(true);
 
-const toolbar = reactive({
-  search: true,
-  create: true
-});
-
-const column = ref([
+const column = [
   {
     column: 'icon',
     name: '分类图片',
@@ -91,7 +86,7 @@ const column = ref([
     width: 200,
     fixed: 'right'
   }
-]);
+];
 
 const table = reactive({
   count: 0,
@@ -102,8 +97,6 @@ const table = reactive({
 });
 
 onMounted(async () => {
-  Object.freeze(toolbar);
-  Object.freeze(column);
   await getTableList(false);
   loading.value = false;
 });

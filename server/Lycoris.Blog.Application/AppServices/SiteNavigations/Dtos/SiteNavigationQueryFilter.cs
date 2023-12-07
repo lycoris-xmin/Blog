@@ -6,7 +6,7 @@ namespace Lycoris.Blog.Application.AppServices.SiteNavigations.Dtos
     {
         public string? Name { get; set; }
 
-        public string? Group { get; set; }
+        public int? GroupId { get; set; }
 
         public string? Domain { get; set; }
     }

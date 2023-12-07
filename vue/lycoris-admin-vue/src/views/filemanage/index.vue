@@ -114,14 +114,15 @@ const model = reactive({
   localBack: '',
   use: '',
   configUploadChannel: 0,
-  downloadAllLoading: false
+  downloadAllLoading: false,
+  checkState: []
 });
 
 const toolbar = reactive({
   search: true
 });
 
-const column = ref([
+const column = [
   {
     column: 'fileName',
     name: '文件名称'
@@ -153,7 +154,7 @@ const column = ref([
     fixed: 'right',
     align: 'left'
   }
-]);
+];
 
 const table = reactive({
   count: 0,
@@ -168,7 +169,6 @@ onBeforeMount(() => {
 });
 
 onMounted(async () => {
-  Object.freeze(column);
   await getEnum();
   await getConfigUploadChannel();
   await getTableList();
@@ -233,15 +233,30 @@ const handleCurrentChange = pageIndex => {
 
 const checkFileUse = async row => {
   //
+  if (model.checkState.length >= 3) {
+    toast.warn('只能同时验证三个文件的使用状态');
+    return;
+  }
+  let index = -1;
+
   row.check = true;
   try {
+    model.checkState.push(row.id);
     let res = await checkFileUseState(row.id);
     if (res && res.resCode == 0) {
-      //
-      toast.success('状态检测任务已提交后台处理');
+      toast.success('状态检测任务已提交后台处理', {
+        grouping: true
+      });
+    } else {
+      index = model.checkState.findIndex(x => x == row.id);
     }
   } catch {
+    index = model.checkState.findIndex(x => x == row.id);
     row.check = false;
+  } finally {
+    if (index > -1) {
+      model.checkState.splice(index, 1);
+    }
   }
 };
 
@@ -291,6 +306,11 @@ const subscribeCheckkFileUseState = data => {
           toast.success(`${table.list[index].fileName}：${data.message}`);
         } else {
           toast.warn(`${table.list[index].fileName}：未检测到使用状态`);
+        }
+
+        index = model.checkState.findIndex(x => x == data.id);
+        if (index > -1) {
+          model.checkState.splice(index, 1);
         }
       }, 1000);
     }

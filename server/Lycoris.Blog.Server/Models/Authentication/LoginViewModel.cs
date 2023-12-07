@@ -14,5 +14,15 @@
         /// 
         /// </summary>
         public string? RefreshToken { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public DateTime TokenExpireTime { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public DateTime RefreshTokenExpireTime { get; set; }
     }
 }

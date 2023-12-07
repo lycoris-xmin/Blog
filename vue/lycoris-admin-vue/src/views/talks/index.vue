@@ -8,7 +8,7 @@
       :list="table.list"
       :count="table.count"
       :loading="table.loading"
-      :toolbar="toolbar"
+      :toolbar="{ search: true, create: true }"
       @page-change="handleCurrentChange"
       @toolbar-create="$create"
       @toolbar-search="$search"
@@ -41,12 +41,7 @@ const model = reactive({
   loading: true
 });
 
-const toolbar = reactive({
-  search: true,
-  create: true
-});
-
-const column = ref([
+const column = [
   {
     column: 'content',
     name: '说说内容'
@@ -63,7 +58,7 @@ const column = ref([
     align: 'center',
     fixed: 'right'
   }
-]);
+];
 
 const table = reactive({
   count: 0,
@@ -74,8 +69,6 @@ const table = reactive({
 });
 
 onMounted(async () => {
-  Object.freeze(toolbar);
-  Object.freeze(column);
   await getTableList();
   model.loading = false;
 });

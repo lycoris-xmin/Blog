@@ -81,7 +81,7 @@
 
       <template #action="{ row }">
         <el-button type="info" plain @click="$viewLog(row)">详情</el-button>
-        <el-button type="danger" v-if="!row.success && !row.route.startsWith(api.routePrefix)" plain @click="$accessContorl(row)" :loading="row.controlLoading">IP管控</el-button>
+        <el-button type="danger" v-if="!row.success && row.statusCode >= 400 && row.statusCode < 500 && row.statusCode != 401" plain @click="$accessContorl(row)" :loading="row.controlLoading">访问管控</el-button>
       </template>
     </lycoris-table>
 
@@ -98,7 +98,6 @@ import { getList, deleteLog, setAccessControl } from '../../api/requestLog';
 import swal from '../../utils/swal';
 import toast from '../../utils/toast';
 import { useRoute } from 'vue-router';
-import { api } from '../../config.json';
 
 const tableRef = ref();
 const detailViewRef = ref();
@@ -114,7 +113,7 @@ const model = reactive({
   elapsed: ''
 });
 
-const column = ref([
+const column = [
   {
     column: 'route',
     name: '路由地址',
@@ -156,11 +155,11 @@ const column = ref([
   {
     column: 'action',
     name: '操作',
-    width: '200px',
+    width: '220px',
     fixed: 'right',
     align: 'left'
   }
-]);
+];
 
 const table = reactive({
   count: 0,
@@ -173,7 +172,6 @@ const table = reactive({
 let mounted = true;
 
 onMounted(async () => {
-  Object.freeze(column);
   await loadList();
   model.loading = false;
   mounted = false;

@@ -1,6 +1,6 @@
 import request from '../utils/request';
 
-const controller = '/lycoris/chat';
+const controller = '/chat';
 
 export const getChatRoomList = ({ pageIndex, pageSize }) => {
   return request.get(`${controller}/room/list`, {

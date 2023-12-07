@@ -239,8 +239,6 @@ namespace Lycoris.Blog.Server.Application
 
             CreateMap<SiteNavigationUpdateInput, UpdateSiteNavigationDto>();
 
-            CreateMap<SiteNavigationDomainDataDto, SiteNavigationDomainDataViewModel>();
-
             CreateMap<SiteNavigationDataDto, SiteNavigationDataViewModel>();
 
             CreateMap<StaticFileListInput, StaticFileListFilter>();
@@ -286,7 +284,14 @@ namespace Lycoris.Blog.Server.Application
 
             CreateMap<WebSettingDto, WebSettingViewModel>();
 
-            CreateMap<LoginRecordDataDto, LoginRecordDataViewModel>();
+            CreateMap<LoginRecordDataDto, LoginRecordDataViewModel>()
+                .ForMember(x => x.Ip, opt => opt.MapFrom(src => IPAddressHelper.UInt32ToIpv4(src.Ip)))
+                .ForMember(x => x.Browser, opt => opt.MapFrom(src => src.UserAgentInfo == null ? "" : src.UserAgentInfo.Browser))
+                .ForMember(x => x.BrowserIcon, opt => opt.MapFrom(src => src.UserAgentInfo == null ? "" : src.UserAgentInfo.BrowserIcon))
+                .ForMember(x => x.OS, opt => opt.MapFrom(src => src.UserAgentInfo == null ? "" : src.UserAgentInfo.OS))
+                .ForMember(x => x.OSIcon, opt => opt.MapFrom(src => src.UserAgentInfo == null ? "" : src.UserAgentInfo.OSIcon))
+                .ForMember(x => x.Device, opt => opt.MapFrom(src => src.UserAgentInfo == null ? "" : src.UserAgentInfo.Device))
+                .ForMember(x => x.DeviceIcon, opt => opt.MapFrom(src => src.UserAgentInfo == null ? "" : src.UserAgentInfo.DeviceIcon));
 
             CreateMap<MessageConfigurationDto, MessageConfigurationViewModel>();
 

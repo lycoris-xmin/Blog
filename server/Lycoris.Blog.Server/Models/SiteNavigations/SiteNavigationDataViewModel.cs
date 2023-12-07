@@ -8,11 +8,16 @@
         /// <summary>
         /// 
         /// </summary>
-        public string? Group { get; set; }
+        public string? Name { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
-        public List<SiteNavigationDomainDataViewModel>? GroupList { get; set; }
+        public string? Domain { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string? Url { get; set; }
     }
 }

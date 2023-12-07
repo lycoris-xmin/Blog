@@ -30,6 +30,15 @@ namespace Lycoris.Blog.Application.AppServices.Authentication.Impl
     [AutofacRegister(ServiceLifeTime.Scoped, PropertiesAutowired = true, EnableInterceptor = true)]
     public class AuthenticationAppService : ApplicationBaseService, IAuthenticationAppService
     {
+        /// <summary>
+        /// 分钟
+        /// </summary>
+        const int TokenExpireTime = 10;
+        /// <summary>
+        /// 天数
+        /// </summary>
+        const int RefreshTokenExpireTime = 14;
+
         private readonly IRepository<User, long> _user;
         private readonly IRepository<LoginToken, int> _loginToken;
         private readonly Lazy<ILoginTokenAppService> _loginTokenService;
@@ -110,11 +119,11 @@ namespace Lycoris.Blog.Application.AppServices.Authentication.Impl
             }
 
             // 生成访问令牌
-            data.TokenExpireTime = DateTime.Now.AddMinutes(20);
+            data.TokenExpireTime = DateTime.Now.AddMinutes(TokenExpireTime);
             data.Token = _loginTokenService.Value.GenereateToken(input.Id.Value, data.TokenExpireTime, dto.IsAdmin ?? false);
 
             // 生成刷新令牌
-            data.RefreshTokenExpireTime = DateTime.Now.AddDays(remember ? 15 : 1);
+            data.RefreshTokenExpireTime = DateTime.Now.AddDays(remember ? RefreshTokenExpireTime : 1);
             data.RefreshToken = _loginTokenService.Value.GenereateToken(input.Id.Value, data.RefreshTokenExpireTime, dto.IsAdmin ?? false);
 
             // 插入数据库
@@ -123,6 +132,7 @@ namespace Lycoris.Blog.Application.AppServices.Authentication.Impl
             dto.Token = data.Token;
             dto.TokenExpireTime = data.TokenExpireTime;
             dto.RefreshToken = data.RefreshToken;
+            dto.RefreshTokenExpireTime = data.RefreshTokenExpireTime;
 
             // 设置登录令牌缓存
             _cache.Value.SetLoginState(dto.Token, dto.ToMap<LoginUserCacheModel>());
@@ -197,12 +207,12 @@ namespace Lycoris.Blog.Application.AppServices.Authentication.Impl
                 _cache.Value.SetLogoutState(data.Token);
 
             // 生成访问令牌
-            data.TokenExpireTime = DateTime.Now.AddMinutes(20);
+            data.TokenExpireTime = DateTime.Now.AddMinutes(TokenExpireTime);
             data.Token = _loginTokenService.Value.GenereateToken(userId.Value, data.TokenExpireTime, cache!.IsAdmin ?? false);
 
             // 刷新刷新令牌的过期时间
             if (data.RefreshTokenExpireTime.AddHours(-12) < DateTime.Now)
-                data.RefreshTokenExpireTime = DateTime.Now.AddDays(1);
+                data.RefreshTokenExpireTime = data.Remember ? DateTime.Now.AddDays(RefreshTokenExpireTime) : DateTime.Now.AddDays(1);
 
             await _loginToken.UpdateFieIdsAsync(data, x => x.Token, x => x.TokenExpireTime, x => x.RefreshTokenExpireTime);
 
@@ -219,7 +229,8 @@ namespace Lycoris.Blog.Application.AppServices.Authentication.Impl
                 IsAdmin = cache.IsAdmin,
                 Token = data.Token,
                 TokenExpireTime = data.TokenExpireTime,
-                RefreshToken = data.RefreshToken
+                RefreshToken = data.RefreshToken,
+                RefreshTokenExpireTime = data.RefreshTokenExpireTime
             };
         }
 
@@ -280,26 +291,13 @@ namespace Lycoris.Blog.Application.AppServices.Authentication.Impl
             else if (expitedTime <= DateTime.Now)
                 throw new OutputException(ResCodeEnum.TokenExpired);
 
-            var user = await _user.GetAsync(userId!.Value);
-            if (user == null)
-            {
-                return null;
-            }
+            var user = await _user.GetAsync(userId!.Value) ?? throw new HttpStatusException(HttpStatusCode.BadRequest, $"can not find user by id:{userId}");
 
-
-            var data = await _loginToken.GetAll().Where(x => x.UserId == userId!.Value).Where(x => x.IsManagement == isManagement).SingleOrDefaultAsync();
-            if (data == null)
-            {
-
-                return null;
-            }
+            var data = await _loginToken.GetAll().Where(x => x.UserId == userId!.Value).Where(x => x.IsManagement == isManagement).SingleOrDefaultAsync()
+                ?? throw new HttpStatusException(HttpStatusCode.BadRequest, $"can not find login token by user id:{userId}");
 
             if (data.Token != token)
-            {
-
-                return null;
-            }
-
+                throw new HttpStatusException(HttpStatusCode.Unauthorized, $"login token:{token} can not match server token:{data.Token}");
 
             cache = new LoginUserCacheModel()
             {

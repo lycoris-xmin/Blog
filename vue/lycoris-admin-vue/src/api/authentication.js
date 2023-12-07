@@ -1,4 +1,6 @@
 import request from '../utils/request';
+import { stores } from '../stores';
+import { throttle } from '../utils/tool';
 
 const controller = '/authentication';
 
@@ -30,11 +32,21 @@ export const logout = () => {
   return request.post(`${controller}/dashboard/logout`);
 };
 
-export const refreshToken = async refreshToken => {
-  return request.post(`${controller}/dashboard/refresh/token`, {
-    refreshToken: refreshToken
-  });
-};
+export const refreshToken = throttle(async () => {
+  try {
+    const res = await request.post(`${controller}/dashboard/refresh/token`, {
+      refreshToken: stores.authorize.refreshToken
+    });
+
+    if (res && res.resCode == 0) {
+      stores.authorize.setUserLoginState(res.data);
+    } else {
+      stores.authorize.setUserLogoutState();
+    }
+  } catch (error) {
+    stores.authorize.setUserLogoutState();
+  }
+}, 1000);
 
 export const changePassword = ({ oldPassword, password }) => {
   return request.post(`${controller}/dashboard/changepassword`, { oldPassword, password });

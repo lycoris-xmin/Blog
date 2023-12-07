@@ -1,6 +1,6 @@
 import request from '../utils/request';
 
-const controller = '/lycoris/authentication';
+const controller = '/authentication';
 
 export const loginValidate = ({ email, password }) => {
   return request.post(`${controller}/login/validate`, {

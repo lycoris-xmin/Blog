@@ -25,7 +25,7 @@
       :list="table.list"
       :count="table.count"
       :loading="table.loading"
-      :toolbar="table.toolar"
+      :toolbar="{ search: true, create: true }"
       @page-change="handleCurrentChange"
       @toolbar-create="$create"
       @toolbar-search="$search"
@@ -66,7 +66,7 @@ const model = reactive({
   groupOption: []
 });
 
-const column = ref([
+const column = [
   {
     column: 'name',
     name: '收录名称',
@@ -93,18 +93,14 @@ const column = ref([
     align: 'center',
     width: '180px'
   }
-]);
+];
 
 const table = reactive({
   count: 0,
   list: [],
   pageIndex: 1,
   pageSize: 15,
-  loading: false,
-  toolar: {
-    search: true,
-    create: true
-  }
+  loading: false
 });
 
 onMounted(async () => {

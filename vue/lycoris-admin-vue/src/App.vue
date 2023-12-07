@@ -14,6 +14,9 @@ import { ElConfigProvider } from 'element-plus';
 import zhCn from 'element-plus/lib/locale/lang/zh-cn';
 import { getWebSetting } from './api/configuration';
 import { stores } from './stores';
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
 
 const options = reactive({
   locale: zhCn,
@@ -34,6 +37,12 @@ const webSetting = async () => {
     let res = await getWebSetting();
     if (res && res.resCode == 0) {
       stores.webSetting.setData(res.data);
+
+      if (stores.webSetting.webName) {
+        document.title = `${route.meta.title}_${stores.webSetting.webName}`;
+      } else {
+        document.title = `${route.meta.title}_管理后台`;
+      }
     }
   }
 };

@@ -1,6 +1,6 @@
 import request from '../utils/request';
 
-const controller = '/lycoris/friendLink';
+const controller = '/friendLink';
 
 export const getFriendLinkList = ({ pageIndex, pageSize }) => {
   return request.get(`${controller}/list`, { pageIndex, pageSize });

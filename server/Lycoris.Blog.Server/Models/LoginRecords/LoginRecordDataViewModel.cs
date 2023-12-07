@@ -6,11 +6,6 @@
     public class LoginRecordDataViewModel
     {
         /// <summary>
-        /// UA
-        /// </summary>
-        public string? UserAgent { get; set; }
-
-        /// <summary>
         /// 登录IP
         /// </summary>
         public string? Ip { get; set; }
@@ -34,5 +29,35 @@
         /// 备注
         /// </summary>
         public string? Remark { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string? Browser { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string? BrowserIcon { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string? OS { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string? OSIcon { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string? Device { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string? DeviceIcon { get; set; }
     }
 }

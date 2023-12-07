@@ -11,7 +11,7 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
     [Table("Site_Navigation")]
     [TableIndex("Domain", true)]
     [TableIndex("Name")]
-    [TableIndex("Group")]
+    [TableIndex("GroupId")]
     public class SiteNavigation : MySqlBaseEntity<int>
     {
         /// <summary>
@@ -27,10 +27,15 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
         public string Domain { get; set; } = "";
 
         /// <summary>
-        /// 收录分组
+        /// 收录地址
         /// </summary>
-        [TableColumn(StringLength = 100)]
-        public string Group { get; set; } = "";
+        [TableColumn(StringLength = 255)]
+        public string Url { get; set; } = "";
+
+        /// <summary>
+        /// 分组
+        /// </summary>
+        public int GroupId { get; set; }
 
         /// <summary>
         /// 收录热度
@@ -43,5 +48,10 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
         /// </summary>
         [Comment("收录时间")]
         public DateTime CreateTime { get; set; }
+
+        /// <summary>
+        /// 组内排序
+        /// </summary>
+        public int Order { get; set; }
     }
 }

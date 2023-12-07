@@ -48,9 +48,9 @@
       </div>
     </el-drawer>
 
-    <user-profile-dialog ref="userProfile"></user-profile-dialog>
-    <change-password-dialog ref="changePassword"></change-password-dialog>
-    <login-record-dialog ref="loginRecord"></login-record-dialog>
+    <user-profile-modal ref="userProfile"></user-profile-modal>
+    <change-password-modal ref="changePassword"></change-password-modal>
+    <login-record-modal ref="loginRecord"></login-record-modal>
   </div>
 </template>
 
@@ -59,9 +59,9 @@ import { reactive, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { UserFilled } from '@element-plus/icons-vue';
 import { logout } from '../../../api/authentication';
-import UserProfileDialog from '../modal/user-profile-modal.vue';
-import ChangePasswordDialog from '../modal/change-password-modal.vue';
-import LoginRecordDialog from '../modal/login-record-modal.vue';
+import UserProfileModal from '../modal/user-profile-modal.vue';
+import ChangePasswordModal from '../modal/change-password-modal.vue';
+import LoginRecordModal from '../modal/login-record-modal.vue';
 import swal from '../../../utils/swal';
 import { stores } from '../../../stores';
 

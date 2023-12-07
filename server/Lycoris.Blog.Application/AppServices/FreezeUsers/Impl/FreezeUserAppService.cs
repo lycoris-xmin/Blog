@@ -23,7 +23,7 @@ namespace Lycoris.Blog.Application.AppServices.FreezeUsers.Impl
         /// 
         /// </summary>
         /// <returns></returns>
-        public Task<List<FreezeUser>> GetFreeUserListAsync() => _repository.GetAll().Where(x => x.FreeEndTime > DateTime.Now).ToListAsync();
+        public Task<List<FreezeUser>> GetFreezeUserListAsync() => _repository.GetAll().Where(x => x.FreeEndTime > DateTime.Now).ToListAsync();
 
         /// <summary>
         /// 
@@ -31,7 +31,7 @@ namespace Lycoris.Blog.Application.AppServices.FreezeUsers.Impl
         /// <param name="id"></param>
         /// <param name="failedCount"></param>
         /// <returns></returns>
-        public async Task SetFreeUserAsync(long id, int failedCount)
+        public async Task SetFreezeUserAsync(long id, int failedCount)
         {
             if (failedCount < 3)
                 return;

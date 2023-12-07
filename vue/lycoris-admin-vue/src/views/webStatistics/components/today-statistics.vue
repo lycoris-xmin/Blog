@@ -120,7 +120,7 @@ onMounted(async () => {
       clearInterval(interval);
       return;
     }
-  }, 50);
+  }, 1000);
 
   nextTick(() => {
     if (animateNumberArray.length == 0) {

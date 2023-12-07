@@ -1,7 +1,7 @@
 import request from '../utils/request';
 import { uuid } from '../utils/tool';
 
-const controller = '/lycoris/home';
+const controller = '/home';
 const orignFlagKey = 'l-z-orign';
 
 export const getWebSetting = () => {

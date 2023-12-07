@@ -157,7 +157,7 @@ namespace Lycoris.Blog.Server.Application
         private static async Task FreeUserInitAsync(IServiceProvider provider)
         {
             var service = provider.GetRequiredService<IFreezeUserAppService>();
-            var freeUsers = await service.GetFreeUserListAsync();
+            var freeUsers = await service.GetFreezeUserListAsync();
             if (freeUsers.HasValue())
             {
                 var cache = provider.GetRequiredService<IAuthenticationCacheService>();

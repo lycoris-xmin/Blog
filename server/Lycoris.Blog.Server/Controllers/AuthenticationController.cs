@@ -101,10 +101,10 @@ namespace Lycoris.Blog.Server.Controllers
         /// <returns></returns>
         [HttpPost("Refresh/Token")]
         [Consumes("application/json"), Produces("application/json")]
-        public async Task<DataOutput<RefreshTokenViewModel>> RefreshToken([FromBody] RefreshTokenInput input)
+        public async Task<DataOutput<LoginViewModel>> RefreshToken([FromBody] RefreshTokenInput input)
         {
             var dto = await _authentication.RefreshTokenAsync(input.RefreshToken!, false);
-            return Success(new RefreshTokenViewModel(dto.Token));
+            return Success(dto.ToMap<LoginViewModel>());
         }
 
         /// <summary>
@@ -324,10 +324,10 @@ namespace Lycoris.Blog.Server.Controllers
         /// <returns></returns>
         [HttpPost("Dashboard/Refresh/Token")]
         [Consumes("application/json"), Produces("application/json")]
-        public async Task<DataOutput<RefreshTokenViewModel>> DashboardRefreshToken([FromBody] RefreshTokenInput input)
+        public async Task<DataOutput<LoginViewModel>> DashboardRefreshToken([FromBody] RefreshTokenInput input)
         {
             var dto = await _authentication.RefreshTokenAsync(input.RefreshToken!, true);
-            return Success(new RefreshTokenViewModel(dto.Token));
+            return Success(dto.ToMap<LoginViewModel>());
         }
 
         /// <summary>

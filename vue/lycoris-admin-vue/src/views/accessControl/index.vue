@@ -35,7 +35,7 @@
   </page-layout>
 </template>
 
-<script setup name="black-list">
+<script setup name="access-control">
 import { reactive, ref, onMounted } from 'vue';
 import pageLayout from '../layout/page-layout.vue';
 import LycorisTable from '../../components/lycoris-table/index.vue';
@@ -53,7 +53,7 @@ const model = reactive({
   ip: ''
 });
 
-const column = ref([
+const column = [
   {
     column: 'ip',
     name: 'IP地址',
@@ -81,7 +81,7 @@ const column = ref([
     fixed: 'right',
     align: 'left'
   }
-]);
+];
 
 const table = reactive({
   count: 0,

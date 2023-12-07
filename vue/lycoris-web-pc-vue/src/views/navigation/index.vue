@@ -9,7 +9,7 @@
           <div class="domain-item" v-for="groupItem in item.groupList" :key="groupItem.domain">
             <router-link class="flex-center-center" :to="{ name: 'nav-jump', query: { name: groupItem.name, link: groupItem.domain } }" target="_blank">
               <div class="ico">
-                <el-image :src="`${groupItem.domain}/favicon.ico`" :alt="groupItem.name" lazy>
+                <el-image :src="groupItem.domain.startsWith('https://github.com') ? 'https://github.githubassets.com/favicons/favicon.svg' : `${groupItem.domain}/favicon.ico`" :alt="groupItem.name" lazy>
                   <template #error>
                     <el-icon>
                       <component :is="'eleme'"></component>

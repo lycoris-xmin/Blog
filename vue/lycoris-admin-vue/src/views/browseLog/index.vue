@@ -34,16 +34,11 @@
       :count="table.count"
       :list="table.list"
       :loading="table.loading"
-      :toolbar="toolbar"
+      :toolbar="{ search: true, delete: true }"
       @page-change="handleCurrentChange"
       @toolbar-delete="$delete"
       @toolbar-search="$search"
     >
-      <template #userAgent="{ value }">
-        <el-tooltip effect="dark" :content="value" placement="top">
-          <el-image class="ua-img" :src="getUserAgentIcon(value)" lazy></el-image>
-        </el-tooltip>
-      </template>
     </lycoris-table>
   </page-layout>
 </template>
@@ -53,16 +48,10 @@ import { reactive, ref, onMounted } from 'vue';
 import pageLayout from '../layout/page-layout.vue';
 import LycorisTable from '../../components/lycoris-table/index.vue';
 import { getList, deleteLog } from '../../api/browse-log';
-import { getUserAgentIcon } from '../../utils/user-agent';
 import swal from '../../utils/swal';
 import toast from '../../utils/toast';
 
 const tableRef = ref();
-
-const toolbar = reactive({
-  search: true,
-  delete: true
-});
 
 const model = reactive({
   loading: true,
@@ -73,7 +62,7 @@ const model = reactive({
   referer: ''
 });
 
-const column = ref([
+const column = [
   {
     column: 'pageName',
     name: '访问页面',
@@ -91,12 +80,6 @@ const column = ref([
     overflow: true
   },
   {
-    column: 'userAgent',
-    name: 'UA',
-    width: '80px',
-    align: 'center'
-  },
-  {
     column: 'ip',
     name: 'IP地址',
     width: '200px'
@@ -106,13 +89,12 @@ const column = ref([
     name: 'IP归属地',
     width: '150px'
   },
-
   {
     column: 'createTime',
     name: '访问时间',
     width: '220px'
   }
-]);
+];
 
 const table = reactive({
   count: 0,
@@ -123,8 +105,6 @@ const table = reactive({
 });
 
 onMounted(async () => {
-  Object.freeze(toolbar);
-  Object.freeze(column);
   await getTableList();
   model.loading = false;
 });

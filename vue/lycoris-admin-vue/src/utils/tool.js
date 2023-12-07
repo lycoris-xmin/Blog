@@ -21,13 +21,13 @@ export const debounce = (callback, wait, immediate = false) => {
       // 判断是否执行过
       var flag = !timeout;
       timeout = setTimeout(function () {
-        callback.apply(context, args);
+        return callback.apply(context, args);
       }, wait);
 
       if (flag) callback.apply(context, args);
     } else {
       timeout = setTimeout(function () {
-        callback.apply(context, args);
+        return callback.apply(context, args);
       }, wait);
     }
   };
@@ -37,35 +37,19 @@ export const debounce = (callback, wait, immediate = false) => {
  * 节流
  * @param {*} callback
  * @param {*} delay
- * @param {*} immediate
  * @returns
  */
-export const throttle = (callback, delay, immediate = true) => {
-  var timer,
-    context,
-    iNow,
-    firstTime = +new Date(),
-    args = [];
-  return function () {
-    clearTimeout(timer);
-    context = this;
-    iNow = +new Date();
-    args = Array.prototype.slice.call(arguments);
-    // 判断是否是第一次执行
-    if (immediate) {
-      immediate = false;
-      callback.apply(context, args);
+export const throttle = (callback, delay) => {
+  let lastCallTime = 0;
+
+  return function (...args) {
+    const now = +new Date();
+
+    if (now - lastCallTime >= delay) {
+      lastCallTime = now;
+      return callback.apply(this, args);
     } else {
-      // 第二次执行的时候判断时间差
-      if (iNow - firstTime > delay) {
-        firstTime = iNow;
-        callback.apply(context, args);
-      } else {
-        // 判断是否是最后一次执行
-        timer = setTimeout(function () {
-          callback.apply(context, args);
-        }, delay);
-      }
+      return Promise.reject();
     }
   };
 };

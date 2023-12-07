@@ -1,5 +1,5 @@
 import request from '../utils/request';
-const controller = '/lycoris/message';
+const controller = '/message';
 
 export const getConfiguration = () => {
   return request.get(`${controller}/configuration`);

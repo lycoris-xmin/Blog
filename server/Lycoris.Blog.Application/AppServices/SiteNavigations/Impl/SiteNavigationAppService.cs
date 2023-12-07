@@ -134,7 +134,10 @@ namespace Lycoris.Blog.Application.AppServices.SiteNavigations.Impl
 
             data = await _siteNavigation.CreateAsync(data);
 
-            var dto= data.ToMap<SiteNavigationQueryDataDto>();
+            var dto = data.ToMap<SiteNavigationQueryDataDto>();
+
+            dto.GroupId = group.Id;
+            dto.GroupName = group.GroupName;
 
             return dto;
         }
@@ -166,9 +169,9 @@ namespace Lycoris.Blog.Application.AppServices.SiteNavigations.Impl
                 fiedIds.Add(x => x.Name);
             });
 
+            SiteNavigationGroup? group = null;
             if (input.Group.HasValue && input.Group.Value != data.GroupId)
             {
-                SiteNavigationGroup group;
                 if (input.Group.HasValue && input.Group.Value > 0)
                     group = await _siteNavigationGroup.GetAsync(input.Group!.Value) ?? throw new FriendlyException($"{input.GroupName} 分组不存在");
                 else
@@ -183,11 +186,18 @@ namespace Lycoris.Blog.Application.AppServices.SiteNavigations.Impl
                 data.GroupId = group.Id;
                 fiedIds.Add(x => x.GroupId);
             }
+            else if (data.GroupId > 0)
+                group = await _siteNavigationGroup.GetAsync(data.GroupId);
 
             if (fiedIds.HasValue())
                 await _siteNavigation.UpdateFieIdsAsync(data, fiedIds);
 
-            return data.ToMap<SiteNavigationQueryDataDto>();
+            var dto = data.ToMap<SiteNavigationQueryDataDto>();
+
+            dto.GroupId = group?.Id ?? 0;
+            dto.GroupName = group?.GroupName ?? "未分类";
+
+            return dto;
         }
 
         /// <summary>

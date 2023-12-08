@@ -239,6 +239,8 @@ namespace Lycoris.Blog.Server.Application
 
             CreateMap<SiteNavigationUpdateInput, UpdateSiteNavigationDto>();
 
+            CreateMap<SiteNavigationGroupDataDto, SiteNavigationGroupDataViewModel>();
+
             CreateMap<SiteNavigationDataDto, SiteNavigationDataViewModel>();
 
             CreateMap<StaticFileListInput, StaticFileListFilter>();

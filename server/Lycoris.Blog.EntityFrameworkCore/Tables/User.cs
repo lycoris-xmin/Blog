@@ -75,6 +75,12 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
         public string Remark { get; set; } = string.Empty;
 
         /// <summary>
+        /// 注销保护时间
+        /// </summary>
+        [TableColumn(Required = false)]
+        public DateTime? CancellationTime { get; set; }
+
+        /// <summary>
         /// 种子数据
         /// </summary>
         /// <returns></returns>

@@ -314,6 +314,8 @@ defineExpose({
       img {
         cursor: pointer;
         border-radius: 5px;
+        border: 1px solid var(--color-secondary);
+        margin: 10px;
       }
 
       p {

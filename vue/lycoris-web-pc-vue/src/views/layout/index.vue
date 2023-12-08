@@ -107,12 +107,12 @@ const postIcon = async () => {
 };
 
 const userBriefInit = async () => {
-  if (!stores.user.state && stores.authorize.token && stores.authorize.tokenExpireTime > new Date().getTime()) {
+  if (stores.authorize.token && stores.authorize.tokenExpireTime > new Date().getTime()) {
     try {
       let res = await getUserBrief();
       if (res && res.resCode == 0) {
         stores.user.setLoginState(res.data);
-        signalR.setupSignalR('/lycoris/hub/home');
+        signalR.setupSignalR('/hub/home');
       } else {
         stores.user.setLogoutState();
       }

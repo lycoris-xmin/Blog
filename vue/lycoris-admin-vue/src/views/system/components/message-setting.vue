@@ -79,7 +79,12 @@ const emit = defineEmits(['tabComplete']);
 
 onMounted(async () => {
   new Sortable(remindRef.value, {
-    animation: 150
+    animation: 150,
+    chosenClass: 'active',
+    onEnd: function (evt) {
+      const changeData = model.messageRemind.splice(evt.oldIndex || 0, 1);
+      model.messageRemind.splice(evt.newIndex || 0, 0, changeData[0]);
+    }
   });
 
   await getSetting();
@@ -136,8 +141,7 @@ const submit = async () => {
   //
   model.loading = true;
   try {
-    const list = [...remindRef.value.querySelectorAll('p.text')].map(x => x.innerText);
-    let res = await saveMessageSetting({ messageRemind: list, frequencySecond: model.frequencySecond });
+    let res = await saveMessageSetting({ ...model });
     if (res && res.resCode == 0) {
       toast.success('保存成功');
     }
@@ -191,6 +195,11 @@ const submit = async () => {
         }
       }
     }
+  }
+
+  &.active {
+    color: #fff;
+    background-color: var(--color-primary-light);
   }
 }
 </style>

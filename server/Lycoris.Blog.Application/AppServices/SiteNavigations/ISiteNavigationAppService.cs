@@ -6,18 +6,12 @@ namespace Lycoris.Blog.Application.AppServices.SiteNavigations
 {
     public interface ISiteNavigationAppService : IApplicationBaseService
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        Task<List<EnumsDto<int>>> GetSiteNavigationGroupListAsync();
-
         #region ======== 博客网站 ========
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        Task<List<SiteNavigationDataDto>> GetSiteNavigationListAsync(int groupId);
+        Task<List<SiteNavigationGroupDataDto>> GetSiteNavigationAsync();
         #endregion
 
         #region ======== 管理后台 ========
@@ -48,6 +42,26 @@ namespace Lycoris.Blog.Application.AppServices.SiteNavigations
         /// <param name="id"></param>
         /// <returns></returns>
         Task DeleteAsync(int id);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        Task SetGroupOrderAsync(params int[] ids);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task DeleteGroupAsync(int id);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        Task<List<EnumsDto<int>>> GetSiteNavigationGroupListAsync();
         #endregion
     }
 }

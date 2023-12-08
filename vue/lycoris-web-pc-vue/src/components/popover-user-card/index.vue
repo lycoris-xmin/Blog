@@ -2,62 +2,68 @@
   <el-popover :placement="props.placement" :width="props.width" :trigger="props.trigger" @before-enter="beforeEnter" :persistent="props.persistent">
     <template #reference> <slot name="reference"></slot> </template>
 
-    <div class="flex-center-center popover-user--info" v-if="props.userId && props.userId != '0'">
-      <el-image class="avatar" :src="model.avatar" lazy>
-        <template #error>
-          <img :src="stores.webSetting.defaultAvatar" />
-        </template>
-      </el-image>
-      <span class="name">{{ model.nickName }}</span>
-      <div class="flex-center-center platform">
-        <div v-if="model.github">
-          <el-tooltip effect="dark" content="github" placement="bottom">
-            <a :href="model.github" target="_blank"><el-image :src="'/icon/platform/github.png'"></el-image></a>
-          </el-tooltip>
-        </div>
+    <div v-if="props.userId && props.userId != '0'" style="position: relative">
+      <div class="flex-center-center popover-user--info">
+        <el-image class="avatar" :src="model.avatar" lazy>
+          <template #error>
+            <img :src="stores.webSetting.defaultAvatar" />
+          </template>
+        </el-image>
+        <span class="name">{{ model.nickName }}</span>
+        <div class="flex-center-center platform">
+          <div v-if="model.github">
+            <el-tooltip effect="dark" content="github" placement="bottom">
+              <a :href="model.github" target="_blank"><el-image :src="'/icon/platform/github.png'"></el-image></a>
+            </el-tooltip>
+          </div>
 
-        <div v-if="model.qq">
-          <el-tooltip effect="dark" :content="model.qq" placement="bottom">
-            <el-image :src="'/icon/platform/qq.png'"></el-image>
-          </el-tooltip>
-        </div>
+          <div v-if="model.qq">
+            <el-tooltip effect="dark" :content="model.qq" placement="bottom">
+              <el-image :src="'/icon/platform/qq.png'"></el-image>
+            </el-tooltip>
+          </div>
 
-        <div v-if="model.wechat">
-          <el-tooltip effect="dark" :content="model.wechat" placement="bottom">
-            <el-image :src="'/icon/platform/wechat.png'"></el-image>
-          </el-tooltip>
-        </div>
+          <div v-if="model.wechat">
+            <el-tooltip effect="dark" :content="model.wechat" placement="bottom">
+              <el-image :src="'/icon/platform/wechat.png'"></el-image>
+            </el-tooltip>
+          </div>
 
-        <div v-if="model.email">
-          <el-tooltip effect="dark" :content="model.email" placement="bottom">
-            <el-image :src="'/icon/platform/email.png'"></el-image>
-          </el-tooltip>
-        </div>
+          <div v-if="model.email">
+            <el-tooltip effect="dark" :content="model.email" placement="bottom">
+              <el-image :src="'/icon/platform/email.png'"></el-image>
+            </el-tooltip>
+          </div>
 
-        <div v-if="model.bilibili">
-          <el-tooltip effect="dark" content="bilibili" placement="bottom">
-            <el-image :src="'/icon/platform/bilibili.png'"></el-image>
-          </el-tooltip>
-        </div>
+          <div v-if="model.bilibili">
+            <el-tooltip effect="dark" content="bilibili" placement="bottom">
+              <el-image :src="'/icon/platform/bilibili.png'"></el-image>
+            </el-tooltip>
+          </div>
 
-        <div v-if="model.music">
-          <el-tooltip effect="dark" content="网易云" placement="bottom">
-            <el-image :src="'/icon/platform/music.png'"></el-image>
-          </el-tooltip>
+          <div v-if="model.music">
+            <el-tooltip effect="dark" content="网易云" placement="bottom">
+              <el-image :src="'/icon/platform/music.png'"></el-image>
+            </el-tooltip>
+          </div>
         </div>
+        <slot name="action">
+          <div class="action" v-show="props.showAction" v-if="props.userId != stores.user.id">
+            <el-button @click="privateMessage">私信</el-button>
+          </div>
+        </slot>
       </div>
-      <slot name="action">
-        <div class="action" v-show="props.showAction" v-if="props.userId != stores.user.id">
-          <el-button @click="privateMessage">私信</el-button>
-        </div>
-      </slot>
+
+      <loading-line :loading="model.loading"></loading-line>
     </div>
+
     <div v-else></div>
   </el-popover>
 </template>
 
 <script setup>
 import { reactive, inject } from 'vue';
+import loadingLine from '../../components/loadings/loading-line.vue';
 import { getUserBrief } from '../../api/user';
 import { stores } from '../../stores';
 import toast from '../../utils/toast';
@@ -67,6 +73,7 @@ const chatModalRef = inject('$chatModal');
 const signalR = inject('$chat-signalR');
 
 const model = reactive({
+  loading: true,
   nickName: '',
   avatar: '',
   email: '',
@@ -109,11 +116,11 @@ const props = defineProps({
 });
 
 const beforeEnter = async () => {
-  if (getUserInfoBySotre()) {
-    return;
-  }
-
   try {
+    if (getUserInfoBySotre()) {
+      return;
+    }
+
     let res = await getUserBrief(props.userId);
 
     if (res && res.resCode == 0) {
@@ -128,8 +135,9 @@ const beforeEnter = async () => {
 
       stores.userInfo.addUserInfo(res.data);
     }
-  } catch (error) {
+  } finally {
     //
+    model.loading = false;
   }
 };
 
@@ -143,6 +151,18 @@ const getUserInfoBySotre = () => {
     model.github = stores.owner.github;
     model.bilibili = stores.owner.bilibili;
     model.music = stores.owner.music;
+    return true;
+  }
+
+  if (props.userId == stores.user.id) {
+    model.nickName = stores.user.nickName;
+    model.avatar = stores.user.avatar;
+    model.email = stores.user.email;
+    model.qq = stores.user.qq;
+    model.wechat = stores.user.wechat;
+    model.github = stores.user.github;
+    model.bilibili = stores.user.bilibili;
+    model.music = stores.user.music;
     return true;
   }
 
@@ -177,6 +197,7 @@ const privateMessage = () => {
 
 <style lang="scss" scoped>
 .popover-user--info {
+  position: relative;
   padding: 20px 10px;
   flex-direction: column;
 

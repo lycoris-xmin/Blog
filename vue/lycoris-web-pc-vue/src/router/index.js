@@ -34,7 +34,7 @@ $router.beforeEach(async to => {
     return { name: 'notfound' };
   }
 
-  if (to.meta.autuorize && (!stores.authorize.token || !stores.user.state)) {
+  if (to.meta.autuorize && !stores.authorize.token) {
     return { name: 'home' };
   }
 });

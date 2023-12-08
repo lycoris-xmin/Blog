@@ -8,6 +8,6 @@ namespace Lycoris.Blog.Application.AppServices.SiteNavigations.Dtos
 
         public int? GroupId { get; set; }
 
-        public string? Domain { get; set; }
+        public string? Url { get; set; }
     }
 }

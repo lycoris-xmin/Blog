@@ -235,7 +235,7 @@ const replidHeightcalc = () => {
 
 const replyMessage = async () => {
   if (model.content) {
-    if (!model.replyToName || !model.content.startsWith(model.replyToName, '')) {
+    if (!model.replyToName) {
       model.replyId = '';
     }
 
@@ -254,8 +254,16 @@ const replyMessage = async () => {
       }
     }
 
+    let repliedUserId = '';
+    if (model.replyId) {
+      let item = [...(model.showMoreList ? reply.list : props.data.redundancy)].filter(x => x.id == model.replyId);
+      if (item && item.length) {
+        repliedUserId = item[0].user.id;
+      }
+    }
+
     try {
-      let res = await publishReplyMessage(model.replyId || props.data.id, model.content);
+      let res = await publishReplyMessage(model.replyId || props.data.id, model.content, repliedUserId);
       if (res && res.resCode == 0) {
         if (reply.list.length > 0) {
           if (reply.list.length >= reply.pageSize) {

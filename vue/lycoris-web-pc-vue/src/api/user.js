@@ -24,7 +24,6 @@ export const updateUserBrief = ({ nickName, avatar, blog, qq, wechat, github, gi
   if (avatar) {
     data.avatar = avatar;
   }
-
   if (blog) {
     data.blog = blog;
   }

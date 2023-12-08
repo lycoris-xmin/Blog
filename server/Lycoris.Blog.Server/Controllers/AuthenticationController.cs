@@ -271,6 +271,31 @@ namespace Lycoris.Blog.Server.Controllers
             return Success();
         }
 
+        /// <summary>
+        /// 用户注销
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("Cancellation")]
+        [WebAuthentication(IsRequired = true)]
+        [Consumes("application/json"), Produces("application/json")]
+        public async Task<DataOutput<UserCancellationViewModel>> UserCancellation()
+        {
+            var time = await _authentication.UserCancellationAsync();
+            return Success(new UserCancellationViewModel(time));
+        }
+
+        /// <summary>
+        /// 停止注销
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("Cancellation/Stop")]
+        [WebAuthentication(IsRequired = true)]
+        [Consumes("application/json"), Produces("application/json")]
+        public async Task<BaseOutput> StopUserCancellation()
+        {
+            await _authentication.StopUserCancellationAsync();
+            return Success();
+        }
         #endregion
 
         #region ============ 后台 ============

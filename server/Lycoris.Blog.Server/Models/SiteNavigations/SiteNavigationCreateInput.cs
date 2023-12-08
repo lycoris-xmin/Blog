@@ -17,12 +17,18 @@ namespace Lycoris.Blog.Server.Models.SiteNavigations
         /// 
         /// </summary>
         [Required]
-        public string? Domain { get; set; }
+        public string? Url { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
         [Required]
-        public string? Group { get; set; }
+        public int? GroupId { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Required]
+        public string? GroupName { get; set; }
     }
 }

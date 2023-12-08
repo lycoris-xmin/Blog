@@ -8,6 +8,8 @@
 
         public string? Avatar { get; set; }
 
+        public DateTime? CancellationTime { get; set; }
+
         public string? Email { get; set; }
 
         public string? Blog { get; set; }

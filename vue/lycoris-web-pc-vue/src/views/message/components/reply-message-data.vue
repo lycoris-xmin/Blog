@@ -110,6 +110,10 @@ const showReply = () => {
       .replied-user {
         color: var(--color-primary);
         cursor: pointer;
+
+        .reply-user-text {
+          padding-right: 10px;
+        }
       }
 
       p {

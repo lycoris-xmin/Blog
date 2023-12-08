@@ -9,7 +9,7 @@
           <el-input v-model="model.domain" />
         </el-form-item>
         <el-form-item class="form-group" label="收录分组">
-          <el-select v-model="model.group" placeholder="- 全部 -" clearable>
+          <el-select v-model="model.groupId" placeholder="- 全部 -" clearable>
             <el-option v-for="item in model.groupOption" :key="item.value" :label="item.name" :value="item.value" />
           </el-select>
         </el-form-item>
@@ -30,7 +30,11 @@
       @toolbar-create="$create"
       @toolbar-search="$search"
     >
-      <template #domain="{ value }">
+      <template #toolbar>
+        <el-button type="info" plain @click="showGroupOrder">分组排序</el-button>
+      </template>
+
+      <template #url="{ value }">
         <a class="domain-link" :href="value" target="_blank">{{ value }}</a>
       </template>
 
@@ -45,6 +49,7 @@
     </lycoris-table>
 
     <create-or-update ref="modalRef" :group="model.groupOption" @complete="complete"></create-or-update>
+    <group-order ref="groupOrderRef" :group="model.groupOption" @group-order="handleGroupOrder"></group-order>
   </page-layout>
 </template>
 
@@ -53,15 +58,17 @@ import { reactive, ref, onMounted } from 'vue';
 import pageLayout from '../layout/page-layout.vue';
 import LycorisTable from '../../components/lycoris-table/index.vue';
 import createOrUpdate from './components/createorupdate.vue';
-import { getList, getGroupOptions, deleteSiteNavigation } from '../../api/navigation';
+import groupOrder from './components/groupOrder.vue';
+import { getList, getGroups, deleteSiteNavigation } from '../../api/navigation';
 import toast from '../../utils/toast';
 
 const modalRef = ref();
+const groupOrderRef = ref();
 
 const model = reactive({
   loading: true,
   name: '',
-  group: '',
+  groupId: '',
   domain: '',
   groupOption: []
 });
@@ -73,11 +80,11 @@ const column = [
     width: '200px'
   },
   {
-    column: 'domain',
+    column: 'url',
     name: '收录地址'
   },
   {
-    column: 'group',
+    column: 'groupName',
     name: '收录分组',
     width: '200px'
   },
@@ -105,7 +112,7 @@ const table = reactive({
 
 onMounted(async () => {
   try {
-    getGroups();
+    getGroupOptions();
     await getTableList();
   } finally {
     model.loading = false;
@@ -122,7 +129,7 @@ const getTableList = async () => {
 
     let res = await getList({
       name: model.name,
-      group: model.group,
+      groupId: model.groupId,
       domain: model.domain,
       pageIndex: table.pageIndex,
       pageSize: table.pageSize
@@ -136,9 +143,9 @@ const getTableList = async () => {
   }
 };
 
-const getGroups = async () => {
+const getGroupOptions = async () => {
   try {
-    let res = await getGroupOptions();
+    let res = await getGroups();
     if (res && res.resCode == 0) {
       model.groupOption = res.data.list;
     }
@@ -155,7 +162,11 @@ const $create = () => {
   modalRef.value.show({}, -1);
 };
 
-const complete = (data, index) => {
+const showGroupOrder = () => {
+  groupOrderRef.value.show();
+};
+
+const complete = (data, index, newGroup) => {
   // 更新数据
   if (index == undefined || index == -1) {
     if (table.list.length == table.pageSize) {
@@ -169,11 +180,8 @@ const complete = (data, index) => {
   }
 
   // 补充新的分组
-  if (!model.groupOption.filter(x => x.value == data.group).length) {
-    model.groupOption.push({
-      value: data.group,
-      name: data.group
-    });
+  if (newGroup) {
+    getGroups();
   }
 };
 
@@ -208,6 +216,10 @@ const $delete = async (index, row) => {
   } finally {
     row.loading = false;
   }
+};
+
+const handleGroupOrder = groupList => {
+  model.groupOption = groupList;
 };
 </script>
 

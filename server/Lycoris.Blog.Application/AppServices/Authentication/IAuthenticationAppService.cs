@@ -91,5 +91,17 @@ namespace Lycoris.Blog.Application.AppServices.Authentication
         /// <param name="email"></param>
         /// <returns></returns>
         Task ChangeEmailAsync(string email);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        Task<DateTime> UserCancellationAsync();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        Task StopUserCancellationAsync();
     }
 }

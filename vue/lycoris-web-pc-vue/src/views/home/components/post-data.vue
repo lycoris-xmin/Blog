@@ -102,7 +102,7 @@ const props = defineProps({
       .badge {
         padding: 0px 8px;
         flex-shrink: 0;
-        font-size: 16px;
+        font-size: 13px;
         margin-right: 6px;
       }
     }

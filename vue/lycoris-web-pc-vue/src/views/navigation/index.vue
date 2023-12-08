@@ -1,13 +1,13 @@
 <template>
   <div class="container">
     <transition-list class="nav-group">
-      <li class="card" v-for="item in model.list" :key="item.group">
+      <li class="card" v-for="(item, index) in model.list" :key="index">
         <div class="group-title">
-          <span>{{ item.group }}</span>
+          <span>{{ item.groupName }}</span>
         </div>
         <div class="nav-domain">
-          <div class="domain-item" v-for="groupItem in item.groupList" :key="groupItem.domain">
-            <router-link class="flex-center-center" :to="{ name: 'nav-jump', query: { name: groupItem.name, link: groupItem.domain } }" target="_blank">
+          <div class="domain-item" v-for="groupItem in item.list" :key="groupItem.url">
+            <router-link class="flex-center-center" :to="{ name: 'nav-jump', query: { name: groupItem.name, link: groupItem.url } }" target="_blank">
               <div class="ico">
                 <el-image :src="groupItem.domain.startsWith('https://github.com') ? 'https://github.githubassets.com/favicons/favicon.svg' : `${groupItem.domain}/favicon.ico`" :alt="groupItem.name" lazy>
                   <template #error>

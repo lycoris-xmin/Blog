@@ -56,6 +56,7 @@ import { onMounted, reactive } from 'vue';
 import { getWebSetting, saveWebSetting } from '../../../api/configuration';
 import toast from '../../../utils/toast';
 import { uploadAccept } from '../../../config.json';
+import { stores } from '../../../stores';
 
 const props = defineProps({
   value: {
@@ -119,6 +120,8 @@ const submit = async () => {
       toast.success('保存成功');
       model.avatar = void 0;
       model.avatarDisplay = res.data.defaultAvatar || '';
+
+      stores.webSetting.setData({ ...model });
     }
   } finally {
     model.loading = false;

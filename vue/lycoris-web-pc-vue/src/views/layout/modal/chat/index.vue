@@ -63,7 +63,7 @@ onMounted(async () => {
 
   try {
     // 初始化signalRl连接
-    await signalR.setupSignalR('/lycoris/hub/chat');
+    await signalR.setupSignalR('/hub/chat');
 
     // 登录状态
     subscribeAuthroization();

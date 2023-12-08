@@ -261,9 +261,9 @@ app.UseCookiePolicy(new CookiePolicyOptions() { HttpOnly = HttpOnlyPolicy.Always
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllers();
-    endpoints.MapHub<HomeHub>("Api/Lycoris/Hub/Home");
-    endpoints.MapHub<ChatHub>("Api/Lycoris/Hub/Chat");
-    endpoints.MapHub<DashboardHub>("Api/Lycoris/Hub/Dashboard");
+    endpoints.MapHub<HomeHub>($"{HostConstant.RoutePrefix}/Hub/Home");
+    endpoints.MapHub<ChatHub>($"{HostConstant.RoutePrefix}/Hub/Chat");
+    endpoints.MapHub<DashboardHub>($"{HostConstant.RoutePrefix}/Hub/Dashboard");
 });
 
 // Æô¶¯³ÌÐò

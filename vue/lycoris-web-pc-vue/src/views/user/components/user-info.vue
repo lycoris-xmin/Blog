@@ -77,8 +77,20 @@ const model = reactive({
 });
 
 onMounted(() => {
-  let value = stores.user;
+  if (!stores.user.state) {
+    const interval = setInterval(() => {
+      let value = stores.user;
+      if (value.state) {
+        clearInterval(interval);
+        modelInit(value);
+      }
+    }, 500);
+  } else {
+    modelInit(stores.user);
+  }
+});
 
+const modelInit = value => {
   model.nickName = value.nickName;
   model.avatar = value.avatar;
   model.blog = value.blog;
@@ -88,7 +100,7 @@ onMounted(() => {
   model.gitee = value.gitee;
   model.bilibili = value.bilibili;
   model.cloudMusic = value.cloudMusic;
-});
+};
 
 const handleChange = rawFile => {
   model.file = rawFile.raw;

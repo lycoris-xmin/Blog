@@ -15,8 +15,10 @@
     <div class="last-form-group">
       <label>帐号注销</label>
       <div class="card">
-        <p class="view-info">注销帐号是不可恢复的操作，如需要请自行备份帐号相关的信息和数据。注销帐号后你将丢失该帐号自注册以来产生的数据和记录，注销后相关数据将不可恢复。</p>
-        <el-button type="danger" plain>注销</el-button>
+        <p class="view-info">注销帐号是不可恢复的操作，注销帐号后你将丢失该帐号的相关记录，但是平台会保留账号在平台上现有的评论及留言等相关信息。</p>
+        <div class="right-btn flex-center-center">
+          <el-button :type="stores.user.cancellationTime > 0 ? 'warning' : 'danger'" plain @click="handleCancell" :loading="model.cancellLoading">{{ stores.user.cancellationTime > 0 ? '取消注销' : '注销' }}</el-button>
+        </div>
       </div>
     </div>
 
@@ -68,8 +70,8 @@
 import { onMounted, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import { stores } from '@/stores';
-import { changeEmailCode, changeEmail, changePassword } from '@/api/authentication';
-import { passwordRegex, emailRegex } from '../../../utils/regex';
+import { changeEmailCode, changeEmail, changePassword, userCancellation, stopUserCancellation } from '@/api/authentication';
+import { passwordRegex, emailRegex } from '@/utils/regex';
 import toast from '@/utils/toast';
 import swal from '@/utils/swal';
 import { getEmailHost, openQQMail } from '@/utils/email-tool';
@@ -89,7 +91,8 @@ const model = reactive({
   oldPassword: '',
   password: '',
   confirmPassword: '',
-  changePasswordLoading: false
+  changePasswordLoading: false,
+  cancellLoading: false
 });
 
 onMounted(() => {
@@ -219,6 +222,36 @@ const changePasswordSumit = async () => {
     model.changePasswordLoading = false;
   }
 };
+
+const handleCancell = async () => {
+  if (stores.user.cancellationTime == 0) {
+    let result = await swal.confirm('注销帐号将有七天的缓冲期，自即日起七天内您可以登录帐号以取消账号注销流程', '账号注销');
+    if (result) {
+      model.cancellLoading = true;
+      try {
+        let res = await userCancellation();
+        if (res && res.resCode == 0) {
+          stores.user.setCancell(res.data.cancellationTime);
+        }
+      } finally {
+        model.cancellLoading = false;
+      }
+    }
+  } else {
+    let result = await swal.confirm('确定要取消注销吗？', '账号注销');
+    if (result) {
+      model.cancellLoading = true;
+      try {
+        let res = await stopUserCancellation();
+        if (res && res.resCode == 0) {
+          stores.user.clearCancell();
+        }
+      } finally {
+        model.cancellLoading = false;
+      }
+    }
+  }
+};
 </script>
 
 <style lang="scss" scoped>
@@ -255,6 +288,19 @@ p.dange-info {
     .view-info {
       line-height: 30px;
       letter-spacing: 1.5px;
+    }
+
+    .right-btn {
+      position: relative;
+      width: 80px;
+
+      .cancel {
+        flex-direction: column;
+
+        p {
+          padding-bottom: 10px;
+        }
+      }
     }
   }
 }

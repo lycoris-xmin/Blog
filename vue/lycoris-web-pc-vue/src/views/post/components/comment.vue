@@ -19,7 +19,6 @@
                     <template #reference>
                       <el-image :src="item.user.avatar" lazy></el-image>
                     </template>
-                    <div class="user-info-card">123</div>
                   </popover-user-info-card>
                 </div>
                 <span>{{ item.user.nickName }}<el-tag style="margin-left: 5px" v-if="item.isOwner">博主</el-tag></span>
@@ -51,7 +50,9 @@
             <div class="content">
               <span class="reply-user" v-if="item.repliedUser">
                 <popover-user-info-card :user-id="item.repliedUserId" trigger="click">
-                  <span class="reply-user-text">@{{ item.repliedUser }}</span>
+                  <template #reference>
+                    <span class="reply-user-text">@{{ item.repliedUser }}</span>
+                  </template>
                 </popover-user-info-card>
               </span>
               {{ item.content }}

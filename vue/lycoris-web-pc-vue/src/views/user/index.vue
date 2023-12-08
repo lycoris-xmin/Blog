@@ -22,13 +22,11 @@
 
 <script setup name="user">
 import { onMounted, reactive } from 'vue';
-import { useRouter } from 'vue-router';
 import pageLayout from '../layout/page-layout.vue';
 import userInfo from './components/user-info.vue';
 import userSafe from './components/user-safe.vue';
 import { stores } from '@/stores';
 
-const router = useRouter();
 const emit = defineEmits(['loading', 'browse']);
 
 const tabs = [
@@ -55,12 +53,12 @@ const model = reactive({
 });
 
 onMounted(async () => {
-  if (!stores.user.state) {
-    router.push({ name: 'home' });
-    return;
-  }
+  setInterval(() => {
+    if (stores.user.state) {
+      emit('loading', false);
+    }
+  }, 500);
 
-  emit('loading', false);
   emit('browse');
 });
 </script>

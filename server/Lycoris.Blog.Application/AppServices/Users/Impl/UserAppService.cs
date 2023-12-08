@@ -73,6 +73,7 @@ namespace Lycoris.Blog.Application.AppServices.Users.Impl
                 NickName = x.NickName,
                 Avatar = x.Avatar,
                 Email = x.Email,
+                CancellationTime = x.CancellationTime,
                 IsAdmin = x.IsAdmin
             });
 

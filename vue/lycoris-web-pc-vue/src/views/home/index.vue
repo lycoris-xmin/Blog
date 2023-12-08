@@ -15,7 +15,9 @@
 
     <div class="card post-list" ref="post">
       <transition-list tag="ul">
-        <li v-for="(item, index) in model.list" :key="item.id" :data-index="index"><post-data :post="item"></post-data></li>
+        <li v-for="(item, index) in model.list" :key="item.id" :data-index="index">
+          <post-data :post="item"></post-data>
+        </li>
       </transition-list>
       <div class="pagination flex-center-center" v-if="model.scroll > 3">
         <el-pagination v-model:current-page="model.pageIndex" :page-size="model.pageSize" :pager-count="5" layout="prev, pager, next" :total="model.count" :hide-on-single-page="true" @current-change="pageChange" />

@@ -60,3 +60,11 @@ export const changeEmail = ({ email, captcha }) => {
 export const changePassword = ({ oldPassword, password }) => {
   return request.post(`${controller}/change/password`, { oldPassword, password });
 };
+
+export const userCancellation = () => {
+  return request.post(`${controller}/cancellation`);
+};
+
+export const stopUserCancellation = () => {
+  return request.post(`${controller}/cancellation/stop`);
+};

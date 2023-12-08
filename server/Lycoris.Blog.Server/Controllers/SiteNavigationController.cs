@@ -1,7 +1,6 @@
 ﻿using Lycoris.AutoMapper.Extensions;
 using Lycoris.Blog.Application.AppServices.SiteNavigations;
 using Lycoris.Blog.Application.AppServices.SiteNavigations.Dtos;
-using Lycoris.Blog.Model.Exceptions;
 using Lycoris.Blog.Model.Global.Output;
 using Lycoris.Blog.Server.Application.Constants;
 using Lycoris.Blog.Server.FilterAttributes;
@@ -29,17 +28,7 @@ namespace Lycoris.Blog.Server.Controllers
             _siteNavigation = siteNavigation;
         }
 
-        /// <summary>
-        /// 网站收录分组枚举
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet("Enum/Group")]
-        [Produces("application/json")]
-        public async Task<ListOutput<EnumsViewModel<int>>> GroupEnum()
-        {
-            var dto = await _siteNavigation.GetSiteNavigationGroupListAsync();
-            return Success(dto.ToMapList<EnumsViewModel<int>>());
-        }
+
 
         #region ======== 博客网站 ========
         /// <summary>
@@ -48,13 +37,10 @@ namespace Lycoris.Blog.Server.Controllers
         /// <returns></returns>
         [HttpGet("List")]
         [Produces("application/json")]
-        public async Task<ListOutput<SiteNavigationDataViewModel>> SiteNavigationList([FromQuery] int? groupId)
+        public async Task<ListOutput<SiteNavigationGroupDataViewModel>> SiteNavigationList()
         {
-            if (groupId.HasValue && groupId.Value <= 0)
-                throw new HttpStatusException(System.Net.HttpStatusCode.BadRequest, "");
-
-            var dto = await _siteNavigation.GetSiteNavigationListAsync(groupId!.Value);
-            return Success(dto.ToMapList<SiteNavigationDataViewModel>());
+            var dto = await _siteNavigation.GetSiteNavigationAsync();
+            return Success(dto.ToMapList<SiteNavigationGroupDataViewModel>());
         }
         #endregion
 
@@ -116,6 +102,47 @@ namespace Lycoris.Blog.Server.Controllers
         {
             await _siteNavigation.DeleteAsync(input.Id!.Value);
             return Success();
+        }
+
+        /// <summary>
+        /// 收录分组排序
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpPost("GroupOrder")]
+        [AppAuthentication]
+        [Consumes("application/json"), Produces("application/json")]
+        public async Task<BaseOutput> SetGroupOrder([FromBody] SingleIdArrayInput<int> input)
+        {
+            await _siteNavigation.SetGroupOrderAsync(input.Ids!);
+            return Success();
+        }
+
+        /// <summary>
+        /// 删除分组
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpPost("Group/Delete")]
+        [AppAuthentication]
+        [Consumes("application/json"), Produces("application/json")]
+        public async Task<BaseOutput> DeleteGroup([FromBody] SingleIdInput<int?> input)
+        {
+            await _siteNavigation.DeleteGroupAsync(input.Id!.Value);
+            return Success();
+        }
+
+        /// <summary>
+        /// 网站收录分组枚举
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("Enum/Group")]
+        [AppAuthentication]
+        [Produces("application/json")]
+        public async Task<ListOutput<EnumsViewModel<int>>> GroupEnum()
+        {
+            var dto = await _siteNavigation.GetSiteNavigationGroupListAsync();
+            return Success(dto.ToMapList<EnumsViewModel<int>>());
         }
         #endregion
     }

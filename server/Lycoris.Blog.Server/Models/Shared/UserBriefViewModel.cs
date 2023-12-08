@@ -23,6 +23,11 @@
         /// <summary>
         /// 
         /// </summary>
+        public DateTime? CancellationTime { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public string? Email { get; set; }
 
         /// <summary>

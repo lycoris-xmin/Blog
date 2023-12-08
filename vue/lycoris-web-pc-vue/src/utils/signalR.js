@@ -10,7 +10,7 @@ export default class {
 
   async setupSignalR(url) {
     this.hubConnection = new HubConnectionBuilder()
-      .withUrl(`${api.server}${url}`)
+      .withUrl(`${api.server}${api.routePrefix}${url}`)
       .withAutomaticReconnect({
         nextRetryDelayInMilliseconds: retryContext => {
           if (retryContext.previousRetryCount > 15) {

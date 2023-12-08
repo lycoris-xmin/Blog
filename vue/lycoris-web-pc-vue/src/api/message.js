@@ -26,11 +26,15 @@ export const publishMessage = content => {
   });
 };
 
-export const publishReplyMessage = (messageId, content) => {
-  return request.post(`${controller}/reply/publish`, {
+export const publishReplyMessage = (messageId, content, repliedUserId) => {
+  let data = {
     messageId,
     content
-  });
+  };
+  if (repliedUserId) {
+    data.repliedUserId = repliedUserId;
+  }
+  return request.post(`${controller}/reply/publish`, data);
 };
 
 export const deleteSlefMessage = id => {

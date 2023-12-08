@@ -7,6 +7,7 @@ using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
 using Lycoris.Blog.Model.Exceptions;
 using Lycoris.Common.Extensions;
+using Lycoris.Common.Helper;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -24,41 +25,35 @@ namespace Lycoris.Blog.Application.AppServices.SiteNavigations.Impl
             _siteNavigation = siteNavigation;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public async Task<List<EnumsDto<int>>> GetSiteNavigationGroupListAsync()
-        {
-            var filter = _siteNavigationGroup.GetAll().OrderBy(x => x.Order);
-            var query = filter.Select(x => new EnumsDto<int>()
-            {
-                Name = x.GroupName,
-                Value = x.Id
-            });
-
-            return await query.ToListAsync();
-        }
-
         #region ======== 博客网站 ========
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        public async Task<List<SiteNavigationDataDto>> GetSiteNavigationListAsync(int groupId)
+        public async Task<List<SiteNavigationGroupDataDto>> GetSiteNavigationAsync()
         {
+            var groups = await _siteNavigationGroup.GetAll().OrderBy(x => x.Order).Select(x => new SiteNavigationGroupDataDto { GroupId = x.Id, GroupName = x.GroupName }).ToListAsync();
+
+            if (!groups.HasValue())
+                return new List<SiteNavigationGroupDataDto>();
+
             var query = _siteNavigation.GetAll()
-                                       .Where(x => x.GroupId == groupId)
                                        .OrderBy(x => x.Order)
                                        .ThenBy(x => x.CreateTime)
                                        .Select(x => new SiteNavigationDataDto()
                                        {
                                            Name = x.Name,
                                            Domain = x.Domain,
-                                           Url = x.Url
+                                           Url = x.Url,
+                                           GroupId = x.GroupId,
                                        });
 
-            return await query.ToListAsync();
+            var list = await query.ToListAsync();
+
+            foreach (var item in groups)
+                item.List = list.Where(x => x.GroupId == item.GroupId).ToList();
+
+            return groups.Where(x => x.List.HasValue()).ToList();
         }
         #endregion
 
@@ -73,7 +68,7 @@ namespace Lycoris.Blog.Application.AppServices.SiteNavigations.Impl
             var filter = _siteNavigation.GetAll()
                                         .WhereIf(!input.Name.IsNullOrEmpty(), x => EF.Functions.Like(x.Name, $"%{input.Name!}%"))
                                         .WhereIf(input.GroupId.HasValue && input.GroupId.Value > 0, x => x.GroupId == input.GroupId!.Value)
-                                        .WhereIf(!input.Domain.IsNullOrEmpty(), x => EF.Functions.Like(x.Domain, $"%{input.Domain!}%"));
+                                        .WhereIf(!input.Url.IsNullOrEmpty(), x => EF.Functions.Like(x.Url, $"%{input.Url!}%"));
 
             var count = await filter.CountAsync();
             if (count == 0 || !CheckPageFilter(input, count))
@@ -108,8 +103,8 @@ namespace Lycoris.Blog.Application.AppServices.SiteNavigations.Impl
         public async Task<SiteNavigationQueryDataDto> CreateAsync(CreateSiteNavigationDto input)
         {
             SiteNavigationGroup group;
-            if (input.Group.HasValue && input.Group.Value > 0)
-                group = await _siteNavigationGroup.GetAsync(input.Group!.Value) ?? throw new FriendlyException($"{input.GroupName} 分组不存在");
+            if (input.GroupId.HasValue && input.GroupId.Value > 0)
+                group = await _siteNavigationGroup.GetAsync(input.GroupId!.Value) ?? throw new FriendlyException($"{input.GroupName} 分组不存在");
             else
             {
                 group = await _siteNavigationGroup.CreateAsync(new SiteNavigationGroup()
@@ -122,7 +117,8 @@ namespace Lycoris.Blog.Application.AppServices.SiteNavigations.Impl
             var data = new SiteNavigation()
             {
                 Name = input.Name!,
-                Domain = input.Domain!,
+                Domain = UrlHelper.GetUrlPrefix(input.Url!),
+                Url = input.Url!,
                 GroupId = group.Id,
                 CreateTime = DateTime.Now,
                 Order = 999
@@ -153,14 +149,17 @@ namespace Lycoris.Blog.Application.AppServices.SiteNavigations.Impl
 
             var fiedIds = new List<Expression<Func<SiteNavigation, object>>>();
 
-            if (!input.Domain.IsNullOrEmpty() && data.Domain != input.Domain)
+            if (!input.Url.IsNullOrEmpty() && data.Url != input.Url)
             {
-                var repeat = await _siteNavigation.GetAll().Where(x => x.Domain == input.Domain).AnyAsync();
+                var repeat = await _siteNavigation.GetAll().Where(x => x.Url == input.Url).AnyAsync();
                 if (repeat)
                     throw new FriendlyException("网站已收录");
 
-                data.Domain = input.Domain!;
+                data.Domain = UrlHelper.GetUrlPrefix(input.Url!);
                 fiedIds.Add(x => x.Domain);
+
+                data.Url = input.Url!;
+                fiedIds.Add(x => x.Url);
             }
 
             data.UpdatePorpertyIf(!input.Name.IsNullOrEmpty() && data.Name != input.Name, x =>
@@ -170,10 +169,10 @@ namespace Lycoris.Blog.Application.AppServices.SiteNavigations.Impl
             });
 
             SiteNavigationGroup? group = null;
-            if (input.Group.HasValue && input.Group.Value != data.GroupId)
+            if (!input.GroupId.HasValue || input.GroupId.Value != data.GroupId)
             {
-                if (input.Group.HasValue && input.Group.Value > 0)
-                    group = await _siteNavigationGroup.GetAsync(input.Group!.Value) ?? throw new FriendlyException($"{input.GroupName} 分组不存在");
+                if (input.GroupId.HasValue && input.GroupId.Value > 0)
+                    group = await _siteNavigationGroup.GetAsync(input.GroupId!.Value) ?? throw new FriendlyException($"{input.GroupName} 分组不存在");
                 else
                 {
                     group = await _siteNavigationGroup.CreateAsync(new SiteNavigationGroup()
@@ -212,6 +211,64 @@ namespace Lycoris.Blog.Application.AppServices.SiteNavigations.Impl
                 return;
 
             await _siteNavigation.DeleteAsync(data);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        public async Task SetGroupOrderAsync(params int[] ids)
+        {
+            if (ids == null || ids.Length == 0)
+                return;
+
+            var groups = await _siteNavigationGroup.GetAll().ToListAsync();
+
+            for (int i = 0; i < ids.Length; i++)
+            {
+                var item = groups.SingleOrDefault(x => x.Id == ids[i]);
+                if (item == null)
+                    continue;
+
+                item.Order = i + 1;
+            }
+
+            await _siteNavigationGroup.UpdateAsync(groups);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task DeleteGroupAsync(int id)
+        {
+            var group = await _siteNavigationGroup.GetAsync(id);
+            if (group == null)
+                return;
+
+            var groupHasSite = await _siteNavigation.GetAll().Where(x => x.GroupId == group.Id).AnyAsync();
+            if (groupHasSite)
+                throw new FriendlyException($"{group.GroupName} 分组下存在收录数据无法删除");
+
+            await _siteNavigationGroup.DeleteAsync(group);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<EnumsDto<int>>> GetSiteNavigationGroupListAsync()
+        {
+            var filter = _siteNavigationGroup.GetAll().OrderBy(x => x.Order);
+            var query = filter.Select(x => new EnumsDto<int>()
+            {
+                Name = x.GroupName,
+                Value = x.Id
+            });
+
+            return await query.ToListAsync();
         }
         #endregion
     }

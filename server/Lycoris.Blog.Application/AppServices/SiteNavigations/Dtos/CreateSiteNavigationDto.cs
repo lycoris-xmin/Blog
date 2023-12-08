@@ -4,9 +4,9 @@
     {
         public string? Name { get; set; }
 
-        public string? Domain { get; set; }
+        public string? Url { get; set; }
 
-        public int? Group { get; set; }
+        public int? GroupId { get; set; }
 
         public string? GroupName { get; set; }
     }

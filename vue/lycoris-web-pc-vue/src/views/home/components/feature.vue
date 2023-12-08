@@ -9,7 +9,7 @@
             </div>
             <div class="top-post">
               <router-link :to="`/post/${item.id}`">
-                <div class="top-post-title flex-start-start">
+                <div class="top-post-title flex-start-center">
                   <el-tag v-if="item.recommend">推荐</el-tag>
                   <el-tag v-else class="primary">最新</el-tag>
                   <span>{{ item.title }}</span>

@@ -9,7 +9,6 @@ using Lycoris.Common.Extensions;
 using Lycoris.Common.Helper;
 using Microsoft.EntityFrameworkCore;
 using Quartz;
-using System.Text.RegularExpressions;
 
 namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
 {
@@ -156,7 +155,7 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
                 if (model.Referer.IsNullOrEmpty())
                     return;
 
-                var domain = GetUrlDomain(model.Referer!);
+                var domain = UrlHelper.GetUrlPrefix(model.Referer!).Replace("https://", "").Replace("http://", "");
                 var data = await _refererStatistics.GetAll().Where(x => x.Domain == domain).SingleOrDefaultAsync() ?? new RefererStatistics() { Referer = model.Referer!, Domain = domain, Count = 0 };
                 data.Count++;
                 await _refererStatistics.CreateOrUpdateAsync(data, x => x.Count);
@@ -165,22 +164,6 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
             {
                 this.JobLogger!.Error("handle referer statistics failed", ex);
             }
-        }
-
-        /// <summary>
-        /// 使用正则表达式从URL中提取http://或https://及后面的域名部分
-        /// </summary>
-        /// <param name="url"></param>
-        /// <returns></returns>
-        private static string GetUrlDomain(string url)
-        {
-            var pattern = @"^(https?:\/\/[^\/]+)";
-            var match = Regex.Match(url, pattern);
-
-            if (match.Success)
-                return match.Groups[1].Value.Replace("https://", "").Replace("http://", "");
-
-            return string.Empty;
         }
     }
 }

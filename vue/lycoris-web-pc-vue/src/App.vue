@@ -14,11 +14,10 @@
 import { ElConfigProvider } from 'element-plus';
 import zhCn from 'element-plus/lib/locale/lang/zh-cn';
 import { reactive, onBeforeMount } from 'vue';
+import { useRouter } from 'vue-router';
 import { getWebSetting } from '@/api/home';
 import { stores } from './stores';
-import { useRouter } from 'vue-router';
 import $document from '@/utils/document';
-
 const router = useRouter();
 
 const options = reactive({

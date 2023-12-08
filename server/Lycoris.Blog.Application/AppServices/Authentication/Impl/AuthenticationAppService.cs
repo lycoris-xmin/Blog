@@ -78,7 +78,7 @@ namespace Lycoris.Blog.Application.AppServices.Authentication.Impl
         public async Task<LoginValidateDto> LoginValidateAsync(string email, string password)
         {
             email = email.ToLower();
-            var data = await _user.GetAsync(x => x.Email == email) ?? throw new FriendlyException("帐号或密码错误", $"not find user with email:{email}");
+            var data = await _user.GetAsync(x => x.Email == email) ?? throw new FriendlyException("帐号不存在", $"not find user with email:{email}");
 
             if (data.Password != SqlPasswrodConverter.Encrypt(password))
             {
@@ -90,7 +90,12 @@ namespace Lycoris.Blog.Application.AppServices.Authentication.Impl
             else if (data.Status == UserStatusEnum.Black)
                 throw new FriendlyException("您的账号存在异常，请联系站长处理", $"email:{email} user status is black");
             else if (data.Status == UserStatusEnum.Cancellation)
-                throw new FriendlyException("您的账号已被注销，请联系站长处理", $"email:{email} user status is cancellation");
+            {
+                if (!data.CancellationTime.HasValue)
+                    throw new FriendlyException("您的账号已被注销，请联系站长处理", $"email:{email} user status is cancellation");
+                else if (data.CancellationTime.Value < DateTime.Now)
+                    throw new FriendlyException("帐号已注销无法登录", $"email:{email} user status is cancellation");
+            }
 
             return data.ToMap<LoginValidateDto>();
         }
@@ -350,8 +355,13 @@ namespace Lycoris.Blog.Application.AppServices.Authentication.Impl
             };
 
             if (data.Email.EndsWith("@qq.com"))
-                data.Avatar = $"https://q2.qlogo.cn/headimg_dl?dst_uin={data.Email}&spec=100";
-            else
+            {
+                var qq = data.Email.Replace("@qq.com", "").ToTryLong();
+                if (qq.HasValue)
+                    data.Avatar = $"http://q1.qlogo.cn/g?b=qq&nk={qq}&s=100";
+            }
+
+            if (data.Avatar.IsNullOrEmpty())
             {
                 var setting = await this.ApplicationConfiguration.Value.GetConfigurationAsync<WebSettingsConfiguration>(AppConfig.WebStatistics);
                 data.Avatar = setting!.DefaultAvatar;
@@ -440,6 +450,40 @@ namespace Lycoris.Blog.Application.AppServices.Authentication.Impl
                 data.RefreshTokenExpireTime = DateTime.Now.AddSeconds(-1);
                 await _loginToken.UpdateFieIdsAsync(data, x => x.TokenExpireTime, x => x.RefreshTokenExpireTime);
             }
+        }
+
+        /// <summary>
+        /// 帐号注销
+        /// </summary>
+        /// <returns></returns>
+        public async Task<DateTime> UserCancellationAsync()
+        {
+            var user = await _user.GetAsync(CurrentUser.Id) ?? throw new HttpStatusException(HttpStatusCode.BadRequest, $"can not find user by id:{CurrentUser.Id}");
+
+            if (user.IsAdmin)
+                throw new HttpStatusException(HttpStatusCode.BadRequest, "user is admin,cant not cancellation");
+
+            user.Status = UserStatusEnum.Cancellation;
+            user.CancellationTime = DateTime.Now.AddDays(7);
+            await _user.UpdateFieIdsAsync(user, x => x.Status, x => x.CancellationTime!);
+
+            return user.CancellationTime!.Value;
+        }
+
+        /// <summary>
+        /// 取消帐号注销
+        /// </summary>
+        /// <returns></returns>
+        public async Task StopUserCancellationAsync()
+        {
+            var user = await _user.GetAsync(CurrentUser.Id) ?? throw new HttpStatusException(HttpStatusCode.BadRequest, $"can not find user by id:{CurrentUser.Id}");
+
+            if (user.IsAdmin)
+                throw new HttpStatusException(HttpStatusCode.BadRequest, "user is admin,cant not cancellation");
+
+            user.Status = UserStatusEnum.Audited;
+            user.CancellationTime = null;
+            await _user.UpdateFieIdsAsync(user, x => x.Status, x => x.CancellationTime!);
         }
     }
 }

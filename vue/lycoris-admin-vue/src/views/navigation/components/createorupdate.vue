@@ -4,11 +4,11 @@
       <el-form-item label="收录名称" prop="name">
         <el-input v-model="model.name" show-word-limit maxlength="30"></el-input>
       </el-form-item>
-      <el-form-item label="收录地址" prop="domain">
-        <el-input v-model="model.domain"></el-input>
+      <el-form-item label="收录地址" prop="url">
+        <el-input v-model="model.url"></el-input>
       </el-form-item>
-      <el-form-item label="收录分组" prop="group">
-        <el-select style="width: 100%" v-model="model.group" filterable allow-create default-first-option :reserve-keyword="false" placeholder="请选择收录分组">
+      <el-form-item label="收录分组" prop="groupId">
+        <el-select style="width: 100%" v-model="model.groupId" filterable allow-create default-first-option :reserve-keyword="false" placeholder="请选择收录分组" @change="handleGropupChange">
           <el-option v-for="item in props.group" :key="item.value" :label="item.name" :value="item.value" />
         </el-select>
       </el-form-item>
@@ -35,8 +35,10 @@ const model = reactive({
   index: -1,
   id: '',
   name: '',
-  group: '',
-  domain: '',
+  groupId: '',
+  groupName: '',
+  url: '',
+  newGroup: false,
   btnLoading: false,
   rules: {
     name: [
@@ -46,7 +48,7 @@ const model = reactive({
         trigger: 'blur'
       }
     ],
-    domain: [
+    url: [
       {
         required: true,
         message: '收录地址不能为空',
@@ -57,7 +59,7 @@ const model = reactive({
         trigger: 'blur'
       }
     ],
-    group: [
+    groupId: [
       {
         required: true,
         message: '收录分组不能为空',
@@ -82,16 +84,20 @@ const beforeClose = done => {
   //
   model.id = '';
   model.name = '';
-  model.group = '';
-  model.domain = '';
+  model.groupId = '';
+  model.groupName = '';
+  model.url = '';
+  model.newGroup = false;
 };
 
-const show = ({ id, name, group, domain }, index) => {
+const show = ({ id, name, groupId, url }, index) => {
   model.index = index;
   model.id = id || '';
   model.name = name || '';
-  model.group = group || '';
-  model.domain = domain || '';
+  model.groupId = groupId || '';
+  model.groupName = '';
+  model.url = url || '';
+  model.newGroup = false;
   model.visible = true;
 };
 
@@ -104,27 +110,19 @@ const close = () => {
 const submit = async () => {
   await formRef.value.validate();
   model.btnLoading = true;
+
   try {
     if (model.index == -1) {
-      let res = await createSiteNavigation({
-        name: model.name,
-        domain: model.domain,
-        group: model.group
-      });
+      let res = await createSiteNavigation({ ...model });
 
       if (res && res.resCode == 0) {
-        emit('complete', res.data);
+        emit('complete', res.data, model.newGroup);
       }
     } else {
-      let res = await updateSiteNavigation({
-        id: model.id,
-        name: model.name,
-        domain: model.domain,
-        group: model.group
-      });
+      let res = await updateSiteNavigation({ ...model });
 
       if (res && res.resCode == 0) {
-        emit('complete', res.data, model.index);
+        emit('complete', res.data, model.index, model.newGroup);
       }
     }
 
@@ -132,6 +130,17 @@ const submit = async () => {
     close();
   } finally {
     model.btnLoading = false;
+  }
+};
+
+const handleGropupChange = value => {
+  const index = props.group.findIndex(x => x.value == value);
+  if (index > -1) {
+    model.newGroup = false;
+    model.groupName = props.group[index].name;
+  } else {
+    model.newGroup = true;
+    model.groupName = value;
   }
 };
 

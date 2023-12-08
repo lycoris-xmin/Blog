@@ -111,10 +111,10 @@ const close = () => {
 
 const changeFile = value => {
   if (value < 0 && model.index == 0) {
-    toast.warn('这已经是第一张了', { max: 1 });
+    toast.warn('这已经是第一张了', { max: 3, grouping: true });
     return;
   } else if (value > 0 && model.index + 1 == props.pageSize) {
-    toast.warn('这已经是最后一张了', { max: 1 });
+    toast.warn('这已经是最后一张了', { max: 3, grouping: true });
     return;
   }
 
@@ -149,6 +149,8 @@ defineExpose({
   .view-image {
     width: 250px;
     height: 160px;
+    border-radius: 5px;
+    border: 1px solid var(--color-secondary);
   }
 
   .file-property {

@@ -1,5 +1,5 @@
 import request from '../utils/request';
-const controller = '/postComment';
+const controller = '/postcomment';
 
 export const getCommentList = ({ pageIndex, pageSize, postId }) => {
   if (!postId) {

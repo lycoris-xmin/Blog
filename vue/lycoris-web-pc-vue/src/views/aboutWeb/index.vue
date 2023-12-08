@@ -73,7 +73,7 @@ import * as echarts from 'echarts';
 import markdownContainer from '@/components/markdown-editor/index.vue';
 import loadingLine from '@/components/loadings/loading-line.vue';
 import { getAboutWeb, getInteractiveStatistics, getCategoryStatistics } from '@/api/home';
-import { countChange } from '@/utils/tool';
+import { countChange, getTimeLeft } from '@/utils/tool';
 
 const markdown = ref();
 
@@ -116,32 +116,20 @@ const webRunTime = buildTtime => {
   const time = buildTtime ? new Date(buildTtime).getTime() : new Date().getTime();
 
   function _run() {
-    let timeSpan = Math.floor((new Date().getTime() - time) / 1000);
+    const { days, hours, minutes, seconds } = getTimeLeft(time, new Date().getTime());
 
-    const daySecond = 60 * 60 * 24;
-    const hourSecond = 60 * 60;
-    const minuteSecond = 60;
-
-    const day = Math.floor(timeSpan / daySecond);
-    if (day > 0) {
-      model.runTime.day = parseInt(day);
+    if (days > 0) {
+      model.runTime.day = parseInt(days);
+    }
+    if (hours > 0) {
+      model.runTime.hour = parseInt(hours);
     }
 
-    timeSpan -= day * daySecond;
-
-    const hour = Math.floor(timeSpan / hourSecond);
-    if (hour > 0) {
-      model.runTime.hour = parseInt(hour);
+    if (minutes > 0) {
+      model.runTime.minute = parseInt(minutes);
     }
 
-    timeSpan -= hour * hourSecond;
-
-    const minute = Math.floor(timeSpan / minuteSecond);
-    if (minute > 0) {
-      model.runTime.minute = parseInt(minute);
-    }
-
-    model.runTime.second = parseInt(timeSpan - minute * minuteSecond);
+    model.runTime.second = parseInt(seconds);
   }
 
   _run();

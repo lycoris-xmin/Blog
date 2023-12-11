@@ -83,7 +83,7 @@ export default defineStore('authorize', {
       this.refreshToken = '';
       this.refreshTokenExpireTime = 0;
 
-      localStorage.removeItem(dataKey);
+      //localStorage.removeItem(dataKey);
     }
   }
 });

@@ -25,7 +25,7 @@
 </template>
 
 <script setup name="layout">
-import { onBeforeMount, onMounted, provide, reactive, ref, watch, computed } from 'vue';
+import { onMounted, provide, reactive, ref, watch, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import transitionFade from '@/components/transitions/fade.vue';
 import layoutNav from './components/layout-nav.vue';
@@ -39,7 +39,6 @@ import SignalRHelper from '@/utils/signalR';
 import { stores } from '@/stores';
 import { getUserBrief } from '@/api/user';
 import { pageBrowse, getPostIcon, getpublishStatistics } from '@/api/home';
-import { staticSourceInit } from '@/utils/staticfile';
 
 const route = useRoute();
 const searchModalRef = ref();
@@ -75,17 +74,14 @@ watch(
   }
 );
 
-onBeforeMount(() => {
-  staticSourceInit();
-  publishStatisticsInit();
-  postIcon();
-  userBriefInit();
-});
-
 onMounted(async () => {
   if (!loginModalRef.value) {
     Object.freeze(loginModalRef);
   }
+
+  publishStatisticsInit();
+  postIcon();
+  userBriefInit();
 });
 
 const publishStatisticsInit = async () => {
@@ -107,7 +103,7 @@ const postIcon = async () => {
 };
 
 const userBriefInit = async () => {
-  if (stores.authorize.token && stores.authorize.tokenExpireTime > new Date().getTime()) {
+  if (stores.authorize.refreshToken && stores.authorize.refreshTokenExpireTime > new Date().getTime()) {
     try {
       let res = await getUserBrief();
       if (res && res.resCode == 0) {

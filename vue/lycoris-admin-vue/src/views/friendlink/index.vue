@@ -189,7 +189,7 @@ const $audit = (index, row) => {
 };
 
 const handleComplete = (row, index) => {
-  if (index && index > -1) {
+  if (index != undefined && index > -1) {
     table.list[index] = row;
   } else if (table.list.length < table.pageSize) {
     table.list.push(row);
@@ -217,6 +217,9 @@ const handleComplete = (row, index) => {
 }
 
 a.link {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   color: var(--color-info);
   transition: all 0.4s;
 

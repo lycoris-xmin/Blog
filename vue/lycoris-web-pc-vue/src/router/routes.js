@@ -128,15 +128,6 @@ const routes = [
     }
   },
   {
-    path: '/server/notfound',
-    name: 'notfound',
-    component: () => import('../views/server-notfound.vue'),
-    meta: {
-      title: '小破站资源丢失啦',
-      keepAlive: false
-    }
-  },
-  {
     path: '/server/error',
     name: 'server-error',
     component: () => import('../views/server-error.vue'),

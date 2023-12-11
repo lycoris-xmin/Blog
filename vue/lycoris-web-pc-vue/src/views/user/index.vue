@@ -13,6 +13,16 @@
           <transition name="fade" mode="out-in">
             <user-info v-if="model.tabActive == 'user-info'"></user-info>
             <user-safe v-else-if="model.tabActive == 'user-safe'"></user-safe>
+            <user-browsehistory
+              v-else-if="model.tabActive == 'user-browse'"
+              :list="model.userBrowsehistory.list"
+              :page-index="model.userBrowsehistory.pageIndex"
+              :page-size="model.userBrowsehistory.pageSize"
+              :infinite-scroll-disabled="model.userBrowsehistory.scrollDisabled"
+              :loading="model.userBrowsehistory.loading"
+              @search="searchBrowseList"
+              @load="loadBrowseList"
+            ></user-browsehistory>
           </transition>
         </div>
       </div>
@@ -21,10 +31,12 @@
 </template>
 
 <script setup name="user">
-import { onMounted, reactive } from 'vue';
+import { onMounted, reactive, nextTick } from 'vue';
 import pageLayout from '../layout/page-layout.vue';
 import userInfo from './components/user-info.vue';
 import userSafe from './components/user-safe.vue';
+import userBrowsehistory from './components/user-browsehistory.vue';
+import { userPostBrowseList } from '@/api/user';
 import { stores } from '@/stores';
 
 const emit = defineEmits(['loading', 'browse']);
@@ -49,7 +61,16 @@ const tabs = [
 ];
 
 const model = reactive({
-  tabActive: 'user-info'
+  tabActive: 'user-info',
+  userBrowsehistory: {
+    list: [],
+    beginTime: '',
+    endTime: '',
+    pageIndex: 0,
+    pageSize: 10,
+    scrollDisabled: false,
+    loading: false
+  }
 });
 
 onMounted(async () => {
@@ -61,6 +82,42 @@ onMounted(async () => {
 
   emit('browse');
 });
+
+const searchBrowseList = ({ beginTime, endTime }) => {
+  if (model.userBrowsehistory.beginTime != beginTime || model.userBrowsehistory.endTime != endTime) {
+    model.userBrowsehistory.beginTime = beginTime;
+    model.userBrowsehistory.endTime = endTime;
+  }
+
+  model.userBrowsehistory.pageIndex = 1;
+  model.userBrowsehistory.list = [];
+  nextTick(() => {
+    GetBrowseList();
+  });
+};
+
+const loadBrowseList = pageIndex => {
+  if (model.userBrowsehistory.pageIndex < pageIndex) {
+    model.userBrowsehistory.pageIndex = pageIndex;
+    GetBrowseList();
+  }
+};
+
+const GetBrowseList = async () => {
+  model.userBrowsehistory.loading = true;
+  try {
+    let res = await userPostBrowseList({ ...model.userBrowsehistory });
+    if (res && res.resCode == 0) {
+      if (model.userBrowsehistory.pageIndex == 1) {
+        model.userBrowsehistory.list = res.data.list;
+      } else {
+        res.data.list.forEach(x => model.userBrowsehistory.list.push(x));
+      }
+    }
+  } finally {
+    model.userBrowsehistory.loading = false;
+  }
+};
 </script>
 
 <style lang="scss" scoped>

@@ -59,5 +59,12 @@ namespace Lycoris.Blog.Application.AppServices.Users
         /// <param name="input"></param>
         /// <returns></returns>
         Task AuditUserAsync(AuditUserDto input);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        Task<List<UserPostBrowseHistoryDataDto>> GetUserPostBrowseHistoryListAsync(GetUserPostBrowseHistoryFilter input);
     }
 }

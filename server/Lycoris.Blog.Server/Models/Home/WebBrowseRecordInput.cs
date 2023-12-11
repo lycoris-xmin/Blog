@@ -30,5 +30,10 @@ namespace Lycoris.Blog.Server.Models.Home
         /// 
         /// </summary>
         public string? Referer { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool? IsPost { get; set; }
     }
 }

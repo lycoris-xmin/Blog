@@ -1,19 +1,24 @@
-﻿namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Models
+﻿using Lycoris.Blog.EntityFrameworkCore.Tables;
+using Lycoris.Blog.Model.Contexts;
+
+namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Models
 {
     internal class BrowseLogQueueModel
     {
         public BrowseLogQueueModel() { }
 
-        public BrowseLogQueueModel(string Path, string PageName, string UserAgent, string? Referer, string? Ip)
+        public BrowseLogQueueModel(BrowseLog data, RequestContext request, bool? IsPost)
         {
-            this.Path = Path;
-            this.PageName = PageName;
-            this.UserAgent = UserAgent;
-            this.Referer = Referer ?? "";
-            this.Ip = Ip ?? "";
+            this.Route = data.Route;
+            this.PageName = data.PageName;
+            this.UserAgent = data.UserAgent;
+            this.Referer = data.Referer ?? "";
+            this.Ip = request.RequestIP ?? "";
+            this.UserId = request.User?.Id;
+            this.IsPost = IsPost ?? false;
         }
 
-        public string Path { get; set; } = "";
+        public string Route { get; set; } = "";
 
         public string PageName { get; set; } = "";
 
@@ -22,5 +27,9 @@
         public string? Referer { get; set; }
 
         public string? Ip { get; set; }
+
+        public long? UserId { get; set; }
+
+        public bool IsPost { get; set; }
     }
 }

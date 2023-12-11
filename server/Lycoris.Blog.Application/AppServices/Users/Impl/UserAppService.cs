@@ -29,22 +29,25 @@ namespace Lycoris.Blog.Application.AppServices.Users.Impl
     {
         private readonly IRepository<User, long> _user;
         private readonly IRepository<UserLink, long> _userLink;
+        private readonly Lazy<IRepository<Post, long>> _post;
+        private readonly Lazy<IRepository<UserPostBrowseHistory, long>> _userPostBrowseHistory;
         private readonly Lazy<IRepository<LoginToken, int>> _loginToken;
-        private readonly Lazy<IFileManageAppService> _fileManage;
         private readonly Lazy<IAuthenticationCacheService> _cache;
         private readonly Lazy<IScheduleQueueCacheService> _scheduleQueueCache;
 
         public UserAppService(IRepository<User, long> user,
                               IRepository<UserLink, long> userLink,
+                              Lazy<IRepository<Post, long>> post,
+                              Lazy<IRepository<UserPostBrowseHistory, long>> userPostBrowseHistory,
                               Lazy<IRepository<LoginToken, int>> loginToken,
-                              Lazy<IFileManageAppService> fileManage,
                               Lazy<IAuthenticationCacheService> cache,
                               Lazy<IScheduleQueueCacheService> scheduleQueueCache)
         {
             _user = user;
             _userLink = userLink;
+            _post = post;
+            _userPostBrowseHistory = userPostBrowseHistory;
             _loginToken = loginToken;
-            _fileManage = fileManage;
             _cache = cache;
             _scheduleQueueCache = scheduleQueueCache;
         }
@@ -287,6 +290,49 @@ namespace Lycoris.Blog.Application.AppServices.Users.Impl
 
             // 更新令牌
             _cache.Value.UpdateLoginState(token.Token, x => x.Status = data.Status);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public async Task<List<UserPostBrowseHistoryDataDto>> GetUserPostBrowseHistoryListAsync(GetUserPostBrowseHistoryFilter input)
+        {
+            var res = await _userPostBrowseHistory.Value.GetAll()
+                                                  .Where(x => x.PostId > 0 && x.UserId == CurrentUser.Id)
+                                                  .WhereIf(input.BeginTime.HasValue, x => x.LastTime >= input.BeginTime)
+                                                  .WhereIf(input.EndTime.HasValue, x => x.LastTime < input.EndTime)
+                                                  .OrderByDescending(x => x.LastTime)
+                                                  .PageBy(input.PageIndex, input.PageSize)
+                                                  .Select(x => new UserPostBrowseHistoryDataDto()
+                                                  {
+                                                      Id = x.Id,
+                                                      PostId = x.PostId,
+                                                      LastTime = x.LastTime
+                                                  }).ToListAsync();
+
+            if (!res.HasValue())
+                return new List<UserPostBrowseHistoryDataDto>();
+
+            var postIds = res.Select(x => x.PostId).ToList();
+
+            var filter = _post.Value.GetAll().Where(x => postIds.Contains(x.Id));
+            var query = filter.Select(x => new { x.Id, x.Title, x.Icon, x.Info });
+            var postList = await query.ToListAsync();
+
+            foreach (var item in res)
+            {
+                var post = postList.SingleOrDefault(x => x.Id == item.PostId);
+                if (post == null)
+                    item.PostId = 0;
+
+                item.Title = post?.Title ?? "文章已删除";
+                item.Icon = post?.Icon ?? "";
+                item.Info = post?.Info ?? "";
+            }
+
+            return res;
         }
     }
 }

@@ -11,6 +11,16 @@
         </el-image>
         <span class="name">{{ model.nickName }}</span>
         <div class="flex-center-center platform">
+          <div v-if="model.blog">
+            <el-tooltip effect="dark" content="个人博客" placement="bottom">
+              <a :href="model.blog" target="_blank">
+                <el-icon :size="24">
+                  <component :is="'chrome-filled'"></component>
+                </el-icon>
+              </a>
+            </el-tooltip>
+          </div>
+
           <div v-if="model.github">
             <el-tooltip effect="dark" content="github" placement="bottom">
               <a :href="model.github" target="_blank"><el-image :src="'/icon/platform/github.png'"></el-image></a>
@@ -81,7 +91,8 @@ const model = reactive({
   wechat: '',
   github: '',
   bilibili: '',
-  music: ''
+  music: '',
+  blog: ''
 });
 
 const props = defineProps({
@@ -132,6 +143,7 @@ const beforeEnter = async () => {
       model.github = res.data.github;
       model.bilibili = res.data.bilibili;
       model.music = res.data.music;
+      model.blog = res.data.blog;
 
       stores.userInfo.addUserInfo(res.data);
     }
@@ -163,6 +175,7 @@ const getUserInfoBySotre = () => {
     model.github = stores.user.github;
     model.bilibili = stores.user.bilibili;
     model.music = stores.user.music;
+    model.blog = stores.user.blog;
     return true;
   }
 
@@ -176,6 +189,7 @@ const getUserInfoBySotre = () => {
     model.github = userInfo.github;
     model.bilibili = userInfo.bilibili;
     model.music = userInfo.music;
+    model.blog = userInfo.blog;
     return true;
   }
 

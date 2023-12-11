@@ -92,7 +92,7 @@ const refreshToken = service => {
 
   const config = {
     method: 'post',
-    url: '/lycoris/authentication/refresh/token',
+    url: '/authentication/refresh/token',
     data: {
       refreshToken: stores.authorize.refreshToken
     }

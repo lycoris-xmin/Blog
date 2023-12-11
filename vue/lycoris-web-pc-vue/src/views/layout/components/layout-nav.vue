@@ -135,7 +135,6 @@ const userLogout = async () => {
         stores.user.setLogoutState();
       } catch (error) {
         console.log(error);
-        debugger;
       }
 
       toast.success('退出登录成功');

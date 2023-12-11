@@ -115,7 +115,7 @@ namespace Lycoris.Blog.Application.AppServices.Home.Impl
             if (!hasRecord)
             {
                 await repository.CreateAsync(data);
-                _provider.GetRequiredService<IScheduleQueueCacheService>().Enqueue(ScheduleTypeEnum.BrowseLog, new BrowseLogQueueModel(data.Route, data.PageName, data.UserAgent, data.Referer, CurrentRequest.RequestIP));
+                _provider.GetRequiredService<IScheduleQueueCacheService>().Enqueue(ScheduleTypeEnum.BrowseLog, new BrowseLogQueueModel(data, CurrentRequest, input.IsPost));
             }
         }
 

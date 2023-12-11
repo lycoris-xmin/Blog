@@ -82,6 +82,28 @@ namespace Lycoris.Blog.Server.Controllers
             return Success(dto.ToMap<UserBriefViewModel>());
         }
 
+        /// <summary>
+        /// 用户浏览历史
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpGet("Post/BrowseHistory")]
+        [WebAuthentication(IsRequired = true)]
+        [Produces("application/json")]
+        public async Task<ListOutput<UserPostBrowseHistoryDataViewModel>> UserPostBrowseHistoryList([FromQuery] UserPostBrowseHistoryListInput input)
+        {
+            var filter = input.ToMap<GetUserPostBrowseHistoryFilter>();
+
+            if (filter.BeginTime.HasValue)
+                filter.BeginTime = filter.BeginTime.Value.Date;
+
+            if (filter.EndTime.HasValue)
+                filter.EndTime = filter.EndTime.Value.Date.AddDays(1);
+
+            var dto = await _user.GetUserPostBrowseHistoryListAsync(filter);
+            return Success(dto.ToMapList<UserPostBrowseHistoryDataViewModel>());
+        }
+
         #endregion
 
         #region 管理后台

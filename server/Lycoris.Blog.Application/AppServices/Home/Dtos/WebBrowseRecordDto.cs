@@ -9,5 +9,7 @@
         public string PageName { get; set; } = string.Empty;
 
         public string Referer { get; set; } = string.Empty;
+
+        public bool? IsPost { get; set; }
     }
 }

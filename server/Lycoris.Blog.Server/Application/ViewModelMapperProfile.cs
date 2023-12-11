@@ -304,6 +304,11 @@ namespace Lycoris.Blog.Server.Application
             CreateMap<RefererStatisticsDataDto, RefererStatisticsDataViewModel>();
 
             CreateMap<WebToDayStatisticsDto, WebToDayStatisticsViewModel>();
+
+            CreateMap<UserPostBrowseHistoryListInput, GetUserPostBrowseHistoryFilter>();
+
+            CreateMap<UserPostBrowseHistoryDataDto, UserPostBrowseHistoryDataViewModel>()
+                .ForMember(x => x.LastTime, opt => opt.MapFrom(src => ChangeTimeToChinese(src.LastTime)));
         }
 
         /// <summary>

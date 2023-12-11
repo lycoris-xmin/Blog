@@ -18,6 +18,8 @@ import { useRouter } from 'vue-router';
 import { getWebSetting } from '@/api/home';
 import { stores } from './stores';
 import $document from '@/utils/document';
+import { staticSourceInit } from '@/utils/staticfile';
+
 const router = useRouter();
 
 const options = reactive({
@@ -33,6 +35,8 @@ const options = reactive({
 onBeforeMount(async () => {
   await webSettingInit();
   $document.setTitle();
+
+  staticSourceInit();
 });
 
 const webSettingInit = async () => {

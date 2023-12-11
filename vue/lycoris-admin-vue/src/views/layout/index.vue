@@ -35,7 +35,7 @@
 </template>
 
 <script setup>
-import { onMounted, onUnmounted, reactive, ref, computed, provide } from 'vue';
+import { onMounted, onUnmounted, reactive, ref, computed, provide, onBeforeMount } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { UserFilled } from '@element-plus/icons-vue';
 import layoutAside from './components/layout-aside.vue';
@@ -46,6 +46,7 @@ import { refreshToken } from '../../api/authentication';
 import { getUserBrief } from '../../api/user';
 import { stores } from '../../stores';
 import { debounce } from '../../utils/tool';
+import { getWebSetting } from '../../api/configuration';
 
 const route = useRoute();
 const router = useRouter();
@@ -87,6 +88,10 @@ const screenLock = {
   timer: void 0
 };
 
+onBeforeMount(() => {
+  webSetting();
+});
+
 onMounted(async () => {
   try {
     if (!stores.owner.isValid) {
@@ -126,6 +131,21 @@ onUnmounted(async () => {
 
   await signalR.stop();
 });
+
+const webSetting = async () => {
+  if (stores.authorize.token && !stores.webSetting.webPath) {
+    let res = await getWebSetting();
+    if (res && res.resCode == 0) {
+      stores.webSetting.setData(res.data);
+
+      if (stores.webSetting.webName) {
+        document.title = `${route.meta.title}_${stores.webSetting.webName}`;
+      } else {
+        document.title = `${route.meta.title}_管理后台`;
+      }
+    }
+  }
+};
 
 const showDrawer = () => {
   model.showDrawer = true;

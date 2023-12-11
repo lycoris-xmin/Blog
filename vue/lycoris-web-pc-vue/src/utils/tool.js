@@ -127,7 +127,7 @@ export const isInViewPort = element => {
   return top >= 0 && left >= 0 && right <= viewWidth && bottom <= viewHeight;
 };
 
-export const scrollPageTop = (step = 50, duration = 10) => {
+export const scrollPageTop = (step = 100, duration = 10) => {
   let start = document.documentElement.scrollTop;
   let scrollInterval = setInterval(() => {
     start -= step;
@@ -191,4 +191,21 @@ export const getTimeLeft = (sourceDate, targetDate) => {
     minutes,
     seconds
   };
+};
+
+export const typewriter = el => {
+  let str = el.innerHTML.toString();
+  let i = 0;
+  el.innerHTML = '';
+
+  setTimeout(function () {
+    var se = setInterval(function () {
+      i++;
+      el.innerHTML = str.slice(0, i) + '|';
+      if (i == str.length) {
+        clearInterval(se);
+        el.innerHTML = str;
+      }
+    }, 10);
+  }, 0);
 };

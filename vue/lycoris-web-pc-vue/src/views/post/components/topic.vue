@@ -27,7 +27,7 @@
           </el-icon>
         </el-tooltip>
       </div>
-      <div class="go go-top flex-center-center" @click="() => scrollPageTop()">
+      <div class="go go-top flex-center-center" @click="() => scrollToTop()">
         <el-tooltip effect="dark" content="返回顶部" placement="bottom">
           <el-icon>
             <component :is="'promotion'"></component>
@@ -94,6 +94,24 @@ const goTopic = id => {
       clearInterval(domInterval);
     }
   }, 200);
+};
+
+const scrollToTop = () => {
+  let step = 100,
+    duration = 10;
+
+  const scrollHeight = document.querySelector('#cherry-markdown-container').scrollHeight;
+  if (scrollHeight > 4000) {
+    step = 150;
+  } else if (scrollHeight > 8000) {
+    step = 200;
+  } else if (scrollHeight > 12000) {
+    step = 250;
+  } else {
+    step = 300;
+  }
+
+  scrollPageTop(step, duration);
 };
 
 const shareLinkCopy = async () => {
@@ -250,15 +268,15 @@ ${window.location.href}
 
 @keyframes topic-scale {
   0% {
-    background-color: var(--color-danger);
+    color: var(--color-danger);
   }
 
   75% {
-    background-color: var(--color-danger-light);
+    color: var(--color-danger-light);
   }
 
   100% {
-    background-color: transparent;
+    color: #000;
   }
 }
 </style>

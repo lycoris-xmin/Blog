@@ -24,13 +24,13 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
         /// <summary>
         /// 头像链接
         /// </summary>
-        [TableColumn(StringLength = 255)]
+        [TableColumn(StringLength = 500)]
         public string Icon { get; set; } = "";
 
         /// <summary>
         /// 网站链接
         /// </summary>
-        [TableColumn(StringLength = 255)]
+        [TableColumn(StringLength = 500)]
         public string Link { get; set; } = "";
 
         /// <summary>

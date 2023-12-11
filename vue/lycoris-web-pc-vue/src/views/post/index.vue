@@ -146,7 +146,7 @@ onMounted(async () => {
     emit('loading', false);
     post.show = true;
     if (post.title) {
-      emit('browse', { pageName: post.title });
+      emit('browse', { pageName: post.title, isPost: true });
     }
   }
 });

@@ -24,24 +24,22 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
         private readonly IRepository<BrowseWorldMap, int> _browseWordMap;
         private readonly IRepository<BrowseStatistics, int> _browseStatistics;
         private readonly IRepository<RefererStatistics, int> _refererStatistics;
+        private readonly Lazy<IRepository<Post, long>> _post;
+        private readonly Lazy<IRepository<UserPostBrowseHistory, long>> _userPostBrowseHistory;
         private readonly IScheduleQueueCacheService _scheduleQueue;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="browseReferer"></param>
-        /// <param name="browseWordMap"></param>
-        /// <param name="browseStatistics"></param>
-        /// <param name="refererStatistics"></param>
-        /// <param name="scheduleQueue"></param>
         public BrowseLogQueueService(IRepository<BrowseWorldMap, int> browseWordMap,
                                      IRepository<BrowseStatistics, int> browseStatistics,
                                      IRepository<RefererStatistics, int> refererStatistics,
+                                     Lazy<IRepository<Post, long>> post,
+                                     Lazy<IRepository<UserPostBrowseHistory, long>> userPostBrowseHistory,
                                      IScheduleQueueCacheService scheduleQueue)
         {
             _browseWordMap = browseWordMap;
             _browseStatistics = browseStatistics;
             _refererStatistics = refererStatistics;
+            _post = post;
+            _userPostBrowseHistory = userPostBrowseHistory;
             _scheduleQueue = scheduleQueue;
         }
 
@@ -62,6 +60,9 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
 
             // 文章浏览量统计事件插入
             PushCalcPostStatisticsQueue(model);
+
+            // 用户浏览历史
+            await HandleUserPostBrowseHistoryAsync(model);
 
             // 浏览分布处理
             await HandleBrowseMapAsync(model);
@@ -85,10 +86,10 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
         {
             try
             {
-                if (!data.Path.StartsWith("/post", StringComparison.CurrentCultureIgnoreCase))
+                if (!data.Route.StartsWith("/post", StringComparison.CurrentCultureIgnoreCase))
                     return;
 
-                var postId = (data.Path.TrimEnd('/').Split('/').LastOrDefault() ?? "").ToTryLong();
+                var postId = (data.Route.TrimEnd('/').Split('/').LastOrDefault() ?? "").ToTryLong();
                 if (!postId.HasValue || postId.Value <= 0)
                     return;
 
@@ -97,6 +98,32 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
             catch (Exception ex)
             {
                 this.JobLogger!.Warn("", ex);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        private async Task HandleUserPostBrowseHistoryAsync(BrowseLogQueueModel model)
+        {
+            if (!model.IsPost || !model.UserId.HasValue || model.UserId.Value <= 0)
+                return;
+
+            var postId = model.Route.Split('/').LastOrDefault().ToTryLong();
+            if (postId.HasValue && postId.Value > 0)
+            {
+                var existsPost = await _post.Value.GetAll().Where(x => x.Id == postId.Value).AnyAsync();
+                if (existsPost)
+                {
+                    var data = await _userPostBrowseHistory.Value.GetAll().Where(x => x.PostId == postId.Value).Where(x => x.UserId == model.UserId!.Value).SingleOrDefaultAsync()
+                        ?? new UserPostBrowseHistory() { PostId = postId!.Value, UserId = model.UserId!.Value };
+
+                    data.LastTime = DateTime.Now;
+
+                    await _userPostBrowseHistory.Value.CreateOrUpdateAsync(data, x => x.LastTime);
+                }
             }
         }
 
@@ -133,7 +160,7 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
         {
             try
             {
-                var data = await _browseStatistics.GetAll().Where(x => x.Route == model.Path).SingleOrDefaultAsync() ?? new BrowseStatistics() { Route = model.Path, PageName = model.PageName, Count = 0 };
+                var data = await _browseStatistics.GetAll().Where(x => x.Route == model.Route).SingleOrDefaultAsync() ?? new BrowseStatistics() { Route = model.Route, PageName = model.PageName, Count = 0 };
                 data.Count++;
                 await _browseStatistics.CreateOrUpdateAsync(data, x => x.Count);
             }

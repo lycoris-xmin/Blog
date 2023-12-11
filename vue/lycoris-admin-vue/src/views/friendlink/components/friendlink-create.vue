@@ -1,14 +1,14 @@
 <template>
-  <el-dialog v-model="model.visible" title="新增友链" width="450px" :close-on-click-modal="false">
+  <el-dialog v-model="model.visible" title="新增友链" width="650px" :close-on-click-modal="false">
     <el-form ref="formRef" :model="model" :rules="model.rules" label-width="100px" label-position="top" class="form-ref">
       <el-form-item label="网站名称" prop="name">
-        <el-input v-model="model.name"></el-input>
+        <el-input v-model="model.name" maxlength="30" show-word-limit></el-input>
       </el-form-item>
       <el-form-item label="网站链接" prop="link">
-        <el-input v-model="model.link"></el-input>
+        <el-input v-model="model.link" maxlength="500" show-word-limit></el-input>
       </el-form-item>
       <el-form-item label="头像链接" prop="icon">
-        <el-input v-model="model.icon"></el-input>
+        <el-input v-model="model.icon" maxlength="500" show-word-limit></el-input>
       </el-form-item>
       <el-form-item label="网站介绍" prop="description">
         <el-input v-model="model.description" type="textarea" :autosize="{ minRows: 6, maxRows: 10 }" maxlength="100" show-word-limit></el-input>
@@ -87,6 +87,17 @@ const submit = async () => {
   //
   try {
     if (await formRef.value.validate()) {
+      if (model.name.length > 30) {
+        toast.warn('网站名称不能超过30个字符');
+        return;
+      } else if (model.link.length > 500) {
+        toast.warn('网站链接不能超过30个字符');
+        return;
+      } else if (model.icon.length > 500) {
+        toast.warn('头像链接不能超过30个字符');
+        return;
+      }
+
       let res = await createFriendLink({ ...model });
       if (res && res.resCode == 0) {
         toast.success('新增友链成功');

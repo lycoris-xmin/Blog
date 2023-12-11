@@ -16,13 +16,13 @@ namespace Lycoris.Blog.Server.Models.FriendLinks
         /// <summary>
         /// 头像链接
         /// </summary>
-        [Required, MaxLength(255)]
+        [Required, MaxLength(500)]
         public string? Icon { get; set; }
 
         /// <summary>
         /// 网站链接
         /// </summary>
-        [Required, MaxLength(255)]
+        [Required, MaxLength(500)]
         public string? Link { get; set; }
 
         /// <summary>

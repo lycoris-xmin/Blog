@@ -17,6 +17,7 @@ using Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Models;
 using Lycoris.Blog.Application.SignalR.Models;
 using Lycoris.Blog.Application.SignalR.Shared.Models;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
+using Lycoris.Blog.EntityFrameworkCore.Tables.Enums;
 using Lycoris.Blog.Model.Configurations;
 using Lycoris.Blog.Model.Contexts;
 using Lycoris.Common.Extensions;
@@ -58,7 +59,7 @@ namespace Lycoris.Blog.Application
             CreateMap<RequestLog, RequestLogInfoDto>();
 
             CreateMap<FriendLinkApplyDto, FriendLink>()
-                .ForMember(x => x.Status, opt => opt.MapFrom(src => false))
+                .ForMember(x => x.Status, opt => opt.MapFrom(src => FriendLinkStatusEnum.Default))
                 .ForMember(x => x.CreateTime, opt => opt.MapFrom(src => DateTime.Now));
 
             CreateMap<SiteNavigation, SiteNavigationQueryDataDto>();

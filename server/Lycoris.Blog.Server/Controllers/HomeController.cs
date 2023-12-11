@@ -5,6 +5,7 @@ using Lycoris.Blog.EntityFrameworkCore.Constants;
 using Lycoris.Blog.Model.Configurations;
 using Lycoris.Blog.Model.Global.Output;
 using Lycoris.Blog.Server.Application.Constants;
+using Lycoris.Blog.Server.FilterAttributes;
 using Lycoris.Blog.Server.Models.Home;
 using Lycoris.Blog.Server.Shared;
 using Microsoft.AspNetCore.Mvc;
@@ -88,6 +89,7 @@ namespace Lycoris.Blog.Server.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("Web/Browse/Record")]
+        [WebAuthentication]
         [Produces("application/json")]
         public async Task<BaseOutput> WebBrowseRecord([FromBody] WebBrowseRecordInput input)
         {

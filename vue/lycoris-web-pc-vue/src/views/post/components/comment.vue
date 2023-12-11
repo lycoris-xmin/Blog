@@ -49,7 +49,7 @@
             </div>
             <div class="content">
               <span class="reply-user" v-if="item.repliedUser">
-                <popover-user-info-card :user-id="item.repliedUserId" trigger="click">
+                <popover-user-info-card :user-id="item.repliedUserId" trigger="hover">
                   <template #reference>
                     <span class="reply-user-text">@{{ item.repliedUser }}</span>
                   </template>

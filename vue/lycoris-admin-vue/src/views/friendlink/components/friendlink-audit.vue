@@ -1,5 +1,5 @@
 <template>
-  <el-dialog v-model="model.visible" title="友链审核" width="450px" :close-on-click-modal="false" @opened="handleOpened">
+  <el-dialog v-model="model.visible" title="友链审核" width="750px" :close-on-click-modal="false" @opened="handleOpened">
     <el-form label-width="100px" label-position="top" class="form-ref" ref="formRef">
       <div class="flex-center-center">
         <img class="icon" :src="model.row.icon" />
@@ -11,7 +11,7 @@
         <a class="link" :href="model.row.link" target="_blank">{{ model.row.link }}</a>
       </el-form-item>
       <el-form-item label="网站介绍">
-        <el-input v-model="model.row.description" type="textarea" :autosize="{ minRows: 6, maxRows: 10 }" maxlength="100" show-word-limit></el-input>
+        <el-input v-model="model.row.description" type="textarea" :autosize="{ minRows: 8 }" readonly></el-input>
       </el-form-item>
       <el-form-item class="modal-item">
         <el-select v-model="model.row.status" placeholder="- 全部 -" @change="handleStatusChange" clearable>
@@ -105,10 +105,11 @@ defineExpose({
 
 <style lang="scss" scoped>
 .icon {
-  height: 55px;
-  width: 55px;
+  height: 75px;
+  width: 75px;
   border-radius: 50%;
   object-fit: cover;
+  border: 1px solid var(--color-secondary);
 }
 
 span.name {
@@ -117,6 +118,11 @@ span.name {
 }
 
 a.link {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+  word-break: normal;
+
   color: var(--color-info);
   transition: all 0.4s;
 

@@ -2,11 +2,12 @@ const storageKey = 'static-local';
 
 export const staticSourceInit = async () => {
   let value = localStorage.getItem(storageKey);
+  value = value || 'cdn';
   setStaticSourceCookie(value);
 };
 
 export const getStaticSource = () => {
-  return localStorage.getItem(storageKey);
+  return localStorage.getItem(storageKey) || 'cdn';
 };
 
 export const setStaticSource = value => {

@@ -1,15 +1,10 @@
 import request from '../utils/request';
-import { stores } from '../stores';
 
 const controller = '/user';
 
 export const getUserBrief = (userId = undefined) => {
   if (userId == undefined || userId == '') {
-    if (stores.authorize.token) {
-      return request.get(`${controller}/brief`);
-    } else {
-      return new Promise.reject('');
-    }
+    return request.get(`${controller}/brief`);
   } else if (userId != '0') {
     return request.get(`${controller}/brief/${userId}`);
   }
@@ -65,4 +60,18 @@ export const updateUserBrief = ({ nickName, avatar, blog, qq, wechat, github, gi
   }
 
   return request.post(`${controller}/brief/update`, data, true);
+};
+
+export const userPostBrowseList = ({ pageIndex, pageSize, beginTime, endTime }) => {
+  let data = { pageIndex, pageSize };
+
+  if (beginTime) {
+    data.beginTime = beginTime;
+  }
+
+  if (endTime) {
+    data.endTime = endTime;
+  }
+
+  return request.get(`${controller}/post/browsehistory`, data);
 };

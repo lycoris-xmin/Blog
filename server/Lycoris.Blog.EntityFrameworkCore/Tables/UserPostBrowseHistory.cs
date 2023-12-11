@@ -9,6 +9,7 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
     /// </summary>
     [Table("User_Post_BrowseHistory")]
     [TableIndex(new string[] { "PostId", "UserId" }, true)]
+    [TableIndex("LastTime")]
     public class UserPostBrowseHistory : MySqlBaseEntity<long>
     {
         /// <summary>
@@ -24,12 +25,6 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
         /// <summary>
         /// 访问时间
         /// </summary>
-        public DateTime CreateTime { get; set; }
-
-        /// <summary>
-        /// 不映射字段
-        /// </summary>
-        [NotMapped]
-        public override byte[]? RowVersion { get; set; }
+        public DateTime LastTime { get; set; }
     }
 }

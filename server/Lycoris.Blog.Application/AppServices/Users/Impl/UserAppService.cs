@@ -1,6 +1,5 @@
 ﻿using Lycoris.Autofac.Extensions;
 using Lycoris.AutoMapper.Extensions;
-using Lycoris.Blog.Application.AppServices.FileManage;
 using Lycoris.Blog.Application.AppServices.Users.Dtos;
 using Lycoris.Blog.Application.Cached.Authentication;
 using Lycoris.Blog.Application.Cached.ScheduleQueue;

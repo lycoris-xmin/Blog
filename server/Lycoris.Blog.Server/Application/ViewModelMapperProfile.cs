@@ -82,10 +82,12 @@ namespace Lycoris.Blog.Server.Application
                 .ForMember(x => x.Recommend, opt => opt.MapFrom(src => src.Recommend ? 1 : 0));
 
             CreateMap<PostInfoDto, PostInfoViewModel>()
-                .ForMember(x => x.Comment, opt => opt.MapFrom(src => src.Comment.HasValue && src.Comment.Value ? 1 : 0));
+                .ForMember(x => x.Comment, opt => opt.MapFrom(src => src.Comment.HasValue && src.Comment.Value ? 1 : 0))
+                .ForMember(x => x.Recommend, opt => opt.MapFrom(src => src.Recommend.HasValue && src.Recommend.Value ? 1 : 0));
 
             CreateMap<PostSaveInput, PostSaveDto>()
-                .ForMember(x => x.Comment, opt => opt.MapFrom(src => src.Comment.HasValue && src.Comment.Value == 1));
+                .ForMember(x => x.Comment, opt => opt.MapFrom(src => src.Comment.HasValue && src.Comment.Value == 1))
+                .ForMember(x => x.Recommend, opt => opt.MapFrom(src => src.Recommend.HasValue && src.Recommend.Value == 1));
 
             CreateMap<CategoryDataDto, CategoryDataViewModel>()
                 .ForMember(x => x.Keyword, opt => opt.MapFrom(src => ChangeKeywordList(src.Keyword)));
@@ -502,23 +504,6 @@ namespace Lycoris.Blog.Server.Application
                 return $"{time:MM-dd}";
             else
                 return $"{time:yyyy-MM-dd}";
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="dateTime"></param>
-        /// <returns></returns>
-        private static string ChangeRoomLastActiveTime(DateTime dateTime)
-        {
-            if (dateTime.Year != DateTime.Now.Year)
-                return dateTime.ToString("yyyy/m/d");
-            else if (dateTime.Month != DateTime.Now.Month)
-                return dateTime.ToString("M-d");
-            else if (dateTime.Date != DateTime.Now.Date)
-                return (DateTime.Now.Date - dateTime.Date).TotalDays == 1 ? "昨天" : dateTime.ToString("M-d");
-            else
-                return dateTime.ToString("HH:mm");
         }
 
         /// <summary>

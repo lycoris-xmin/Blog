@@ -16,6 +16,11 @@
         public string? Title { get; set; }
 
         /// <summary>
+        /// 
+        /// </summary>
+        public string? Info { get; set; }
+
+        /// <summary>
         /// 文章Markdown内容
         /// </summary>
         public string? Markdown { get; set; }
@@ -41,6 +46,11 @@
         public int? Comment { get; set; }
 
         /// <summary>
+        /// 推荐
+        /// </summary>
+        public int? Recommend { get; set; }
+
+        /// <summary>
         /// 文章标签
         /// </summary>
         public List<string>? Tags { get; set; }
@@ -49,5 +59,10 @@
         /// 
         /// </summary>
         public bool IsPublish { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public DateTime UpdateTime { get; set; }
     }
 }

@@ -148,21 +148,23 @@ namespace Lycoris.Blog.Server.Controllers
         /// 保存文章
         /// </summary>
         /// <param name="input"></param>
-        /// <param name="fileManage"></param>
         /// <returns></returns>
         [HttpPost("Save")]
         [AppAuthentication]
         [GanssXssSettings("Markdown", "Info")]
-        [Consumes("multipart/form-data"), Produces("application/json")]
-        public async Task<BaseOutput> Save([FromForm] PostSaveInput input, [FromServices] IFileManageAppService fileManage)
+        [Consumes("application/json"), Produces("application/json")]
+        public async Task<BaseOutput> Save([FromBody] PostSaveInput input)
         {
+            if (input.IsPublish ?? false)
+            {
+                if (input.Info.IsNullOrEmpty())
+                    throw new FriendlyException("文章摘要不能为空");
+                else if (input.Markdown.IsNullOrEmpty())
+                    throw new FriendlyException("文章内容不能为空");
+            }
+
             var data = input.ToMap<PostSaveDto>();
-
-            if (input.File != null)
-                data.Icon = await fileManage.UploadFileAsync(input.File, StaticsFilePath.PostIcon);
-
             await _post.SaveAsync(data);
-
             return Success();
         }
 
@@ -239,6 +241,19 @@ namespace Lycoris.Blog.Server.Controllers
             return Success();
         }
 
+        /// <summary>
+        /// 上传文章封面图
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="fileManage"></param>
+        /// <returns></returns>
+        [HttpPost("Icon/Upload"), AppAuthentication]
+        [Consumes("multipart/form-data"), Produces("application/json")]
+        public async Task<DataOutput<string>> UploadPostIcon([FromForm] UploadPostIconInput input, [FromServices] IFileManageAppService fileManage)
+        {
+            var url = await fileManage.UploadFileAsync(input.File!, StaticsFilePath.PostIcon);
+            return Success(url);
+        }
         #endregion
     }
 }

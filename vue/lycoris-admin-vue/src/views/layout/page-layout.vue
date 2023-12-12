@@ -15,6 +15,9 @@
         <div class="title">
           <span>{{ props.title || $route.meta.title }}</span>
         </div>
+        <div class="tool flex-center-center">
+          <slot name="tool"></slot>
+        </div>
       </div>
     </div>
     <div class="card-content">
@@ -175,6 +178,17 @@ const props = defineProps({
 
     .form-group.form-group-lg {
       width: 400px;
+    }
+  }
+}
+
+.tool {
+  .el-button {
+    height: 30px;
+    padding: 1px 15px;
+
+    span {
+      font-size: 12px;
     }
   }
 }

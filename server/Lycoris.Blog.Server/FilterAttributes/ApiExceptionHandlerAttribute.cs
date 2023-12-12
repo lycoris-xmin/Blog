@@ -5,7 +5,6 @@ using Lycoris.Blog.Model.Global.Output;
 using Lycoris.Common.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using System.Net;
 
 namespace Lycoris.Blog.Server.FilterAttributes
 {

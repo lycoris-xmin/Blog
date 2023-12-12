@@ -15,6 +15,11 @@ namespace Lycoris.Blog.Application.AppServices.Posts.Dtos
         public string? Title { get; set; }
 
         /// <summary>
+        /// 
+        /// </summary>
+        public string? Info { get; set; }
+
+        /// <summary>
         /// 文章Markdown内容
         /// </summary>
         public string? Markdown { get; set; }
@@ -40,6 +45,11 @@ namespace Lycoris.Blog.Application.AppServices.Posts.Dtos
         public bool? Comment { get; set; }
 
         /// <summary>
+        /// 
+        /// </summary>
+        public bool? Recommend { get; set; }
+
+        /// <summary>
         /// 文章标签
         /// </summary>
         public List<string>? Tags { get; set; }
@@ -48,5 +58,10 @@ namespace Lycoris.Blog.Application.AppServices.Posts.Dtos
         /// 
         /// </summary>
         public bool IsPublish { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public DateTime UpdateTime { get; set; }
     }
 }

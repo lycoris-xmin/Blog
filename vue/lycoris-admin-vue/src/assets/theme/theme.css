@@ -25,3 +25,17 @@
     transform: rotate(360deg);
   }
 }
+
+.el-dialog__body {
+  overflow-x: hidden;
+  overflow-y: auto;
+  border-top: 1px solid var(--color-secondary);
+  border-bottom: 1px solid var(--color-secondary);
+  max-height: 800px;
+}
+
+@media (max-height: 1080px) {
+  .el-dialog__body {
+    max-height: 700px;
+  }
+}

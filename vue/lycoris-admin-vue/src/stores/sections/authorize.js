@@ -32,10 +32,8 @@ export default defineStore('authorize', {
           data.refreshToken = value.refreshToken;
           data.refreshTokenExpireTime = value.refreshTokenExpireTime;
 
-          if (now < value.tokenExpireTime) {
-            data.token = value.token;
-            data.tokenExpireTime = value.tokenExpireTime;
-          }
+          data.token = value.token;
+          data.tokenExpireTime = value.tokenExpireTime;
         }
       }
     } catch {}

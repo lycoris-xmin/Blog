@@ -15,18 +15,24 @@ export const getPostInfo = id => {
 };
 
 export const savePost = data => {
+  if (data == void 0) {
+    return;
+  }
   if (!data.id || data.id == '0') {
     delete data.id;
   }
-  return request.post(`${controller}/save`, data, true);
+
+  return request.post(`${controller}/save`, data);
 };
 
 export const uploadMarkdownPicture = file => {
-  let data = {
-    file: file
-  };
-
-  return request.post(`${controller}/markdown/upload`, data, true);
+  return request.post(
+    `${controller}/markdown/upload`,
+    {
+      file
+    },
+    true
+  );
 };
 
 export const deletePost = id => {
@@ -43,4 +49,8 @@ export const setPostComment = data => {
 
 export const setPostRecommend = data => {
   return request.post(`${controller}/recommend`, data);
+};
+
+export const uploadPostIcon = file => {
+  return request.post(`${controller}/icon/upload`, { file }, true);
 };

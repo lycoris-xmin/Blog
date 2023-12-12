@@ -21,15 +21,15 @@ namespace Lycoris.Blog.Server.Models.Posts
         public string? Title { get; set; }
 
         /// <summary>
-        /// 简介
+        /// 文章摘要
         /// </summary>
-        [StringValid("简介", Required = true, MinLength = 1, MaxLength = 200)]
+        [StringValid("文章摘要", MinLength = 1, MaxLength = 200)]
         public string? Info { get; set; }
 
         /// <summary>
         /// 文章Markdown内容
         /// </summary>
-        [StringValid("内容", Required = true, MinLength = 1)]
+        [StringValid("文章内容", MinLength = 1)]
         public string? Markdown { get; set; }
 
         /// <summary>
@@ -60,19 +60,14 @@ namespace Lycoris.Blog.Server.Models.Posts
         public List<string>? Tags { get; set; }
 
         /// <summary>
+        /// 
+        /// </summary>
+        public int? Recommend { get; set; }
+
+        /// <summary>
         /// 是否发布
         /// </summary>
         [Required]
         public bool? IsPublish { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public bool? Recommend { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public IFormFile? File { get; set; }
     }
 }

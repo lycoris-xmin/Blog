@@ -1,4 +1,5 @@
-﻿using Lycoris.Blog.Model.Configurations;
+﻿using Lycoris.Blog.EntityFrameworkCore.Tables.Enums;
+using Lycoris.Blog.Model.Configurations;
 
 namespace Lycoris.Blog.Application.AppServices.ServerStaticFiles.Dtos
 {
@@ -15,6 +16,8 @@ namespace Lycoris.Blog.Application.AppServices.ServerStaticFiles.Dtos
         public string PathUrl { get; set; } = string.Empty;
 
         public string RemoteUrl { get; set; } = string.Empty;
+
+        public FileTypeEnum? FileType { get; set; }
 
         public long FileSize { get; set; }
 

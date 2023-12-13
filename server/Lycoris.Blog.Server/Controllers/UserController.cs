@@ -75,7 +75,7 @@ namespace Lycoris.Blog.Server.Controllers
         {
             var data = input.ToMap<UserBriefDto>();
             if (input.File != null)
-                data.Avatar = await fileManage.Value.UploadFileAsync(input.File, StaticsFilePath.Avatar);
+                (data.Avatar, _) = await fileManage.Value.UploadFileAsync(input.File, StaticsFilePath.Avatar);
 
             var dto = await _user.UpdateUserBrieAsync(data);
 
@@ -125,19 +125,15 @@ namespace Lycoris.Blog.Server.Controllers
         /// 更新用户简要信息
         /// </summary>
         /// <param name="input"></param>
-        /// <param name="fileManage"></param>
+
         /// <returns></returns>
         [HttpPost("Dashboard/Brief/Update")]
         [AppAuthentication]
-        [Consumes("multipart/form-data"), Produces("application/json")]
-        public async Task<DataOutput<UserBriefViewModel>> UpdateDashboardUserBrief([FromForm] UpdateUserBriefInput input, [FromServices] Lazy<IFileManageAppService> fileManage)
+        [Consumes("application/json"), Produces("application/json")]
+        public async Task<DataOutput<UserBriefViewModel>> UpdateDashboardUserBrief([FromBody] UpdateUserBriefInput input)
         {
             var data = input.ToMap<UserBriefDto>();
-            if (input.File != null)
-                data.Avatar = await fileManage.Value.UploadFileAsync(input.File, StaticsFilePath.Avatar);
-
             var dto = await _user.UpdateUserBrieAsync(data);
-
             return Success(dto.ToMap<UserBriefViewModel>());
         }
 

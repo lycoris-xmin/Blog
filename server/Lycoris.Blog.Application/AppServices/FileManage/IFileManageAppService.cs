@@ -1,5 +1,6 @@
 ﻿using Lycoris.Blog.Application.Shared;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
+using Lycoris.Blog.EntityFrameworkCore.Tables.Enums;
 using Microsoft.AspNetCore.Http;
 
 namespace Lycoris.Blog.Application.AppServices.FileManage
@@ -11,8 +12,9 @@ namespace Lycoris.Blog.Application.AppServices.FileManage
         /// </summary>
         /// <param name="file"></param>
         /// <param name="path">上传路径</param>
+        /// <param name="notCheck">不检测使用状态</param>
         /// <returns></returns>
-        Task<string> UploadFileAsync(IFormFile file, string path);
+        Task<(string url, FileTypeEnum fileType)> UploadFileAsync(IFormFile file, string path, bool notCheck = false);
 
         /// <summary>
         /// 

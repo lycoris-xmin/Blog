@@ -38,13 +38,7 @@
       @toolbar-create="$create"
       @toolbar-search="$search"
     >
-      <template #icon="{ value }">
-        <div class="icon flex-center-center">
-          <img :src="value" onerror="javascript:this.src='/images/404.png'" />
-        </div>
-      </template>
-
-      <template #title="{ value, row: { id, type, info, browseCount, commentCount } }">
+      <template #title="{ value, row: { id, type } }">
         <div class="post">
           <div class="title">
             <a :href="`${stores.webSetting.webPath.trimEnd('/')}/post/${id}`" target="_blank">
@@ -52,16 +46,11 @@
               <span>{{ value }}</span>
             </a>
           </div>
-          <div class="info">{{ info }}...</div>
           <div class="statistics">
-            <el-icon>
-              <component :is="'reading'"></component>
-            </el-icon>
+            <span>浏览：</span>
             <span>{{ countChange(browseCount) }}</span>
             <span class="divider">/</span>
-            <el-icon>
-              <component :is="'message'"></component>
-            </el-icon>
+            <span>评论：</span>
             <span>{{ countChange(commentCount) }}</span>
           </div>
         </div>
@@ -138,11 +127,6 @@ const model = reactive({
 });
 
 const column = [
-  {
-    column: 'icon',
-    name: '封面图',
-    width: '210px'
-  },
   {
     column: 'title',
     name: '标题'
@@ -362,7 +346,6 @@ const $delete = async (index, row) => {
 }
 
 .post {
-  min-height: 140px;
   padding: 10px 0;
   display: flex;
   flex-direction: column;

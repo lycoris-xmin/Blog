@@ -1,6 +1,7 @@
 ﻿using Lycoris.Blog.Common;
 using Lycoris.Blog.EntityFrameworkCore.Common.Attributes;
 using Lycoris.Blog.EntityFrameworkCore.Shared;
+using Lycoris.Blog.EntityFrameworkCore.Tables.Enums;
 using Lycoris.Blog.Model.Configurations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -13,7 +14,9 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
     [TableIndex("UploadChannel")]
     [TableIndex("PathUrl")]
     [TableIndex("Use")]
+    [TableIndex("FileType")]
     [TableIndex("CreateTime")]
+    [TableIndex("NotCheck")]
     public class ServerStaticFile : MySqlBaseEntity<long>
     {
         /// <summary>
@@ -45,6 +48,11 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
         /// </summary>
         [TableColumn(Required = false)]
         public string RemoteUrl { get; set; } = string.Empty;
+
+        /// <summary>
+        /// 文件类型
+        /// </summary>
+        public FileTypeEnum FileType { get; set; }
 
         /// <summary>
         /// 文件Sha签名
@@ -81,9 +89,34 @@ namespace Lycoris.Blog.EntityFrameworkCore.Tables
         public DateTime? LastUpdateTime { get; set; }
 
         /// <summary>
+        /// 不检查使用状态
+        /// </summary>
+        [TableColumn(DefaultValue = false)]
+        public bool NotCheck { get; set; } = false;
+
+        /// <summary>
         /// 
         /// </summary>
         [NotMapped]
         public string FilePath => System.IO.Path.Combine(AppSettings.Path.WebRootPath, this.Path.TrimStart('/'), this.FileName);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        public static FileTypeEnum GetFileType(string fileName)
+        {
+            var extension = System.IO.Path.GetExtension(fileName).ToLower();
+
+            if (extension == ".jpg" || extension == ".jpeg" || extension == ".png" || extension == ".gif" || extension == ".webp" || extension == ".bmp" || extension == ".ico")
+                return FileTypeEnum.Image;
+            else if (extension == ".mp3" || extension == ".wav" || extension == ".ogg" || extension == ".wma" || extension == ".flac")
+                return FileTypeEnum.Audio;
+            else if (extension == ".mp4" || extension == ".avi" || extension == ".mkv" || extension == ".mpeg" || extension == ".mov" || extension == ".wmv" || extension == ".flv")
+                return FileTypeEnum.Video;
+            else
+                return FileTypeEnum.File;
+        }
     }
 }

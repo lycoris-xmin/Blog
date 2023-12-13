@@ -1,14 +1,19 @@
 <template>
-  <div :id="container" class="cherry-markdown-container" :class="{ 'cherry-markdown-container-border': !props.previewOnly }" @keydown="handleKeyDown"></div>
+  <div>
+    <div :id="container" class="cherry-markdown-container" :class="{ 'cherry-markdown-container-border': !props.previewOnly }" @keydown="handleKeyDown"></div>
+    <static-file-modal ref="staticFileModalRef" @selected="handleFileSelected"></static-file-modal>
+  </div>
 </template>
 
 <script setup>
 import { ref } from 'vue';
 import 'cherry-markdown/dist/cherry-markdown.min.css';
 import CherryMarkdown from 'cherry-markdown';
+import staticFileModal from '../static-file-modal/index.vue';
 import $loading from '../../utils/loading';
 
 const container = ref('cherry-markdown-container');
+const staticFileModalRef = ref();
 
 const loadingText = ref('markdown 插件初始化...');
 const loading = new $loading({
@@ -42,6 +47,13 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['fileUpload', 'keydown-save']);
+
+const serverFile = CherryMarkdown.createMenuHook('附件', {
+  iconName: 'toc', // 声明按钮的图标，空表示不显示图标直接显示文字
+  onClick: function () {
+    staticFileModalRef.value.show();
+  }
+});
 
 const cherry = {
   instance: '',
@@ -91,20 +103,46 @@ const cherry = {
         '|',
         'list',
         {
-          insert: ['image', 'audio', 'video', 'pdf', 'word', 'formula']
+          insert: ['serverFile', 'image', 'audio', 'video', 'formula']
         },
         'graph',
         'togglePreview'
       ],
       sidebar: [],
       bubble: false,
-      float: false
+      float: false,
+      customMenu: {
+        serverFile
+      }
     },
     fileUpload: (file, callback) => {
       showLoading('文件上传中,请稍候...');
       try {
-        emit('fileUpload', file, url => {
-          callback(url);
+        emit('fileUpload', file, data => {
+          if (data.fileType == 0) {
+            callback(data.url, {
+              name: '图片',
+              isBorder: true, // 是否显示边框，默认false
+              isShadow: true, // 是否显示阴影，默认false
+              isRadius: true, // 是否显示圆角，默认false
+              width: '60%', // 图片的宽度，默认100%，可配置百分比，也可配置像素值
+              height: 'auto' // 图片的高度，默认auto
+            });
+          } else if (data.fileType == 1) {
+            callback(data.url, {
+              name: '音频'
+            });
+          } else if (data.fileType == 2) {
+            callback(data.url, {
+              name: '视频',
+              isBorder: true, // 是否显示边框，默认false
+              isShadow: true, // 是否显示阴影，默认false
+              isRadius: true // 是否显示圆角，默认false
+            });
+          } else {
+            // 如果上传的是文件
+            callback(data.url);
+          }
           hideLoading();
         });
       } catch (error) {
@@ -135,9 +173,9 @@ const init = (value = '') => {
 
     if (props.customMenu) {
       let tools = generateCustomeMenu();
-      if (tools) {
-        cherry.options.toolbars.customMenu = tools;
+      if (tools && Object.keys(tools).length) {
         for (let tool in tools) {
+          cherry.options.toolbars.customMenu[tool] = tools[tool];
           cherry.options.toolbars.toolbar.push(tool);
         }
       }
@@ -272,6 +310,21 @@ const hideLoading = () => {
   setTimeout(() => {
     loadingText.value = 'markdown 插件初始化...';
   }, 500);
+};
+
+const handleFileSelected = (url, fileType) => {
+  let input = '\r\n';
+  if (fileType == 0) {
+    input += `![图片#B #S #R #60% #auto](${url})`;
+  } else if (fileType == 1) {
+    input += `!audio[音频#center](${url})`;
+  } else if (fileType == 2) {
+    input += `!video[视频#B #S #R](${url})`;
+  } else {
+    input += `[文件](${url})`;
+  }
+
+  cherry.instance.insert(input);
 };
 
 defineExpose({

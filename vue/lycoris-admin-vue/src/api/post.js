@@ -25,16 +25,6 @@ export const savePost = data => {
   return request.post(`${controller}/save`, data);
 };
 
-export const uploadMarkdownPicture = file => {
-  return request.post(
-    `${controller}/markdown/upload`,
-    {
-      file
-    },
-    true
-  );
-};
-
 export const deletePost = id => {
   return request.post(`${controller}/delete`, { id });
 };
@@ -49,8 +39,4 @@ export const setPostComment = data => {
 
 export const setPostRecommend = data => {
   return request.post(`${controller}/recommend`, data);
-};
-
-export const uploadPostIcon = file => {
-  return request.post(`${controller}/icon/upload`, { file }, true);
 };

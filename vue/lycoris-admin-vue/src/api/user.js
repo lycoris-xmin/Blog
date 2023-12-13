@@ -6,8 +6,8 @@ export const getUserBrief = () => {
   return request.get(`${controller}/dashboard/brief`);
 };
 
-export const updateUserBrief = data => {
-  return request.post(`${controller}/dashboard/brief/update`, data, true);
+export const updateUserBrief = ({ nickName, avatar, blog, github, gitee, qq, wechat, cloudMusic, bilibili }) => {
+  return request.post(`${controller}/dashboard/brief/update`, { nickName, avatar, blog, github, gitee, qq, wechat, cloudMusic, bilibili });
 };
 
 export const getList = ({ pageIndex, pageSize, nickName, email }) => {

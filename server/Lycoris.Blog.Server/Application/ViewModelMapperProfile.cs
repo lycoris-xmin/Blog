@@ -93,12 +93,10 @@ namespace Lycoris.Blog.Server.Application
                 .ForMember(x => x.Keyword, opt => opt.MapFrom(src => ChangeKeywordList(src.Keyword)));
 
             CreateMap<CategoryCreateInput, CreateCategoryDto>()
-                .ForMember(x => x.Keyword, opt => opt.MapFrom(src => ChangeKeyword(src.Keyword)))
-                .ForMember(x => x.Icon, opt => opt.Ignore());
+                .ForMember(x => x.Keyword, opt => opt.MapFrom(src => ChangeKeyword(src.Keyword)));
 
             CreateMap<CategoryUpdateInput, UpdateCategoryDto>()
-                .ForMember(x => x.Keyword, opt => opt.MapFrom(src => ChangeKeyword(src.Keyword)))
-                .ForMember(x => x.Icon, opt => opt.Ignore());
+                .ForMember(x => x.Keyword, opt => opt.MapFrom(src => ChangeKeyword(src.Keyword)));
 
 
             CreateMap<PostListInput, PostFilter>();
@@ -311,6 +309,9 @@ namespace Lycoris.Blog.Server.Application
 
             CreateMap<UserPostBrowseHistoryDataDto, UserPostBrowseHistoryDataViewModel>()
                 .ForMember(x => x.LastTime, opt => opt.MapFrom(src => ChangeTimeToChinese(src.LastTime)));
+
+            CreateMap<ServerStaticFileRepositoryDto, StaticFileRepositoryDataViewModel>()
+                .ForMember(x => x.FileSize, opt => opt.MapFrom(src => ConvertFileSize(src.FileSize)));
         }
 
         /// <summary>

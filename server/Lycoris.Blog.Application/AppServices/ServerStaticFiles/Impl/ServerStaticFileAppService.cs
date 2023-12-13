@@ -9,6 +9,7 @@ using Lycoris.Blog.Application.Shared.Impl;
 using Lycoris.Blog.Common;
 using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
+using Lycoris.Blog.EntityFrameworkCore.Tables.Enums;
 using Lycoris.Blog.Model.Exceptions;
 using Lycoris.Common.Extensions;
 using Lycoris.Quartz.Extensions;
@@ -67,6 +68,7 @@ namespace Lycoris.Blog.Application.AppServices.ServerStaticFiles.Impl
                                   UploadChannel = x.UploadChannel,
                                   PathUrl = x.PathUrl,
                                   RemoteUrl = x.RemoteUrl,
+                                  FileType = x.FileType,
                                   FileSize = x.FileSie,
                                   FileSha = x.FileSha,
                                   LocalBack = x.LocalBack,
@@ -172,6 +174,36 @@ namespace Lycoris.Blog.Application.AppServices.ServerStaticFiles.Impl
             });
 
             return Path.GetFileName(zipFilePath);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="fileType"></param>
+        /// <returns></returns>
+        public async Task<PageResultDto<ServerStaticFileRepositoryDto>> GetServerStaticFileRepositoryAsync(int pageIndex, int pageSize, FileTypeEnum? fileType)
+        {
+            var filter = _repository.GetAll().WhereIf(fileType.HasValue, x => x.FileType == fileType!.Value);
+
+            var count = await filter.CountAsync();
+            if (count == 0 || !CheckPageFilter(pageIndex, pageSize, count))
+                return new PageResultDto<ServerStaticFileRepositoryDto>(count);
+
+            var query = filter.OrderByDescending(x => x.CreateTime)
+                              .PageBy(pageIndex, pageSize)
+                              .Select(x => new ServerStaticFileRepositoryDto()
+                              {
+                                  Url = x.PathUrl,
+                                  FileName = x.FileName,
+                                  FileSize = x.FileSie,
+                                  FileType = x.FileType
+                              });
+
+            var list = await query.ToListAsync();
+
+            return new PageResultDto<ServerStaticFileRepositoryDto>(count, list);
         }
     }
 }

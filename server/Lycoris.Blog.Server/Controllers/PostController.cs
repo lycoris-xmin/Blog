@@ -1,14 +1,11 @@
 ﻿using Lycoris.AutoMapper.Extensions;
-using Lycoris.Blog.Application.AppServices.FileManage;
 using Lycoris.Blog.Application.AppServices.Posts;
 using Lycoris.Blog.Application.AppServices.Posts.Dtos;
-using Lycoris.Blog.Common;
 using Lycoris.Blog.Model.Exceptions;
 using Lycoris.Blog.Model.Global.Output;
 using Lycoris.Blog.Server.Application.Constants;
 using Lycoris.Blog.Server.FilterAttributes;
 using Lycoris.Blog.Server.Models.Posts;
-using Lycoris.Blog.Server.Models.Shared;
 using Lycoris.Blog.Server.Shared;
 using Lycoris.Common.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -153,7 +150,7 @@ namespace Lycoris.Blog.Server.Controllers
         [AppAuthentication]
         [GanssXssSettings("Markdown", "Info")]
         [Consumes("application/json"), Produces("application/json")]
-        public async Task<BaseOutput> Save([FromBody] PostSaveInput input)
+        public async Task<DataOutput<PostSaveViwModel>> Save([FromBody] PostSaveInput input)
         {
             if (input.IsPublish ?? false)
             {
@@ -164,22 +161,8 @@ namespace Lycoris.Blog.Server.Controllers
             }
 
             var data = input.ToMap<PostSaveDto>();
-            await _post.SaveAsync(data);
-            return Success();
-        }
-
-        /// <summary>
-        /// Markdown文件上传接口
-        /// </summary>
-        /// <param name="input"></param>
-        /// <param name="fileManage"></param>
-        /// <returns></returns>
-        [HttpPost("Markdown/Upload"), AppAuthentication]
-        [Consumes("multipart/form-data"), Produces("application/json")]
-        public async Task<DataOutput<string>> MarkdownUpload([FromForm] MarkdownUploadInput input, [FromServices] IFileManageAppService fileManage)
-        {
-            var url = await fileManage.UploadFileAsync(input.File!, StaticsFilePath.Post);
-            return Success(url);
+            var id = await _post.SaveAsync(data);
+            return Success(new PostSaveViwModel(id));
         }
 
         /// <summary>
@@ -239,20 +222,6 @@ namespace Lycoris.Blog.Server.Controllers
         {
             await _post.SetPostRecommendAsync(input.Id!.Value, input.Recommend!.Value == 1);
             return Success();
-        }
-
-        /// <summary>
-        /// 上传文章封面图
-        /// </summary>
-        /// <param name="input"></param>
-        /// <param name="fileManage"></param>
-        /// <returns></returns>
-        [HttpPost("Icon/Upload"), AppAuthentication]
-        [Consumes("multipart/form-data"), Produces("application/json")]
-        public async Task<DataOutput<string>> UploadPostIcon([FromForm] UploadPostIconInput input, [FromServices] IFileManageAppService fileManage)
-        {
-            var url = await fileManage.UploadFileAsync(input.File!, StaticsFilePath.PostIcon);
-            return Success(url);
         }
         #endregion
     }

@@ -1,20 +1,44 @@
 <template>
   <page-layout :loading="loading">
-    <div class="">
-      <single-markdown-page ref="markdown" @save="save" @fileUpload="fileUpload"></single-markdown-page>
-    </div>
+    <markdown-editor class="markdown-container" ref="markdown" :preview-only="false" :custom-menu="model.tool" :events="model.markdownEvents" @fileUpload="fileUpload" @keydown-save="handleKeyDownSave"></markdown-editor>
   </page-layout>
 </template>
 
 <script setup name="about-web">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, reactive } from 'vue';
 import pageLayout from '../layout/page-layout.vue';
-import singleMarkdownPage from '../../components/single-markdown-page/index.vue';
-import { getAboutWeb, saveAboutWeb, uploadFile } from '../../api/website';
+import markdownEditor from '../../components/markdown-editor/index.vue';
+import { getAboutWeb, saveAboutWeb } from '../../api/website';
+import { uploadStaticFile } from '../../api/staticFile';
+import UploadType from '../../constants/UploadType';
 import toast from '../../utils/toast';
 
 const markdown = ref();
 const loading = ref(true);
+
+const model = reactive({
+  tool: [
+    {
+      name: 'save',
+      label: '保存',
+      callback: async () => {
+        if (model.isModify) {
+          let value = markdown.value.getMarkdown();
+          save(value);
+        }
+      }
+    }
+  ],
+  markdownEvents: {
+    afterChange: markdown => {
+      if (!model.isModify && model.markdown != markdown) {
+        model.isModify = true;
+      } else if (model.isModify && model.markdown == markdown) {
+        model.isModify = false;
+      }
+    }
+  }
+});
 
 onMounted(async () => {
   try {
@@ -37,10 +61,12 @@ const fileUpload = async (file, callback) => {
     return;
   }
 
-  let res = await uploadFile('about/web', file);
-  if (res && res.resCode == 0) {
-    callback(res.data);
-  }
+  try {
+    let res = await uploadStaticFile(UploadType.ABOUT_WEB, file);
+    if (res && res.resCode == 0) {
+      callback(res.data);
+    }
+  } catch (error) {}
 };
 
 const save = async value => {
@@ -52,6 +78,13 @@ const save = async value => {
     }
   } finally {
     markdown.value.hideLoading();
+  }
+};
+
+const handleKeyDownSave = () => {
+  if (model.isModify) {
+    let value = markdown.value.getMarkdown();
+    save(value);
   }
 };
 </script>

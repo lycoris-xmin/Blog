@@ -1,8 +1,6 @@
 ﻿using Lycoris.AutoMapper.Extensions;
 using Lycoris.Blog.Application.AppServices.Categorys;
 using Lycoris.Blog.Application.AppServices.Categorys.Dtos;
-using Lycoris.Blog.Application.AppServices.FileManage;
-using Lycoris.Blog.Common;
 using Lycoris.Blog.Model.Exceptions;
 using Lycoris.Blog.Model.Global.Input;
 using Lycoris.Blog.Model.Global.Output;
@@ -65,18 +63,13 @@ namespace Lycoris.Blog.Server.Controllers
         /// 创建文章分类
         /// </summary>
         /// <param name="input"></param>
-        /// <param name="fileManage"></param>
         /// <returns></returns>
         [HttpPost("Create")]
         [AppAuthentication]
-        [Consumes("multipart/form-data"), Produces("application/json")]
-        public async Task<DataOutput<CategoryDataViewModel>> Create([FromForm] CategoryCreateInput input, [FromServices] IFileManageAppService fileManage)
+        [Consumes("application/json"), Produces("application/json")]
+        public async Task<DataOutput<CategoryDataViewModel>> Create([FromBody] CategoryCreateInput input)
         {
             var data = input.ToMap<CreateCategoryDto>();
-
-            if (input.File != null)
-                data.Icon = await fileManage.UploadFileAsync(input.File!, StaticsFilePath.Category);
-
             var dto = await _category.CreateAsync(data);
             return Success(dto.ToMap<CategoryDataViewModel>());
         }
@@ -85,18 +78,13 @@ namespace Lycoris.Blog.Server.Controllers
         /// 修改文章分类
         /// </summary>
         /// <param name="input"></param>
-        /// <param name="fileManage"></param>
         /// <returns></returns>
         [HttpPost("Update")]
         [AppAuthentication]
-        [Consumes("multipart/form-data"), Produces("application/json")]
-        public async Task<DataOutput<CategoryDataViewModel>> Update([FromForm] CategoryUpdateInput input, [FromServices] Lazy<IFileManageAppService> fileManage)
+        [Consumes("application/json"), Produces("application/json")]
+        public async Task<DataOutput<CategoryDataViewModel>> Update([FromBody] CategoryUpdateInput input)
         {
             var data = input.ToMap<UpdateCategoryDto>();
-
-            if (input.File != null)
-                data.Icon = await fileManage.Value.UploadFileAsync(input.File!, StaticsFilePath.Category);
-
             var dto = await _category.UpdateAsync(data);
             return Success(dto.ToMap<CategoryDataViewModel>());
         }

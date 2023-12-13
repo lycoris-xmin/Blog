@@ -38,6 +38,11 @@
         /// <summary>
         /// 
         /// </summary>
+        public int? FileType { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public string? FileSize { get; set; }
 
         /// <summary>

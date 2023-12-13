@@ -33,6 +33,8 @@
 <script setup>
 import { reactive, ref } from 'vue';
 import { createCategory, updateCategory } from '../../../api/category';
+import { uploadStaticFile } from '../../../api/staticFile';
+import UploadType from '../../../constants/UploadType';
 import toast from '../../../utils/toast';
 
 const formRef = ref();
@@ -78,8 +80,7 @@ const submit = async () => {
     const data = {
       id: form.id,
       name: form.name,
-      keyword: form.keyword,
-      file: form.file
+      keyword: form.keyword
     };
 
     if (!form.id) {
@@ -91,6 +92,16 @@ const submit = async () => {
     }
 
     model.btnLoading = true;
+
+    if (form.file) {
+      let uploadRes = await uploadStaticFile(UploadType.CATEGORY, form.file);
+      if (!uploadRes || uploadRes.resCode != 0) {
+        return;
+      }
+
+      data.icon = uploadRes.data;
+    }
+
     let res = form.id ? await updateCategory(data) : await createCategory(data);
     if (res && res.resCode == 0) {
       toast.success('保存成功');

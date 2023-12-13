@@ -77,6 +77,8 @@ import { reactive, ref } from 'vue';
 import { UserFilled } from '@element-plus/icons-vue';
 import { stores } from '../../../stores';
 import { updateUserBrief } from '../../../api/user';
+import { uploadStaticFile } from '../../../api/staticFile';
+import UploadType from '../../../constants/UploadType';
 import toast from '../../../utils/toast';
 
 const formRef = ref();
@@ -116,12 +118,24 @@ const fileChange = e => {
 const submit = async () => {
   model.loading = true;
   try {
+    if (form.file) {
+      let fileRes = await uploadStaticFile(UploadType.AVATAR, form.file);
+      if (!fileRes || fileRes.resCode != 0) {
+        return;
+      }
+
+      form.avatar = fileRes.data;
+    }
+
     let res = await updateUserBrief({ ...form });
     if (res && res.resCode == 0) {
       stores.owner.setData({ ...form });
       toast.success('修改成功');
       model.dialogVisible = false;
     }
+  } catch (err) {
+    console.log(err);
+    toast.success('修改失败');
   } finally {
     model.loading = false;
   }

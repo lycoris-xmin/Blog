@@ -73,7 +73,7 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
         private async Task StaticFileHandlerAsync(SystemFileClearConfiguration config)
         {
             var checkTime = DateTime.Now.AddDays(-config.StaticFile).Date;
-            var filter = _staticFile.GetAll().Where(x => x.Use == false).Where(x => x.LastUpdateTime.HasValue && x.LastUpdateTime.Value <= checkTime);
+            var filter = _staticFile.GetAll().Where(x => x.NotCheck == false).Where(x => x.Use == false).Where(x => x.LastUpdateTime.HasValue && x.LastUpdateTime.Value <= checkTime);
 
             var pageIndex = 1;
             var pageSize = 50;

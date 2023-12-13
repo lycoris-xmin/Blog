@@ -22,7 +22,7 @@
         </el-form-item>
         <el-form-item class="form-group" label="文件状态">
           <el-select v-model="model.use" placeholder="- 全部 -" clearable>
-            <el-option :key="false" label="未确认" :value="false" />
+            <el-option :key="false" label="未使用" :value="false" />
             <el-option :key="true" label="使用中" :value="true" />
           </el-select>
         </el-form-item>
@@ -53,9 +53,13 @@
       <template #fileName="{ row }">
         <div class="file">
           <p class="file-name" @click="copyFileUrl(row.pathUrl)">{{ row.fileName }}</p>
-          <p class="file-info">
+          <p class="file-info flex-start-center">
             <span>{{ row.path }}</span>
             <span>{{ row.fileSize }}</span>
+            <span class="img" v-if="row.fileType == 0">图片</span>
+            <span class="audio" v-else-if="row.fileType == 1">音频</span>
+            <span class="video" v-else-if="row.fileType == 2">视频</span>
+            <span v-else>文件</span>
           </p>
         </div>
       </template>
@@ -165,7 +169,7 @@ const table = reactive({
 });
 
 onBeforeMount(() => {
-  setStaticSource('local');
+  // setStaticSource('local');
 });
 
 onMounted(async () => {
@@ -388,7 +392,38 @@ const changeFile = (index, callback) => {
 
     > span {
       padding-right: 15px;
+      padding-bottom: 3px;
       color: var(--color-dark-light);
+
+      &:first-child {
+        width: 170px;
+      }
+
+      &:nth-child(2) {
+        width: 120px;
+      }
+
+      &:last-child {
+        border-radius: 5px;
+        padding: 2px 6px;
+        background-color: var(--color-secondary);
+        font-size: 12px;
+      }
+
+      &.img {
+        background-color: var(--color-info);
+        color: #fff;
+      }
+
+      &.audio {
+        background-color: var(--color-purple);
+        color: #fff;
+      }
+
+      &.video {
+        background-color: var(--color-danger);
+        color: #fff;
+      }
     }
   }
 }

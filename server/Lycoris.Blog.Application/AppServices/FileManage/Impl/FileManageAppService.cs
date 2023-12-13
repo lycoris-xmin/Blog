@@ -7,6 +7,7 @@ using Lycoris.Blog.Core.Minio;
 using Lycoris.Blog.EntityFrameworkCore.Constants;
 using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
+using Lycoris.Blog.EntityFrameworkCore.Tables.Enums;
 using Lycoris.Blog.Model.Configurations;
 using Lycoris.Blog.Model.Exceptions;
 using Lycoris.Common.Helper;
@@ -36,8 +37,10 @@ namespace Lycoris.Blog.Application.AppServices.FileManage.Impl
         /// </summary>
         /// <param name="file"></param>
         /// <param name="path"></param>
+        /// <param name="notCheck"></param>
         /// <returns></returns>
-        public async Task<string> UploadFileAsync(IFormFile file, string path)
+        /// <exception cref="FriendlyException"></exception>
+        public async Task<(string url, FileTypeEnum fileType)> UploadFileAsync(IFormFile file, string path, bool notCheck = false)
         {
             var config = await GetConfigurationAsync();
 
@@ -45,7 +48,7 @@ namespace Lycoris.Blog.Application.AppServices.FileManage.Impl
             {
                 var fileName = $"{Guid.NewGuid():N}{Path.GetExtension(file.FileName)}";
 
-                var data = new ServerStaticFile()
+                var data = new ServerStaticFile
                 {
                     Path = $"/{path.TrimStart('/').TrimEnd('/')}",
                     FileName = fileName,
@@ -53,7 +56,9 @@ namespace Lycoris.Blog.Application.AppServices.FileManage.Impl
                     PathUrl = $"/{path.TrimStart('/').TrimEnd('/')}/{fileName}",
                     FileSie = file.Length,
                     Use = true,
-                    CreateTime = DateTime.Now
+                    CreateTime = DateTime.Now,
+                    FileType = ServerStaticFile.GetFileType(fileName),
+                    NotCheck = notCheck
                 };
 
                 switch (data.UploadChannel)
@@ -93,7 +98,7 @@ namespace Lycoris.Blog.Application.AppServices.FileManage.Impl
                     ? $"{AppSettings.Application.Domain}{data.PathUrl}"
                     : $"{AppSettings.Application.Domain}:{AppSettings.Application.HttpPort}{data.PathUrl}";
 
-                return url.Replace('\\', '/');
+                return (url.Replace('\\', '/'), data.FileType);
             }
             catch (FriendlyException)
             {

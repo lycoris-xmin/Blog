@@ -46,3 +46,23 @@ export const syncFileToRemote = id => {
 export const downAllFile = () => {
   return request.post(`${controller}/download/file/all`);
 };
+
+export const getStaticFileRepository = ({ pageIndex, pageSize, fileType }) => {
+  let data = { pageIndex, pageSize };
+  if (fileType != void 0 && typeof fileType == 'number') {
+    data.fileType = fileType;
+  }
+
+  return request.get(`${controller}/repository`, data);
+};
+
+export const uploadStaticFile = (uploadType, file) => {
+  return request.post(
+    `${controller}/upload`,
+    {
+      uploadType,
+      file
+    },
+    true
+  );
+};

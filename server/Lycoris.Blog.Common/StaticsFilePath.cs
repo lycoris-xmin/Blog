@@ -10,8 +10,14 @@
 
         public const string Post = "/post/markdown";
 
+        public const string PostCarousel = "/post/carousel";
+
         public const string PostIcon = "/post/icon";
 
         public const string Category = "/category";
+
+        public const string AboutWeb = "/about/web";
+
+        public const string File = "/file";
     }
 }

@@ -27,6 +27,6 @@ namespace Lycoris.Blog.Server.Models.Categorys
         /// <summary>
         /// 
         /// </summary>
-        public IFormFile? File { get; set; }
+        public string? Icon { get; set; }
     }
 }

@@ -32,7 +32,7 @@ namespace Lycoris.Blog.Common
         /// <summary>
         /// 
         /// </summary>
-        public static List<string> StaticFileExtension { get => new() { ".css", ".js", ".jpg", ".jpeg", ".gif", ".bmp", ".png", ".ico" }; }
+        public static List<string> StaticFileExtension { get => new() { ".css", ".js", ".jpg", ".jpeg", ".png", ".gif", ".webp", ".bmp", ".ico", ".mp3", ".wav", ".ogg", ".wma", ".flac", ".mp4", ".avi", ".mkv", ".mpeg", ".mov", ".wmv", ".flv", ".zip", ".7z", ".rar", ".pdf", ".xlsx", ".xls", ".doc", ".docx" }; }
 
         /// <summary>
         /// 程序文件路径

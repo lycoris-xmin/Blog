@@ -46,8 +46,10 @@ import { useRoute, useRouter } from 'vue-router';
 import pageLayout from '../layout/page-layout.vue';
 import markdownContainer from '../../components/markdown-editor/index.vue';
 import postSettingModal from './components/post-setting-modal.vue';
-import { getPostInfo, uploadMarkdownPicture, savePost } from '../../api/post';
+import { getPostInfo, savePost } from '../../api/post';
+import { uploadStaticFile } from '../../api/staticFile';
 import { getPostSetting } from '../../api/configuration';
+import UploadType from '../../constants/UploadType';
 import toast from '../../utils/toast';
 import swal from '../../utils/swal';
 import { debounce } from '../../utils/tool';
@@ -98,9 +100,13 @@ const fileUpload = async (file, callback) => {
     return;
   }
 
-  let res = await uploadMarkdownPicture(file);
-  if (res.resCode == 0) {
-    callback(res.data);
+  try {
+    let res = await uploadStaticFile(UploadType.POST.FILE, file);
+    if (res.resCode == 0) {
+      callback(res.data);
+    }
+  } catch (error) {
+    console.log(error);
   }
 };
 
@@ -269,11 +275,16 @@ const submitSave = async (publish, redirect = true) => {
       let res = await savePost(data);
       if (res && res.resCode == 0) {
         toast.success(publish ? '发布成功' : '保存成功');
+
         if (redirect) {
           setTimeout(() => {
             toPostPage();
           }, 500);
         } else {
+          if (form.id) {
+            form.id = res.data.id;
+          }
+
           setting.postInfo = { ...form };
         }
 
@@ -329,6 +340,9 @@ const autoSavePost = async () => {
       let res = await savePost(data);
       if (res && res.resCode == 0) {
         toast.success('自动存档成功');
+        if (form.id) {
+          form.id = res.data.id;
+        }
         setting.postInfo = { ...form };
       }
     }

@@ -22,12 +22,3 @@ export const saveAboutMe = (type, value) => {
     config: JSON.stringify(value)
   });
 };
-
-export const uploadFile = (path, file) => {
-  let data = {
-    path: path,
-    file: file
-  };
-
-  return request.post(`${controller}/about/upload`, data, true);
-};

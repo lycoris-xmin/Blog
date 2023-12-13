@@ -1,6 +1,6 @@
 ﻿namespace Lycoris.Blog.Application.Shared.Dtos
 {
-    public class PageResultDto<T> where T : class, new()
+    public class PageResultDto<T> where T : class
     {
         public PageResultDto()
         {

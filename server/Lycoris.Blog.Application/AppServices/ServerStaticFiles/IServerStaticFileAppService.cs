@@ -1,6 +1,7 @@
 ﻿using Lycoris.Blog.Application.AppServices.ServerStaticFiles.Dtos;
 using Lycoris.Blog.Application.Shared;
 using Lycoris.Blog.Application.Shared.Dtos;
+using Lycoris.Blog.EntityFrameworkCore.Tables.Enums;
 using Microsoft.AspNetCore.Http;
 
 namespace Lycoris.Blog.Application.AppServices.ServerStaticFiles
@@ -48,5 +49,14 @@ namespace Lycoris.Blog.Application.AppServices.ServerStaticFiles
         /// </summary>
         /// <returns></returns>
         Task<string> DownloadAllFileAsync();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="fileType"></param>
+        /// <returns></returns>
+        Task<PageResultDto<ServerStaticFileRepositoryDto>> GetServerStaticFileRepositoryAsync(int pageIndex, int pageSize, FileTypeEnum? fileType);
     }
 }

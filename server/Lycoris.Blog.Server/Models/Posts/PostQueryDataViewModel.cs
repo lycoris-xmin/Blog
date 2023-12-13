@@ -13,17 +13,7 @@
         /// <summary>
         /// 
         /// </summary>
-        public string? Icon { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
         public string? Title { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public string? Info { get; set; }
 
         /// <summary>
         /// 
@@ -34,11 +24,6 @@
         /// 
         /// </summary>
         public int? Comment { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public int? Category { get; set; }
 
         /// <summary>
         /// 

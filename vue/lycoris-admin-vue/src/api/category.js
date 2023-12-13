@@ -7,11 +7,11 @@ export const getList = data => {
 };
 
 export const createCategory = data => {
-  return request.post(`${controller}/create`, data, true);
+  return request.post(`${controller}/create`, data);
 };
 
 export const updateCategory = data => {
-  return request.post(`${controller}/update`, data, true);
+  return request.post(`${controller}/update`, data);
 };
 
 export const deleteCategory = id => {

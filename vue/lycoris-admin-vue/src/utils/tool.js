@@ -108,6 +108,72 @@ export const isInViewPort = element => {
   return top >= 0 && left >= 0 && right <= viewWidth && bottom <= viewHeight;
 };
 
+export const scrollPageTop = (step = 100, duration = 10) => {
+  let start = document.documentElement.scrollTop;
+  let scrollInterval = setInterval(() => {
+    start -= step;
+    window.scrollTo(0, start < 0 ? 0 : start);
+    if (start <= 0) {
+      clearInterval(scrollInterval);
+    }
+  }, duration);
+};
+
+export const uuid = () => {
+  let s = [];
+  var hexDigits = '0123456789abcdef';
+  for (var i = 0; i < 36; i++) {
+    let start = Math.floor(Math.random() * 0x10);
+    s[i] = hexDigits.substring(start, start + 1);
+  }
+  s[14] = '4';
+  let index = (s[19] & 0x3) | 0x8;
+  s[19] = hexDigits.substring(index, index + 1);
+  s[8] = s[13] = s[18] = s[23] = '-';
+  var uuid = s.join('');
+  return uuid.replaceAll('-', '');
+};
+
+export const lockScroll = () => {
+  let widthBar = 17,
+    root = document.documentElement;
+  if (typeof window.innerWidth == 'number') {
+    widthBar = window.innerWidth - root.clientWidth;
+  }
+  root.style.overflow = 'hidden';
+  root.style.borderRight = widthBar + 'px solid transparent';
+};
+
+export const unlockScroll = () => {
+  let root = document.documentElement;
+  root.style.overflow = '';
+  root.style.borderRight = '';
+};
+
+export const getTimeLeft = (sourceDate, targetDate) => {
+  if (typeof sourceDate == 'string') {
+    sourceDate = new Date(sourceDate).getTime();
+  }
+
+  if (typeof targetDate == 'string') {
+    targetDate = new Date(targetDate).getTime();
+  }
+
+  const timeDifference = 0 + targetDate - (0 + sourceDate);
+
+  const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+
+  return {
+    days,
+    hours,
+    minutes,
+    seconds
+  };
+};
+
 export const animateNumber = el => {
   const that = {
     el: el,
@@ -171,4 +237,21 @@ export const animateNumber = el => {
   }
 
   return that;
+};
+
+export const typewriter = el => {
+  let str = el.innerHTML.toString();
+  let i = 0;
+  el.innerHTML = '';
+
+  setTimeout(function () {
+    var se = setInterval(function () {
+      i++;
+      el.innerHTML = str.slice(0, i) + '|';
+      if (i == str.length) {
+        clearInterval(se);
+        el.innerHTML = str;
+      }
+    }, 10);
+  }, 0);
 };

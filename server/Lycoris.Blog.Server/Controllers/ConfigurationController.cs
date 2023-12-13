@@ -79,12 +79,12 @@ namespace Lycoris.Blog.Server.Controllers
                 config!.BuildTime = input.BuildTime!.Value;
 
             if (input.Logo != null)
-                config!.Logo = await fileManage.UploadFileAsync(input.Logo, StaticsFilePath.Logo);
+                (config!.Logo, _) = await fileManage.UploadFileAsync(input.Logo, StaticsFilePath.Logo);
             else if (input.LogoDisplay.IsNullOrEmpty())
                 config!.Logo = "";
 
             if (input.Avatar != null)
-                config!.DefaultAvatar = await fileManage.UploadFileAsync(input.Avatar, StaticsFilePath.Avatar);
+                (config!.DefaultAvatar, _) = await fileManage.UploadFileAsync(input.Avatar, StaticsFilePath.Avatar);
 
             await _configuration.SaveConfigurationAsync(AppConfig.WebSetting, config!);
             return Success(config);
@@ -387,25 +387,6 @@ namespace Lycoris.Blog.Server.Controllers
         {
             var dto = _configuration.GetFileSaveChannelEnum();
             return Task.FromResult(Success(dto.ToMapList<EnumsViewModel<int>>()));
-        }
-
-        /// <summary>
-        /// 文件上传
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        [HttpPost("Upload")]
-        [Consumes("multipart/form-data"), Produces("application/json")]
-        public async Task<DataOutput<string>> Upload([FromForm] ConfigurationUploadInput input)
-        {
-            string? fileUrl;
-
-            if (input.ConfigName == AppConfig.PostSetting)
-                fileUrl = await _fileManage.Value.UploadFileAsync(input.File!, "/post/carousel");
-            else
-                throw new FriendlyException("上传失败", $"unknown config name:{input.ConfigName}");
-
-            return Success(fileUrl);
         }
 
         /// <summary>

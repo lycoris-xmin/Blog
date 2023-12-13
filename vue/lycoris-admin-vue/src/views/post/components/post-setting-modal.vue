@@ -30,6 +30,26 @@
         </div>
 
         <div class="form-group">
+          <span>文章类型</span>
+          <el-radio-group v-model="form.type">
+            <el-radio :label="0" size="large">原创</el-radio>
+            <el-radio :label="1" size="large">转载</el-radio>
+          </el-radio-group>
+        </div>
+
+        <div class="form-group">
+          <span>文章摘要</span>
+          <el-radio-group v-model="model.infoType">
+            <el-radio :label="0" size="large">自动生成</el-radio>
+            <el-radio :label="1" size="large">手动输入</el-radio>
+          </el-radio-group>
+        </div>
+
+        <div class="form-group form-info" :class="{ 'show-info': model.infoType == 1, 'hide-info': model.infoType == 0 }">
+          <el-input v-model="form.info" type="textarea" :autosize="{ minRows: 8, maxRows: 8 }" maxlength="200" show-word-limit :resize="'none'"></el-input>
+        </div>
+
+        <div class="form-group">
           <span>文章分类</span>
           <div class="form-contorl flex-start-center">
             <el-select v-model="form.category" placeholder="- 未分类 -" clearable @change="categoryChange">
@@ -60,14 +80,6 @@
         </div>
 
         <div class="form-group">
-          <span>文章类型</span>
-          <el-radio-group v-model="form.type">
-            <el-radio :label="0" size="large">原创</el-radio>
-            <el-radio :label="1" size="large">转载</el-radio>
-          </el-radio-group>
-        </div>
-
-        <div class="form-group">
           <span>文章评论</span>
           <el-radio-group v-model="form.comment">
             <el-radio :label="1" size="large">允许评论</el-radio>
@@ -84,18 +96,6 @@
         </div>
 
         <div class="form-group">
-          <span>文章摘要</span>
-          <el-radio-group v-model="model.infoType">
-            <el-radio :label="0" size="large">自动生成</el-radio>
-            <el-radio :label="1" size="large">手动输入</el-radio>
-          </el-radio-group>
-        </div>
-
-        <div class="form-group form-info" :class="{ 'show-info': model.infoType == 1, 'hide-info': model.infoType == 0 }">
-          <el-input v-model="form.info" type="textarea" :autosize="{ minRows: 8, maxRows: 8 }" maxlength="200" show-word-limit :resize="'none'"></el-input>
-        </div>
-
-        <div class="form-group">
           <span>发布时间</span>
           <el-date-picker v-model="form.updateTime" type="datetime" format="YYYY-MM-DD hh:mm:ss" value-format="YYYY-MM-DD hh:mm:ss" />
         </div>
@@ -103,18 +103,19 @@
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="model.visible = false">取消</el-button>
-          <el-button type="primary" @click="handleSumit"> {{ !props.id ? '发布' : '保存' }} </el-button>
+          <el-button type="primary" @click="handleSumit"> {{ !props.id ? '发布' : '确定' }} </el-button>
         </span>
       </template>
     </el-dialog>
 
-    <image-modal ref="imageModalRef" @selected="handleImageSelect"></image-modal>
+    <static-file-modal ref="imageModalRef" :showFilter="false" :defaultFileType="0" :upload-file-type="UploadType.POST.ICON" @selected="handleImageSelect"></static-file-modal>
   </div>
 </template>
 
 <script setup>
 import { onMounted, reactive, ref } from 'vue';
-import imageModal from './image-modal.vue';
+import staticFileModal from '@/components/static-file-modal/index.vue';
+import UploadType from '../../../constants/UploadType';
 import { getCategoryEnums } from '@/api/category';
 import { stores } from '@/stores';
 
@@ -349,6 +350,10 @@ defineExpose({
     &.form-info {
       overflow: hidden;
       transition: all 0.4s;
+
+      .el-textarea {
+        width: 100%;
+      }
     }
 
     &.show-info {

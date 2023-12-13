@@ -12,17 +12,7 @@ namespace Lycoris.Blog.Application.AppServices.Posts.Dtos
         /// <summary>
         /// 
         /// </summary>
-        public string? Icon { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
         public string? Title { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public string? Info { get; set; }
 
         /// <summary>
         /// 
@@ -33,11 +23,6 @@ namespace Lycoris.Blog.Application.AppServices.Posts.Dtos
         /// 
         /// </summary>
         public bool Comment { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public int? Category { get; set; }
 
         /// <summary>
         /// 

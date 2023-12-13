@@ -63,7 +63,7 @@ namespace Lycoris.Blog.Application.AppServices.Posts
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        Task SaveAsync(PostSaveDto input);
+        Task<long> SaveAsync(PostSaveDto input);
 
         /// <summary>
         /// 删除文章

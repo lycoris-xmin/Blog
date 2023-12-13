@@ -59,7 +59,7 @@
       </template>
 
       <template #action="{ row, index }">
-        <el-button v-if="row.originalContent" type="success" plain @click="$audit(row, index)">审核</el-button>
+        <el-button v-if="row.originalContent && row.status == 0" type="success" plain @click="$audit(row, index)">审核</el-button>
         <el-popconfirm v-else :title="row.parentId == 0 ? '确定要删除吗?' : '当前评论属于一级评论，删除后，会将二级评论也一并删除,确定要删除吗?'" @confirm="$deleteOne(row, index)">
           <template #reference>
             <el-button type="danger" plain :loading="row.deleteLoading">删除</el-button>

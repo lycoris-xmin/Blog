@@ -2,8 +2,33 @@
   <el-dialog v-model="model.visible" title="文件详情" width="700">
     <div class="file-body">
       <div class="flex-center-center">
-        <el-image class="view-image" :src="`${api.server}${model.pathUrl}`" lazy :zoom-rate="1.2" :max-scale="7" :min-scale="0.2" :preview-src-list="[`${api.server}${model.pathUrl}`]" :initial-index="0" fit="cover">
+        <el-image
+          v-if="model.fileType == 0"
+          class="view-image"
+          :src="`${api.server}${model.pathUrl}`"
+          lazy
+          :zoom-rate="1.2"
+          :max-scale="7"
+          :min-scale="0.2"
+          :preview-src-list="[`${api.server}${model.pathUrl}`]"
+          :initial-index="0"
+          fit="cover"
+        >
         </el-image>
+
+        <div v-else-if="model.fileType == 1" class="view flex-center-center">
+          <audio :src="`${api.server}${model.pathUrl}`" controls="controls"></audio>
+        </div>
+
+        <div v-else-if="model.fileType == 2" class="view flex-center-center">
+          <video :src="`${api.server}${model.pathUrl}`" controls="controls"></video>
+        </div>
+
+        <div v-else class="view flex-center-center">
+          <el-icon :size="70">
+            <component :is="'files'"></component>
+          </el-icon>
+        </div>
       </div>
 
       <p class="file-property">
@@ -80,6 +105,7 @@ const model = reactive({
   visible: false,
   index: 0,
   fileName: '',
+  fileType: 0,
   path: '',
   pathUrl: '',
   remoteUrl: '',
@@ -124,6 +150,7 @@ const changeFile = value => {
 
 const setFileProperty = row => {
   model.fileName = row.fileName;
+  model.fileType = row.fileType || 99;
   model.path = row.path;
   model.pathUrl = row.pathUrl;
   model.remoteUrl = row.remoteUrl;
@@ -151,6 +178,15 @@ defineExpose({
     height: 160px;
     border-radius: 5px;
     border: 1px solid var(--color-secondary);
+  }
+
+  .view {
+    height: 160px;
+
+    video {
+      height: 160px;
+      width: 350px;
+    }
   }
 
   .file-property {

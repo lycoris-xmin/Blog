@@ -23,6 +23,6 @@ namespace Lycoris.Blog.Server.Models.Categorys
         /// 
         /// </summary>
         [Required(ErrorMessage = "分类展示图不能为空")]
-        public IFormFile? File { get; set; }
+        public string? Icon { get; set; }
     }
 }

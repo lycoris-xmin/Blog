@@ -1,6 +1,4 @@
-﻿using Lycoris.Blog.Server.PropertyAttribute;
-
-namespace Lycoris.Blog.Server.Models.Users
+﻿namespace Lycoris.Blog.Server.Models.Users
 {
     /// <summary>
     /// 
@@ -16,12 +14,6 @@ namespace Lycoris.Blog.Server.Models.Users
         /// 
         /// </summary>
         public string? Avatar { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [EmailRegex]
-        public string? Email { get; set; }
 
         /// <summary>
         /// 

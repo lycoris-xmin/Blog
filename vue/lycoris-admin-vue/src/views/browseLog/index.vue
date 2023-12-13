@@ -76,7 +76,7 @@ const column = [
   },
   {
     column: 'referer',
-    name: '来源域名',
+    name: '跳转来源',
     overflow: true
   },
   {

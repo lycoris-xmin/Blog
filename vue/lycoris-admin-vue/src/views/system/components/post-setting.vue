@@ -58,7 +58,9 @@
 
 <script setup>
 import { reactive, ref, onMounted } from 'vue';
-import { getPostSetting, savePostSetting, uploadFile } from '../../../api/configuration';
+import { getPostSetting, savePostSetting } from '../../../api/configuration';
+import { uploadStaticFile } from '../../../api/staticFile';
+import UploadType from '../../../constants/UploadType';
 import { uploadAccept } from '../../../config.json';
 import toast from '../../../utils/toast';
 
@@ -128,7 +130,7 @@ const submit = async () => {
       for (let i = 0; i < model.files.length; i++) {
         let file = model.files[i];
         if (file) {
-          let res = await uploadFile('App.PostSetting', file);
+          let res = await uploadStaticFile(UploadType.POST.CAROUSEL, file);
           if (res && res.resCode == 0) {
             data.images[i] = res.data;
           } else {

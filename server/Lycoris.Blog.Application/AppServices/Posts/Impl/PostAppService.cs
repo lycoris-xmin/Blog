@@ -206,10 +206,7 @@ namespace Lycoris.Blog.Application.AppServices.Posts.Impl
                         {
                             Id = post.Id,
                             Type = post.Type,
-                            Icon = post.Icon,
                             Title = post.Title,
-                            Info = post.Info,
-                            Category = post.Category,
                             CategoryName = category != null ? category.Name : "未分类",
                             Comment = post.Comment,
                             IsPublish = post.IsPublish,
@@ -243,7 +240,7 @@ namespace Lycoris.Blog.Application.AppServices.Posts.Impl
         /// <param name="input"></param>
         /// <returns></returns>
         [Transactional]
-        public async Task SaveAsync(PostSaveDto input)
+        public async Task<long> SaveAsync(PostSaveDto input)
         {
             var data = await _post.GetAsync(input.Id) ?? new Post() { Id = 0, Recommend = false };
 
@@ -266,6 +263,8 @@ namespace Lycoris.Blog.Application.AppServices.Posts.Impl
 
             _scheduleQueue.Value.Enqueue(ScheduleTypeEnum.CategoryPostCount, oldCategory.ToString());
             _scheduleQueue.Value.Enqueue(ScheduleTypeEnum.CategoryPostCount, data.Category.ToString());
+
+            return data.Id;
         }
 
         /// <summary>

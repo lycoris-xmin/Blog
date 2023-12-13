@@ -1,7 +1,11 @@
 import axios from 'axios';
 import { api } from '../config.json';
 import { stores } from '../stores';
+import { useRoute, useRouter } from 'vue-router';
 import toast from './toast';
+
+const route = useRoute();
+const router = useRouter();
 
 const service = axios.create({
   baseURL: `${api.server}${api.routePrefix}`,
@@ -254,14 +258,22 @@ function responseErrorInterceptor(err) {
     max: 1
   });
 
-  // router.push({ name: 'server-error' });
-
-  return reject(
-    {
-      err: err
-    },
-    0
-  );
+  if (route.name != 'server-error') {
+    router.push({
+      name: 'server-error',
+      params: {
+        statusCode: -1
+      }
+    });
+    return;
+  } else {
+    return reject(
+      {
+        err: err
+      },
+      0
+    );
+  }
 }
 
 export default {

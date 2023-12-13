@@ -1,5 +1,5 @@
 <template>
-  <div class="server-result" :class="{ forbidden: model.statusCode == 403, notfound: model.statusCode == 404 }">
+  <div class="server-result" :class="{ forbidden: model.statusCode == 403, notfound: model.statusCode == 404, error: model.statusCode == -1 }">
     <h1>{{ model.statusCode }}</h1>
     <div class="content" ref="writerRef">
       <p>
@@ -8,14 +8,14 @@
       </p>
       <p><span>ERROR DESCRIPTION</span>: "{{ model.description }}"</p>
       <p><span>ERROR POSSIBLY CAUSED BY</span>: {{ model.causedBy }}...</p>
-      <p><span>SOME PAGES ON THIS SERVER THAT YOU DO HAVE PERMISSION TO ACCESS</span>: [<RouterLink :to="'/'">返回首页</RouterLink>]</p>
+      <p v-if="model.statusCode > -1"><span>SOME PAGES ON THIS SERVER THAT YOU DO HAVE PERMISSION TO ACCESS</span>: [<RouterLink :to="'/'">返回首页</RouterLink>]</p>
       <p><span>HAVE A NICE DAY :-)</span></p>
     </div>
   </div>
 </template>
 
 <script setup name="server-error">
-import { reactive, onMounted, ref } from 'vue';
+import { reactive, onMounted, ref, nextTick } from 'vue';
 import { useRoute } from 'vue-router';
 import { typewriter } from '@/utils/tool';
 
@@ -35,16 +35,22 @@ onMounted(() => {
       if (model.statusCode == 404) {
         model.code = 'HTTP 404 NotFound';
         model.description = '资源不存在！';
-        model.causedBy = '外部资源链接失效，或内部资源被错误删除';
+        model.causedBy = '外部资源链接失效，或内部资源被错误删除，或服务宕机';
       } else if (model.statusCode == 403) {
         model.code = 'HTTP 403 Forbidden';
         model.description = '权限不足，拒绝访问。 您无权访问此服务器上的此页面！';
         model.causedBy = '服务器未找到您的登录状态或您当前的权限不足，建议您重新登录或刷新页面尝试';
+      } else if (model.statusCode == -1) {
+        model.code = 'HTTP Error';
+        model.description = '无法连接服务器！';
+        model.causedBy = '服务器服务已停止或服务器被攻击，请晚些时候再试';
       }
     }
   }
 
-  typewriter(writerRef.value);
+  nextTick(() => {
+    typewriter(writerRef.value);
+  });
 });
 </script>
 
@@ -132,6 +138,11 @@ onMounted(() => {
 body {
   background-image: linear-gradient(120deg, #882000 0%, #000000 100%);
   height: 100vh;
+
+  &:has(.error) {
+    background-image: linear-gradient(120deg, #96d10b 0%, #000000 100%);
+    height: 100vh;
+  }
 
   &:has(.forbidden) {
     background-image: linear-gradient(120deg, #4f0088 0%, #000000 100%);

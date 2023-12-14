@@ -15,7 +15,7 @@
     >
       <template #icon="{ value }">
         <div class="icon-template flex-center-center">
-          <img :src="value" onerror="javascript:this.src='/images/404.png'" />
+          <img :src="`${api.server}${value}`" onerror="javascript:this.src='/images/404.png'" />
         </div>
       </template>
 
@@ -50,6 +50,7 @@ import LycorisTable from '../../components/lycoris-table/index.vue';
 import createorupdate from './components/createorupdate.vue';
 import { getList, deleteCategory } from '../../api/category';
 import toast from '../../utils/toast';
+import { api } from '../../config.json';
 
 const modal = ref();
 const loading = ref(true);
@@ -57,7 +58,7 @@ const loading = ref(true);
 const column = [
   {
     column: 'icon',
-    name: '分类图片',
+    name: '封面图',
     width: 230
   },
   {

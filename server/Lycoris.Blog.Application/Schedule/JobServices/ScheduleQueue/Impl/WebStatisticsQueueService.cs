@@ -91,7 +91,7 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
             }
 
 
-            config.OSStatistics = new List<CommonStatisticsConfiguration>();
+            config.OSStatistics ??= new List<CommonStatisticsConfiguration>();
 
             var os = config.OSStatistics.SingleOrDefault(x => x.Name == hepler.OS);
             if (os != null)
@@ -108,7 +108,7 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
                 });
             }
 
-            config.DeviceStatistics = new List<CommonStatisticsConfiguration>();
+            config.DeviceStatistics ??= new List<CommonStatisticsConfiguration>();
 
             var device = config.DeviceStatistics.SingleOrDefault(x => x.Name == hepler.Device);
             if (device != null)

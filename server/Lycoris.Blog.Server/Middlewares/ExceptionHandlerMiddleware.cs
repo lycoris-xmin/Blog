@@ -58,11 +58,14 @@ namespace Lycoris.Blog.Server.Middlewares
 
                 if (IsStaticFileReuqest(context))
                 {
-                    var referer = context.Request.Headers.ContainsKey(HttpHeaders.Referer) ? context.Request.Headers[HttpHeaders.Referer].ToString() : "";
+                    if (!AppSettings.IsDebugger)
+                    {
+                        var referer = context.Request.Headers.ContainsKey(HttpHeaders.Referer) ? context.Request.Headers[HttpHeaders.Referer].ToString() : "";
 
-                    // 处理防盗链
-                    if (referer.IsNullOrEmpty() || !AppSettings.Application.Cors.Origins.Any(x => referer.Contains(x)))
-                        throw new HttpStatusException(System.Net.HttpStatusCode.BadRequest, $"static file request path '{context.Request.Path.Value}' referer:{referer} is not match origins:{string.Join(",", AppSettings.Application.Cors.Origins)}");
+                        // 处理防盗链
+                        if (referer.IsNullOrEmpty() || !AppSettings.Application.Cors.Origins.Any(x => referer.Contains(x)))
+                            throw new HttpStatusException(System.Net.HttpStatusCode.BadRequest, $"static file request path '{context.Request.Path.Value}' referer:{referer} is not match origins:{string.Join(",", AppSettings.Application.Cors.Origins)}");
+                    }
                 }
                 else if (!CheckAllowMethod(context))
                     throw new HttpStatusException(System.Net.HttpStatusCode.BadRequest, $"invalid request - {(context.Request.Path.HasValue ? context.Request.Path.Value : "/")} - request method invalid");

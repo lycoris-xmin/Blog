@@ -55,7 +55,7 @@
 import { onMounted, reactive } from 'vue';
 import { getWebSetting, saveWebSetting } from '../../../api/configuration';
 import toast from '../../../utils/toast';
-import { uploadAccept } from '../../../config.json';
+import { api, uploadAccept } from '../../../config.json';
 import { stores } from '../../../stores';
 
 const props = defineProps({
@@ -132,11 +132,21 @@ const setValue = data => {
   model.webName = data.webName;
   model.webPath = data.webPath;
   model.adminPath = data.adminPath;
-  model.logoDisplay = data.logo || '/logo/logo-lycoirs.png';
+  if (data.logo) {
+    model.logoDisplay = `${api.server}${data.logo}`;
+  } else {
+    model.logoDisplay = '/logo/logo-lycoirs.png';
+  }
+
   model.icp = data.icp;
   model.description = data.description;
   model.buildTime = data.buildTime || '';
-  model.avatarDisplay = data.defaultAvatar || '';
+
+  if (data.defaultAvatar) {
+    model.avatarDisplay = `${api.server}${data.defaultAvatar}`;
+  } else {
+    model.avatarDisplay = '/avatar/default_admin.jpeg';
+  }
 };
 
 const deleterLogo = () => {

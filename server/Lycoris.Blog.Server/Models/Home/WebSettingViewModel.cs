@@ -29,6 +29,11 @@
         /// <summary>
         /// 
         /// </summary>
+        public string? WebPath { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public string? Favicon { get; set; }
 
         /// <summary>

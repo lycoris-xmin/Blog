@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { api } from '../../config.json';
 
 export default defineStore('other-user-info', {
   state: () => {
@@ -14,6 +15,14 @@ export default defineStore('other-user-info', {
       }
     },
     addUserInfo({ id, nickName, avatar, email, qq, wechat, github, bilibili, music }) {
+      if (avatar) {
+        if (avatar.startsWith('/avatar')) {
+          avatar = `${api.server}${avatar}`;
+        }
+      } else {
+        avatar = '/avatar/default_admin.jpeg';
+      }
+
       this.$state.push({
         id,
         nickName,

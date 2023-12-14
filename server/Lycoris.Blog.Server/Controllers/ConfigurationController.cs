@@ -79,12 +79,18 @@ namespace Lycoris.Blog.Server.Controllers
                 config!.BuildTime = input.BuildTime!.Value;
 
             if (input.Logo != null)
-                (config!.Logo, _) = await fileManage.UploadFileAsync(input.Logo, StaticsFilePath.Logo);
+            {
+                var res = await fileManage.UploadFileAsync(input.Logo, StaticsFilePath.Logo);
+                input.LogoDisplay = res.Url;
+            }
             else if (input.LogoDisplay.IsNullOrEmpty())
                 config!.Logo = "";
 
             if (input.Avatar != null)
-                (config!.DefaultAvatar, _) = await fileManage.UploadFileAsync(input.Avatar, StaticsFilePath.Avatar);
+            {
+                var res = await fileManage.UploadFileAsync(input.Avatar, StaticsFilePath.Avatar);
+                config!.DefaultAvatar = res.Url;
+            }
 
             await _configuration.SaveConfigurationAsync(AppConfig.WebSetting, config!);
             return Success(config);
@@ -291,14 +297,14 @@ namespace Lycoris.Blog.Server.Controllers
         }
 
         /// <summary>
-        /// 获取系统设置配置
+        /// 获取其他设置配置
         /// </summary>
         /// <returns></returns>
-        [HttpGet("SystemSettings")]
+        [HttpGet("OtherSetting")]
         [Produces("application/json")]
-        public async Task<DataOutput<SystemSettingsConfiguration>> SystemSettingsConfiguration()
+        public async Task<DataOutput<OtherSettingsConfiguration>> SystemSettingsConfiguration()
         {
-            var dto = await _configuration.GetConfigurationAsync<SystemSettingsConfiguration>(AppConfig.SystemSetting);
+            var dto = await _configuration.GetConfigurationAsync<OtherSettingsConfiguration>(AppConfig.OtherSetting);
             return Success(dto);
         }
 
@@ -307,16 +313,31 @@ namespace Lycoris.Blog.Server.Controllers
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        [HttpPost("SystemSettings/Showdoc")]
+        [HttpPost("Showdoc")]
         [Consumes("application/json"), Produces("application/json")]
         public async Task<BaseOutput> SaveShowdocPushConfiguration([FromBody] SaveShowdocPushConfigurationInput input)
         {
-            var config = await _configuration.GetConfigurationAsync<SystemSettingsConfiguration>(AppConfig.SystemSetting);
-            if (config!.ShowDocHost != input.Host)
+            var config = await _configuration.GetConfigurationAsync<OtherSettingsConfiguration>(AppConfig.OtherSetting);
+
+            config!.Showdoc ??= new ShowdocSettingsConfiguration();
+
+            config.Showdoc.Host = input.Host!;
+            config.Showdoc.MonitoringPush = input.MessagePush!.Value;
+            if (input.MonitoringPush!.Value)
             {
-                config.ShowDocHost = input.Host!;
-                await _configuration.SaveConfigurationAsync(AppConfig.SystemSetting, config);
+                if (!input.CPURate.HasValue || input.CPURate.Value <= 0)
+                    throw new FriendlyException("");
+                else if (!input.RAMRate.HasValue || input.RAMRate.Value <= 0)
+                    throw new FriendlyException("");
+
+                config.Showdoc.CPURate = input.CPURate!.Value;
+                config.Showdoc.RAMRate = input.RAMRate!.Value;
             }
+
+            config.Showdoc.CommentPush = input.CommentPush!.Value;
+            config.Showdoc.MessagePush = input.MessagePush!.Value;
+
+            await _configuration.SaveConfigurationAsync(AppConfig.OtherSetting, config!);
 
             return Success();
         }
@@ -326,9 +347,9 @@ namespace Lycoris.Blog.Server.Controllers
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        [HttpPost("SystemSettings/FileClear")]
+        [HttpPost("DataClear")]
         [Consumes("application/json"), Produces("application/json")]
-        public async Task<BaseOutput> SaveSystemFileClearConfiguration([FromBody] SaveSystemFileClearConfigurationInput input)
+        public async Task<BaseOutput> SaveSystemFileClearConfiguration([FromBody] SaveDataClearConfigurationInput input)
         {
             if (input.StaticFile!.Value < 1 || input.StaticFile!.Value > 30)
                 throw new FriendlyException("保留范围为 1 - 30 天");
@@ -337,42 +358,10 @@ namespace Lycoris.Blog.Server.Controllers
             else if (input.LogFile!.Value < 1 || input.LogFile!.Value > 30)
                 throw new FriendlyException("保留范围为 1 - 30 天");
 
-            var config = await _configuration.GetConfigurationAsync<SystemSettingsConfiguration>(AppConfig.SystemSetting);
+            var config = await _configuration.GetConfigurationAsync<OtherSettingsConfiguration>(AppConfig.OtherSetting);
 
-            if (input.StaticFile!.Value != config!.SystemFileClear.StaticFile || input.TempFile!.Value != config!.SystemFileClear.TempFile || input.LogFile!.Value != config!.SystemFileClear.LogFile)
-            {
-                config!.SystemFileClear = input.ToMap<SystemFileClearConfiguration>();
-                await _configuration.SaveConfigurationAsync(AppConfig.SystemSetting, config);
-            }
-
-            return Success();
-        }
-
-        /// <summary>
-        /// 保存数据库清理配置
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        [HttpPost("SystemSettings/DBClear")]
-        [Consumes("application/json"), Produces("application/json")]
-        public async Task<BaseOutput> SaveSystemDBClearConfiguration([FromBody] SaveSystemDBClearConfigurationInput input)
-        {
-            if (input.RequestLog!.Value < 0 || input.RequestLog!.Value > 30)
-                throw new FriendlyException("保留范围为 0 - 365 天");
-            else if (input.BrowseLog!.Value < 0 || input.BrowseLog!.Value > 30)
-                throw new FriendlyException("保留范围为 0 - 365 天");
-            else if (input.PostComment!.Value < 0 || input.PostComment!.Value > 30)
-                throw new FriendlyException("保留范围为 0 - 365 天");
-            else if (input.LeaveMessage!.Value < 0 || input.LeaveMessage!.Value > 30)
-                throw new FriendlyException("保留范围为 0 - 365 天");
-
-            var config = await _configuration.GetConfigurationAsync<SystemSettingsConfiguration>(AppConfig.SystemSetting);
-
-            if (input.RequestLog!.Value != config!.SystemDBClear.RequestLog || input.BrowseLog!.Value != config!.SystemDBClear.BrowseLog || input.PostComment!.Value != config!.SystemDBClear.PostComment || input.LeaveMessage!.Value != config!.SystemDBClear.LeaveMessage)
-            {
-                config!.SystemDBClear = input.ToMap<SystemDBClearConfiguration>();
-                await _configuration.SaveConfigurationAsync(AppConfig.SystemSetting, config);
-            }
+            config!.DataClear = input.ToMap<DataClearConfiguration>();
+            await _configuration.SaveConfigurationAsync(AppConfig.OtherSetting, config);
 
             return Success();
         }

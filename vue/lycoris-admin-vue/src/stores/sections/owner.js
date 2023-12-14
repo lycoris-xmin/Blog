@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { api } from '../../config.json';
 
 export default defineStore('web-owner', {
   state: () => {
@@ -25,7 +26,15 @@ export default defineStore('web-owner', {
       }
 
       if (avatar != undefined) {
-        this.avatar = avatar || '/avatar/default_admin.jpeg';
+        if (avatar) {
+          if (avatar.startsWith('/avatar')) {
+            this.avatar = `${api.server}${avatar}`;
+          } else {
+            this.avatar = avatar;
+          }
+        } else {
+          this.avatar = '/avatar/default_admin.jpeg';
+        }
       }
 
       if (email != undefined) {

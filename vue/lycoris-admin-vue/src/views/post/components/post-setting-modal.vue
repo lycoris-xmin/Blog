@@ -3,7 +3,7 @@
     <el-dialog v-model="model.visible" title="文章设置" width="550px">
       <div class="setting-from">
         <div class="form-group">
-          <el-image class="post-icon" :src="form.icon">
+          <el-image class="post-icon" :src="`${api.server}${form.icon}`" :preview-src-list="[`${api.server}${form.icon}`]">
             <template #error>
               <div class="image-slot flex-center-center">
                 <el-icon>
@@ -118,6 +118,7 @@ import staticFileModal from '@/components/static-file-modal/index.vue';
 import UploadType from '../../../constants/UploadType';
 import { getCategoryEnums } from '@/api/category';
 import { stores } from '@/stores';
+import { api } from '@/config.json';
 
 const imageModalRef = ref();
 
@@ -184,7 +185,7 @@ const show = ({ icon, type, category, info, comment, recommend, tags, updateTime
     form.comment = comment;
   }
 
-  if (recommend != undefined && typeof recommend == 'boolean') {
+  if (recommend != undefined && typeof recommend == 'number') {
     form.recommend = recommend;
   }
 
@@ -324,6 +325,10 @@ defineExpose({
         .el-icon {
           font-size: 45px;
         }
+      }
+
+      :deep(img) {
+        object-fit: cover;
       }
     }
 

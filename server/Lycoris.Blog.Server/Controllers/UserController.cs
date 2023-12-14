@@ -75,7 +75,10 @@ namespace Lycoris.Blog.Server.Controllers
         {
             var data = input.ToMap<UserBriefDto>();
             if (input.File != null)
-                (data.Avatar, _) = await fileManage.Value.UploadFileAsync(input.File, StaticsFilePath.Avatar);
+            {
+                var res = await fileManage.Value.UploadFileAsync(input.File, StaticsFilePath.Avatar);
+                data.Avatar = res.Url;
+            }
 
             var dto = await _user.UpdateUserBrieAsync(data);
 

@@ -67,7 +67,7 @@
 </template>
 
 <script setup name="aboutweb">
-import { ref, onMounted, reactive } from 'vue';
+import { ref, onMounted, reactive, onActivated } from 'vue';
 import pageLayout from '../layout/page-layout.vue';
 import * as echarts from 'echarts';
 import markdownContainer from '@/components/markdown-editor/index.vue';
@@ -97,6 +97,41 @@ const model = reactive({
 
 const emit = defineEmits(['loading', 'browse']);
 
+const chart = {
+  instance: void 0,
+  option: {
+    tooltip: {
+      trigger: 'item'
+    },
+    series: [
+      {
+        type: 'pie',
+        radius: ['40%', '70%'],
+        avoidLabelOverlap: false,
+        itemStyle: {
+          borderRadius: 10,
+          borderColor: '#fff',
+          borderWidth: 2
+        },
+        label: {
+          show: false,
+          position: 'center'
+        },
+        emphasis: {
+          label: {
+            show: false
+          }
+        },
+        labelLine: {
+          show: false
+        },
+        data: []
+      }
+    ]
+  },
+  init: false
+};
+
 onMounted(async () => {
   try {
     webRunTime('2020-01-01 00:00:00');
@@ -109,6 +144,17 @@ onMounted(async () => {
   } finally {
     emit('loading', false);
     emit('browse');
+  }
+});
+
+onActivated(() => {
+  if (chart.instance == void 0 && chart.init) {
+    const dom = document.getElementById('echarts');
+    if (dom) {
+      chart.instance = echarts.init(dom);
+      model.statistics.chartLoading = false;
+      chart.instance.setOption(chart.option);
+    }
   }
 });
 
@@ -167,41 +213,17 @@ const categoryStatisticsInit = async () => {
 };
 
 const echartsInit = data => {
-  const options = {
-    tooltip: {
-      trigger: 'item'
-    },
-    series: [
-      {
-        type: 'pie',
-        radius: ['40%', '70%'],
-        avoidLabelOverlap: false,
-        itemStyle: {
-          borderRadius: 10,
-          borderColor: '#fff',
-          borderWidth: 2
-        },
-        label: {
-          show: false,
-          position: 'center'
-        },
-        emphasis: {
-          label: {
-            show: false
-          }
-        },
-        labelLine: {
-          show: false
-        },
-        data: [...data]
-      }
-    ]
-  };
+  chart.option.series[0].data = [...data];
 
-  const instance = echarts.init(document.getElementById('echarts'));
+  const dom = document.getElementById('echarts');
 
-  model.statistics.chartLoading = false;
-  instance.setOption(options);
+  if (dom) {
+    chart.instance = echarts.init(dom);
+    model.statistics.chartLoading = false;
+    chart.instance.setOption(chart.option);
+  }
+
+  chart.init = true;
 };
 </script>
 

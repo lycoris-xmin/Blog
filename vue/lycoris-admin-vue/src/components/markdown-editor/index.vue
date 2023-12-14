@@ -10,6 +10,7 @@ import { ref } from 'vue';
 import 'cherry-markdown/dist/cherry-markdown.min.css';
 import CherryMarkdown from 'cherry-markdown';
 import staticFileModal from '../static-file-modal/index.vue';
+import { api } from '../../config.json';
 import $loading from '../../utils/loading';
 
 const container = ref('cherry-markdown-container');
@@ -119,8 +120,9 @@ const cherry = {
       showLoading('文件上传中,请稍候...');
       try {
         emit('fileUpload', file, data => {
+          const url = `${api.server}${data.url}`;
           if (data.fileType == 0) {
-            callback(data.url, {
+            callback(url, {
               name: '图片',
               isBorder: true, // 是否显示边框，默认false
               isShadow: true, // 是否显示阴影，默认false
@@ -129,11 +131,11 @@ const cherry = {
               height: 'auto' // 图片的高度，默认auto
             });
           } else if (data.fileType == 1) {
-            callback(data.url, {
+            callback(url, {
               name: '音频'
             });
           } else if (data.fileType == 2) {
-            callback(data.url, {
+            callback(url, {
               name: '视频',
               isBorder: true, // 是否显示边框，默认false
               isShadow: true, // 是否显示阴影，默认false
@@ -141,7 +143,7 @@ const cherry = {
             });
           } else {
             // 如果上传的是文件
-            callback(data.url);
+            callback(url);
           }
           hideLoading();
         });

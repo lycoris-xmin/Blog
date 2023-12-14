@@ -3,6 +3,7 @@ using Lycoris.Blog.Application.AppServices.AccessControls.Dtos;
 using Lycoris.Blog.Application.AppServices.Authentication.Dtos;
 using Lycoris.Blog.Application.AppServices.Categorys.Dtos;
 using Lycoris.Blog.Application.AppServices.Chat.Dtos;
+using Lycoris.Blog.Application.AppServices.FileManage.Dtos;
 using Lycoris.Blog.Application.AppServices.FriendLinks.Dtos;
 using Lycoris.Blog.Application.AppServices.Home.Dtos;
 using Lycoris.Blog.Application.AppServices.Message.Dtos;
@@ -89,6 +90,9 @@ namespace Lycoris.Blog.Application
             CreateMap<HourStatisticsMonitorContext, WebToDayStatisticsDto>()
                 .ForMember(x => x.PVBrowsePercent, opt => opt.MapFrom(src => src.PVBrowsePercent.ToString("0.00")))
                 .ForMember(x => x.UVBrowsePercent, opt => opt.MapFrom(src => src.UVBrowsePercent.ToString("0.00")));
+
+            CreateMap<ServerStaticFile, UploadFileDto>()
+                .ForMember(x => x.Url, opt => opt.MapFrom(src => src.PathUrl));
         }
 
         /// <summary>

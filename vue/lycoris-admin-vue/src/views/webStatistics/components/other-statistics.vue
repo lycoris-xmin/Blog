@@ -211,6 +211,10 @@ const showMorePanel = panel => {
           padding-left: 5px;
         }
       }
+
+      .li-icon {
+        object-fit: fill;
+      }
     }
   }
 }

@@ -1,7 +1,7 @@
 <template>
   <div class="post">
     <div class="icon flex-center-center">
-      <el-image :src="props.post.icon" lazy>
+      <el-image :src="`${api.server}${props.post.icon}`" lazy>
         <template #error>
           <img src="/images/404.png" />
         </template>
@@ -43,6 +43,8 @@
 </template>
 
 <script setup>
+import { api } from '../../../config.json';
+
 const props = defineProps({
   post: {
     type: Object,
@@ -190,33 +192,31 @@ const props = defineProps({
       }
     }
   }
-}
 
-.post:hover {
-  background-color: var(--color-secondary);
+  &:hover {
+    background-color: var(--color-secondary);
 
-  .icon {
-    .el-image {
-      border: 1px solid var(--color-info-light);
+    .icon {
+      .el-image {
+        border: 1px solid var(--color-info-light);
+      }
     }
-  }
 
-  .content {
-    .title {
-      a {
-        color: var(--post-title-hover-color);
+    .content {
+      .title {
+        a {
+          color: var(--post-title-hover-color);
+        }
       }
     }
   }
-}
 
-@media (max-width: 1920px) {
-  .post {
+  @media (max-width: 1920px) {
     .content {
       .info {
         min-height: 48px;
         font-size: 14px;
-        -webkit-line-clamp: 2; /** 显示的行数 **/
+        -webkit-line-clamp: 2;
       }
     }
   }

@@ -52,12 +52,12 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
         /// <returns></returns>
         protected override async Task HandlerWorkAsync()
         {
+            // 服务器性能监控
+            var serverMonitor = await ServerMonitorHandlerAsync();
+            var requestMonitor = await RequestMonitorHandlerAsync();
+
             if (_monitorContext.ServerMonitorConnectionIds.HasValue())
             {
-                // 服务器性能监控
-                var serverMonitor = await ServerMonitorHandlerAsync();
-                var requestMonitor = await RequestMonitorHandlerAsync();
-
                 if (serverMonitor.HasValue())
                     await _hubContext.Clients.Group(DashboardHub.ServerMonitorGroup).SendAsync("ServerMonitor", serverMonitor);
 

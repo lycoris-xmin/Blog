@@ -26,6 +26,11 @@
         /// <summary>
         /// 
         /// </summary>
+        public string? WebPath { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public string? Logo { get; set; }
 
         /// <summary>

@@ -360,17 +360,17 @@ const handleKeyDownSave = async () => {
   await submitSave(form.isPublish, false);
 };
 
+const handleSetting = () => {
+  setting.lastSaveTime = new Date().addSeconds(setting.autoSaveSecond * 1000).getTime();
+  //
+  postSettingModalRef.value.show({ ...form });
+};
+
 const handleDialogSumit = data => {
   Object.assign(form, { ...data });
   if (!form.id) {
     submitSave(true);
   }
-};
-
-const handleSetting = () => {
-  setting.lastSaveTime = new Date().addSeconds(setting.autoSaveSecond * 1000).getTime();
-  //
-  postSettingModalRef.value.show({ ...form });
 };
 
 const handleSubmit = () => {

@@ -61,7 +61,7 @@ import { reactive, ref, onMounted } from 'vue';
 import { getPostSetting, savePostSetting } from '../../../api/configuration';
 import { uploadStaticFile } from '../../../api/staticFile';
 import UploadType from '../../../constants/UploadType';
-import { uploadAccept } from '../../../config.json';
+import { api, uploadAccept } from '../../../config.json';
 import toast from '../../../utils/toast';
 
 const uploadRandomImage = ref();
@@ -90,7 +90,9 @@ onMounted(async () => {
     if (res && res.resCode == 0) {
       model.autoSave = res.data.autoSave;
       model.second = res.data.second;
-      model.images = res.data.images || [];
+      if (res.data.images && res.data.images.length) {
+        model.images = res.data.images.map(x => `${api.server}${x}`);
+      }
 
       model.images.forEach(() => model.files.push(''));
     }
@@ -132,7 +134,7 @@ const submit = async () => {
         if (file) {
           let res = await uploadStaticFile(UploadType.POST.CAROUSEL, file);
           if (res && res.resCode == 0) {
-            data.images[i] = res.data;
+            data.images[i] = res.data.url;
           } else {
             toast.error('上传图片失败');
             return;

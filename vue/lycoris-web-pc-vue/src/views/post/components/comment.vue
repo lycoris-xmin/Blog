@@ -17,7 +17,8 @@
                 <div class="avatar">
                   <popover-user-info-card :user-id="item.user.id" :is-owner="item.isOwner">
                     <template #reference>
-                      <el-image :src="item.user.avatar" lazy></el-image>
+                      <el-image v-if="item.user.avatar.startsWith('/avatar/')" :src="`${api.server}${item.user.avatar}`" lazy></el-image>
+                      <el-image v-else :src="item.user.avatar" lazy></el-image>
                     </template>
                   </popover-user-info-card>
                 </div>
@@ -107,7 +108,7 @@ import transitionList from '@/components/transitions/list-transition.vue';
 import { getCommentList, publishComment } from '@/api/postComment';
 import { getUserAgentIconByEnum as userAgentIcon, getUserAgentNameByEnum as userAgentName } from '@/utils/user-agent';
 import toast from '@/utils/toast';
-import { webSettings } from '@/config.json';
+import { webSettings, api } from '@/config.json';
 import { stores } from '@/stores';
 
 const inputRef = ref();

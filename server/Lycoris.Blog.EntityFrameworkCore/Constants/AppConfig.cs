@@ -45,15 +45,21 @@ namespace Lycoris.Blog.EntityFrameworkCore.Constants
         public const string Upload = "App.UploadSetting";
 
         /// <summary>
+        /// Showdoc推送设置
+        /// </summary>
+        [Configuration("Showdoc推送设置", typeof(ShowdocSettingsConfiguration))]
+        public const string Showdoc = "App.Showdoc";
+
+        /// <summary>
         /// 
         /// </summary>
         [Configuration("网站数据统计", typeof(WebStatisticsConfiguration))]
         public const string WebStatistics = "App.WebStatistic";
 
         /// <summary>
-        /// 系统设置
+        /// 其他设置
         /// </summary>
-        [Configuration("系统设置", typeof(SystemSettingsConfiguration))]
-        public const string SystemSetting = "App.SystemSetting";
+        [Configuration("其他设置", typeof(OtherSettingsConfiguration))]
+        public const string OtherSetting = "App.OtherSetting";
     }
 }

@@ -108,8 +108,8 @@ namespace Lycoris.Blog.Core.Showdoc.Impl
         /// <returns></returns>
         private async Task<string> GetShowdocConfigurationAsync()
         {
-            var settings = await _configuration.GetConfigurationAsync<SystemSettingsConfiguration>(AppConfig.SystemSetting);
-            return settings?.ShowDocHost ?? "";
+            var settings = await _configuration.GetConfigurationAsync<OtherSettingsConfiguration>(AppConfig.OtherSetting);
+            return settings?.Showdoc?.Host ?? "";
         }
     }
 }

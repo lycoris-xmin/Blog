@@ -20,6 +20,7 @@
         <div class="login-footer">
           <button class="login-btn" type="button" @click="userLogin" :disabled="model.disabled">登录</button>
         </div>
+        <a class="footer flex-center-center" href="https://beian.miit.gov.cn/" target="_blank"><img src="/icon/gongan.png" alt="" />{{ stores.webSetting.icp }}</a>
       </form>
     </div>
 
@@ -30,9 +31,9 @@
 <script setup>
 import { reactive, computed, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import loadingLine from '../../components/loadings/loading-line.vue';
-import skyArea from '../../components/sky-area-bg/index.vue';
-import { ssoLogin, loginValidate, login } from '../../api/authentication';
+import loadingLine from '@/components/loadings/loading-line.vue';
+import skyArea from '@/components/sky-area-bg/index.vue';
+import { ssoLogin, loginValidate, login } from '@/api/authentication';
 import { stores } from '../../stores';
 import { debounce } from '../../utils/tool';
 import toast from '../../utils/toast';
@@ -67,6 +68,7 @@ onMounted(async () => {
   // if (document.referrer && !document.referrer.includes(web.ssoReferer)) {
   //   return;
   // }
+
   if (route.query.key) {
     let token = secret.decrypt(decodeURIComponent(route.query.key));
     if (token) {
@@ -262,6 +264,20 @@ body {
 
       .login-btn:hover {
         background-position: right;
+      }
+    }
+
+    .footer {
+      cursor: pointer;
+      transform: color 0.3s;
+      img {
+        height: 18px;
+        width: 18px;
+        margin-right: 5px;
+      }
+
+      &:hover {
+        color: var(--color-purple);
       }
     }
   }

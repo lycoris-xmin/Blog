@@ -4,7 +4,7 @@
       <div class="flex-start-center">
         <popover-user-info-card :user-id="props.data.user.id" :is-owner="props.data.isOwner">
           <template #reference>
-            <el-image :src="props.data.user.avatar" :title="props.data.user.nickName" lazy>
+            <el-image :src="props.data.user.avatar.startsWith('/avatar/') ? `${api.server}${props.data.user.avatar}` : props.data.user.avatar" :title="props.data.user.nickName" lazy>
               <template #error>
                 <img :src="stores.webSetting.defaultAvatar" />
               </template>
@@ -100,7 +100,7 @@ import { getReplyMessageLsit, publishReplyMessage } from '@/api/message';
 import { getUserAgentIconByEnum as userAgentIcon, getUserAgentNameByEnum as userAgentName } from '@/utils/user-agent';
 import toast from '@/utils/toast';
 import { stores } from '@/stores';
-import { webSettings } from '@/config.json';
+import { webSettings, api } from '@/config.json';
 
 const redundancyRef = ref();
 const inputRef = ref();

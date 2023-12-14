@@ -4,7 +4,7 @@
       <div class="redundancy-header flex-start-center">
         <popover-user-info-card :user-id="props.data.user.id" :is-owner="props.data.isOwner">
           <template #reference>
-            <el-image :src="props.data.user.avatar" lazy>
+            <el-image :src="props.data.user.avatar.startsWith('/avatar/') ? `${api.server}${props.data.user.avatar}` : props.data.user.avatar" lazy>
               <template #error>
                 <img :src="stores.webSetting.defaultAvatar" />
               </template>
@@ -50,7 +50,7 @@
 <script setup>
 import popoverUserInfoCard from '@/components/popover-user-card/index.vue';
 import { stores } from '@/stores';
-import { webSettings } from '@/config.json';
+import { webSettings, api } from '@/config.json';
 
 const props = defineProps({
   data: {

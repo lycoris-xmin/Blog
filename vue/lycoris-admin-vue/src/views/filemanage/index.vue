@@ -92,14 +92,14 @@
 </template>
 
 <script setup name="filemanage">
-import { reactive, ref, onMounted, onBeforeMount, onBeforeUnmount, inject } from 'vue';
+import { reactive, ref, onMounted, onBeforeUnmount, inject } from 'vue';
 import pageLayout from '../layout/page-layout.vue';
 import LycorisTable from '../../components/lycoris-table/index.vue';
 import fileDetail from './components/file-detail.vue';
 import { getList, checkFileUseState, syncFileToRemote, downAllFile } from '../../api/staticFile';
 import { getUploadChannelEnum, getUploadSetting } from '../../api/configuration';
+import cookieHelper from '../../utils/cookie';
 import { api } from '../../config.json';
-import { setStaticSource } from '../../utils/staticfile';
 import toast from '../../utils/toast';
 import useClipboard from 'vue-clipboard3';
 import swal from '../../utils/swal';
@@ -164,12 +164,8 @@ const table = reactive({
   count: 0,
   list: [],
   pageIndex: 1,
-  pageSize: 20,
+  pageSize: 15,
   loading: false
-});
-
-onBeforeMount(() => {
-  // setStaticSource('local');
 });
 
 onMounted(async () => {
@@ -183,7 +179,7 @@ onMounted(async () => {
 });
 
 onBeforeUnmount(() => {
-  setStaticSource('cdn');
+  cookieHelper.setStaticFileResource('cdn');
 
   signalR.unsubscribe('checkkFileUseState');
   signalR.unsubscribe('downloadAll');

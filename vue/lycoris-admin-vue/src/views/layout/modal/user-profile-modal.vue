@@ -124,7 +124,7 @@ const submit = async () => {
         return;
       }
 
-      form.avatar = fileRes.data;
+      form.avatar = fileRes.data.url;
     }
 
     let res = await updateUserBrief({ ...form });

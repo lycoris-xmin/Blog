@@ -261,8 +261,10 @@ namespace Lycoris.Blog.Application.AppServices.Posts.Impl
 
             data = data.Id == 0 ? await CreateAsync(input, data) : await UpdateAsync(input, data);
 
-            _scheduleQueue.Value.Enqueue(ScheduleTypeEnum.CategoryPostCount, oldCategory.ToString());
-            _scheduleQueue.Value.Enqueue(ScheduleTypeEnum.CategoryPostCount, data.Category.ToString());
+            if (oldCategory > 0)
+                _scheduleQueue.Value.Enqueue(ScheduleTypeEnum.CategoryPostCount, oldCategory.ToString());
+            if (data.Category > 0)
+                _scheduleQueue.Value.Enqueue(ScheduleTypeEnum.CategoryPostCount, data.Category.ToString());
 
             return data.Id;
         }
@@ -297,7 +299,8 @@ namespace Lycoris.Blog.Application.AppServices.Posts.Impl
             data.IsPublish = true;
             await _post.UpdateFieIdsAsync(data, x => x.IsPublish);
 
-            _scheduleQueue.Value.Enqueue(ScheduleTypeEnum.CategoryPostCount, data.Category.ToString());
+            if (data.Category > 0)
+                _scheduleQueue.Value.Enqueue(ScheduleTypeEnum.CategoryPostCount, data.Category.ToString());
         }
 
         /// <summary>

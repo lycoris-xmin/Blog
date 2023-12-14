@@ -54,10 +54,10 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
         /// 
         /// </summary>
         /// <returns></returns>
-        private async Task<SystemDBClearConfiguration> GetConfigurationAsync()
+        private async Task<DataClearConfiguration> GetConfigurationAsync()
         {
-            var config = await _configuration.GetConfigurationAsync<SystemSettingsConfiguration>(AppConfig.SystemSetting);
-            return config!.SystemDBClear;
+            var config = await _configuration.GetConfigurationAsync<OtherSettingsConfiguration>(AppConfig.OtherSetting);
+            return config!.DataClear;
         }
 
         /// <summary>

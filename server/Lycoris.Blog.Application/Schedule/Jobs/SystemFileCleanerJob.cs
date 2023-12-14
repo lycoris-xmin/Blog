@@ -58,10 +58,10 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
         /// 
         /// </summary>
         /// <returns></returns>
-        private async Task<SystemFileClearConfiguration> GetConfigurationAsync()
+        private async Task<DataClearConfiguration> GetConfigurationAsync()
         {
-            var config = await _configuration.GetConfigurationAsync<SystemSettingsConfiguration>(AppConfig.SystemSetting);
-            return config!.SystemFileClear;
+            var config = await _configuration.GetConfigurationAsync<OtherSettingsConfiguration>(AppConfig.OtherSetting);
+            return config!.DataClear;
         }
 
         #region 静态文件清理
@@ -70,7 +70,7 @@ namespace Lycoris.Blog.Application.Schedule.Jobs
         /// 
         /// </summary>
         /// <returns></returns>
-        private async Task StaticFileHandlerAsync(SystemFileClearConfiguration config)
+        private async Task StaticFileHandlerAsync(DataClearConfiguration config)
         {
             var checkTime = DateTime.Now.AddDays(-config.StaticFile).Date;
             var filter = _staticFile.GetAll().Where(x => x.NotCheck == false).Where(x => x.Use == false).Where(x => x.LastUpdateTime.HasValue && x.LastUpdateTime.Value <= checkTime);

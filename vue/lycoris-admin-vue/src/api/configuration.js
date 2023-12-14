@@ -65,22 +65,23 @@ export const saveSeoSetting = data => {
   return request.post(`${controller}/seo`, data);
 };
 
-export const getSystemSetting = () => {
-  return request.get(`${controller}/systemsettings`);
+export const getOthersetting = () => {
+  return request.get(`${controller}/othersetting`);
 };
 
-export const saveShowdocSetting = host => {
-  return request.post(`${controller}/systemsettings/showdoc`, {
-    host
+export const saveShowdocSetting = ({ host, monitoringPush, cpuRate, ramRate, messagePush, commentPush }) => {
+  return request.post(`${controller}/showdoc`, {
+    host,
+    monitoringPush,
+    cpuRate,
+    ramRate,
+    messagePush,
+    commentPush
   });
 };
 
-export const saveSystemFileClear = ({ staticFile, tempFile, logFile }) => {
-  return request.post(`${controller}/systemsettings/fileclear`, { staticFile, tempFile, logFile });
-};
-
-export const saveSystemDbClear = ({ requestLog, browseLog, postComment, leaveMessage }) => {
-  return request.post(`${controller}/systemsettings/dbclear`, { requestLog, browseLog, postComment, leaveMessage });
+export const saveDataClear = ({ staticFile, tempFile, logFile, requestLog, browseLog, postComment, leaveMessage }) => {
+  return request.post(`${controller}/dataClear`, { staticFile, tempFile, logFile, requestLog, browseLog, postComment, leaveMessage });
 };
 
 export const uploadFile = (configName, file) => {

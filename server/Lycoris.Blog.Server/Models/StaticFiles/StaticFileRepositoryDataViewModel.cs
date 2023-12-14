@@ -1,6 +1,4 @@
-﻿using Lycoris.Blog.EntityFrameworkCore.Tables.Enums;
-
-namespace Lycoris.Blog.Server.Models.StaticFiles
+﻿namespace Lycoris.Blog.Server.Models.StaticFiles
 {
     /// <summary>
     /// 

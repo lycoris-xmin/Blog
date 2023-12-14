@@ -9,14 +9,12 @@
 </template>
 
 <script setup>
-import { onBeforeMount, reactive } from 'vue';
+import { reactive } from 'vue';
+import { useRoute } from 'vue-router';
 import { ElConfigProvider } from 'element-plus';
 import zhCn from 'element-plus/lib/locale/lang/zh-cn';
-import { getWebSetting } from './api/configuration';
+import { getWebSetting } from '@/api/home';
 import { stores } from './stores';
-import { useRoute } from 'vue-router';
-
-const route = useRoute();
 
 const options = reactive({
   locale: zhCn,
@@ -28,24 +26,22 @@ const options = reactive({
   }
 });
 
-onBeforeMount(() => {
-  webSetting();
-});
+const route = useRoute();
 
 const webSetting = async () => {
-  if (stores.authorize.token) {
-    let res = await getWebSetting();
-    if (res && res.resCode == 0) {
-      stores.webSetting.setData(res.data);
+  let res = await getWebSetting();
+  if (res && res.resCode == 0) {
+    stores.webSetting.setData(res.data.common);
 
-      if (stores.webSetting.webName) {
-        document.title = `${route.meta.title}_${stores.webSetting.webName}`;
-      } else {
-        document.title = `${route.meta.title}_管理后台`;
-      }
+    if (stores.webSetting.webName) {
+      document.title = `${route.meta.title}_${stores.webSetting.webName}`;
+    } else {
+      document.title = `${route.meta.title}_管理后台`;
     }
   }
 };
+
+webSetting();
 </script>
 
 <style lang="scss" scoped>

@@ -75,7 +75,7 @@ const model = reactive({
 const column = [
   {
     column: 'title',
-    name: '文章标题',
+    name: '评论文章',
     width: 250,
     overflow: true
   },

@@ -92,7 +92,7 @@ const menusRoutes = [
         name: 'talks',
         component: () => import('../views/talks/index.vue'),
         meta: {
-          title: '网站说说',
+          title: '网站瞬间',
           keepAlive: true,
           menu: true
         }

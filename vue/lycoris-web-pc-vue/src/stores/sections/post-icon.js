@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { api } from '../../config.json';
 
 const key = 'post-icon';
 
@@ -31,7 +32,7 @@ export default defineStore('post-icon', {
         this._initIcon();
       }
 
-      return this.icon[0];
+      return `${api.server}${this.icon[0]}`;
     }
   },
   _initIcon() {

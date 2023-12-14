@@ -47,7 +47,7 @@
             <div class="flex-start-center">
               <el-image :src="stores.user.avatar">
                 <template #error>
-                  <img src="/images/404.png" />
+                  <img src="/avatar/default_admin.jpeg" />
                 </template>
               </el-image>
               <span>{{ stores.user.nickName }}</span>

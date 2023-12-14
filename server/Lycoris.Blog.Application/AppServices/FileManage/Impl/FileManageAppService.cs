@@ -1,4 +1,6 @@
 ﻿using Lycoris.Autofac.Extensions;
+using Lycoris.AutoMapper.Extensions;
+using Lycoris.Blog.Application.AppServices.FileManage.Dtos;
 using Lycoris.Blog.Application.Shared.Impl;
 using Lycoris.Blog.Common;
 using Lycoris.Blog.Common.Extensions;
@@ -40,7 +42,7 @@ namespace Lycoris.Blog.Application.AppServices.FileManage.Impl
         /// <param name="notCheck"></param>
         /// <returns></returns>
         /// <exception cref="FriendlyException"></exception>
-        public async Task<(string url, FileTypeEnum fileType)> UploadFileAsync(IFormFile file, string path, bool notCheck = false)
+        public async Task<UploadFileDto> UploadFileAsync(IFormFile file, string path, bool notCheck = false)
         {
             var config = await GetConfigurationAsync();
 
@@ -94,11 +96,7 @@ namespace Lycoris.Blog.Application.AppServices.FileManage.Impl
 
                 await _repository.CreateAsync(data);
 
-                var url = AppSettings.Application.HttpPort == 80
-                    ? $"{AppSettings.Application.Domain}{data.PathUrl}"
-                    : $"{AppSettings.Application.Domain}:{AppSettings.Application.HttpPort}{data.PathUrl}";
-
-                return (url.Replace('\\', '/'), data.FileType);
+                return data.ToMap<UploadFileDto>();
             }
             catch (FriendlyException)
             {

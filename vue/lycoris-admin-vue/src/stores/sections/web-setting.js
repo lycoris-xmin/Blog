@@ -1,17 +1,26 @@
 import { defineStore } from 'pinia';
+import { api } from '../../config.json';
+
+const dataKey = 'l-web';
 
 export default defineStore('web-setting', {
   state: () => {
-    return {
-      webName: '',
-      webPath: '',
-      adminPath: '',
-      logo: '',
-      icp: ''
-    };
+    let value = localStorage.getItem(dataKey);
+    if (value) {
+      value = JSON.parse(value);
+    } else {
+      value = {
+        webName: '',
+        webPath: '',
+        logo: '',
+        icp: ''
+      };
+    }
+
+    return value;
   },
   actions: {
-    setData({ webName, webPath, adminPath, logo, icp }) {
+    setData({ webName, webPath, logo, icp }) {
       if (webName) {
         this.webName = webName;
       }
@@ -20,17 +29,23 @@ export default defineStore('web-setting', {
         this.webPath = webPath.trimEnd('/');
       }
 
-      if (adminPath) {
-        this.adminPath = adminPath;
-      }
-
       if (logo) {
-        this.logo = logo;
+        this.logo = `${api.server}${logo}`;
       }
 
       if (icp) {
         this.icp = icp;
       }
+
+      localStorage.setItem(
+        dataKey,
+        JSON.stringify({
+          webName: this.webName,
+          webPath: this.webPath,
+          icp: this.icp,
+          logo: this.logo
+        })
+      );
     }
   }
 });

@@ -3,28 +3,59 @@
     /// <summary>
     /// 
     /// </summary>
-    public class SystemSettingsConfiguration
+    public class OtherSettingsConfiguration
     {
         /// <summary>
         /// 
         /// </summary>
-        public string ShowDocHost { get; set; } = string.Empty;
+        public ShowdocSettingsConfiguration Showdoc { get; set; } = new ShowdocSettingsConfiguration();
 
         /// <summary>
         /// 
         /// </summary>
-        public SystemFileClearConfiguration SystemFileClear { get; set; } = new SystemFileClearConfiguration();
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public SystemDBClearConfiguration SystemDBClear { get; set; } = new SystemDBClearConfiguration();
+        public DataClearConfiguration DataClear { get; set; } = new DataClearConfiguration();
     }
 
     /// <summary>
     /// 
     /// </summary>
-    public class SystemFileClearConfiguration
+    public class ShowdocSettingsConfiguration
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Host { get; set; } = string.Empty;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool MonitoringPush { get; set; } = false;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public int CPURate { get; set; } = 50;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public int RAMRate { get; set; } = 50;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool CommentPush { get; set; } = false;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool MessagePush { get; set; } = false;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class DataClearConfiguration
     {
         /// <summary>
         /// 
@@ -40,13 +71,7 @@
         /// 
         /// </summary>
         public int LogFile { get; set; } = 7;
-    }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public class SystemDBClearConfiguration
-    {
         /// <summary>
         /// 
         /// </summary>

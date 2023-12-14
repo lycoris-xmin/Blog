@@ -5,6 +5,7 @@ using Lycoris.Blog.Application.AppServices.BrowseLogs.Dtos;
 using Lycoris.Blog.Application.AppServices.Categorys.Dtos;
 using Lycoris.Blog.Application.AppServices.Chat.Dtos;
 using Lycoris.Blog.Application.AppServices.Dashboard.Dtos;
+using Lycoris.Blog.Application.AppServices.FileManage.Dtos;
 using Lycoris.Blog.Application.AppServices.FriendLinks.Dtos;
 using Lycoris.Blog.Application.AppServices.Home.Dtos;
 using Lycoris.Blog.Application.AppServices.LoginRecords.Dtos;
@@ -250,9 +251,7 @@ namespace Lycoris.Blog.Server.Application
 
             CreateMap<InteractiveStatisticsDto, InteractiveStatisticsViewModel>();
 
-            CreateMap<SaveSystemFileClearConfigurationInput, SystemFileClearConfiguration>();
-
-            CreateMap<SaveSystemDBClearConfigurationInput, SystemDBClearConfiguration>();
+            CreateMap<SaveDataClearConfigurationInput, DataClearConfiguration>();
 
             CreateMap<AccessControlListInput, GetAccessControlListFilter>();
 
@@ -312,6 +311,9 @@ namespace Lycoris.Blog.Server.Application
 
             CreateMap<ServerStaticFileRepositoryDto, StaticFileRepositoryDataViewModel>()
                 .ForMember(x => x.FileSize, opt => opt.MapFrom(src => ConvertFileSize(src.FileSize)));
+
+            CreateMap<UploadFileDto, StaticFileUploadViewModel>()
+                 .ForMember(x => x.FileSize, opt => opt.MapFrom(src => ConvertFileSize(src.FileSize)));
         }
 
         /// <summary>
@@ -519,8 +521,11 @@ namespace Lycoris.Blog.Server.Application
         /// </summary>
         /// <param name="fileSizeInBytes"></param>  
         /// <returns></returns>
-        public static string ConvertFileSize(long fileSizeInBytes)
+        public static string ConvertFileSize(long? fileSizeInBytes)
         {
+            if (!fileSizeInBytes.HasValue)
+                return "0";
+
             const long Kilobyte = 1024;
             const long Megabyte = Kilobyte * 1024;
             const long Gigabyte = Megabyte * 1024;

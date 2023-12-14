@@ -49,7 +49,7 @@ namespace Lycoris.Blog.Application.Schedule.JobServices.ScheduleQueue.Impl
                 return;
             }
 
-            var count = await _post.GetAll().Where(x => x.Category == categoryId!.Value).Where(x => x.IsPublish).CountAsync();
+            var count = await _post.GetAll().Where(x => x.Category == categoryId!.Value).Where(x => x.IsPublish == true).CountAsync();
             if (category.PostCount == count)
             {
                 this.JobLogger!.Warn($"the number({count}) of articles in the category({category.Name}) is equal to the current number and does not need to be updated.");

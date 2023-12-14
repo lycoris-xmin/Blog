@@ -8,7 +8,7 @@
         <email-setting v-else-if="item.value == 'emailSetting'" :value="index" @tab-complete="complete"></email-setting>
         <upload-setting v-else-if="item.value == 'fileUploadSetting'" :value="index" @tab-complete="complete"></upload-setting>
         <seo-setting v-else-if="item.value == 'seoSetting'" :value="index" @tab-complete="complete"></seo-setting>
-        <system-setting v-else :value="index" @tab-complete="complete"></system-setting>
+        <other-setting v-else :value="index" @tab-complete="complete"></other-setting>
       </el-tab-pane>
     </el-tabs>
   </page-layout>
@@ -23,10 +23,9 @@ import messageSetting from './components/message-setting.vue';
 import emailSetting from './components/email-setting.vue';
 import uploadSetting from './components/upload-setting.vue';
 import seoSetting from './components/seo-setting.vue';
-import systemSetting from './components/system-setting.vue';
+import otherSetting from './components/other-setting.vue';
 
 const model = reactive({
-  active: 'webSettings',
   tabs: [
     {
       title: '网站设置',
@@ -49,7 +48,7 @@ const model = reactive({
       loading: true
     },
     {
-      title: '上传设置',
+      title: '附件设置',
       value: 'fileUploadSetting',
       loading: true
     },
@@ -59,7 +58,7 @@ const model = reactive({
       loading: true
     },
     {
-      title: '系统设置',
+      title: '其他设置',
       value: 'systemSetting',
       loading: true
     }
@@ -106,55 +105,59 @@ const complete = index => {
 <style lang="scss">
 .tab-panel-container {
   padding-top: 18px;
+}
 
-  .harf-body {
-    width: 35%;
+.harf-body {
+  width: 35%;
 
-    .form-panel {
-      margin-bottom: 35px;
-      grid-gap: 20px;
+  @media (max-width: 1920px) {
+    width: 45%;
+  }
 
-      .header {
-        margin-bottom: 15px;
-        font-size: 18px;
-        padding-bottom: 8px;
-        border-bottom: 1px solid var(--color-secondary);
+  .form-panel {
+    margin-bottom: 35px;
+    grid-gap: 20px;
 
-        .title-info-text {
+    .header {
+      margin-bottom: 15px;
+      font-size: 18px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--color-secondary);
+
+      .title-info-text {
+        color: var(--color-danger);
+        padding-left: 15px;
+
+        &::before {
+          content: '*';
           color: var(--color-danger);
-          padding-left: 15px;
-
-          &::before {
-            content: '*';
-            color: var(--color-danger);
-          }
         }
-      }
-
-      &.in-line {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        justify-content: start;
-        align-items: center;
-
-        .header:first-child {
-          grid-column-start: 1;
-          grid-column-end: 3;
-        }
-      }
-
-      .el-select {
-        width: 100%;
       }
     }
 
-    .submit {
-      margin-top: 20px;
-      text-align: left;
+    &.in-line {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      justify-content: start;
+      align-items: center;
 
-      .el-button {
-        width: 120px;
+      .header:first-child {
+        grid-column-start: 1;
+        grid-column-end: 3;
       }
+    }
+
+    .el-select {
+      width: 100%;
+    }
+  }
+
+  .submit {
+    margin-top: 20px;
+    text-align: left;
+
+    .el-button {
+      width: 120px;
     }
   }
 }

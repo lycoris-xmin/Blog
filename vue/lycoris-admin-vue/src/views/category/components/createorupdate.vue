@@ -36,6 +36,7 @@ import { createCategory, updateCategory } from '../../../api/category';
 import { uploadStaticFile } from '../../../api/staticFile';
 import UploadType from '../../../constants/UploadType';
 import toast from '../../../utils/toast';
+import { api } from '../../../config.json';
 
 const formRef = ref();
 
@@ -99,7 +100,7 @@ const submit = async () => {
         return;
       }
 
-      data.icon = uploadRes.data;
+      data.icon = uploadRes.data.url;
     }
 
     let res = form.id ? await updateCategory(data) : await createCategory(data);
@@ -121,7 +122,9 @@ const show = (index, row) => {
     form.id = row.id;
     form.name = row.name;
     form.keyword = keyword.length > 0 ? keyword.join(',') : '';
-    form.icon = row.icon;
+    if (row.icon) {
+      form.icon = `${api.server}${row.icon}`;
+    }
     form.showHeader = row.showHeader;
   }
   model.visible = true;

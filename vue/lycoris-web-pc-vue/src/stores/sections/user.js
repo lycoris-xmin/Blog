@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { api } from '../../config.json';
 
 export default defineStore('user', {
   state: () => {
@@ -23,7 +24,18 @@ export default defineStore('user', {
     setLoginState({ id, nickName, avatar, cancellationTime, blog, qq, wechat, github, gitee, email, bilibili, cloudMusic, isAdmin }) {
       this.id = id || '';
       this.nickName = nickName || '';
-      this.avatar = avatar || '';
+
+      if (avatar != undefined) {
+        if (avatar) {
+          if (avatar.startsWith('/avatar')) {
+            this.avatar = `${api.server}${avatar}`;
+          } else {
+            this.avatar = avatar;
+          }
+        } else {
+          this.avatar = '/avatar/default_admin.jpeg';
+        }
+      }
 
       if (cancellationTime) {
         this.cancellationTime = new Date(cancellationTime).getTime();
@@ -46,7 +58,13 @@ export default defineStore('user', {
       }
 
       if (avatar) {
-        this.avatar = avatar;
+        if (avatar.startsWith('/avatar')) {
+          this.avatar = `${api.server}${avatar}`;
+        } else {
+          this.avatar = avatar;
+        }
+      } else {
+        this.avatar = '/avatar/default_admin.jpeg';
       }
 
       if (blog) {

@@ -1,5 +1,6 @@
 ﻿using Lycoris.AutoMapper.Extensions;
 using Lycoris.Blog.Application.AppServices.FileManage;
+using Lycoris.Blog.Application.AppServices.FileManage.Dtos;
 using Lycoris.Blog.Application.AppServices.ServerStaticFiles;
 using Lycoris.Blog.Application.AppServices.ServerStaticFiles.Dtos;
 using Lycoris.Blog.Common;
@@ -118,39 +119,19 @@ namespace Lycoris.Blog.Server.Controllers
         [Consumes("multipart/form-data"), Produces("application/json")]
         public async Task<DataOutput<StaticFileUploadViewModel>> Upload([FromForm] StaticFileUploadInput input, [FromServices] IFileManageAppService fileManage)
         {
-            var url = "";
-            FileTypeEnum? fileType = null;
-            switch (input.UploadType!.Value)
+            var dto = input.UploadType!.Value switch
             {
-                case UploadType.PostIcon:
-                    (url, fileType) = await fileManage.UploadFileAsync(input.File!, StaticsFilePath.PostIcon);
-                    break;
-                case UploadType.PostCarousel:
-                    (url, fileType) = await fileManage.UploadFileAsync(input.File!, StaticsFilePath.PostCarousel);
-                    break;
-                case UploadType.Post:
-                    (url, fileType) = await fileManage.UploadFileAsync(input.File!, StaticsFilePath.Post);
-                    break;
-                case UploadType.CategoryIcon:
-                    (url, fileType) = await fileManage.UploadFileAsync(input.File!, StaticsFilePath.Category);
-                    break;
-                case UploadType.AboutWeb:
-                    (url, fileType) = await fileManage.UploadFileAsync(input.File!, StaticsFilePath.AboutWeb);
-                    break;
-                case UploadType.Logo:
-                    (url, fileType) = await fileManage.UploadFileAsync(input.File!, StaticsFilePath.Logo);
-                    break;
-                case UploadType.Avatar:
-                    (url, fileType) = await fileManage.UploadFileAsync(input.File!, StaticsFilePath.Avatar);
-                    break;
-                case UploadType.Other:
-                    (url, fileType) = await fileManage.UploadFileAsync(input.File!, StaticsFilePath.File);
-                    break;
-                default:
-                    throw new HttpStatusException(System.Net.HttpStatusCode.BadRequest, "");
-            }
-
-            return Success(new StaticFileUploadViewModel(url, (int)fileType!));
+                UploadType.PostIcon => await fileManage.UploadFileAsync(input.File!, StaticsFilePath.PostIcon),
+                UploadType.PostCarousel => await fileManage.UploadFileAsync(input.File!, StaticsFilePath.PostCarousel),
+                UploadType.Post => await fileManage.UploadFileAsync(input.File!, StaticsFilePath.Post),
+                UploadType.CategoryIcon => await fileManage.UploadFileAsync(input.File!, StaticsFilePath.Category),
+                UploadType.AboutWeb => await fileManage.UploadFileAsync(input.File!, StaticsFilePath.AboutWeb),
+                UploadType.Logo => await fileManage.UploadFileAsync(input.File!, StaticsFilePath.Logo),
+                UploadType.Avatar => await fileManage.UploadFileAsync(input.File!, StaticsFilePath.Avatar),
+                UploadType.Other => await fileManage.UploadFileAsync(input.File!, StaticsFilePath.File),
+                _ => throw new HttpStatusException(System.Net.HttpStatusCode.BadRequest, ""),
+            };
+            return Success(dto.ToMap<StaticFileUploadViewModel>());
         }
     }
 }

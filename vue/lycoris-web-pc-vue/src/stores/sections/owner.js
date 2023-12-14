@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { api } from '../../config.json';
 
 export default defineStore('web-owner', {
   state: () => {
@@ -26,7 +27,19 @@ export default defineStore('web-owner', {
   actions: {
     setData({ nickName, avatar, email, qq, wechat, github, bilibili, music }) {
       this.nickName = nickName || 'Lycoris';
-      this.avatar = avatar || '/avatar/default_admin.jpeg';
+
+      if (avatar != undefined) {
+        if (avatar) {
+          if (avatar.startsWith('/avatar')) {
+            this.avatar = `${api.server}${avatar}`;
+          } else {
+            this.avatar = avatar;
+          }
+        } else {
+          this.avatar = '/avatar/default_admin.jpeg';
+        }
+      }
+
       this.email = email || '';
       this.qq = qq || '';
       this.wechat = wechat || '';

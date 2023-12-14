@@ -76,6 +76,6 @@ namespace Lycoris.Blog.Server.Shared
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        protected static bool IsStaticFileReuqest(HttpContext context) => context.Request.Path.HasValue && AppSettings.StaticFileExtension.Any(x => context.Request.Path.Value.EndsWith(x));
+        protected static bool IsStaticFileReuqest(HttpContext context) => context.Request.Path.HasValue && AppSettings.StaticFileExtension.Any(x => context.Request.Path.Value.ToLower().EndsWith(x));
     }
 }

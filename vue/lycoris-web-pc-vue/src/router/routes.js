@@ -31,7 +31,7 @@ const routes = [
         component: () => import('../views/talks/index.vue'),
         meta: {
           keepAlive: true,
-          pageName: '说说',
+          pageName: '瞬间',
           navHeader: true
         }
       },

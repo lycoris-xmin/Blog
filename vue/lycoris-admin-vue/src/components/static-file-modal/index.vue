@@ -196,6 +196,7 @@ const getList = async () => {
         return {
           fileType: x.fileType,
           url: `${api.server}${x.url}`,
+          pathUrl: x.url,
           fileName: x.fileName,
           fileSize: x.fileSize
         };
@@ -231,7 +232,7 @@ const close = () => {
 };
 
 const handleSelected = () => {
-  emit('selected', model.selectd.url, model.selectd.fileType);
+  emit('selected', model.selectd.pathUrl, model.selectd.fileType);
   close();
 };
 
@@ -250,7 +251,13 @@ const handleUpload = async options => {
   try {
     let res = await uploadStaticFile(props.uploadFileType, options.file);
     if (res && res.resCode == 0) {
-      model.list[0] = res.data;
+      model.list[0] = {
+        fileType: res.data.fileType,
+        url: `${api.server}${res.data.url}`,
+        pathUrl: res.data.url,
+        fileName: res.data.fileName,
+        fileSize: res.data.fileSize
+      };
       toast.success('上传成功');
     } else {
       model.count--;

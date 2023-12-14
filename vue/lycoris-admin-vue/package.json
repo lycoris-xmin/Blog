@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "vite --open /little/brokenstation/dashboard",
+    "dev": "vite --host 0.0.0.0 --open /little/brokenstation/dashboard",
     "build": "vite build && node ./src/scripts/build-scripts.js",
     "preview": "vite preview",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",

@@ -87,7 +87,7 @@ namespace Lycoris.Blog.Server.Application
         {
             var assembly = GetType().Assembly;
             //获取所有可用controller
-            var controllers = assembly.GetTypes().Where(x => x.BaseType == typeof(BaseController)).ToList();
+            var controllers = assembly.GetTypes().Where(x => x.BaseType == typeof(BaseApiController)).ToList();
 
             var actionType = new Type[2] { typeof(HttpGetAttribute), typeof(HttpPostAttribute) };
 

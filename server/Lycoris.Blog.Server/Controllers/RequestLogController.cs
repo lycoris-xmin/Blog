@@ -16,7 +16,7 @@ namespace Lycoris.Blog.Server.Controllers
     /// 请求日志
     /// </summary>
     [Route($"{HostConstant.RoutePrefix}/RequestLog"), AppAuthentication]
-    public class RequestLogController : BaseController
+    public class RequestLogController : BaseApiController
     {
         private readonly IRequestLogAppService _requestLog;
 

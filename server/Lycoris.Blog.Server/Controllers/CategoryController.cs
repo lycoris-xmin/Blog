@@ -18,7 +18,7 @@ namespace Lycoris.Blog.Server.Controllers
     /// 文章分类
     /// </summary>
     [Route($"{HostConstant.RoutePrefix}/Category")]
-    public class CategoryController : BaseController
+    public class CategoryController : BaseApiController
     {
         private readonly ICategoryAppService _category;
 

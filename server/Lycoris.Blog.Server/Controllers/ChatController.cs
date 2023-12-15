@@ -15,7 +15,7 @@ namespace Lycoris.Blog.Server.Controllers
     /// 即时聊天
     /// </summary>
     [Route($"{HostConstant.RoutePrefix}/Chat"), WebAuthentication(IsRequired = true)]
-    public class ChatController : BaseController
+    public class ChatController : BaseApiController
     {
         private readonly IChatAppService _chat;
 

@@ -15,7 +15,7 @@ namespace Lycoris.Blog.Server.Controllers
     /// 说说
     /// </summary>
     [Route($"{HostConstant.RoutePrefix}/Talk")]
-    public class TalkController : BaseController
+    public class TalkController : BaseApiController
     {
         private readonly ITalkAppService _talk;
 

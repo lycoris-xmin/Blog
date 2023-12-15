@@ -15,7 +15,7 @@ namespace Lycoris.Blog.Server.Controllers
     /// </summary>
     [Route($"{HostConstant.RoutePrefix}/LoginRecord")]
     [AppAuthentication]
-    public class LoginRecordController : BaseController
+    public class LoginRecordController : BaseApiController
     {
         private readonly ILoginRecordAppService _loginRecord;
 

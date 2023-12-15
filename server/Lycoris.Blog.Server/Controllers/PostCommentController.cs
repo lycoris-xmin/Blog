@@ -15,7 +15,7 @@ namespace Lycoris.Blog.Server.Controllers
     /// 文章评论
     /// </summary>
     [Route($"{HostConstant.RoutePrefix}/PostComment")]
-    public class PostCommentController : BaseController
+    public class PostCommentController : BaseApiController
     {
         private readonly IPostCommentAppService _comment;
 

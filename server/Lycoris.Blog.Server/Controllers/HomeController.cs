@@ -16,7 +16,7 @@ namespace Lycoris.Blog.Server.Controllers
     /// 网站首页
     /// </summary>
     [Route($"{HostConstant.RoutePrefix}/Home")]
-    public class HomeController : BaseController
+    public class HomeController : BaseApiController
     {
         private readonly IHomeAppService _home;
 

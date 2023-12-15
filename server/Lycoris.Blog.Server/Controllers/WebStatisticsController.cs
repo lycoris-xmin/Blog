@@ -17,7 +17,7 @@ namespace Lycoris.Blog.Server.Controllers
     /// </summary>
     [Route($"{HostConstant.RoutePrefix}/WebStatistics")]
     [AppAuthentication]
-    public class WebStatisticsController : BaseController
+    public class WebStatisticsController : BaseApiController
     {
         private readonly IWebStatisticsAppService _webStatistics;
 

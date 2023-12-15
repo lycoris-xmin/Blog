@@ -146,6 +146,8 @@ namespace Lycoris.Blog.Server.Middlewares
         /// <returns></returns>
         private static bool CheckAllowRoute(HttpContext context)
         {
+            return true;
+
             var path = context.Request.Path.Value ?? "";
             if (path == "" || path == "/")
                 return false;

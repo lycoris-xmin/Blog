@@ -10,7 +10,7 @@ namespace Lycoris.Blog.Server.Controllers
     /// 下载
     /// </summary>
     [Route($"{HostConstant.RoutePrefix}/Download")]
-    public class DownloadController : BaseController
+    public class DownloadController : BaseApiController
     {
         /// <summary>
         /// 临时文件下载

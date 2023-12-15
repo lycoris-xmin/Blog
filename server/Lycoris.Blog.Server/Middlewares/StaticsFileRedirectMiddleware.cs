@@ -39,6 +39,11 @@ namespace Lycoris.Blog.Server.Middlewares
                 await _next.Invoke(context);
                 return;
             }
+            else if (context.Request.Path.HasValue && context.Request.Path.Value.StartsWith("/view-source/"))
+            {
+                await _next.Invoke(context);
+                return;
+            }
 
             if (context.Request.Cookies.ContainsKey(HttpCookies.LocalStaticsFile))
             {

@@ -9,7 +9,6 @@ using Lycoris.Blog.Core.Minio;
 using Lycoris.Blog.EntityFrameworkCore.Constants;
 using Lycoris.Blog.EntityFrameworkCore.Repositories;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
-using Lycoris.Blog.EntityFrameworkCore.Tables.Enums;
 using Lycoris.Blog.Model.Configurations;
 using Lycoris.Blog.Model.Exceptions;
 using Lycoris.Common.Helper;

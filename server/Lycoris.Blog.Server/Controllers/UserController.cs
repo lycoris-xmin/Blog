@@ -19,7 +19,7 @@ namespace Lycoris.Blog.Server.Controllers
     /// 用户管理
     /// </summary>
     [Route($"{HostConstant.RoutePrefix}/User")]
-    public class UserController : BaseController
+    public class UserController : BaseApiController
     {
         private readonly IUserAppService _user;
 

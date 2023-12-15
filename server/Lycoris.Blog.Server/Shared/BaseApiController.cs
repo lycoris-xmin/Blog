@@ -12,7 +12,7 @@ namespace Lycoris.Blog.Server.Shared
     /// 
     /// </summary>
     [ApiController]
-    public class BaseController : ControllerBase
+    public class BaseApiController : ControllerBase
     {
         private RequestContext? _requestContext = null;
 

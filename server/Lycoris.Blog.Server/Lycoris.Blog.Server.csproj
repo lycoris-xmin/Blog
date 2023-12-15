@@ -1,54 +1,61 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <GenerateDocumentationFile>True</GenerateDocumentationFile>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="HtmlSanitizer" Version="8.0.795" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.21" />
-    <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.NewtonsoftJson" Version="6.0.21" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.10">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Serilog.AspNetCore" Version="8.0.0" />
-    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.5.0" />
-    <PackageReference Include="Unchase.Swashbuckle.AspNetCore.Extensions" Version="2.7.1" />
-  </ItemGroup>
+	<ItemGroup>
+	  <Compile Remove="wwwroot\view-source\**" />
+	  <Content Remove="wwwroot\view-source\**" />
+	  <EmbeddedResource Remove="wwwroot\view-source\**" />
+	  <None Remove="wwwroot\view-source\**" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Update="AppData\EmailTemplate\EmailAuthorize.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="AppData\EmailTemplate\EmailTest.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="AppData\EmailTemplate\EmailValidate.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="AppData\EmailTemplate\ResetPassword.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="AppData\sensitive_words.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="HtmlSanitizer" Version="8.0.795" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.21" />
+		<PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.NewtonsoftJson" Version="6.0.21" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.10">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<TreatAsUsed>true</TreatAsUsed>
+		</PackageReference>
+		<PackageReference Include="Serilog.AspNetCore" Version="8.0.0" />
+		<PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.5.0" />
+		<PackageReference Include="Unchase.Swashbuckle.AspNetCore.Extensions" Version="2.7.1" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="AppData\logs\" />
-    <Folder Include="AppData\Temp\" />
-    <Folder Include="wwwroot\" />
-    <Folder Include="wwwroot\about\web\" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Update="AppData\EmailTemplate\EmailAuthorize.html">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="AppData\EmailTemplate\EmailTest.html">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="AppData\EmailTemplate\EmailValidate.html">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="AppData\EmailTemplate\ResetPassword.html">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="AppData\sensitive_words.txt">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Lycoris.Blog.Application\Lycoris.Blog.Application.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<Folder Include="AppData\logs\" />
+		<Folder Include="AppData\Temp\" />
+		<Folder Include="wwwroot\about\web\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Lycoris.Blog.Application\Lycoris.Blog.Application.csproj" />
+	</ItemGroup>
 
 </Project>

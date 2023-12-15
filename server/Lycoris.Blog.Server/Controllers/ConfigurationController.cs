@@ -22,7 +22,7 @@ namespace Lycoris.Blog.Server.Controllers
     /// 系统设置
     /// </summary>
     [Route($"{HostConstant.RoutePrefix}/Configuration"), AppAuthentication]
-    public class ConfigurationController : BaseController
+    public class ConfigurationController : BaseApiController
     {
         private readonly IConfigurationAppService _configuration;
         private readonly Lazy<IFileManageAppService> _fileManage;

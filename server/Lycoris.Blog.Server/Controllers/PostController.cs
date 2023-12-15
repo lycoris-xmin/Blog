@@ -17,7 +17,7 @@ namespace Lycoris.Blog.Server.Controllers
     /// 博客文章
     /// </summary>
     [Route($"{HostConstant.RoutePrefix}/Post")]
-    public class PostController : BaseController
+    public class PostController : BaseApiController
     {
         private readonly IPostAppService _post;
 

@@ -109,7 +109,7 @@ builder.Services.AddCors(options =>
     });
 });
 
-// 控制器注册
+// 
 builder.Services.AddControllers(opt =>
 {
     // 接口全局异常捕捉
@@ -120,8 +120,7 @@ builder.Services.AddControllers(opt =>
 
     // 请求上下文
     opt.Filters.Add<RequestContextAttribute>();
-})
-.AddNewtonsoftJson(opt =>
+}).AddNewtonsoftJson(opt =>
 {
     // 属性名驼峰处理
     opt.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
@@ -241,6 +240,9 @@ app.UseMiddleware<HttpLoggingMiddleware>();
 
 // 静态文件处理
 app.UseMiddleware<StaticsFileRedirectMiddleware>();
+
+//
+app.UseMiddleware<ConsoleMiddleware>();
 
 // 
 app.UseStaticFiles();

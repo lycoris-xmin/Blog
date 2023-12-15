@@ -13,7 +13,7 @@ namespace Lycoris.Blog.Server.Controllers
     /// 仪表盘
     /// </summary>
     [Route($"{HostConstant.RoutePrefix}/Dashboard"), AppAuthentication]
-    public class DashboardController : BaseController
+    public class DashboardController : BaseApiController
     {
         private readonly IDashboardAppService _dashboard;
 

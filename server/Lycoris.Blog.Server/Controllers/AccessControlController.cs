@@ -16,7 +16,7 @@ namespace Lycoris.Blog.Server.Controllers
     /// </summary>
     [Route($"{HostConstant.RoutePrefix}/AccessControl")]
     [AppAuthentication]
-    public class AccessControlController : BaseController
+    public class AccessControlController : BaseApiController
     {
         private readonly IAccessControlAppService _accessControl;
 

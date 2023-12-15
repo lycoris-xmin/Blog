@@ -1,6 +1,5 @@
 ﻿using Lycoris.AutoMapper.Extensions;
 using Lycoris.Blog.Application.AppServices.FileManage;
-using Lycoris.Blog.Application.AppServices.FileManage.Dtos;
 using Lycoris.Blog.Application.AppServices.ServerStaticFiles;
 using Lycoris.Blog.Application.AppServices.ServerStaticFiles.Dtos;
 using Lycoris.Blog.Common;
@@ -21,7 +20,7 @@ namespace Lycoris.Blog.Server.Controllers
     /// </summary>
     [Route($"{HostConstant.RoutePrefix}/StaticFile")]
     [AppAuthentication]
-    public class StaticFileController : BaseController
+    public class StaticFileController : BaseApiController
     {
         private readonly IServerStaticFileAppService _staticFile;
 

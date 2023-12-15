@@ -1,7 +1,6 @@
 ﻿using Lycoris.Blog.Application.AppServices.FileManage.Dtos;
 using Lycoris.Blog.Application.Shared;
 using Lycoris.Blog.EntityFrameworkCore.Tables;
-using Lycoris.Blog.EntityFrameworkCore.Tables.Enums;
 using Microsoft.AspNetCore.Http;
 
 namespace Lycoris.Blog.Application.AppServices.FileManage

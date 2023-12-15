@@ -16,7 +16,7 @@ namespace Lycoris.Blog.Server.Controllers
     /// 网站留言
     /// </summary>
     [Route($"{HostConstant.RoutePrefix}/Message")]
-    public class MessageController : BaseController
+    public class MessageController : BaseApiController
     {
         private readonly IMessageAppService _message;
 

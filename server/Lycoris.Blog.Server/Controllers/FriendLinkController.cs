@@ -19,7 +19,7 @@ namespace Lycoris.Blog.Server.Controllers
     /// 友链管理
     /// </summary>
     [Route($"{HostConstant.RoutePrefix}/FriendLink")]
-    public class FriendLinkController : BaseController
+    public class FriendLinkController : BaseApiController
     {
         private readonly IFriendLinkAppService _friendLink;
 

@@ -17,7 +17,7 @@ namespace Lycoris.Blog.Server.Controllers
     /// 关于
     /// </summary>
     [Route($"{HostConstant.RoutePrefix}/WebSite"), AppAuthentication]
-    public class WebSiteController : BaseController
+    public class WebSiteController : BaseApiController
     {
         private readonly IWebSiteAppService _webSiteAbout;
 

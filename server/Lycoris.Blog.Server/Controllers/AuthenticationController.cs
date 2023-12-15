@@ -22,7 +22,7 @@ namespace Lycoris.Blog.Server.Controllers
     /// 身份验证
     /// </summary>
     [Route($"{HostConstant.RoutePrefix}/Authentication")]
-    public class AuthenticationController : BaseController
+    public class AuthenticationController : BaseApiController
     {
         private readonly IAuthenticationAppService _authentication;
         private readonly IAuthenticationCacheService _cache;

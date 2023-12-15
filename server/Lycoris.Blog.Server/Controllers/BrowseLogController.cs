@@ -15,7 +15,7 @@ namespace Lycoris.Blog.Server.Controllers
     /// 浏览日志
     /// </summary>
     [Route($"{HostConstant.RoutePrefix}/BrowseLog"), AppAuthentication]
-    public class BrowseLogController : BaseController
+    public class BrowseLogController : BaseApiController
     {
         private readonly IBrowseLogAppService _browseLog;
 

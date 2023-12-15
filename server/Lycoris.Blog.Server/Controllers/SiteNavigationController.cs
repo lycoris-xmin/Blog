@@ -15,7 +15,7 @@ namespace Lycoris.Blog.Server.Controllers
     /// 网站收录
     /// </summary>
     [Route($"{HostConstant.RoutePrefix}/SiteNavigation")]
-    public class SiteNavigationController : BaseController
+    public class SiteNavigationController : BaseApiController
     {
         private readonly ISiteNavigationAppService _siteNavigation;
 
